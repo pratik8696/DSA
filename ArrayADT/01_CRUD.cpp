@@ -69,12 +69,33 @@ int ImprovedLinearSearch(struct array a, int key)
         if (a.A[i] == key)
         {
             a.A[0] = a.A[i];
-            a.A[i - 1] = a.A[i];
-            cout << "Match Found" << endl;
+            // a.A[i - 1] = a.A[i];
+            // [you can prefer any one operations in one of these]
+            cout << "Match Found by improved linear search" << endl;
         }
     }
 }
-
+// Binary Search
+int binarysearch(struct array a, int key)
+{
+    int l = 0, h = a.length, mid;
+    mid = (l + h) / 2;
+    while (l <= h)
+    {
+        if (a.A[mid] == key)
+        {
+            return mid;
+        }
+        else if (a.A[mid] > key)
+        {
+            h = mid - 1;
+        }
+        else
+        {
+            l = mid + 1;
+        }
+    }
+}
 int main()
 {
     struct array p;
@@ -96,12 +117,14 @@ int main()
     Display(p);
     Delete(&p, 4);
     Display(p);
-    if (LinearSearch(p, key) == 1)
-    {
-        cout << "Match Found" << endl;
-    }
-    else
-    {
-        cout << "Match not found" << endl;
-    }
+    // if (LinearSearch(p, key) == 1)
+    // {
+    //     cout << "Match Found by linear search" << endl;
+    // }
+    // else
+    // {
+    //     cout << "Match not found by linear search" << endl;
+    // }
+    // ImprovedLinearSearch(p, key);
+    cout<<binarysearch(p,key);
 }
