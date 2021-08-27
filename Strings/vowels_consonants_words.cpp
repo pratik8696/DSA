@@ -1,4 +1,5 @@
 #include <iostream>
+#include <bits/stdc++.h>
 using namespace std;
 static int words = 1;
 static int consonants;
@@ -34,14 +35,30 @@ void check(string sentence)
 }
 int largestword(string sentence)
 {
+    int count=0,prevcount=0;
+    for (int i = 0; sentence[i]!='\0'; i++)
+    {
+        if(sentence[i]!=' ')
+        {
+            count++;
+        }
+        else
+        {
+            // check
+                prevcount=max(prevcount,count);
+                count=0;
+        }
+    }
+    return max(prevcount,count);
 }
 int main()
 {
     string sentence;
     getline(cin, sentence);
     check(sentence);
-    cout << "The no of words in " << sentence << " are = " << words << endl;
-    cout << "The no of vowels in " << sentence << " are = " << vowels << endl;
-    cout << "The no of consonants in " << sentence << " are = " << consonants << endl;
+    cout << "The no of words in this sentence are = " << words << endl;
+    cout << "The no of vowels in this sentence are = " << vowels << endl;
+    cout << "The no of consonants in this sentence are = " << consonants << endl;
+    cout<<"The length of largest word is = "<<largestword(sentence);
     return 0;
 }
