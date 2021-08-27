@@ -25,55 +25,55 @@ int Display(struct array arr)
          << "The length of the array is " << arr.length << endl;
 }
 // basic array operations
-int geta(struct array a, int index)
-{
-    return a.A[index];
-}
-// set
-int seta(struct array *a, int index, int x)
-{
-    a->A[index] = x;
-}
-// max
-int max(struct array a)
-{
-    int temp = INT_MIN;
-    for (int i = 0; i < a.length; i++)
-    {
-        if (temp < a.A[i])
-        {
-            temp = a.A[i];
-        }
-    }
-    return temp;
-}
-// min
-int min(struct array a)
-{
-    int temp=INT_MAX;
-    for (int i = 0; i < a.length; i++)
-    {
-        if (temp>a.A[i])
-        temp=a.A[i];
-    }
-    return temp;
-}
-// sum
-int sum(struct array a)
-{
-    int summation=0;
-    for (int i = 0; i < a.length; i++)
-    {
-        summation=summation+a.A[i];
-    }
-    return summation;
-}
-int avg(struct array a)
-{
-    int average=sum(struct array a);
-    average=average/a.length;
-    return average;
-}
+// int geta(struct array a, int index)
+// {
+//     return a.A[index];
+// }
+// // set
+// int seta(struct array *a, int index, int x)
+// {
+//     a->A[index] = x;
+// }
+// // max
+// int max(struct array a)
+// {
+//     int temp = INT_MIN;
+//     for (int i = 0; i < a.length; i++)
+//     {
+//         if (temp < a.A[i])
+//         {
+//             temp = a.A[i];
+//         }
+//     }
+//     return temp;
+// }
+// // min
+// int min(struct array a)
+// {
+//     int temp=INT_MAX;
+//     for (int i = 0; i < a.length; i++)
+//     {
+//         if (temp>a.A[i])
+//         temp=a.A[i];
+//     }
+//     return temp;
+// }
+// // sum
+// int sum(struct array a)
+// {
+//     int summation=0;
+//     for (int i = 0; i < a.length; i++)
+//     {
+//         summation=summation+a.A[i];
+//     }
+//     return summation;
+// }
+// int avg(struct array a)
+// {
+//     int average=sum(struct array a);
+//     average=average/a.length;
+//     return average;
+// }
 // Reversing an array
 int Reverse_using2iterators(struct array *a)
 {
@@ -97,7 +97,7 @@ int Shifting(struct array *a, bool s, int count)
             {
                 a->A[i] = a->A[i + 1];
             }
-            a->A[(a->length) - 1] = temp;
+            a->A[(a->length)-1] = temp;
         }
     }
     // false for right shift
@@ -106,7 +106,7 @@ int Shifting(struct array *a, bool s, int count)
         cout << "The array after " << count << " right shift  is  " << endl;
         for (int i = 0; i < count; i++)
         {
-            int temp = a->A[(a->length) - 1];
+            int temp = a->A[a->length-1];
             for (int i = (a->length) - 1; i > 0; i--)
             {
                 a->A[i] = a->A[i - 1];
@@ -149,11 +149,11 @@ int main()
     Display(p);
     Shifting(&p, true, 3);
     Display(p);
-    cout<<geta(p,4)<<endl;
-    seta(&p,4,10);
-    Display(p);
-    cout<<max(p)<<endl;
-    cout<<min(p)<<endl;
-    cout<<sum(p)<<endl;
-    cout<<avg(p)<<endl;
+    // cout<<geta(p,4)<<endl;
+    // seta(&p,4,10);
+    // Display(p);
+    // cout<<max(p)<<endl;
+    // cout<<min(p)<<endl;
+    // cout<<sum(p)<<endl;
+    // cout<<avg(p)<<endl;
 }
