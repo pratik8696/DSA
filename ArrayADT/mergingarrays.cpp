@@ -95,28 +95,27 @@ int binarysearch(struct array a, int key)
             l = mid + 1;
         }
     }
-
 }
 
 int negativeleft(struct array *a)
 {
-    int i=0,j=(a->length)-1;
+    int i = 0, j = (a->length) - 1;
 
-    while(i<j)
+    while (i < j)
     {
 
-    while(a->A[i]<0)
-    {
-        i++;
-    }
-    while (a->A[j] >= 0)
-    {
-        j--;
-    }
-    if(i<j)
-    {
-        Swap(&a->A[i],&a->A[j]);
-    }
+        while (a->A[i] < 0)
+        {
+            i++;
+        }
+        while (a->A[j] >= 0)
+        {
+            j--;
+        }
+        if (i < j)
+        {
+            Swap(&a->A[i], &a->A[j]);
+        }
     }
 }
 
@@ -142,10 +141,49 @@ int negativeright(struct array *a)
     }
 }
 
+int merge(struct array *a,struct array *b)
+{
+    int i=0,j=0,k=0;
+    int l=a->length+b->length;
+    int s = a->size + b->size;
+    struct array n;
+    n.size=s;
+    n.length=l;
+    while(i<a->length&&j<b->length)
+    {
+        if (a->A[i]>b->A[j])
+        {
+            n.A[k++]=b->A[j++];
+        }
+        else if (a->A[i] < b->A[j])
+        {
+            n.A[k++] = a->A[i++];
+        }
+        else
+        {
+            n.A[k++]=a->A[i++];
+            j++;
+        }
+    }
+
+  for (; i < a->length; i++)
+  {
+      n.A[k++]=a->A[i];
+  }
+  for (; j < b->length; j++)
+  {
+      n.A[k++] = b->A[j];
+  }
+    // for(int k=0;k<l;k++)
+    // {
+    //     cout<<n.A[k]<<" ";
+    // }
+    Display(n);
+}
+
 int main()
 {
     struct array p;
-    int key;
     cout << "Enter the size and length of the array" << endl;
     cin >> p.size >> p.length;
     p.A = new int[p.size];
@@ -154,11 +192,16 @@ int main()
     {
         cin >> p.A[i];
     }
+    struct array q;
+    cout << "Enter the size and length of the array" << endl;
+    cin >> q.size >> q.length;
+    p.A = new int[q.size];
+    cout << "Enter " << q.length << " elements of the array" << endl;
+    for (int i = 0; i < q.length; i++)
+    {
+        cin >> q.A[i];
+    }
     Display(p);
-    negativeleft(&p);
-    Display(p);
-    negativeright(&p);
-    Display(p);
+    Display(q);
+    merge(&p,&q);
 }
-
-
