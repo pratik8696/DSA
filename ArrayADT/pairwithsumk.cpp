@@ -158,19 +158,16 @@ int sumwithk(struct array p,int k)
 
 int findingsumusinghash(struct array p,int k)
 {
-    int length=0;
-    for (int z = 0; z < p.length; z++)
-    {
-        length=max(p.A[z],length);
-    }
-    int H[length+1];
-    for(int z=0;z<length+1;z++)
+    int H[1000];
+    for(int z=0;z<1000;z++)
     {
         H[z]=0;
     }
     for(int i=0;i<p.length;i++)
     {
-        
+        // here u can miss a very imp thing
+        // if the hash array is not long enough then it can cause many problems so 
+        // always take a long array and use that as your hash table
         if(H[k-p.A[i]]!=0)
         {
             cout<<"The pair is "<<p.A[i]<<" + "<<k-p.A[i]<<" = "<<k<<endl;
@@ -179,12 +176,30 @@ int findingsumusinghash(struct array p,int k)
             H[p.A[i]]++;
         }
     }
-    for(int i=0;i<length+1;i++)
-    {
-        cout<<H[i]<<" ";
-    }
 }
 
+int pairsortedarray(struct array p,int k)
+{
+    int i=0;
+    int j=p.length-1;
+    while(i<j)
+    {
+        if(p.A[i]+p.A[j]==k)
+        {
+            cout << "The pair is " << p.A[i] << " + " << k - p.A[i] << " = " << k << endl;
+            i++;
+            j--;
+        }
+        else if(p.A[i]+p.A[j]>k)
+        {
+            j--;
+        }
+        else if(p.A[i]+p.A[j]<k)
+        {
+            i++;
+        }
+    }
+}
 
 int main()
 {
@@ -202,6 +217,8 @@ int main()
     cin>>k;
     Display(p);
     sumwithk(p,k);
+    cout<<"Now using hash"<<endl;
     findingsumusinghash(p,k);
-
+    cout<<"Now using sorted array technique"<<endl;
+    pairsortedarray(p,k);
 }
