@@ -17,7 +17,6 @@ int main()
             cout<<arr[i]<<" ";
             duplicate_element=arr[i];
         }
-        
     }
     return 0;
 }
