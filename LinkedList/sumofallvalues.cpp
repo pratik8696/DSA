@@ -16,6 +16,7 @@ int sum(struct Node *p)
         summation+=p->data;
         p=p->next;
     }
+    return summation;
 }
 
 int Create(int arr[],int n)
@@ -55,5 +56,5 @@ int main()
         cin>>arr[i];
     }
     Create(arr,count);
-    sum(first);
+    cout<<sum(first);
 }
