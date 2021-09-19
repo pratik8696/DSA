@@ -1,0 +1,1 @@
+{"name":"Local: trashbins","url":"c:\\Users\\mihir\\Desktop\\450 DSA\\kickstart\\trashbins.cpp","tests":[{"id":1631990456288,"input":"4\n5\n00001\n5\n01010\n7\n0011101\n7\n1000000","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\mihir\\Desktop\\450 DSA\\kickstart\\trashbins.cpp","group":"local","local":true}

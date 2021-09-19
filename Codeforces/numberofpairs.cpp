@@ -35,18 +35,3 @@ int main()
         cout<<a[i]<<" ";
     }   
 }
-
-    // finding the pairs
-    // for (int i = 0; i < n; i++)
-    // {
-    //     int x=l-i;
-    //     int y=r-i;
-
-    //     for(;x<=y;x++)
-    //     {
-    //         if(a[x]!=0)
-    //         {
-    //             count++;
-    //         }
-    //     }
-    // }
