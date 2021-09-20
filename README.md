@@ -1,13 +1,5 @@
 # DSA-Library
 
-[![GitHub pull requests](https://img.shields.io/github/issues-pr/krishrahul98/DSA-Library?style=flat-square)](https://github.com/pratik8696/DSA/pulls?q=is%3Aopen+is%3Apr)
-[![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed/krishrahul98/DSA-Library?style=flat-square)](https://github.com/pratik8696/DSA/pulls?q=is%3Apr+is%3Aclosed)
-[![GitHub closed issues](https://img.shields.io/github/issues-closed/krishrahul98/DSA-Library?style=flat-square)](https://github.com/pratik8696/DSA/issues?q=is%3Aissue+is%3Aclosed)
-[![GitHub issues](https://img.shields.io/github/issues/krishrahul98/DSA-Library?style=flat-square)](https://github.com/pratik8696/DSA/issues?q=is%3Aopen+is%3Aissue)
-![Lines of code](https://img.shields.io/tokei/lines/github/pratik8696/DSA?style=flat-square)
-[![CodeFactor](https://www.codefactor.io/repository/github/pratik8696/dsa/badge)](https://www.codefactor.io/repository/github/pratik8696/dsa)
-
-
 **Overview**
 ------------------------------
 
