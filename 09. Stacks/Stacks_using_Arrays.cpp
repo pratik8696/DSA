@@ -19,9 +19,10 @@ int Push(struct stack *st, int x)
         st->top++;
         st->S[st->top] = x;
     }
+    cout<<"Inserted Succesfully"<<endl;
 }
 
-int pop(struct stack *st, int x)
+int pop(struct stack *st)
 {
     int x = -1;
     if (st->top == -1)
@@ -47,6 +48,7 @@ int peek(struct stack st, int pos)
     {
         return st.S[index];
     }
+    return 0;
 }
 
 int stackTop(struct stack st)
@@ -79,6 +81,16 @@ int isFull(struct stack st)
     return 0;
 }
 
+int DisplayStack(struct stack st)
+{
+    cout<<endl<<"The stack is = "<<endl;
+    while(st.top!=-1)
+    {
+        cout<<st.S[st.top]<<" ";
+        st.top--;
+    }
+}
+
 int main()
 {
     struct stack st;
@@ -86,7 +98,17 @@ int main()
     cin >> st.size;
     st.top = -1;
     st.S = new int[st.size];
-    st.S[st.size] = {1, 2, 3};
-
+    Push(&st,10);
+    Push(&st, 20);
+    Push(&st, 30);
+    Push(&st, 40);
+    DisplayStack(st);
+    pop(&st);
+    DisplayStack(st);
+    cout<<peek(st,2)<<endl;
+    cout<<stackTop(st)<<endl;
+    cout<<isFull(st)<<endl;
+    cout<<isEmpty(st)<<endl;
+    DisplayStack(st);
     return 0;
 }
