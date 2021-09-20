@@ -32,10 +32,7 @@
 **Language available**
 - [x] C
 - [x] C++
-- [x] Java
-- [x] Python
-- [x] JavaScript
-- [x] C#
+
 
 **Index**
 -----------
@@ -81,15 +78,8 @@ $ git push origin master
 
 ## Collaborator
 
-**[Hemanth Kotagiri](https://github.com/hemanth-kotagiri)**
+**[Pratik Anand](https://github.com/pratik8696)**
 
-## Contributors 🎉
-
-Meet our wonderful [contributors](/CONTRIBUTORS.md).
-
-
-## Code of Conduct
-Read our [code of conduct](/CODE_OF_CONDUCT.md).
 
 ## License
 [MIT License](/LICENSE).
