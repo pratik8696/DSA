@@ -9,16 +9,15 @@ int main()
     {
         int N;
         cin >> N;
-        int lower = pow(10, N - 1);
-        int upper = pow(10, N) - 1;
-        for (int i = lower; i <= upper; i++)
+        for(int i=0;i<N;i++)
         {
-            if (i % 3 == 0 && i % 9 != 0 && i%2!=0)
-            {
-                cout << i << endl;
-                break;
+            if(i==0||i==(N-1))
+            { cout<<"3";}
+            else{
+                cout<<"0";
             }
         }
+        cout<<endl;
     }
     return 0;
 }

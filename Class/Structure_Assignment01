@@ -1,0 +1,23 @@
+#include <stdio.h>
+#include <stdlib.h>
+void createNodeList(int n); 
+void displayList();         
+
+int main()
+{
+    int n;
+    printf("Input the number of nodes : ");
+    scanf("%d", &n);
+    createNodeList(n);
+    printf("Data entered in the list : ");
+    displayList();
+    return 0;
+}
+void createNodeList(int n)
+{
+ 
+}
+void displayList()
+{
+   
+}

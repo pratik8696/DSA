@@ -3,35 +3,24 @@ using namespace std;
 
 int main()
 {
-    int a, b, c, x, y, z;
-    cin >> a >> b >> c >> x >> y >> z;
-    int tt = 240;
-    int counta = 0, countb = 0, countc = 0;
-    while (tt > 0)
+    int a, b, c, x, y, z, tt;
+    cin >> a >> b >> c >> x >> y >> z >> tt;
+    int takea,takeb,takec;
+    int ans=0;
+    for (takea= 0; takea <=20; takea++)
     {
-        if (counta < 20)
+        for (takeb= 0; takeb <= 20; takeb++)
         {
-            tt = tt - a;
-            counta++;
+            for (takec= 0; takec <= 20; takec++)
+            {
+                int time=takea*a+takeb*b+takec*c;
+                if(time<240)
+                {
+                    ans=max(ans,takea*x+takeb*y+takec*z);
+                }
+            }
         }
     }
-    // while (tt != 0)
-    // {
-    //     if (countb != 20)
-    //     {
-    //         tt = tt - b;
-    //         countb++;
-    //     }
-    // }
-    // while (tt != 0)
-    // {
-    //     if (countc != 20)
-    //     {
-    //         tt = tt - c;
-    //         countc++;
-    //     }
-    // }
-    // int maxpt = counta * x + countb * y + countc * z;
-    // cout << maxpt << endl;
+    cout<<ans<<endl;
     return 0;
 }
