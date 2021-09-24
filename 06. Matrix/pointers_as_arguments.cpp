@@ -54,28 +54,44 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define sz(x) ((ll)(x).size())
 
-int main()
+void print(int **arr, int m, int n)
 {
-    fast_cin();
-    int m,n;
-    cin>>m>>n;
-    vector<int> v[m];
-    for (int i = 0; i < m; i++)
-    {
-        for(int j=0;j<n;j++)
-        {
-            int x;
-            cin>>x;
-            v[i].push_back(x);
-        }
-    }
     for (int i = 0; i < m; i++)
     {
         for (int j = 0; j < n; j++)
         {
-            cout<<v[i][j]<<" ";
+            cout << arr[i][j] << " ";
         }
-        cout<<endl;
+        cout << endl;
     }
+}
+
+int main()
+{
+    fast_cin();
+    int **arr;
+    int m, n;
+    cin >> m >> n;
+    arr = new int *[m];
+    // here goes the input
+    for (int i = 0; i < m; i++)
+    {
+        // here is the column
+        arr[i] = new int[n];
+        for (int j = 0; j < n; j++)
+        {
+            cin >> arr[i][j];
+        }
+    }
+    // here goes the output
+    // for (int i = 0; i < m; i++)
+    // {
+    //     for (int j = 0; j < n; j++)
+    //     {
+    //         cout << arr[i][j] << " ";
+    //     }
+    //     cout << endl;
+    // }
+    print(arr,m,n);
     return 0;
 }

@@ -54,24 +54,42 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define sz(x) ((ll)(x).size())
 
+void Swap(int *a,int *b)
+{
+    int temp=*a;
+    *a=*b;
+    *b=temp;
+}
+
+
 int main()
 {
     fast_cin();
-    int m,n;
-    cin>>m>>n;
-    vector<int> v[m];
+    int m, n;
+    cin >> m >> n;
+    vector<vector<int>> v;
     for (int i = 0; i < m; i++)
     {
-        for(int j=0;j<n;j++)
+        vector<int> a;
+        for (int j = 0; j < n; j++)
         {
             int x;
-            cin>>x;
-            v[i].push_back(x);
+            cin >> x;
+            a.push_back(x);
+        }
+        v.push_back(a);
+    }
+
+    for (int i = 0; i < m; i++)
+    {
+        for (int j = i + 1; j < n; j++)
+        {
+            Swap(&v[i][j],&v[j][i]);
         }
     }
     for (int i = 0; i < m; i++)
     {
-        for (int j = 0; j < n; j++)
+        for (int j =0; j < n; j++)
         {
             cout<<v[i][j]<<" ";
         }

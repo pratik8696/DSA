@@ -57,25 +57,64 @@ double eps = 1e-12;
 int main()
 {
     fast_cin();
-    int m,n;
-    cin>>m>>n;
-    vector<int> v[m];
+    int m, n;
+    cin >> m >> n;
+    vector<vector<int>> v;
     for (int i = 0; i < m; i++)
     {
-        for(int j=0;j<n;j++)
-        {
-            int x;
-            cin>>x;
-            v[i].push_back(x);
-        }
-    }
-    for (int i = 0; i < m; i++)
-    {
+        vector<int> a;
         for (int j = 0; j < n; j++)
         {
-            cout<<v[i][j]<<" ";
+            int x;
+            cin >> x;
+            a.push_back(x);
         }
-        cout<<endl;
+        v.push_back(a);
+    }
+    int r=0,c=0;
+    while (m>=1 || n>=1)
+    {
+        if (m == 1 && n==0)
+        {
+            for (int i = r; i < n; i++)
+            {
+                cout << v[r][i] << " ";
+            }
+            // cout << endl;
+        }
+        else if (n == 1 && m==0)
+        {
+            for (int i = c; i < m; i++)
+            {
+                cout << v[i][c] << " ";
+            }
+            // cout << endl;
+        }
+        else
+        {
+            for (int i = 0+c; i < n-c; i++)
+            {
+                cout << v[0][i] << " ";
+            }
+            for (int i = 1+r; i < m-r; i++)
+            {
+                cout << v[i][n - 1] << " ";
+            }
+            for (int i = n - 2; i >= 0; i--)
+            {
+                cout << v[m - 1][i] << " ";
+            }
+            for (int i = m - 2; i > 0; i--)
+            {
+                cout << v[i][0] << " ";
+            }
+            // cout << endl;
+        }
+            r++;
+            c++;
+            m--;
+            n--;
+            // cout<<"Values of m and n are -> "<<m<<" "<<n;
     }
     return 0;
 }

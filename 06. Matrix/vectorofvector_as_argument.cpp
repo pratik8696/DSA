@@ -19,9 +19,7 @@
 #include <stack>
 #include <iomanip>
 #include <fstream>
-
 using namespace std;
-
 typedef long long ll;
 typedef long double ld;
 typedef pair<int, int> p32;
@@ -54,28 +52,35 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define sz(x) ((ll)(x).size())
 
+void print(vector<vector<int>> v)
+{
+    for (int i = 0; i < v.size(); i++)
+    {
+        for (int j = 0; j < v[i].size(); j++)
+        {
+            cout << v[i][j] << " ";
+        }
+        cout << endl;
+    }
+}
+
 int main()
 {
     fast_cin();
-    int m,n;
-    cin>>m>>n;
-    vector<int> v[m];
+    int m, n;
+    cin >> m >> n;
+    vector<vector<int>> v;
     for (int i = 0; i < m; i++)
     {
-        for(int j=0;j<n;j++)
-        {
-            int x;
-            cin>>x;
-            v[i].push_back(x);
-        }
-    }
-    for (int i = 0; i < m; i++)
-    {
+        vector<int> a;
         for (int j = 0; j < n; j++)
         {
-            cout<<v[i][j]<<" ";
+            int x;
+            cin >> x;
+            a.push_back(x);
         }
-        cout<<endl;
+        v.push_back(a);
     }
+    print(v);
     return 0;
 }

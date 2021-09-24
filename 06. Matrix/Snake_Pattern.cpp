@@ -57,25 +57,38 @@ double eps = 1e-12;
 int main()
 {
     fast_cin();
-    int m,n;
-    cin>>m>>n;
-    vector<int> v[m];
+    int m, n;
+    cin >> m >> n;
+    vector<vector<int>> v;
     for (int i = 0; i < m; i++)
     {
-        for(int j=0;j<n;j++)
-        {
-            int x;
-            cin>>x;
-            v[i].push_back(x);
-        }
-    }
-    for (int i = 0; i < m; i++)
-    {
+        vector<int> a;
         for (int j = 0; j < n; j++)
         {
-            cout<<v[i][j]<<" ";
+            int x;
+            cin >> x;
+            a.push_back(x);
         }
-        cout<<endl;
+        v.push_back(a);
+    }
+
+    for (int i = 0; i < m; i++)
+    {
+        if ((i+1) % 2 == 0)
+        {
+            for (int j = n - 1; j >= 0; j--)
+            {
+                cout << v[i][j] << " ";
+            }
+        }
+        if ((i + 1) % 2 != 0)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                cout << v[i][j] << " ";
+            }
+        }
+        cout << endl;
     }
     return 0;
 }

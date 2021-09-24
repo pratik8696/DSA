@@ -54,28 +54,43 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define sz(x) ((ll)(x).size())
 
-int main()
+// this is how a vector is passed to a function like vector<int> v[]
+void print(vector<int> v[], int m)
 {
-    fast_cin();
-    int m,n;
-    cin>>m>>n;
-    vector<int> v[m];
     for (int i = 0; i < m; i++)
     {
-        for(int j=0;j<n;j++)
-        {
-            int x;
-            cin>>x;
-            v[i].push_back(x);
-        }
-    }
-    for (int i = 0; i < m; i++)
-    {
-        for (int j = 0; j < n; j++)
+        for (int j = 0; j < v[i].size(); j++)
         {
             cout<<v[i][j]<<" ";
         }
         cout<<endl;
     }
+    
+}
+
+int main()
+{
+    fast_cin();
+    int m, n;
+    cin >> m >> n;
+    vector<int> v[m];
+    for (int i = 0; i < m; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            int x;
+            cin >> x;
+            v[i].push_back(x);
+        }
+    }
+    // for (int i = 0; i < m; i++)
+    // {
+    //     for (int j = 0; j < n; j++)
+    //     {
+    //         cout << v[i][j] << " ";
+    //     }
+    //     cout << endl;
+    // }
+    print(v, m);
     return 0;
 }
