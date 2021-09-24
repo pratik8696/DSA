@@ -1,0 +1,1 @@
+{"name":"Local: NODRUGS","url":"c:\\Users\\mihir\\Desktop\\450 DSA\\codechef\\NODRUGS.cpp","tests":[{"id":1632456239456,"input":"3\n4 2 2\n2 1 3 2\n4 2 2\n2 1 4 2\n3 -10 100\n12 11 9\n","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\mihir\\Desktop\\450 DSA\\codechef\\NODRUGS.cpp","group":"local","local":true}

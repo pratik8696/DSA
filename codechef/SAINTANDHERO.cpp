@@ -60,29 +60,46 @@ void solve()
 int main()
 {
     fast_cin();
-    multimap<char, string> m;
-    int n;
-    cin >> n;
-    for (int i = 0; i < n; i++)
+    int t;
+    cin >> t;
+    while (t--)
     {
-        string s;
-        char c;
-        cin >> c >> s;
-        m.insert(make_pair(c, s));
+        int carr[3];
+        int harr[3];
+        for (int i = 0; i < 3; i++)
+        {
+            cin >> carr[i];
+        }
+        for (int i = 0; i < 3; i++)
+        {
+            cin >> harr[i];
+        }
+        int cc = 0,cf=0, hc = 0,hf=0;
+        for (int i = 0; i < 3; i++)
+        {
+            if (carr[i] == 1)
+            {
+                cc++;
+            }
+            else{
+                cf++;
+            }
+            if (harr[i] == 1)
+            {
+                hc++;
+            }
+            else{
+                hf++;
+            }
+        }
+        if (cc == hc || cf==hf)
+        {
+            cout << "Pass" << endl;
+        }
+        else
+        {
+            cout << "Fail" << endl;
+        }
     }
-    //  now printing the entire map
-    cout<<"Iterating over entire map using for each loop"<<endl;
-    for(auto i:m)
-    {
-        cout<<i.first<<" : "<<i.second<<endl;
-    }
-    // using binary search lowerbound and upperbound
-    auto it2=lower_bound("b");
-    auto it3=upper_bound("d");
-    for(auto it4=it2;it4!=it3;it4++)
-    {
-        cout<<it4->second<<" , " ;
-    }
-    cout<<endl;
     return 0;
 }

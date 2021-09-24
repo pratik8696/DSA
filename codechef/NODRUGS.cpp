@@ -60,29 +60,44 @@ void solve()
 int main()
 {
     fast_cin();
-    multimap<char, string> m;
-    int n;
-    cin >> n;
-    for (int i = 0; i < n; i++)
+    int t;
+    cin >> t;
+    while (t--)
     {
-        string s;
-        char c;
-        cin >> c >> s;
-        m.insert(make_pair(c, s));
+        int n, k, l;
+        cin >> n >> k >> l;
+        int maxspeed = 0;
+        int s[n];
+        for (int i = 0; i < n; i++)
+        {
+            cin >> s[i];
+            maxspeed = max(maxspeed, s[i]);
+        }
+        if (k > 0)
+        {
+            int drug = (maxspeed - s[n - 1]) / k;
+            int newspeed=s[n-1]+drug*k;
+            if (drug < l && newspeed!=maxspeed )
+            {
+                cout << "YES" << endl;
+            }
+            else
+            {
+                cout << "NO" << endl;
+            }
+        }
+        else
+        {
+            if (maxspeed == s[n - 1])
+            {
+                cout << "YES" << endl;
+            }
+            else
+            {
+                cout << "NO" << endl;
+            }
+        }
     }
-    //  now printing the entire map
-    cout<<"Iterating over entire map using for each loop"<<endl;
-    for(auto i:m)
-    {
-        cout<<i.first<<" : "<<i.second<<endl;
-    }
-    // using binary search lowerbound and upperbound
-    auto it2=lower_bound("b");
-    auto it3=upper_bound("d");
-    for(auto it4=it2;it4!=it3;it4++)
-    {
-        cout<<it4->second<<" , " ;
-    }
-    cout<<endl;
-    return 0;
+
+return 0;
 }
