@@ -1,0 +1,1 @@
+{"name":"Local: FLOW014","url":"c:\\Users\\mihir\\Desktop\\450 DSA\\Codechef\\FLOW014.cpp","tests":[{"id":1632595418480,"input":"6\n60 0.5 5601\n51 0.6 5000\n45 0.6 5900\n55 1 6000\n45 1 90\n0 1 0\n\n","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\mihir\\Desktop\\450 DSA\\Codechef\\FLOW014.cpp","group":"local","local":true}

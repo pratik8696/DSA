@@ -1,0 +1,1 @@
+{"name":"Local: FLOW010","url":"c:\\Users\\mihir\\Desktop\\450 DSA\\Codechef\\FLOW010.cpp","tests":[{"id":1632591941571,"input":"3 \nB\nc\nD","output":"BattleShip\nCruiser\nDestroyer"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\mihir\\Desktop\\450 DSA\\Codechef\\FLOW010.cpp","group":"local","local":true}
