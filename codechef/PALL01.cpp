@@ -56,18 +56,22 @@ double eps = 1e-12;
 
 void solve()
 {
-    string a,b;
-    cin>>a;
-    b=a;
-    reverse(a.begin(),a.end());
-    if(!b.compare(a))
-    {
-        cout<<"loses"<<endl;
-    }
-    else{
-        cout<<"wins"<<endl;
-    }
+    string a, b;
+    cin >> a;
+    b = a;
+    reverse(a.begin(), a.end());
+    stoi(b);
+    stoi(a);
+    
 
+    if (b == a)
+    {
+        cout << "wins" << endl;
+    }
+    else
+    {
+        cout << "loses" << endl;
+    }
 }
 int main()
 {

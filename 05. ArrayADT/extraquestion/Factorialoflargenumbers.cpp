@@ -95,8 +95,13 @@ int factorial(int n)
 int main()
 {
  fast_cin();
+ int t;
+ cin>>t;
+ while(t--)
+ {
  int n;
  cin>>n;
  factorial(n);
+ }
  return 0;
 }
