@@ -58,19 +58,18 @@ struct triplet
 {
     int x, y, gcd;
 };
-
-triplet extendedalgo(int a, int b)
+triplet extendedeuclid(int a, int b)
 {
     if (b == 0)
     {
-        triplet ans;
+        struct triplet ans;
         ans.x = 1;
         ans.y = 0;
         ans.gcd = a;
         return ans;
     }
-    struct triplet smallans = extendedalgo(b, a % b);
-    triplet ans;
+    struct triplet smallans = extendedeuclid(b, a % b);
+    struct triplet ans;
     ans.x = smallans.y;
     ans.y = smallans.x - (a / b) * smallans.y;
     ans.gcd = smallans.gcd;
@@ -81,10 +80,9 @@ void solve()
 {
     int a, b;
     cin >> a >> b;
-    struct triplet result = extendedalgo(a, b);
-    cout << "GCD = " << result.gcd << endl;
-    cout << "Value of x is = " << result.x << endl;
-    cout << "Value of y is = " << result.y << endl;
+    triplet ans=extendedeuclid(a,b);
+    cout<<(ans.x%b+b)%b<<endl;
+    // cout << (ans.x) << endl;
 }
 int main()
 {
@@ -93,6 +91,7 @@ int main()
     cin >> t;
     for (int it = 1; it <= t; it++)
     {
+        cout << "Case #" << it + 1 << ": ";
         solve();
     }
     return 0;
