@@ -3,6 +3,7 @@
 using namespace std;
 int main()
 {
+    int hash[10000]={0};
     int n;
     cin>>n;
     int a[n];
@@ -10,16 +11,16 @@ int main()
     {
         cin>>a[i];
     }
-    sort(a,a+n);
-    int max=a[n-1];
-    int hash[max]={0};
     for (int i = 0; i < n; i++)
     {
         hash[a[i]]++;
     }
-    for (int i = 1; i < max; i++)
+    sort(a,a+n);
+    int start=a[0];
+    int max=a[n-1];
+    for (int i = start; i <= max; i++)
     {
-        if (hash[i]==0)
+        if (hash[i]>1)
         {
             cout<<i<<" ";
         }
