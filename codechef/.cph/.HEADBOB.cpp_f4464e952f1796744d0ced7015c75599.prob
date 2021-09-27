@@ -1,0 +1,1 @@
+{"name":"Local: HEADBOB","url":"c:\\Users\\mihir\\Desktop\\450 DSA\\Codechef\\HEADBOB.cpp","tests":[{"id":1632743323354,"input":"3\n5\nNNNYY\n6\nNNINNI\n4\nNNNN","output":"NOT INDIAN\nINDIAN\nNOT SURE"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\mihir\\Desktop\\450 DSA\\Codechef\\HEADBOB.cpp","group":"local","local":true}

@@ -1,0 +1,1 @@
+{"name":"Local: RECTANGL","url":"c:\\Users\\mihir\\Desktop\\450 DSA\\Codechef\\RECTANGL.cpp","tests":[{"id":1632740167337,"input":"3\n1 1 2 2\n3 2 2 3\n1 2 2 0\n","output":"YES\nYES\nNO\n"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\mihir\\Desktop\\450 DSA\\Codechef\\RECTANGL.cpp","group":"local","local":true}
