@@ -1,0 +1,1 @@
+{"name":"Local: LAPIN","url":"c:\\Users\\mihir\\Desktop\\450 DSA\\Codechef\\LAPIN.cpp","tests":[{"id":1632810900804,"input":"6\ngg\nabcde\nrotor\nxyzxy\nabbaab\nababc","output":"YES\nNO\nYES\nYES\nNO\nNO\n"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\mihir\\Desktop\\450 DSA\\Codechef\\LAPIN.cpp","group":"local","local":true}

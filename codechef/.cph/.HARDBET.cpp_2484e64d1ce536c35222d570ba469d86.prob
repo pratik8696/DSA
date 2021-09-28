@@ -1,0 +1,1 @@
+{"name":"Local: HARDBET","url":"c:\\Users\\mihir\\Desktop\\450 DSA\\Codechef\\HARDBET.cpp","tests":[{"id":1632755925834,"input":"3\n1 4 2\n16 8 10\n14 15 9\n","output":"Draw\nBob\nAlice\n"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\mihir\\Desktop\\450 DSA\\Codechef\\HARDBET.cpp","group":"local","local":true}
