@@ -74,6 +74,12 @@ void solve(){
             index=i;
             break;
         }
+        else if(i==N-1)
+        {
+            index=N;
+            break;
+        }
+        
     }
     cout<<index<<endl;
 }
