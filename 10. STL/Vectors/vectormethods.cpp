@@ -19,9 +19,7 @@
 #include <stack>
 #include <iomanip>
 #include <fstream>
-
 using namespace std;
-
 typedef long long ll;
 typedef long double ld;
 typedef pair<int, int> p32;
@@ -54,31 +52,63 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define sz(x) ((ll)(x).size())
 
-void solve()
-{
-    int h, t;
-    float c;
-    cin >> h >> c >> t;
-    if (h > 50 && c < 0.7 && t > 5600)
-    {
-        cout<<10<<endl;
-    }
-    else if (h > 50 && c < 0.7 && t < 5600)
-    {
-        cout<<9<<endl;
-    }
-    // else if (h < 50 && c < 0.7 && t > 5600)
-}
-
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
-    for (int it = 1; it <= t; it++)
-    {
 
-        solve();
+    vector<int> d{1, 2, 3, 4, 5, 6, 7};
+
+    // adds element at the last of the array
+    d.push_back(8);
+
+    // removes element from the last of the array
+    d.pop_back();
+
+    // all elements you wish to insert
+    d.insert(d.begin() + 3, 100);
+
+    for (auto t : d)
+    {
+        cout << t << " ";
     }
+    cout << ln;
+
+    // removes element from the array
+    d.erase(d.begin() + 3);
+
+    for (auto t : d)
+    {
+        cout << t << " ";
+    }
+    cout << ln;
+
+    // remove the range of the elements
+    d.erase(d.begin() + 3, d.end());
+
+
+    for (auto t : d)
+    {
+        cout << t << " ";
+    }
+    cout << ln;
+
+    // how to take input initially
+    int tr;
+    cin>>tr;
+    vector<int> p;
+    p.reserve(100000);
+    for (int i = 0; i < tr; i++)
+    {
+        int foo;
+        cin>>foo;
+        p.push_back(foo);
+    }
+
+    for (auto t : p)
+    {
+        cout << t << " ";
+    }
+    cout << ln;
+
     return 0;
 }

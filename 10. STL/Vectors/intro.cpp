@@ -54,31 +54,69 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define sz(x) ((ll)(x).size())
 
-void solve()
-{
-    int h, t;
-    float c;
-    cin >> h >> c >> t;
-    if (h > 50 && c < 0.7 && t > 5600)
-    {
-        cout<<10<<endl;
-    }
-    else if (h > 50 && c < 0.7 && t < 5600)
-    {
-        cout<<9<<endl;
-    }
-    // else if (h < 50 && c < 0.7 && t > 5600)
-}
-
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
-    for (int it = 1; it <= t; it++)
-    {
 
-        solve();
+    // different ways of initialisation
+    vector<int> a;
+    vector<char> b;
+    vector<string> c;
+
+    // vectors are intialised with predefined size and
+    vector<int> d(5, 10);
+    vector<int> e(10, 0);
+
+    // copying to other vector
+    vector<int> f(e.begin(), e.end());
+    vector<int> g{1, 2, 3, 4, 5, 6};
+
+    for (int i = 0; i < g.size(); i++)
+    {
+        cout << g[i] << " ";
     }
+    cout << ln;
+
+
+    // using pointers
+    for (auto j = e.begin(); j != e.end(); j++)
+    {
+        cout << *j << " ";
+    }
+    cout << ln;
+
+    // using pointers 
+    for (auto it = e.begin(); it != e.end(); it++)
+    {
+        cout<<*it<<" ";
+    }
+    cout << ln;
+
+    for (auto k : d)
+    {
+        cout << k << " ";
+    }
+    cout << ln;
+
+    // adding element in the arrays
+    vector<int> v;
+    int n;
+    cin >> n;
+    for (int i = 0; i < n; i++)
+    {
+        int no;
+        cin >> no;
+        v.push_back(no);
+    }
+
+    for(auto l:v)
+    {
+        cout<<l<<" ";
+    }
+    cout<<ln;
+
+    cout<<v.size()<<endl;
+    cout << v.capacity() << endl;
+    cout << v.max_size() << endl;
     return 0;
 }
