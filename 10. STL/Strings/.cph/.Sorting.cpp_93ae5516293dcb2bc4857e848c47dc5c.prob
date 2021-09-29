@@ -1,0 +1,1 @@
+{"name":"Local: Sorting","url":"c:\\Users\\mihir\\Desktop\\450 DSA\\10. STL\\Strings\\Sorting.cpp","tests":[{"id":1632884578090,"input":"1\n5\nhello there\ntoday is\nax great \nday guys\nwhats up","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\mihir\\Desktop\\450 DSA\\10. STL\\Strings\\Sorting.cpp","group":"local","local":true}
