@@ -11,7 +11,6 @@ int main()
     {
         sum = sum + arr[i];
     }
-
     cout<<sum<<endl;
     int x = s - sum;
     cout << x << endl;
