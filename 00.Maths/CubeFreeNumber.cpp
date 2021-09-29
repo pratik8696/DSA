@@ -96,7 +96,6 @@ void solve()
 int main()
 {
     fast_cin();
-
     cin >> t;
     for (it = 1; it <= t; it++)
     {

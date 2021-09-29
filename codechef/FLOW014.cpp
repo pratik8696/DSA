@@ -61,13 +61,32 @@ void solve()
     cin >> h >> c >> t;
     if (h > 50 && c < 0.7 && t > 5600)
     {
-        cout<<10<<endl;
+        cout << 10 << endl;
     }
     else if (h > 50 && c < 0.7 && t < 5600)
     {
-        cout<<9<<endl;
+        cout << 9 << endl;
     }
-    // else if (h < 50 && c < 0.7 && t > 5600)
+    else if (h < 50 && c < 0.7 && t > 5600)
+    {
+        cout << 8 << endl;
+    }
+    else if (h > 50 && c > 0.7 && t > 5600)
+    {
+        cout << 7 << endl;
+    }
+    else if (h < 50 && c == 0.7 && t < 5600 ||
+             h == 50 && c > 0.7 && t < 5600 ||
+             h < 50 && c > 0.7 && t == 5600)
+    {
+        cout << 5 << endl;
+    }
+    else if (h > 50 && c > 0.7 && t < 5600 ||
+             h < 50 && c < 0.7 && t < 5600 ||
+             h < 50 && c > 0.7 && t > 5600)
+    {
+        cout << 6 << endl;
+    }
 }
 
 int main()
