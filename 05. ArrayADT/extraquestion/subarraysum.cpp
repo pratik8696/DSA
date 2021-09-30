@@ -51,28 +51,41 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define sz(x) ((ll)(x).size())
  
-// it just find the max sum of k consecutive elements in the array
+
 void solve()
 { 
-    int n,k;
-    cin>>n>>k;
+    int n,t;
+    cin>>n>>t;
     int arr[n];
     for (int i = 0; i < n; i++)
     {
         cin>>arr[i];
     }
-    int curr_sum=0;
-    for (int i = 0; i < k; i++)
+    int curr_sum=arr[0];
+    int start=0;
+    for (int e = 1; e < n; e++)
     {
-        curr_sum+=arr[i];
+        if(curr_sum==t)
+        {
+            cout<<"Match Found"<<endl;
+        }
+        else if(curr_sum<t)
+        {
+            curr_sum+=arr[e];
+        }
+        else if (curr_sum>t)
+        {
+            curr_sum=curr_sum-arr[start];
+            start++;
+        }
     }
-    int max_sum=curr_sum;
-    for (int i = k; i < n; i++)
+    if(curr_sum==t)
     {
-        curr_sum=curr_sum+(arr[i]-arr[i-k]);
-        max_sum=max(curr_sum,max_sum);
+        cout<<"Match Found"<<endl;
     }
-    cout<<max_sum<<endl;
+    else{
+        cout<<"No Match Found"<<endl;
+    }
     
 }
 int main()
