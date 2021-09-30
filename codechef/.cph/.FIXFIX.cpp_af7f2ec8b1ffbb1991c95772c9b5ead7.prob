@@ -1,0 +1,1 @@
+{"name":"Local: FIXFIX","url":"c:\\Users\\mihir\\Desktop\\450 DSA\\Codechef\\FIXFIX.cpp","tests":[{"id":1632929464515,"input":"3\n2 1\n3 1\n6 3","output":"-1\n1 3 2\n3 2 1 4"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\mihir\\Desktop\\450 DSA\\Codechef\\FIXFIX.cpp","group":"local","local":true}

@@ -1,0 +1,1 @@
+{"name":"Local: CHEFSTLT","url":"c:\\Users\\mihir\\Desktop\\450 DSA\\Codechef\\CHEFSTLT.cpp","tests":[{"id":1632918311392,"input":"3\na?c\n??b\n???a\n???a\n?abac\naba?w","output":"1 3\n0 3\n3 5"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\mihir\\Desktop\\450 DSA\\Codechef\\CHEFSTLT.cpp","group":"local","local":true}
