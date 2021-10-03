@@ -54,19 +54,31 @@ double eps = 1e-12;
 
 void solve()
 { 
-    ll n;
-    cin>>n;
-
-    ll count=0;
-    ll five=5;
-    int i=1;
-    while(n/five!=0)
+    string a,b;
+    cin>>a>>b;
+    int i=0,j;
+    while(i<a.length())
     {
-        count=count+n/five;
-        i++;
-        five=five*5;
+        for ( j = 0; j < b.length(); j++)
+        {
+            if (a[i+j]!=b[j])
+            {
+                break;
+            }
+        }
+        
+        if(j==b.length())
+        {
+            cout<<i<<endl;
+        }
+        if(j==0)
+        {
+            i++;
+        }
+        else{
+            i=i+j;
+        }
     }
-    cout<<count<<endl;
 }
 int main()
 {

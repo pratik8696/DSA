@@ -54,19 +54,21 @@ double eps = 1e-12;
 
 void solve()
 { 
-    ll n;
-    cin>>n;
-
-    ll count=0;
-    ll five=5;
-    int i=1;
-    while(n/five!=0)
-    {
-        count=count+n/five;
-        i++;
-        five=five*5;
-    }
-    cout<<count<<endl;
+ int n;
+ cin>>n;
+ int arr[n];
+ forn(i,n)
+ {
+ cin>>arr[i];
+ }
+ sort(arr,arr+n);
+ int large=arr[n-1];
+ ll count=0;
+ for (int i = 0; i < n; i++)
+ {
+     count+=large-arr[i];
+ }
+ cout<<count<<endl;
 }
 int main()
 {
