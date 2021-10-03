@@ -34,9 +34,9 @@ typedef vector<vector<ll>> vv64;
 typedef vector<vector<p64>> vvp64;
 typedef vector<p64> vp64;
 typedef vector<p32> vp32;
-ll MOD = 998244353;
+ll MOD = 1000000007;
 double eps = 1e-12;
-#define forn(i, e) for (ll i = 0; i < e; i++)
+#define forn(i, n) for (ll i = 0; i < n; i++)
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
 #define rforn(i, s) for (ll i = s; i >= 0; i--)
 #define rforsn(i, s, e) for (ll i = s; i >= e; i--)
@@ -57,24 +57,26 @@ double eps = 1e-12;
 void solve()
 {
     int n;
-    cin>>n;
-    string s;
-    cin>>s;
-    int ind=1,fore=1;
-    for (int i=0;i<s.length();i++)
+    cin >> n;
+
+    string res = "";
+
+    char curr = 'a';
+    for (int i = 0; i < n; i++)
     {
-        if (s[i]=='I')
+        res.pb(curr);
+        curr++;
+        // jab z se bda hojayega ascii value
+        // mtlb koi faltu sa symbol ban jayega 
+        // then change the value of char back to
+        // char='a' :)  XD
+        if (curr > 'z')
         {
-            cout<<"INDIAN"<<endl;
-            return;
-        }
-        else if(s[i]=='Y')
-        {
-            cout<<"NOT INDIAN"<<endl;
-            return;
+            curr = 'a';
         }
     }
-   cout<<"NOT SURE"<<endl;
+
+    cout<<res<<endl;
 }
 int main()
 {
@@ -83,7 +85,6 @@ int main()
     cin >> t;
     for (int it = 1; it <= t; it++)
     {
-
         solve();
     }
     return 0;

@@ -34,9 +34,9 @@ typedef vector<vector<ll>> vv64;
 typedef vector<vector<p64>> vvp64;
 typedef vector<p64> vp64;
 typedef vector<p32> vp32;
-ll MOD = 998244353;
+ll MOD = 1000000007;
 double eps = 1e-12;
-#define forn(i, e) for (ll i = 0; i < e; i++)
+#define forn(i, n) for (ll i = 0; i < n; i++)
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
 #define rforn(i, s) for (ll i = s; i >= 0; i--)
 #define rforsn(i, s, e) for (ll i = s; i >= e; i--)
@@ -56,25 +56,37 @@ double eps = 1e-12;
 
 void solve()
 {
-    int n;
-    cin>>n;
     string s;
-    cin>>s;
-    int ind=1,fore=1;
-    for (int i=0;i<s.length();i++)
+    cin >> s;
+    int i = 0;
+    int count=0;
+
+    while (i < s.length())
     {
-        if (s[i]=='I')
+         if (s[i]=='x')
         {
-            cout<<"INDIAN"<<endl;
-            return;
+            if(s[i+1]=='y')
+            {
+                count++;
+                i+=2;
+            }
+            else{
+            i++;
+            }
         }
-        else if(s[i]=='Y')
+        else if (s[i] == 'y')
         {
-            cout<<"NOT INDIAN"<<endl;
-            return;
+            if (s[i+1] == 'x')
+            {
+                count++;
+                i += 2;
+            }
+            else{
+            i++;
+            }
         }
     }
-   cout<<"NOT SURE"<<endl;
+    cout<<count<<endl;
 }
 int main()
 {
@@ -83,7 +95,6 @@ int main()
     cin >> t;
     for (int it = 1; it <= t; it++)
     {
-
         solve();
     }
     return 0;
