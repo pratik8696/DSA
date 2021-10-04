@@ -160,6 +160,7 @@ void solve()
     Insert(10, 1, first);
     cout << "The list after insertion" << ln;
     Display(first);
+    cout << "The list after insertion" << ln;
     insertsort(first,10);
     Display(first);
 }
