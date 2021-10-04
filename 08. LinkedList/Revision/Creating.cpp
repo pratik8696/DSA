@@ -122,6 +122,29 @@ void Display(struct Node *p)
     cout << ln;
 }
 
+void insertsort(struct Node *p,int x)
+{
+    struct Node *q=NULL;
+    struct Node *t=new Node;
+    t->data=x;
+    t->next=NULL;
+    while(p!=NULL)
+    {
+        q=p;
+        p=p->next;
+        if(p->data>q->data)
+        {
+            t->next=q->next;
+            q->next=t;
+        }
+    }
+    if(p==NULL)
+    {
+        t->next=p;
+        q->next=t;
+    }
+}
+
 void solve()
 {
     int n;
@@ -136,6 +159,8 @@ void solve()
     cout << "No of Nodes = " << Nodes(first) << ln;
     Insert(10, 1, first);
     cout << "The list after insertion" << ln;
+    Display(first);
+    insertsort(first,10);
     Display(first);
 }
 
