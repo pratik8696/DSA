@@ -1,3 +1,5 @@
+// working in gdb but not on vscode
+
 #pragma GCC optimize("Ofast")
 #pragma GCC target("sse,sse2,sse3,ssse3,sse4,popcnt,abm,mmx,avx,avx2,fma")
 #pragma GCC optimize("unroll-loops")
@@ -54,51 +56,24 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define sz(x) ((ll)(x).size())
 
-int andop(int a, int b)
+int updatebit(int a, int x, int i)
 {
-    return a & b;
+    // first we do clear bit
+    int mask = 1 << i;
+    mask = ~mask;
+    int newno = a & mask;
+    // now updating the no by taking or;
+    newno=newno|(x<<i);
+    return newno;
 }
-
-int orop(int a, int b)
-{
-    return a | b;
-}
-
-int xorop(int a, int b)
-{
-    return a ^ b;
-}
-
-int negation(int a)
-{
-    return ~a;
-}
-
-int lshift(int a, int b)
-{
-    return a << b;
-}
-
-int rshift(int a, int b)
-{
-    return a >> b;
-}
-
+// working in gdb but not on vscode
 void solve()
 {
-    // use of and operator
-    cout << andop(5, 7) << endl;
-    // use of or operator
-    cout << orop(5, 7) << endl;
-    // use of xor operator
-    cout << xorop(5, 7) << endl;
-    // use of negation operator
-    cout << negation(10) << endl;
-    // use of left shift operator
-    cout << lshift(1, 5) << endl;
-    // use of right shift operator
-    cout << rshift(32, 2) << endl;
+    int a, x, i;
+    cin >> a >> x >> i;
+    cout << updatebit(a, x, i) << endl;
 }
+// working in gdb but not on vscode
 int main()
 {
     fast_cin();

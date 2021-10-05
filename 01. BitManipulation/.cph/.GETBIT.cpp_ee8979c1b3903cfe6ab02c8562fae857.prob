@@ -1,0 +1,1 @@
+{"name":"Local: GETBIT","url":"c:\\Users\\mihir\\Desktop\\450 DSA\\01. BitManipulation\\GETBIT.cpp","tests":[{"id":1633418425909,"input":"3\n8728 4\n1928 4\n4 2","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\mihir\\Desktop\\450 DSA\\01. BitManipulation\\GETBIT.cpp","group":"local","local":true}

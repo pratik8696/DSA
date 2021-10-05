@@ -54,50 +54,16 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define sz(x) ((ll)(x).size())
 
-int andop(int a, int b)
+bool getbit(int a,int i)
 {
-    return a & b;
-}
-
-int orop(int a, int b)
-{
-    return a | b;
-}
-
-int xorop(int a, int b)
-{
-    return a ^ b;
-}
-
-int negation(int a)
-{
-    return ~a;
-}
-
-int lshift(int a, int b)
-{
-    return a << b;
-}
-
-int rshift(int a, int b)
-{
-    return a >> b;
+    return a&(1<<i);
 }
 
 void solve()
 {
-    // use of and operator
-    cout << andop(5, 7) << endl;
-    // use of or operator
-    cout << orop(5, 7) << endl;
-    // use of xor operator
-    cout << xorop(5, 7) << endl;
-    // use of negation operator
-    cout << negation(10) << endl;
-    // use of left shift operator
-    cout << lshift(1, 5) << endl;
-    // use of right shift operator
-    cout << rshift(32, 2) << endl;
+    int a, i;
+    cin >> a >> i;
+    cout <<getbit(a,i)<<endl;
 }
 int main()
 {
