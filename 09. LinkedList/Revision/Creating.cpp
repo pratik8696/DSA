@@ -97,8 +97,8 @@ void Insert(int x, int pos, struct Node *p)
     temp->data = x;
     if (pos == 1)
     {
-        temp->next = p;
-        p = temp;
+        temp->next = first;
+        first = temp;
     }
     else
     {
@@ -121,34 +121,60 @@ void Display(struct Node *p)
     }
     cout << ln;
 }
-
-void insertsort(struct Node *p,int x)
+void insertsort(struct Node *p, int x)
 {
-    struct Node *q=NULL;
-    struct Node *t=new Node;
-    t->data=x;
-    t->next=NULL;
-    while(p!=NULL)
+    struct Node *q;
+    struct Node *t = new Node;
+    t->data = x;
+    while (p->data < x && p)
     {
-        q=p;
-        p=p->next;
-        if(p->data>q->data)
+        q = p;
+        p = p->next;
+    }
+    t->next = p;
+    q->next = t;
+}
+
+int linearsearch(struct Node *p, int key)
+{
+    while (p != NULL)
+    {
+        if (p->data == key)
         {
-            t->next=q->next;
-            q->next=t;
+            return 1;
+        }
+        p = p->next;
+    }
+    return -1;
+}
+
+bool issorted(struct Node *p)
+{
+    struct Node *q = p;
+    p = p->next;
+    while (p != NULL)
+    {
+        q = p;
+        p = p->next;
+        if (p->data < q->data)
+        {
+            return -1;
         }
     }
-    if(p==NULL)
-    {
-        t->next=p;
-        q->next=t;
-    }
+    return 1;
+}
+
+void deletion(struct Node *q)
+{
+    
 }
 
 void solve()
 {
+    cout << "Enter the size of the linked list" << endl;
     int n;
     cin >> n;
+    cout << "Enter the elements of the linked list" << endl;
     int arr[n];
     forn(i, n)
     {
@@ -156,12 +182,28 @@ void solve()
     }
     Create(arr, n);
     Display(first);
-    cout << "No of Nodes = " << Nodes(first) << ln;
-    Insert(10, 1, first);
+    cout << "Total No of Nodes = " << Nodes(first) << ln;
+    cout << "Enter the no you want to insert" << endl;
+    int num;
+    cin >> num;
+    cout << "Enter the position where you want to insert" << endl;
+    int pos;
+    cin >> pos;
+    Insert(num, pos, first);
     cout << "The list after insertion" << ln;
     Display(first);
-    cout << "The list after insertion" << ln;
-    insertsort(first,10);
+    // insertsort(first,10);
+    cout << "Enter the element to be searched " << ln;
+    int key;
+    cin >> key;
+    if (linearsearch(first, key) == 1)
+    {
+        cout << "Element is present" << endl;
+    }
+    else
+    {
+        cout << "Element is not present" << endl;
+    }
     Display(first);
 }
 
