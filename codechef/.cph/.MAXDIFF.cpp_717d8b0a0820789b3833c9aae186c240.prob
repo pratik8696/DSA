@@ -1,0 +1,1 @@
+{"name":"Local: MAXDIFF","url":"c:\\Users\\mihir\\Desktop\\450 DSA\\Codechef\\MAXDIFF.cpp","tests":[{"id":1633517625344,"input":"2\n5 4\n8 4 5 2 10\n8 6\n1 1 1 1 1 1 1 1\n","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\mihir\\Desktop\\450 DSA\\Codechef\\MAXDIFF.cpp","group":"local","local":true}
