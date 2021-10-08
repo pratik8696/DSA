@@ -56,18 +56,22 @@ double eps = 1e-12;
 
 void solve()
 {
-    ll n, s;
-    cin >> n >> s;
-    ll sum = (n * (n + 1)) / 2;
-    // cout<<sum<<endl;
-    ll diff = sum - s;
-    if (diff >= 1 && diff <= n)
+    int arr[3];
+    for (int i = 0; i < 3; i++)
     {
-        cout << diff << endl;
+        cin >> arr[i];
     }
-    else
+    int d, e;
+    cin >> d >> e;
+
+    sort(arr, arr + 3);
+
+    if (arr[0] + arr[1] <= d && arr[2] <= e || arr[0] + arr[2] <= d && arr[1] <= e || arr[2] + arr[1] <= d && arr[0] <= e )
     {
-        cout << "-1" << endl;
+        cout<<"YES"<<endl;
+    }
+    else{
+        cout<<"NO"<<endl;
     }
 }
 int main()
