@@ -1,0 +1,1 @@
+{"name":"Local: SegmentedSieve","url":"c:\\Users\\mihir\\Desktop\\450 DSA\\00. Maths\\SegmentedSieve.cpp","tests":[{"id":1633703016847,"input":"3\n1 10\n3 5","output":"2\n3\n5\n7\n\n3\n5"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\mihir\\Desktop\\450 DSA\\00. Maths\\SegmentedSieve.cpp","group":"local","local":true}

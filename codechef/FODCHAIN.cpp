@@ -54,25 +54,15 @@ double eps = 1e-12;
 
 void solve()
 { 
-    int a,b;
-    cin>>a>>b;
-
-    if(a+b<3)
+    ll e,k,count=0,div;
+    cin>>e>>k;
+    div=k;
+    while(e/div>=1)
     {
-        cout<<1<<endl;
+        count++;
+        div=div*k;
     }
-    else if(a+b>=3 && a+b<=10)
-    {
-        cout<<2<<endl;
-    }
-    else if (a + b >= 11 && a + b <= 60)
-    {
-        cout << 3 << endl;
-    }
-    else if(a+b>60)
-    {
-        cout<<4<<endl;
-    }
+    cout<<count+1<<endl;
 }
 int main()
 {
