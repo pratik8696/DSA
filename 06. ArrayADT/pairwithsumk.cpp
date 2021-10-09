@@ -76,7 +76,6 @@ int ImprovedLinearSearch(struct array a, int key)
     }
 }
 
-
 int negativeleft(struct array *a)
 {
     int i = 0, j = (a->length) - 1;
@@ -123,78 +122,79 @@ int negativeright(struct array *a)
 
 int *maxandmin(struct array p)
 {
-    int max=p.A[0],min=p.A[0];
-    for(int i=0;i<p.length;i++)
+    int max = p.A[0], min = p.A[0];
+    for (int i = 0; i < p.length; i++)
     {
-        if(p.A[i]>max)
+        if (p.A[i] > max)
         {
-            max=p.A[i];
+            max = p.A[i];
         }
-        else if(p.A[i]<min)
+        else if (p.A[i] < min)
         {
-            min=p.A[i];
+            min = p.A[i];
         }
     }
-    int *t=new int [2];
-    t[0]=max;
-    t[1]=min;
+    int *t = new int[2];
+    t[0] = max;
+    t[1] = min;
     return t;
 }
 
-int sumwithk(struct array p,int k)
+int sumwithk(struct array p, int k)
 {
-    for(int i=0;i<(p.length)-1;i++)
+    for (int i = 0; i < (p.length) - 1; i++)
     {
-        for(int j=i+1;j<p.length;j++)
+        for (int j = i + 1; j < p.length; j++)
         {
-            if(p.A[i]+p.A[j]==k)
+            if (p.A[i] + p.A[j] == k)
             {
-                cout<<"The pair is "<<p.A[i]<<" + "<<p.A[j]<<" = "<<k<<endl;
+                cout << "The pair is " << p.A[i] << " + " << p.A[j] << " = " << k << endl;
             }
         }
     }
     return 0;
 }
 
-int findingsumusinghash(struct array p,int k)
+int findingsumusinghash(struct array p, int k)
 {
     int H[1000];
-    for(int z=0;z<1000;z++)
+    for (int z = 0; z < 1000; z++)
     {
-        H[z]=0;
+        H[z] = 0;
     }
-    for(int i=0;i<p.length;i++)
+    for (int i = 0; i < p.length; i++)
     {
         // here u can miss a very imp thing
-        // if the hash array is not long enough then it can cause many problems so 
+        // if the hash array is not long enough then it can cause many problems so
         // always take a long array and use that as your hash table
-        if(H[k-p.A[i]]!=0)
+        if (H[k - p.A[i]] != 0)
         {
-            cout<<"The pair is "<<p.A[i]<<" + "<<k-p.A[i]<<" = "<<k<<endl;
+            cout << "The pair is " << p.A[i] << " + " << k - p.A[i] << " = " << k << endl;
         }
-        else{
+        else
+        {
             H[p.A[i]]++;
         }
     }
 }
 
-int pairsortedarray(struct array p,int k)
+int pairsortedarray(struct array p, int k)
 {
-    int i=0;
-    int j=p.length-1;
-    while(i<j)
+    int i = 0;
+    int j = p.length - 1;
+    while (i < j)
     {
-        if(p.A[i]+p.A[j]==k)
+        if (p.A[i] + p.A[j] == k)
         {
             cout << "The pair is " << p.A[i] << " + " << k - p.A[i] << " = " << k << endl;
             i++;
             j--;
         }
-        else if(p.A[i]+p.A[j]>k)
+        else if (p.A[i] + p.A[j] > k)
         {
             j--;
         }
-        else if(p.A[i]+p.A[j]<k)
+        else if (p.A[i] + p.A[j] < k)
         {
             i++;
         }
@@ -213,12 +213,12 @@ int main()
         cin >> p.A[i];
     }
     int k;
-    cout<<"Enter the sum which you want to find"<<endl;
-    cin>>k;
+    cout << "Enter the sum which you want to find" << endl;
+    cin >> k;
     Display(p);
-    sumwithk(p,k);
-    cout<<"Now using hash"<<endl;
-    findingsumusinghash(p,k);
-    cout<<"Now using sorted array technique"<<endl;
-    pairsortedarray(p,k);
+    sumwithk(p, k);
+    cout << "Now using hash" << endl;
+    findingsumusinghash(p, k);
+    cout << "Now using sorted array technique" << endl;
+    pairsortedarray(p, k);
 }
