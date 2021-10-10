@@ -41,6 +41,7 @@ double eps = 1e-12;
 #define rforn(i, s) for (ll i = s; i >= 0; i--)
 #define rforsn(i, s, e) for (ll i = s; i >= e; i--)
 #define ln "\n"
+#define en cout<<endl
 #define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
 #define pb push_back
@@ -54,43 +55,43 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define sz(x) ((ll)(x).size())
 
-// subarray with the required sum and k
+void swap(int *a,int *b)
+{
+    int temp=*a;
+    *a=*b;
+    *b=temp;
+}
+
+
+void bubblesort_iterative(int arr[],int n)
+{
+    for (int i = 0; i < n-1; i++)
+    {
+        for (int j = 0; j < n-i-1; j++)
+        {
+            if (arr[j]>arr[j+1])
+            {
+                swap(&arr[j],&arr[j+1]);
+            }
+        }
+    }
+    
+}
+
 void solve()
 {
-    int n, k, t;
-    cin >> n >> k >> t;
-    vector<int> arr(n);
-    for (int i = 0; i < n; i++)
+    int n;
+    cin >> n;
+    int arr[n];
+    forn(i, n)
     {
         cin >> arr[i];
     }
-    
-    int currsum = 0;
-    for (int i = 0; i < k; i++)
+    bubblesort_iterative(arr,n);
+    for (int i = 0; i < n; i++)
     {
-        currsum += arr[i];
+        cout<<arr[i]<<" ";
     }
-
-    for (int i = k; i < n; i++)
-    {
-        // cout<<endl<<currsum<<endl;
-        if (currsum == t)
-        {
-            cout << "Match Found"<<endl;
-            for (int j = i - k ; j <i; j++)
-            {
-                cout << arr[j] << " ";
-            }
-
-            return;
-        }
-        else if (currsum != t)
-        {
-            currsum = currsum + arr[i] - arr[i - k];
-        }
-    }
-
-    cout << "NO match found";
 }
 int main()
 {

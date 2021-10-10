@@ -50,38 +50,40 @@ double eps = 1e-12;
 #define fast_cin() ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL)
 #define all(x) (x).begin(), (x).end()
 #define sz(x) ((ll)(x).size())
- 
+void swap(int *a,int *b){int t=*a;*a=*b;*b=t;}
+
+void bubblesort_ir(int arr[],int n)
+{
+    if(n==1)
+    return ;
+
+    for (int i = 0; i < n-1; i++)
+    {
+        if (arr[i]>arr[i+1])
+        {
+            swap(&arr[i],&arr[i+1]);
+        }
+    }
+
+    bubblesort_ir(arr,n-1);
+    
+}
 
 void solve()
 { 
-    // Sl
-    ll n,k;
-    cin>>n>>k;
-    ll arr[n];
-    forn(i,n)
-    {
-        cin>>arr[i];
-    }
-    sort(arr,arr+n);
-    int i=0,j=n-1;
-    while(i<j)
-    {
-        if(arr[i]+arr[j]==k)
-        {
-            cout<<"Yes"<<endl;
-            return;
-        }
-        if(arr[i]+arr[j]>k)
-        {
-            j--;
-        }
-        if (arr[i]+arr[j]<k)
-        {
-            i++;
-        }
-    }
-    cout<<"No"<<endl;
-    return;
+ int n;
+ cin>>n;
+ int arr[n];
+ forn(i,n)
+ {
+ cin>>arr[i];
+ }
+ bubblesort_ir(arr,n);
+ for (int i = 0; i < n; i++)
+ {
+     cout<<arr[i]<<" ";
+ }
+ 
 }
 int main()
 {

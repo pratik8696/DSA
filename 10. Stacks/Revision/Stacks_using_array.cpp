@@ -54,52 +54,70 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define sz(x) ((ll)(x).size())
 
-// subarray with the required sum and k
-void solve()
+struct Stack
 {
-    int n, k, t;
-    cin >> n >> k >> t;
-    vector<int> arr(n);
-    for (int i = 0; i < n; i++)
-    {
-        cin >> arr[i];
-    }
-    
-    int currsum = 0;
-    for (int i = 0; i < k; i++)
-    {
-        currsum += arr[i];
-    }
+    int size;
+    int top;
+    int *s;
+};
 
-    for (int i = k; i < n; i++)
-    {
-        // cout<<endl<<currsum<<endl;
-        if (currsum == t)
-        {
-            cout << "Match Found"<<endl;
-            for (int j = i - k ; j <i; j++)
-            {
-                cout << arr[j] << " ";
-            }
-
-            return;
-        }
-        else if (currsum != t)
-        {
-            currsum = currsum + arr[i] - arr[i - k];
-        }
-    }
-
-    cout << "NO match found";
+int push(struct Stack *s, int x)
+{
+    s->top++;
+    s->s[s->top] = x;
 }
+
+int pop(struct Stack *s)
+{
+    int x = s->s[s->top];
+    s->top--;
+    return x;
+}
+
+int peek(struct Stack s,int x)
+{
+    return s.s[s.top-x+1];
+}
+
+bool isempty(struct Stack s)
+{
+    if (s.top == -1)
+    {
+        return true;
+    }
+
+    return false;
+}
+
+bool isfull(struct Stack s)
+{
+    if (s.top == s.size-1)
+    {
+        return true;
+    }
+
+    return false;
+}
+
+bool stacktop(struct Stack s)
+{
+    return s.s[s.top];
+}
+
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
-    for (int it = 1; it <= t; it++)
-    {
-        solve();
-    }
+    struct Stack st;
+    cout << "Enter the size of the stack " << endl;
+    cin >> st.size;
+    st.top = -1;
+    st.s = new int[st.size];
+    push(&st, 10);
+    push(&st, 20);
+    push(&st, 30);
+    push(&st, 40);
+    push(&st, 50);
+    cout << peek(st, 4) << " " << peek(st, 3) << " " << peek(st, 2) << " " << peek(st, 1) << endl;
+
     return 0;
 }

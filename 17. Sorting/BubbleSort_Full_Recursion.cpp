@@ -53,44 +53,43 @@ double eps = 1e-12;
     cout.tie(NULL)
 #define all(x) (x).begin(), (x).end()
 #define sz(x) ((ll)(x).size())
+void swap(int *a,int *b){int temp=*a;*a=*b;*b=temp;}
 
-// subarray with the required sum and k
+void bubblesort_recursive(int arr[], int n,int j)
+{
+    if(n==1)
+    return ;
+
+    // it has completed one pass
+    if(j==n-1)
+    {
+        return bubblesort_recursive(arr,n-1,0);
+    }
+
+    if (arr[j]>arr[j+1])
+    {
+        swap(&arr[j],&arr[j+1]);
+    }
+
+    // this means the pass is still continuing and we need to increment just the value of 
+    // j not the value of n
+    bubblesort_recursive(arr,n,j+1); 
+}
+
 void solve()
 {
-    int n, k, t;
-    cin >> n >> k >> t;
-    vector<int> arr(n);
-    for (int i = 0; i < n; i++)
+    int n;
+    cin >> n;
+    int arr[n];
+    forn(i, n)
     {
         cin >> arr[i];
     }
-    
-    int currsum = 0;
-    for (int i = 0; i < k; i++)
+    bubblesort_recursive(arr, n,0);
+    for (int i = 0; i < n; i++)
     {
-        currsum += arr[i];
+        cout<<arr[i]<<" ";
     }
-
-    for (int i = k; i < n; i++)
-    {
-        // cout<<endl<<currsum<<endl;
-        if (currsum == t)
-        {
-            cout << "Match Found"<<endl;
-            for (int j = i - k ; j <i; j++)
-            {
-                cout << arr[j] << " ";
-            }
-
-            return;
-        }
-        else if (currsum != t)
-        {
-            currsum = currsum + arr[i] - arr[i - k];
-        }
-    }
-
-    cout << "NO match found";
 }
 int main()
 {
