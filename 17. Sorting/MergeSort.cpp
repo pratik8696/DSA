@@ -62,22 +62,22 @@ void merge(int arr[], int s, int e)
     // now start the merging process
     while (i <= mid && j <= e)
     {
-        if (arr[i] > arr[j])
+        if (arr[i] < arr[j])
         {
-            arr[k++] = arr[j++];
+            temp[k++] = arr[i++];
         }
         else
         {
-            arr[k++] = arr[i++];
+            temp[k++] = arr[j++];
         }
     }
     for (; i <= mid; i++)
     {
-        arr[k++] = arr[i];
+        temp[k++] = arr[i];
     }
     for (; j <= e; j++)
     {
-        arr[k++] = arr[j];
+        temp[k++] = arr[j];
     }
     // now merging has been done
     // copying back the elements
