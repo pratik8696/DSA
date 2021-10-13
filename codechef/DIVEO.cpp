@@ -53,37 +53,86 @@ double eps = 1e-12;
     cout.tie(NULL)
 #define all(x) (x).begin(), (x).end()
 #define sz(x) ((ll)(x).size())
+// function to calculate all the prime factors and
+// count of every prime factor
+ll oddsum = 0;
 
-void solve()
+void factorize(long long n, ll a, ll b)
 {
-    int n;
-    cin >> n;
-    string s;
-    vector<string> v(n);
-    forn(i, n)
+    vector<pair<int, int>> v;
+    int org = n;
+    int count = 0, evensum = 0;
+    while (!(n % 2))
     {
-        cin >> s;
-        v.pb(s);
+        n /= 2;
+        count++;
+        evensum++;
     }
-    for (int i = 0; i < n; i++)
+    if (count)
     {
-        string new;
-        int num = i;
-        while (i != 0)
+        // cout << 2 << "\t" << count << endl;
+    }
+
+    count = 0;
+    n = org;
+    for (long long i = 3; i <= sqrt(n)+1; i += 2)
+    {
+        n = org;
+        // count = 0;
+        while (n % i == 0)
         {
-            new = to_string(num % 2);
-            num = num / 2;
+            count++;
+            oddsum++;
+            n = n / i;
         }
+        // if (count)
+        //     cout << i << "\t" << count << endl;
+        // oddsum += count;
     }
+    if (n > 2)
+        // cout << n << "\t" << 1 << endl;
+
+        cout << evensum << " " << oddsum << endl;
+    oddsum = 0;
+    ll res = 0;
+
+    // if (a > 0 && b > 0)
+    // {
+    //     res=evensum*a+oddsum*b;
+    // }
+    // else if(a>0 && b< 0)
+    // {
+    //     res = evensum * a +  b;
+    // }
+    // else if (a < 0 && b > 0)
+    // {
+    //     res =  a + oddsum*b;
+    // }
+
+    // else if(a<=0 && b<=0)
+    // {
+    //     if(n%2==0)
+    //     {
+    //         res=a;
+    //     }
+    //     else{
+    //         res=b;
+    //     }
+    // }
+
+    // cout<<res<<endl;
 }
+
 int main()
 {
-    fast_cin();
-    ll t;
+
+    int t;
     cin >> t;
-    for (int it = 1; it <= t; it++)
+    while (t--)
     {
-        solve();
+        long long n, a, b;
+        cin >> n >> a >> b;
+        factorize(n, a, b);
     }
     return 0;
 }

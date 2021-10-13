@@ -58,23 +58,16 @@ void solve()
 {
     int n;
     cin >> n;
-    string s;
-    vector<string> v(n);
+    int arr[n];
     forn(i, n)
     {
-        cin >> s;
-        v.pb(s);
+        cin >> arr[i];
     }
-    for (int i = 0; i < n; i++)
+    forn(i, n)
     {
-        string new;
-        int num = i;
-        while (i != 0)
-        {
-            new = to_string(num % 2);
-            num = num / 2;
-        }
+        cout << arr[i] << " ";
     }
+    cout << ln;
 }
 int main()
 {
