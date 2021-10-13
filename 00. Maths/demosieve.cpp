@@ -3,7 +3,6 @@ using namespace std;
 
 int makeSieve(int n)
 {
-
     bool isPrime[n + 1];
     for (int i = 0; i <= n; i++)
     {
