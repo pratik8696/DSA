@@ -127,11 +127,35 @@ void segmentedsieve(ll m, ll n)
         }
         cout << ln;    
 }
+// for extendedeuclid
+int x,y,gcd;
+void extendedeuclid(int a,int b)
+{
+    if(b==0)
+    {
+        x=1;
+        y=0;
+        gcd=a;
+        return;
+    }
+
+    extendedeuclid(b,a%b);
+    int cx=y;
+    int cy=x-(a/b)*y;
+
+    x=cx;
+    y=cy;
+}
+
+
+
 void solve()
 {
     ll m, n;
     cin >> m >> n;
-    segmentedsieve(m, n);
+    // segmentedsieve(m, n);
+    extendedeuclid(m,n);
+    cout<<x<<" "<<y<<endl;
 }
 int main()
 {
