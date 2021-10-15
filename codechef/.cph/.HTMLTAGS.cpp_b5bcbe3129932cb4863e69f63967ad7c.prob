@@ -1,0 +1,1 @@
+{"name":"Local: HTMLTAGS","url":"c:\\Users\\mihir\\Desktop\\450 DSA\\Codechef\\HTMLTAGS.cpp","tests":[{"id":1634281118722,"input":"5 \n</h1>  \nClearly_Invalid  \n</singlabharat>  \n</5>  \n<//aA> ","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\mihir\\Desktop\\450 DSA\\Codechef\\HTMLTAGS.cpp","group":"local","local":true}

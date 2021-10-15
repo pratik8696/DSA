@@ -45,48 +45,93 @@ ll MOD = 1000000007;
 #define alll(arr, n) (arr), (arr) + (n)
 #define sz(x) ((ll)(x).size())
 // function for prime factorization
-
-bool binary(int s, int e, ll arr[], int q)
+vector<pair<ll, ll>> pf(ll n)
 {
-    while (s <= e)
+    vector<pair<ll, ll>> prime;
+    for (int i = 2; i <= sqrt(n); i++)
     {
-        int mid = (s + e) / 2;
-        if (arr[mid] == q)
+        if (n % i == 0)
         {
-            return true;
+            int count = 0;
+            while (n % i == 0)
+            {
+                count++;
+                n = n / i;
+            }
+            prime.pb(mp(i, count));
         }
-        else if (arr[mid] > q)
+    }
+    if (n > 1)
+    {
+        prime.pb(mp(n, 1));
+    }
+    return prime;
+}
+
+void solve()
+{
+    ll n, a, b;
+    cin >> n >> a >> b;
+    ll evensum = 0, oddsum = 0;
+    vector<pair<ll, ll>> v = pf(n);
+    for (int i = 0; i < v.size(); i++)
+    {
+        if (v[i].first % 2 == 0)
         {
-            e = mid - 1;
+            evensum = v[i].second;
         }
         else
         {
-            s = mid + 1;
+            oddsum += v[i].second;
         }
     }
-    return false;
+    // cout<<evensum<<" "<<oddsum<<" "<<n<<" "<<a<<" "<<b <<endl;
+    ll res = 0;
+    if (a >= 0 && b >= 0)
+    {
+        res = evensum * a + oddsum * b;
+    }
+    else if (a >= 0 && b < 0)
+    {
+        if (evensum > 0)
+        {
+            res = evensum * a;
+        }
+        else
+        {
+            res = b;
+        }
+    }
+    else if (a < 0 && b >= 0)
+    {
+        res = oddsum * b;
+        if (evensum > 0)
+        {
+            res+=a;
+        }
+    }
+
+    else if (a < 0 && b < 0)
+    {
+        if (n % 2 == 0)
+        {
+            res = a;
+        }
+        else
+        {
+            res = b;
+        }
+    }
+    cout << res << endl;
 }
 int main()
 {
-    int n, k;
-    cin >> n >> k;
-    ll arr[n];
-    forn(i, n)
+    fast_cin();
+    ll t;
+    cin >> t;
+    for (int it = 1; it <= t; it++)
     {
-        cin >> arr[i];
-    }
-    sort(arr, arr + n);
-    for (int i = 0; i < k; i++)
-    {
-        int q;
-        cin >> q;
-        if(binary(0, n - 1, arr, q))
-        {
-            cout<<"YES"<<endl;
-        }
-        else{
-            cout<<"NO"<<endl;
-        }
+        solve();
     }
     return 0;
 }

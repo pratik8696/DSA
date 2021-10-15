@@ -46,47 +46,45 @@ ll MOD = 1000000007;
 #define sz(x) ((ll)(x).size())
 // function for prime factorization
 
-bool binary(int s, int e, ll arr[], int q)
+void solve()
 {
-    while (s <= e)
+    ll c,curr=0;
+    cin >>c;
+    vector<ll> v;
+    if(c==0)
     {
-        int mid = (s + e) / 2;
-        if (arr[mid] == q)
+        cout<<"2"<<endl;
+        cout<<"1 1"<<endl;
+    }
+    else{
+    for (int i = 60; i >= 0; i--)
+    {
+        ll a=c>>i;
+        ll b=curr>>i;
+
+        if(a!=b)
         {
-            return true;
-        }
-        else if (arr[mid] > q)
-        {
-            e = mid - 1;
-        }
-        else
-        {
-            s = mid + 1;
+            unsigned long long int no = ((1<<(i+1))-1);
+            v.pb(no);
+            curr=curr^no;
         }
     }
-    return false;
+    cout<<v.size()<<endl;
+    for(int i=v.size()-1;i>=0;i--)
+    {
+        cout<<v[i]<<" ";
+    }
+    cout<<ln;
+    }
 }
 int main()
 {
-    int n, k;
-    cin >> n >> k;
-    ll arr[n];
-    forn(i, n)
+    fast_cin();
+    ll t;
+    cin >> t;
+    for (int it = 1; it <= t; it++)
     {
-        cin >> arr[i];
-    }
-    sort(arr, arr + n);
-    for (int i = 0; i < k; i++)
-    {
-        int q;
-        cin >> q;
-        if(binary(0, n - 1, arr, q))
-        {
-            cout<<"YES"<<endl;
-        }
-        else{
-            cout<<"NO"<<endl;
-        }
+        solve();
     }
     return 0;
 }
