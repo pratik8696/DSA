@@ -56,28 +56,43 @@ double eps = 1e-12;
 
 void solve()
 {
-    string s;
-    cin >> s;
-    int countone = 0,countzero=0;
-    for (int i = 0; i < s.length() ; i++)
+    int a1, b1, a2, b2, flag = 0;
+    cin >> a1 >> b1 >> a2 >> b2;
+    if (a1 == a2)
     {
-        if((s[i]-'0')==0)
+        if ((b1 + b2) == a1)
         {
-            countzero++;
-        }
-        else{
-            countone++;
+            flag = 1;
         }
     }
-    int minres=min(countone,countzero);
-    // cout<<minres<<endl;
-    if (minres % 2 != 0)
+    if (a1 == b2)
     {
-        cout << "DA" << endl;
+        if ((b1 + a2) == a1)
+        {
+            flag = 1;
+        }
     }
-    else
+    if (b1 == a2)
     {
-        cout << "NET" << endl;
+        if ((a1 + b2) == a2)
+        {
+            flag = 1;
+        }
+    }
+    if (b1 == b2)
+    {
+        if ((a1 + a2) == b1)
+        {
+            flag = 1;
+        }
+    }
+
+    if(flag==1)
+    {
+        cout<<"Yes"<<endl;
+    }
+    else{
+        cout<<"No"<<endl;
     }
 }
 int main()

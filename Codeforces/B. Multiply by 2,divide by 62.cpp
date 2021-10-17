@@ -19,9 +19,7 @@
 #include <stack>
 #include <iomanip>
 #include <fstream>
-
 using namespace std;
-
 typedef long long ll;
 typedef long double ld;
 typedef pair<int, int> p32;
@@ -35,49 +33,71 @@ typedef vector<vector<p64>> vvp64;
 typedef vector<p64> vp64;
 typedef vector<p32> vp32;
 ll MOD = 1000000007;
-double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
-#define forsn(i, s, e) for (ll i = s; i < e; i++)
-#define rforn(i, s) for (ll i = s; i >= 0; i--)
-#define rforsn(i, s, e) for (ll i = s; i >= e; i--)
 #define ln "\n"
-#define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
 #define pb push_back
-#define fi first
-#define se second
-#define INF 2e18
 #define fast_cin()                    \
     ios_base::sync_with_stdio(false); \
     cin.tie(NULL);                    \
     cout.tie(NULL)
 #define all(x) (x).begin(), (x).end()
+#define alll(arr, n) (arr), (arr) + (n)
 #define sz(x) ((ll)(x).size())
+
+// function for prime factorization
+vector<pair<ll, ll>> pf(ll n)
+{
+    vector<pair<ll, ll>> prime;
+    for (int i = 2; i <= 3; i++)
+    {
+        if (n % i == 0)
+        {
+            int count = 0;
+            while (n % i == 0)
+            {
+                count++;
+                n = n / i;
+            }
+            prime.pb(mp(i, count));
+        }
+    }
+    if (n > 1)
+    {
+        prime.pb(mp(n, 1));
+    }
+    return prime;
+}
 
 void solve()
 {
-    string s;
-    cin >> s;
-    int countone = 0,countzero=0;
-    for (int i = 0; i < s.length() ; i++)
+    ll n, two = 0, three = 0;
+    cin >> n;
+    vector<pair<ll, ll>> v = pf(n);
+    for (int i = 0; i < v.size(); i++)
     {
-        if((s[i]-'0')==0)
+
+        if (v[i].first % 2 == 0)
         {
-            countzero++;
+            two = v[i].second;
         }
-        else{
-            countone++;
+        else if (v[i].first % 3 == 0)
+        {
+            three = v[i].second;
+        }
+        else
+        {
+            cout << -1 << endl;
+            return;
         }
     }
-    int minres=min(countone,countzero);
-    // cout<<minres<<endl;
-    if (minres % 2 != 0)
+    if (two > three)
     {
-        cout << "DA" << endl;
+        cout << -1 << endl;
     }
-    else
+    else if (three >= two)
     {
-        cout << "NET" << endl;
+        cout << three - two + three << endl;
     }
 }
 int main()
