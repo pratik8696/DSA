@@ -54,22 +54,28 @@ double eps = 1e-12;
 
 void solve()
 { 
- int n;
- cin>>n;
- int arr[n];
+ int n,k,maxc=INT_MIN,idx=0;
+ cin>>n>>k;
+ float arr[n];
  forn(i,n)
  {
  cin>>arr[i];
+ arr[i]=arr[i]/k;
+ if(arr[i]>maxc)
+ {
+     maxc=arr[i];
+     idx=i;
  }
- 
+ }
+ cout<<idx+1<<endl;
 }
 int main()
 {
  fast_cin();
- ll t;
- cin >> t;
- for(int it=1;it<=t;it++) {
+//  ll t;
+//  cin >> t;
+//  for(int it=1;it<=t;it++) {
  solve();
- }
+//  }
  return 0;
 }
