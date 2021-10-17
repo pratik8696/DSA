@@ -97,7 +97,6 @@ int main()
     int lcount = 0, rcount = 0;
     while (q--)
     {
-        
         cin >> k;
         idx = binarysearch(arr, k);
         lcount += arr[idx].second + 1;
