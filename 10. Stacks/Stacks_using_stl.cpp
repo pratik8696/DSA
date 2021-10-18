@@ -56,31 +56,31 @@ double eps = 1e-12;
 
 void solve()
 {
-    float t,maxt=INT_MIN,idx=0;
-    float n, k, count = 0;
-    cin >> n >> k;
-    vector<int> arr;
-    forn(i, n)
+    int n;
+    cin >> n;
+    stack<int> q;
+    for (int i = 0; i < n; i++)
     {
+        int t;
         cin >> t;
-        t=ceil(t/k);
-        arr.pb(t);
-        if(t>=maxt)
-        {
-            maxt=t;
-            idx=i;
-        }
+        q.push(t);
     }
-    cout<<idx+1<<endl;
+    while (!q.empty())
+    {
+        cout << q.top() << " ";
+        q.pop();
+    }
+    cout << ln;
+    // elements are printed in reverse as we are using a stack
 }
 int main()
 {
     fast_cin();
-    // ll t;
-    // cin >> t;
-    // for (int it = 1; it <= t; it++)
-    // {
+    ll t;
+    cin >> t;
+    for (int it = 1; it <= t; it++)
+    {
         solve();
-    // }
+    }
     return 0;
 }

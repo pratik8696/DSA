@@ -56,31 +56,31 @@ double eps = 1e-12;
 
 void solve()
 {
-    float t,maxt=INT_MIN,idx=0;
-    float n, k, count = 0;
-    cin >> n >> k;
-    vector<int> arr;
+    queue<int> q;
+    int n;
+    cin >> n;
     forn(i, n)
     {
-        cin >> t;
-        t=ceil(t/k);
-        arr.pb(t);
-        if(t>=maxt)
-        {
-            maxt=t;
-            idx=i;
-        }
+        int t;
+        cin>>t;
+        q.push(t);
     }
-    cout<<idx+1<<endl;
+    while (q.size()!=0)
+    {
+        cout<<q.front()<<" ";
+        q.pop();
+    }
+    cout<<ln;
+    // elements are printed in queue fashion
 }
 int main()
 {
     fast_cin();
-    // ll t;
-    // cin >> t;
-    // for (int it = 1; it <= t; it++)
-    // {
+    ll t;
+    cin >> t;
+    for (int it = 1; it <= t; it++)
+    {
         solve();
-    // }
+    }
     return 0;
 }

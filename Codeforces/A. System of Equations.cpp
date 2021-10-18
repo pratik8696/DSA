@@ -56,22 +56,20 @@ double eps = 1e-12;
 
 void solve()
 {
-    float t,maxt=INT_MIN,idx=0;
-    float n, k, count = 0;
-    cin >> n >> k;
-    vector<int> arr;
-    forn(i, n)
+    int n, m;
+    cin >> n >> m;
+    int t=max(n,m),count=0;
+    for (int i = 0; i <= t; i++)
     {
-        cin >> t;
-        t=ceil(t/k);
-        arr.pb(t);
-        if(t>=maxt)
+        for (int j = 0; j <= t; j++)
         {
-            maxt=t;
-            idx=i;
+            if ((((i * i) + j) == n) && (((j * j) + i) == m))
+            {
+                count++;
+            }
         }
     }
-    cout<<idx+1<<endl;
+    cout<<count<<endl;
 }
 int main()
 {
