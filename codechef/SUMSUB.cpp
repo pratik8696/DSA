@@ -54,62 +54,39 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define sz(x) ((ll)(x).size())
 
-bool compare(pair<int, pair<int, int>> a, pair<int, pair<int, int>> b)
+ll SubArraySum(ll arr[], int n)
 {
-    return a.first < b.first;
+    ll result = 0;
+
+    // computing sum of subarray using formula
+    for (int i = 0; i < n; i++)
+        result += (arr[i] * (i + 1) * (n - i))%MOD;
+
+    // return all subarray sum
+    return result;
 }
 
-void solve()
-{
-    int n, t;
-    cin >> n;
-    vector<pair<int, pair<int, int>>> v;
-    int arr[n];
-    forn(i, n)
-    {
-        cin >> t;
-        v.pb(mp(t, mp(i, 0)));
-    }
-    sort(v.begin(), v.end(), compare);
-    int prev = v[0].first, count = 0, k = 0;
-    for (int i = 0; i < n; i++)
-    {
-        if (prev == v[i].first)
-        {
-            k++;
-            v[i].second.second = count;
-            count++;
-            if (v[i].second.second >= n )
-            {
-                v[i].second.second = n - 1;
-            }
-        }
-        else
-        {
-            count = v[i-k].second.second++;
-            prev = v[i].first;
-            i--;
-            k=0;
-        }
-    }
-    for (int i = 0; i < n; i++)
-    {
-        arr[v[i].second.first] = v[i].second.second;
-    }
-    for (int i = 0; i < n; i++)
-    {
-        cout << arr[i] << " ";
-    }
-    cout << ln;
-}
+// driver program to test above function
 int main()
 {
-    fast_cin();
-    ll t;
+    int t;
     cin >> t;
-    for (int it = 1; it <= t; it++)
+    while (t--)
     {
-        solve();
+        ll n, maxint = INT_MIN, sum = 0;
+        cin >> n;
+        ll arr[n];
+        for (int i = 0; i < n; i++)
+        {
+            cin >> arr[i];
+            sum += (arr[i]) % MOD;
+            if (arr[i] > maxint)
+            {
+                maxint = arr[i];
+            }
+            arr[i] = maxint;
+        }
+        cout << SubArraySum(arr, n)<< endl;
     }
     return 0;
 }

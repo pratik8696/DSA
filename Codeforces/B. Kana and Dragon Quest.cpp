@@ -58,19 +58,28 @@ void solve()
 {
     int x, n, m;
     cin >> x >> n >> m;
-    while (x >= 10 && n--)
+
+    while (x >= 20 && n--)
     {
-        if (((x / 10) * 10) == x)
+        x = (x / 2) + 10;
+    }
+
+    while (x > 0 && m--)
+    {
+        x = x - 10;
+        if (x <= 0)
         {
-            cout << "YES" << endl;
-            return;
-        }
-        else
-        {
-            x = (x / 2) + 10;
+            break;
         }
     }
-    cout<<"NO"<<endl;
+    if (x <= 0)
+    {
+        cout << "YES" << endl;
+    }
+    else
+    {
+        cout << "NO" << endl;
+    }
 }
 int main()
 {

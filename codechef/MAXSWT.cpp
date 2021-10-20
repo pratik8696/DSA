@@ -54,53 +54,36 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define sz(x) ((ll)(x).size())
 
-bool compare(pair<int, pair<int, int>> a, pair<int, pair<int, int>> b)
+bool compare(pair<int, int> a, pair<int, int> b)
 {
-    return a.first < b.first;
+    return a.second > b.second;
 }
 
 void solve()
 {
-    int n, t;
-    cin >> n;
-    vector<pair<int, pair<int, int>>> v;
-    int arr[n];
+    int n, d, res = 0, t;
+    cin >> n >> d;
+    vector<pair<int, int>> v(n);
     forn(i, n)
     {
-        cin >> t;
-        v.pb(mp(t, mp(i, 0)));
+        cin >> v[i].first;
     }
-    sort(v.begin(), v.end(), compare);
-    int prev = v[0].first, count = 0, k = 0;
+    forn(i, n)
+    {
+        cin >> v[i].second;
+    }
+    sort(all(v), compare);
+    int k = 0;
     for (int i = 0; i < n; i++)
     {
-        if (prev == v[i].first)
+        if (d - v[i].first >= 0 && k != 2)
         {
+            res += v[i].second;
+            d = d - v[i].first;
             k++;
-            v[i].second.second = count;
-            count++;
-            if (v[i].second.second >= n )
-            {
-                v[i].second.second = n - 1;
-            }
-        }
-        else
-        {
-            count = v[i-k].second.second++;
-            prev = v[i].first;
-            i--;
-            k=0;
         }
     }
-    for (int i = 0; i < n; i++)
-    {
-        arr[v[i].second.first] = v[i].second.second;
-    }
-    for (int i = 0; i < n; i++)
-    {
-        cout << arr[i] << " ";
-    }
-    cout << ln;
+    cout << res << endl;
 }
 int main()
 {

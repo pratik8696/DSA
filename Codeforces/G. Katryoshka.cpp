@@ -54,62 +54,39 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define sz(x) ((ll)(x).size())
 
-bool compare(pair<int, pair<int, int>> a, pair<int, pair<int, int>> b)
-{
-    return a.first < b.first;
-}
-
 void solve()
 {
-    int n, t;
-    cin >> n;
-    vector<pair<int, pair<int, int>>> v;
-    int arr[n];
-    forn(i, n)
+    ll a, b, c,count=0;
+    cin >> a >> b >> c;
+    while(a>0&&b>0&&c>0)
     {
-        cin >> t;
-        v.pb(mp(t, mp(i, 0)));
+        count++;
+        a--;
+        b--;
+        c--;
     }
-    sort(v.begin(), v.end(), compare);
-    int prev = v[0].first, count = 0, k = 0;
-    for (int i = 0; i < n; i++)
+    while(a>1&&c>0)
     {
-        if (prev == v[i].first)
-        {
-            k++;
-            v[i].second.second = count;
-            count++;
-            if (v[i].second.second >= n )
-            {
-                v[i].second.second = n - 1;
-            }
-        }
-        else
-        {
-            count = v[i-k].second.second++;
-            prev = v[i].first;
-            i--;
-            k=0;
-        }
+        count++;
+        a--;
+        a--;
+        c--;
     }
-    for (int i = 0; i < n; i++)
+    while(a>1&&b>0&&c>0)
     {
-        arr[v[i].second.first] = v[i].second.second;
+        count++;
+        a--;
+        a--;
+        b--;
+        c--;
     }
-    for (int i = 0; i < n; i++)
-    {
-        cout << arr[i] << " ";
-    }
-    cout << ln;
+    cout<<count<<endl;
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
-    for (int it = 1; it <= t; it++)
-    {
+    
         solve();
-    }
+    
     return 0;
 }

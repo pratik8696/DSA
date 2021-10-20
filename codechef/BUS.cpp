@@ -54,53 +54,51 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define sz(x) ((ll)(x).size())
 
-bool compare(pair<int, pair<int, int>> a, pair<int, pair<int, int>> b)
-{
-    return a.first < b.first;
-}
-
 void solve()
 {
-    int n, t;
-    cin >> n;
-    vector<pair<int, pair<int, int>>> v;
-    int arr[n];
-    forn(i, n)
+    int n, m, q, peoplein = 0, flag = 1;
+    cin >> n >> m >> q;
+    int arr[n + 1];
+    fill(arr, arr + n + 1, 0);
+    for (int x = 0; x < q; x++)
     {
-        cin >> t;
-        v.pb(mp(t, mp(i, 0)));
-    }
-    sort(v.begin(), v.end(), compare);
-    int prev = v[0].first, count = 0, k = 0;
-    for (int i = 0; i < n; i++)
-    {
-        if (prev == v[i].first)
+        char ch;
+        int k;
+        cin >> ch >> k;
+        if (ch == '+')
         {
-            k++;
-            v[i].second.second = count;
-            count++;
-            if (v[i].second.second >= n )
+            peoplein += 1;
+            if (peoplein > m)
             {
-                v[i].second.second = n - 1;
+                flag = 0;
             }
+            if (arr[k] > 1)
+            {
+                flag = 0;
+            }
+            arr[k]++;
         }
         else
         {
-            count = v[i-k].second.second++;
-            prev = v[i].first;
-            i--;
-            k=0;
+            if (arr[k] <= 0)
+            {
+                flag = 0;
+            }
+            else if (arr[k] > 0)
+            {
+                arr[k]--;
+                peoplein = peoplein - 1;
+            }
         }
     }
-    for (int i = 0; i < n; i++)
+    if (flag == 0)
     {
-        arr[v[i].second.first] = v[i].second.second;
+        cout << "Inconsistent" << endl;
     }
-    for (int i = 0; i < n; i++)
+    else
     {
-        cout << arr[i] << " ";
+        cout << "Consistent" << endl;
     }
-    cout << ln;
 }
 int main()
 {

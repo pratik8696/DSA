@@ -54,62 +54,52 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define sz(x) ((ll)(x).size())
 
-bool compare(pair<int, pair<int, int>> a, pair<int, pair<int, int>> b)
-{
-    return a.first < b.first;
-}
-
 void solve()
 {
-    int n, t;
-    cin >> n;
-    vector<pair<int, pair<int, int>>> v;
-    int arr[n];
-    forn(i, n)
+    ll a, b, c, d;
+    cin >> a >> b >> c >> d;
+    if ((a + b - c) == (d))
     {
-        cin >> t;
-        v.pb(mp(t, mp(i, 0)));
+        cout << "YES" << endl;
+        return;
     }
-    sort(v.begin(), v.end(), compare);
-    int prev = v[0].first, count = 0, k = 0;
-    for (int i = 0; i < n; i++)
+    else if ((a - b + c) == (d))
     {
-        if (prev == v[i].first)
-        {
-            k++;
-            v[i].second.second = count;
-            count++;
-            if (v[i].second.second >= n )
-            {
-                v[i].second.second = n - 1;
-            }
-        }
-        else
-        {
-            count = v[i-k].second.second++;
-            prev = v[i].first;
-            i--;
-            k=0;
-        }
+        cout << "YES" << endl;
+        return;
     }
-    for (int i = 0; i < n; i++)
+    else if ((a - b * c) == (d))
     {
-        arr[v[i].second.first] = v[i].second.second;
+        cout << "YES" << endl;
+        return;
     }
-    for (int i = 0; i < n; i++)
+    else if ((a * b - c) == (d))
     {
-        cout << arr[i] << " ";
+        cout << "YES" << endl;
+        return;
     }
-    cout << ln;
+    else if ((a + b * c) == (d))
+    {
+        cout << "YES" << endl;
+        return;
+    }
+    else if ((a * b + c) == (d))
+    {
+        cout << "YES" << endl;
+        return;
+    }
+    else{
+        cout<<"NO"<<endl;
+    }
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
-    for (int it = 1; it <= t; it++)
-    {
+    // ll t;
+    // cin >> t;
+    // for (int it = 1; it <= t; it++)
+    // {
         solve();
-    }
+    // }
     return 0;
 }

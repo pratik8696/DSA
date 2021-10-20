@@ -34,9 +34,9 @@ typedef vector<vector<ll>> vv64;
 typedef vector<vector<p64>> vvp64;
 typedef vector<p64> vp64;
 typedef vector<p32> vp32;
-ll MOD = 1000000007;
+ll MOD = 998244353;
 double eps = 1e-12;
-#define forn(i, n) for (ll i = 0; i < n; i++)
+#define forn(i, e) for (ll i = 0; i < e; i++)
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
 #define rforn(i, s) for (ll i = s; i >= 0; i--)
 #define rforsn(i, s, e) for (ll i = s; i >= e; i--)
@@ -54,53 +54,34 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define sz(x) ((ll)(x).size())
 
-bool compare(pair<int, pair<int, int>> a, pair<int, pair<int, int>> b)
-{
-    return a.first < b.first;
-}
-
 void solve()
 {
-    int n, t;
-    cin >> n;
-    vector<pair<int, pair<int, int>>> v;
-    int arr[n];
-    forn(i, n)
+    int x, y;
+    int keyx = 0, currstreak = 0, maxstreak = INT_MIN;
+    cin >> x >> y;
+    string s;
+    cin >> s;
+    for (int i = 0; i < s.length(); i++)
     {
-        cin >> t;
-        v.pb(mp(t, mp(i, 0)));
-    }
-    sort(v.begin(), v.end(), compare);
-    int prev = v[0].first, count = 0, k = 0;
-    for (int i = 0; i < n; i++)
-    {
-        if (prev == v[i].first)
+        if (s[i] == '0')
         {
-            k++;
-            v[i].second.second = count;
-            count++;
-            if (v[i].second.second >= n )
-            {
-                v[i].second.second = n - 1;
-            }
+            maxstreak = max(maxstreak, currstreak);
+            currstreak = 0;
         }
         else
         {
-            count = v[i-k].second.second++;
-            prev = v[i].first;
-            i--;
-            k=0;
+            currstreak++;
         }
     }
-    for (int i = 0; i < n; i++)
+    for (int i = 0; i < s.length(); i++)
     {
-        arr[v[i].second.first] = v[i].second.second;
+        if (s[i] == '1')
+        {
+            keyx++;
+        }
     }
-    for (int i = 0; i < n; i++)
-    {
-        cout << arr[i] << " ";
-    }
-    cout << ln;
+    int p = x * keyx + y * maxstreak;
+    cout << p << endl;
 }
 int main()
 {
