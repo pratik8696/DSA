@@ -142,6 +142,33 @@ int lastoccur(int *arr, int n, int key)
     return k + 1;
 }
 
+void printalloccur(int *arr, int n, int key, int i)
+{
+    if (i == n)
+    {
+        return;
+    }
+    if (arr[i] == key)
+    {
+        cout << i << " ";
+    }
+    printalloccur(arr, n, key, i + 1);
+}
+
+void storealloccurences(int *arr, vector<int> &occur, int i, int j, int key, int n)
+{
+    if (i == n)
+    {
+        return;
+    }
+    if (arr[i] == key)
+    {
+        occur.pb(i);
+        return storealloccurences(arr, occur, i + 1, j + 1, key, n);
+    }
+    return storealloccurences(arr, occur, i + 1, j, key, n);
+}
+
 void solve()
 {
     int n, key;
@@ -155,6 +182,14 @@ void solve()
     cout << firstoccurencestatic(arr, n, key, 0) << endl;
     cout << lastoccurencestatic(arr, n, key, 0) << endl;
     cout << lastoccur(arr, n, key) << endl;
+    printalloccur(arr, n, key, 0);
+    vector<int> occur;
+    storealloccurences(arr, occur, 0, 0, key, n);
+    cout << ln;
+    forn(i, occur.size())
+    {
+        cout << occur[i] << " ";
+    }
 }
 int main()
 {
