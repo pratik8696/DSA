@@ -57,43 +57,19 @@ double eps = 1e-12;
 
 void solve()
 {
-    int n;
-    cin >> n;
-    float arr[n];
-    double sum = 0;
-    forn(i, n)
-    {
-        cin >> arr[i];
-        sum += arr[i];
-    }
-    sum = sum / n;
-    if(sum>=4.5)
-    {
-        cout<<0<<endl;
-        return;
-    }
-    sort(arr, arr + n);
-    int count = 0;
-    for (int i = 0; i < n ; i++)
-    {
-        double diff = (5 - arr[i]) / n;
-        sum += diff;
-        count++;
-        if (sum >= 4.499999)
-        {
-            break;
-        }
-    }
-    cout << count << endl;
+    ll x, k;
+    cin >> x >> k;
+    ll max = x * k;
+    cout << x * 2 << " " << max * (max - 1) << endl;
 }
 int main()
 {
     fast_cin();
-    // ll t;
-    // cin >> t;
-    // for (int it = 1; it <= t; it++)
-    // {
+    ll t;
+    cin >> t;
+    for (int it = 1; it <= t; it++)
+    {
         solve();
-    // }
+    }
     return 0;
 }
