@@ -57,39 +57,33 @@ double eps = 1e-12;
 
 void solve()
 {
-    ll n, noofeight = 0, noofnine = 0;
-    cin >> n;
-    if (n % 4 != 0 || (n & 1 == 1))
+    ll n, m, a, length, breadth;
+    cin >> n >> m >> a;
+    if (n % a != 0)
     {
-        noofeight = (n / 4) + 1;
-        noofnine = n - noofeight;
-        
+        length = n / a + 1;
     }
     else
     {
-        noofeight = n/4;
-        noofnine = n-noofeight;
+        length = n / a;
     }
-    // noofeight=ceil((double)n/4);
-    // noofnine=n-noofeight;
-    for (ll i = 0; i < noofnine; i++)
+    if (m % a != 0)
     {
-        cout << "9";
+        breadth = m / a + 1;
     }
-    for (ll i = 0; i < noofeight; i++)
+    else
     {
-        cout << "8";
+        breadth = m / a;
     }
-    cout << ln;
+    cout << length * breadth << endl;
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
-    for (int it = 1; it <= t; it++)
-    {
-        solve();
-    }
+    //  ll t;
+    //  cin >> t;
+    //  for(int it=1;it<=t;it++) {
+    solve();
+    //  }
     return 0;
 }

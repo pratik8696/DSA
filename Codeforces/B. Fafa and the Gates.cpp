@@ -57,39 +57,63 @@ double eps = 1e-12;
 
 void solve()
 {
-    ll n, noofeight = 0, noofnine = 0;
+    int n, countu = 0, countr = 0, coin = 0;
     cin >> n;
-    if (n % 4 != 0 || (n & 1 == 1))
+    string s;
+    cin >> s;
+    for (int i = 0; i < n - 1; i++)
     {
-        noofeight = (n / 4) + 1;
-        noofnine = n - noofeight;
-        
+        if (s[i] == 'U')
+        {
+            countu++;
+        }
+        else if (s[i] == 'R')
+        {
+            countr++;
+        }
+        if ((countu == countr))
+        {
+            if (s[i] == 'R')
+            {
+                if (s[i + 1] == 'R')
+                {
+                    coin++;
+                    countr = 1;
+                }
+                else
+                {
+                    countr = 0;
+                    countu = 0;
+                }
+            }
+            else if (s[i] == 'U')
+            {
+                if (s[i] == 'U')
+                {
+                    if (s[i + 1] == 'U')
+                    {
+                        coin++;
+                        countu = 1;
+                    }
+                    else
+                    {
+                        countr = 0;
+                        countu = 0;
+                    }
+                }
+            }
+        }
     }
-    else
-    {
-        noofeight = n/4;
-        noofnine = n-noofeight;
-    }
-    // noofeight=ceil((double)n/4);
-    // noofnine=n-noofeight;
-    for (ll i = 0; i < noofnine; i++)
-    {
-        cout << "9";
-    }
-    for (ll i = 0; i < noofeight; i++)
-    {
-        cout << "8";
-    }
-    cout << ln;
+    cout << coin << endl;
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
-    for (int it = 1; it <= t; it++)
-    {
-        solve();
-    }
+    // ll t;
+    // cin >> t;
+    // for (int it = 1; it <= t; it++)
+    // {
+    solve();
+    // }
     return 0;
 }

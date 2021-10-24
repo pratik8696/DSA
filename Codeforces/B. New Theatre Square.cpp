@@ -57,30 +57,34 @@ double eps = 1e-12;
 
 void solve()
 {
-    ll n, noofeight = 0, noofnine = 0;
-    cin >> n;
-    if (n % 4 != 0 || (n & 1 == 1))
+    ll n, m, x, y;
+    cin >> n >> m >> x >> y;
+    string s[n];
+    forn(i, n)
     {
-        noofeight = (n / 4) + 1;
-        noofnine = n - noofeight;
-        
+        cin >> s[i];
     }
-    else
+    ll xcount = 0, ycount = 0, altcount = 0;
+    for (int i = 0; i < n; i++)
     {
-        noofeight = n/4;
-        noofnine = n-noofeight;
+        for (int j = 0; j < m; j++)
+        {
+            if (s[i][j] == '.')
+            {
+                if (s[i][j + 1] == '.' && (j != (m - 1)))
+                {
+                    ycount++;
+                    altcount += 2;
+                    j++;
+                }
+                else if (s[i][j + 1] != '.')
+                {
+                    xcount++;
+                }
+            }
+        }
     }
-    // noofeight=ceil((double)n/4);
-    // noofnine=n-noofeight;
-    for (ll i = 0; i < noofnine; i++)
-    {
-        cout << "9";
-    }
-    for (ll i = 0; i < noofeight; i++)
-    {
-        cout << "8";
-    }
-    cout << ln;
+    cout << min((x * xcount + y * ycount), ((xcount + altcount) * x)) << endl;
 }
 int main()
 {

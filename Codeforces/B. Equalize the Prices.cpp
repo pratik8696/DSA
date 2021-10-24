@@ -57,30 +57,26 @@ double eps = 1e-12;
 
 void solve()
 {
-    ll n, noofeight = 0, noofnine = 0;
-    cin >> n;
-    if (n % 4 != 0 || (n & 1 == 1))
+    int n, k, mini = INT_MAX, maxi = INT_MIN;
+    cin >> n >> k;
+    int arr[n];
+    forn(i, n)
     {
-        noofeight = (n / 4) + 1;
-        noofnine = n - noofeight;
-        
+        cin >> arr[i];
+        mini = min(mini, arr[i]);
+        maxi = max(maxi, arr[i]);
     }
-    else
+    ll maxl = k + mini;
+    ll lowl = maxi - k;
+    if (maxl < lowl)
     {
-        noofeight = n/4;
-        noofnine = n-noofeight;
+        cout << -1 << endl;
+        return;
     }
-    // noofeight=ceil((double)n/4);
-    // noofnine=n-noofeight;
-    for (ll i = 0; i < noofnine; i++)
+    else if (maxl >= lowl)
     {
-        cout << "9";
+        cout << max(maxl, lowl) << endl;
     }
-    for (ll i = 0; i < noofeight; i++)
-    {
-        cout << "8";
-    }
-    cout << ln;
 }
 int main()
 {

@@ -57,30 +57,49 @@ double eps = 1e-12;
 
 void solve()
 {
-    ll n, noofeight = 0, noofnine = 0;
+    int n;
     cin >> n;
-    if (n % 4 != 0 || (n & 1 == 1))
+    map<int, int> m;
+    // map can basically hash any values for u
+    // inserting 10 integers in the map
+    // here it may seem like it works similar to array
+    forn(i, n)
     {
-        noofeight = (n / 4) + 1;
-        noofnine = n - noofeight;
-        
+        int t;
+        cin >> t;
+        m[i] = t;
+    }
+    for (auto k : m)
+    {
+        cout << k.first << " " << k.second << endl;
+    }
+    // now we will try out the find and erase function also the count function
+    int u;
+    cin >> u;
+    if (m.count(u))
+    {
+        cout << "The element is " << m[u] << endl;
     }
     else
     {
-        noofeight = n/4;
-        noofnine = n-noofeight;
+        cout << "The element does not exist in the map" << endl;
     }
-    // noofeight=ceil((double)n/4);
-    // noofnine=n-noofeight;
-    for (ll i = 0; i < noofnine; i++)
+    // now erasing the element in the map
+    int e;
+    cin >> e;
+    if (m.count(e))
     {
-        cout << "9";
+        m.erase(e);
+        cout << "Element has been deleted successfully" << endl;
     }
-    for (ll i = 0; i < noofeight; i++)
+    else
     {
-        cout << "8";
+        cout << "Element does not exist" << endl;
     }
-    cout << ln;
+    for (auto k : m)
+    {
+        cout << k.first << " " << k.second << endl;
+    }
 }
 int main()
 {
