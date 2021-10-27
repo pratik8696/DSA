@@ -57,51 +57,31 @@ double eps = 1e-12;
 
 void solve()
 {
-    ll n, i, k;
+    ll n;
     cin >> n;
-    for (i = 1; i <= 10000; i++)
+    if (n <= 14)
     {
-        if (i * i > n)
-        {
-            break;
-        }
-        else if (i * i == n)
-        {
-            cout << 4 * i << endl;
-            return;
-        }
+        cout << "NO" << endl;
+        return;
     }
-    i--;
-    ll rem = n - i * i, peri = 2 * i;
-    if(rem<=i)
+    ll rem = n % 14;
+    if (rem <= 6 && rem != 0)
     {
-        ll left=rem;
-        ll remleft=i-left;
-        ll right=i;
-        peri+=i;
-        peri+=2+left;
-        peri+=remleft;
+        cout << "YES" << endl;
     }
-    else{
-        peri = 2 * i;
-        ll left=rem/2;
-        ll right=rem/2+rem%2;
-        ll remleft=i-left;
-        ll remright=i-right;
-        peri+=remleft;
-        peri+=remright;
-        peri+=2+left;
-        peri+=2+right;
+    else
+    {
+        cout << "NO" << endl;
     }
-    cout<<peri<<endl;
 }
 int main()
 {
     fast_cin();
-    //  ll t;
-    //  cin >> t;
-    //  for(int it=1;it<=t;it++) {
-    solve();
-    //  }
+    ll t;
+    cin >> t;
+    for (int it = 1; it <= t; it++)
+    {
+        solve();
+    }
     return 0;
 }

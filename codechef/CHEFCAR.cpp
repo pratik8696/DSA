@@ -57,51 +57,31 @@ double eps = 1e-12;
 
 void solve()
 {
-    ll n, i, k;
-    cin >> n;
-    for (i = 1; i <= 10000; i++)
+    ll n, v, sum = 0;
+    cin >> n >> v;
+    ll maxfuel = n * (n - 1) / 2;
+    if (v == 1)
     {
-        if (i * i > n)
-        {
-            break;
-        }
-        else if (i * i == n)
-        {
-            cout << 4 * i << endl;
-            return;
-        }
+        sum = maxfuel;
     }
-    i--;
-    ll rem = n - i * i, peri = 2 * i;
-    if(rem<=i)
+    else if (v >= n - 1)
     {
-        ll left=rem;
-        ll remleft=i-left;
-        ll right=i;
-        peri+=i;
-        peri+=2+left;
-        peri+=remleft;
+        sum = n - 1;
     }
-    else{
-        peri = 2 * i;
-        ll left=rem/2;
-        ll right=rem/2+rem%2;
-        ll remleft=i-left;
-        ll remright=i-right;
-        peri+=remleft;
-        peri+=remright;
-        peri+=2+left;
-        peri+=2+right;
+    else
+    {
+        sum += v + ((n - v) * (n - v + 1)) / 2 - 1;
     }
-    cout<<peri<<endl;
+    cout << maxfuel << " " << sum << endl;
 }
 int main()
 {
     fast_cin();
-    //  ll t;
-    //  cin >> t;
-    //  for(int it=1;it<=t;it++) {
-    solve();
-    //  }
+    ll t;
+    cin >> t;
+    for (int it = 1; it <= t; it++)
+    {
+        solve();
+    }
     return 0;
 }

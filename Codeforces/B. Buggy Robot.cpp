@@ -57,43 +57,32 @@ double eps = 1e-12;
 
 void solve()
 {
-    ll n, i, k;
+    int n, x = 0, y = 0, ans = 0;
     cin >> n;
-    for (i = 1; i <= 10000; i++)
+    string s;
+    cin >> s;
+    for (int i = 0; i < s.length(); i++)
     {
-        if (i * i > n)
+        if (s[i] == 'U')
+            y++;
+
+        else if (s[i] == 'D')
+            y--;
+
+        else if (s[i] == 'L')
+            x--;
+
+        else if (s[i] == 'R')
+            x++;
+
+        if (x == 0 && y == 0)
         {
-            break;
+            ans = i + 1;
         }
-        else if (i * i == n)
-        {
-            cout << 4 * i << endl;
-            return;
-        }
+        cout<<i+1<<" "<<x<<" "<<y<<endl;
     }
-    i--;
-    ll rem = n - i * i, peri = 2 * i;
-    if(rem<=i)
-    {
-        ll left=rem;
-        ll remleft=i-left;
-        ll right=i;
-        peri+=i;
-        peri+=2+left;
-        peri+=remleft;
-    }
-    else{
-        peri = 2 * i;
-        ll left=rem/2;
-        ll right=rem/2+rem%2;
-        ll remleft=i-left;
-        ll remright=i-right;
-        peri+=remleft;
-        peri+=remright;
-        peri+=2+left;
-        peri+=2+right;
-    }
-    cout<<peri<<endl;
+    // cout << ans << endl;
+    // 
 }
 int main()
 {

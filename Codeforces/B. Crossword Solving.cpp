@@ -57,51 +57,39 @@ double eps = 1e-12;
 
 void solve()
 {
-    ll n, i, k;
-    cin >> n;
-    for (i = 1; i <= 10000; i++)
+    int a, b;
+    cin >> a >> b;
+    string s, r;
+    cin >> r >> s;
+    vector<int> v;
+    for (int i = 0; i < s.length() - r.length() + 1; i++)
     {
-        if (i * i > n)
+        for (int j = 0, k = i; j < r.length(); k++, j++)
         {
-            break;
+            if (s[k] == r[j])
+            {
+                continue;
+            }
+            else
+            {
+                v.pb(i);
+            }
         }
-        else if (i * i == n)
-        {
-            cout << 4 * i << endl;
-            return;
-        }
+        v.pb(-1);
     }
-    i--;
-    ll rem = n - i * i, peri = 2 * i;
-    if(rem<=i)
+    for(auto t:v)
     {
-        ll left=rem;
-        ll remleft=i-left;
-        ll right=i;
-        peri+=i;
-        peri+=2+left;
-        peri+=remleft;
+        cout<<t<<" ";
     }
-    else{
-        peri = 2 * i;
-        ll left=rem/2;
-        ll right=rem/2+rem%2;
-        ll remleft=i-left;
-        ll remright=i-right;
-        peri+=remleft;
-        peri+=remright;
-        peri+=2+left;
-        peri+=2+right;
-    }
-    cout<<peri<<endl;
 }
 int main()
 {
     fast_cin();
-    //  ll t;
-    //  cin >> t;
-    //  for(int it=1;it<=t;it++) {
-    solve();
-    //  }
+    // ll t;
+    // cin >> t;
+    // for (int it = 1; it <= t; it++)
+    // {
+        solve();
+    // }
     return 0;
 }

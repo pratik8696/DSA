@@ -71,6 +71,7 @@ void subset(char in[],char out[],int i,int j)
 
     // not including the element and moving to the next element
     subset(in,out,i+1,j);
+    return;
 }
 
 void solve()

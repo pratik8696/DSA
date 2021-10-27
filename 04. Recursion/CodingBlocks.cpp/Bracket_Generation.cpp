@@ -57,18 +57,18 @@ double eps = 1e-12;
 
 void bracket(char out[], int i, int n, int open, int close)
 {
-    if (out[i] == '\0')
+    if (i == (2 * n))
     {
+        out[i] = '\0';
         cout << out << endl;
         return;
     }
-
     if (open < n)
     {
         out[i] = '(';
         bracket(out, i + 1, n, open + 1, close);
     }
-    else if (close < open)
+    if (close < open)
     {
         out[i] = ')';
         bracket(out, i + 1, n, open, close + 1);
@@ -79,8 +79,7 @@ void solve()
 {
     int n;
     cin >> n;
-    char out[2 * n + 1];
-    out[2 * n] = '\0';
+    char out[1000];
     bracket(out, 0, n, 0, 0);
 }
 int main()

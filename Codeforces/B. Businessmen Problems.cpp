@@ -57,51 +57,42 @@ double eps = 1e-12;
 
 void solve()
 {
-    ll n, i, k;
+    int n, a, x;
     cin >> n;
-    for (i = 1; i <= 10000; i++)
+    unordered_map<int, int> ma;
+    forn(i, n)
     {
-        if (i * i > n)
+        cin >> a >> x;
+        if (ma[a] < x)
         {
-            break;
-        }
-        else if (i * i == n)
-        {
-            cout << 4 * i << endl;
-            return;
+            ma[a] = x;
         }
     }
-    i--;
-    ll rem = n - i * i, peri = 2 * i;
-    if(rem<=i)
+    int m, b, y;
+    cin >> m;
+    forn(i, m)
     {
-        ll left=rem;
-        ll remleft=i-left;
-        ll right=i;
-        peri+=i;
-        peri+=2+left;
-        peri+=remleft;
+        cin>>b>>y;
+        if(ma[b]<y)
+        {
+            ma[b]=y;
+        }
     }
-    else{
-        peri = 2 * i;
-        ll left=rem/2;
-        ll right=rem/2+rem%2;
-        ll remleft=i-left;
-        ll remright=i-right;
-        peri+=remleft;
-        peri+=remright;
-        peri+=2+left;
-        peri+=2+right;
+    ll sum=0;
+    for(auto t:ma)
+    {
+        sum+=t.second;
     }
-    cout<<peri<<endl;
+    cout<<sum<<endl;
 }
 int main()
 {
     fast_cin();
-    //  ll t;
-    //  cin >> t;
-    //  for(int it=1;it<=t;it++) {
-    solve();
-    //  }
+    // ll t;
+    // cin >> t;
+    // for (int it = 1; it <= t; it++)
+    // {
+        solve();
+    // }
     return 0;
 }
