@@ -55,39 +55,49 @@ double eps = 1e-12;
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
 
-void subset(char in[],char out[],int i,int j)
-{
-    if(in[i]=='\0')
-    {
-        out[j]='\0';
-        cout<<out<<" ";
-        return;
-    }
-
-    // recursive case
-    // first including the element
-    out[j]=in[i];
-    subset(in,out,i+1,j+1);
-
-    // not including the element and moving to the next element
-    subset(in,out,i+1,j);
-}
-
 void solve()
 {
-    char in[100];
-    cin>>in;
-    char out[100];
-    subset(in,out,0,0);
+    ll n, i, k;
+    cin >> n;
+    for (i = 1; i <= 10000; i++)
+    {
+        if (i * i > n)
+        {
+            break;
+        }
+        else if (i * i == n)
+        {
+            cout << 4 * i << endl;
+            return;
+        }
+    }
+    ll length = i, breadth;
+    
+    ll remblocks = n - length * breadth, peri;
+    peri = 2 * (length + breadth);
+    cout<<peri<<" "<<length<<" "<<breadth<<endl;
+    for (k = i - 1; k >= 1; k--)
+    {
+        if (remblocks == 0)
+        {
+            break;
+        }
+        else
+        {
+            remblocks = remblocks - k;
+            peri += 2 * (1 + k - 1);
+        }
+        cout << peri << endl;
+    }
+    cout << peri << endl;
 }
 int main()
 {
     fast_cin();
-    // ll t;
-    // cin >> t;
-    // for (int it = 1; it <= t; it++)
-    // {
-        solve();
-    // }
+    //  ll t;
+    //  cin >> t;
+    //  for(int it=1;it<=t;it++) {
+    solve();
+    //  }
     return 0;
 }

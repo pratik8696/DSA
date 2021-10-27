@@ -55,30 +55,33 @@ double eps = 1e-12;
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
 
-void subset(char in[],char out[],int i,int j)
+void bracket(char out[], int i, int n, int open, int close)
 {
-    if(in[i]=='\0')
+    if (out[i] == '\0')
     {
-        out[j]='\0';
-        cout<<out<<" ";
+        cout << out << endl;
         return;
     }
 
-    // recursive case
-    // first including the element
-    out[j]=in[i];
-    subset(in,out,i+1,j+1);
-
-    // not including the element and moving to the next element
-    subset(in,out,i+1,j);
+    if (open < n)
+    {
+        out[i] = '(';
+        bracket(out, i + 1, n, open + 1, close);
+    }
+    else if (close < open)
+    {
+        out[i] = ')';
+        bracket(out, i + 1, n, open, close + 1);
+    }
 }
 
 void solve()
 {
-    char in[100];
-    cin>>in;
-    char out[100];
-    subset(in,out,0,0);
+    int n;
+    cin >> n;
+    char out[2 * n + 1];
+    out[2 * n] = '\0';
+    bracket(out, 0, n, 0, 0);
 }
 int main()
 {
@@ -87,7 +90,7 @@ int main()
     // cin >> t;
     // for (int it = 1; it <= t; it++)
     // {
-        solve();
+    solve();
     // }
     return 0;
 }
