@@ -57,28 +57,40 @@ double eps = 1e-12;
 
 void solve()
 {
-    string a, b;
-    cin >> a >> b;
-    for (int i = 0; i < a.length(); i++)
+    string s;
+    cin >> s;
+    int ab = 0, ba = 0;
+    for (int i = 0; i < s.length() - 1; i++)
     {
-        if (a[i] != b[i])
+        if (s[i] == 'a' || s[i + 1] == 'b')
         {
-            a[i] = 1;
+            ab++;
         }
-        else
+        else if (s[i] == 'b' || s[i + 1] == 'a')
         {
-            a[i] = 0;
+            ba++;
         }
     }
-    cout << a << endl;
+    if(ab>ba)
+    {
+        step=ab-ba;
+        for (int i = 0; i < s.length()-1; i++)
+        {
+            if (s[i] == 'a' || s[i + 1] == 'b')
+            {
+                s[i]='b';
+            }            
+        }
+    }    
 }
 int main()
 {
     fast_cin();
-    //  ll t;
-    //  cin >> t;
-    //  for(int it=1;it<=t;it++) {
-    solve();
-    //  }
+    ll t;
+    cin >> t;
+    for (int it = 1; it <= t; it++)
+    {
+        solve();
+    }
     return 0;
 }

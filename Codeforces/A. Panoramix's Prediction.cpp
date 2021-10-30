@@ -19,10 +19,9 @@
 #include <stack>
 #include <iomanip>
 #include <fstream>
-
 using namespace std;
-
 typedef long long ll;
+typedef unsigned long long int ull;
 typedef long double ld;
 typedef pair<int, int> p32;
 typedef pair<ll, ll> p64;
@@ -35,42 +34,60 @@ typedef vector<vector<p64>> vvp64;
 typedef vector<p64> vp64;
 typedef vector<p32> vp32;
 ll MOD = 1000000007;
-double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
-#define forsn(i, s, e) for (ll i = s; i < e; i++)
-#define rforn(i, s) for (ll i = s; i >= 0; i--)
-#define rforsn(i, s, e) for (ll i = s; i >= e; i--)
 #define ln "\n"
-#define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
 #define pb push_back
-#define fi first
-#define se second
-#define INF 2e18
 #define fast_cin()                    \
     ios_base::sync_with_stdio(false); \
     cin.tie(NULL);                    \
     cout.tie(NULL)
 #define all(x) (x).begin(), (x).end()
-#define al(arr, n) arr, arr + n
+#define alll(arr, n) (arr), (arr) + (n)
 #define sz(x) ((ll)(x).size())
+
+// sieve of eratosthenes
+#define MAX 1000
+vector<ll> primes;
+void sieve()
+{
+    bool array[MAX];
+    fill(array, array + MAX, true);
+    array[0] = false;
+    array[1] = false;
+    for (int i = 0; i < sqrt(MAX); i++)
+    {
+        if (array[i] == true)
+        {
+            primes.pb(i);
+            for (int j = i * i; j < MAX; j += i)
+            {
+                array[j] = false;
+            }
+        }
+    }
+    for (int k = sqrt(MAX); k < MAX; k++)
+    {
+        if (array[k] == true)
+        {
+            primes.pb(k);
+        }
+    }
+}
 
 void solve()
 {
-    string a, b;
-    cin >> a >> b;
-    for (int i = 0; i < a.length(); i++)
+    sieve();
+    int a,b;
+    cin>>a>>b;
+    int idx=upper_bound(all(primes),a)-primes.begin();
+    if(primes[idx]==b)
     {
-        if (a[i] != b[i])
-        {
-            a[i] = 1;
-        }
-        else
-        {
-            a[i] = 0;
-        }
+        cout<<"YES"<<ln;
     }
-    cout << a << endl;
+    else{
+        cout<<"NO"<<ln;
+    }
 }
 int main()
 {

@@ -57,28 +57,54 @@ double eps = 1e-12;
 
 void solve()
 {
-    string a, b;
-    cin >> a >> b;
-    for (int i = 0; i < a.length(); i++)
+    ll n, m;
+    cin >> n >> m;
+    ll arr[m];
+    forn(i, m)
     {
-        if (a[i] != b[i])
+        cin >> arr[i];
+    }
+    sort(arr, arr + m);
+    if (arr[0] == 1 || arr[m - 1] == n)
+    {
+        cout << "NO" << endl;
+        return;
+    }
+    forn(i, m)
+    {
+        arr[i] = arr[i] - i;
+    }
+    ll maxrep = 0, currrep = 1;
+    forn(i, m - 1)
+    {
+        if (arr[i] == arr[i + 1])
         {
-            a[i] = 1;
+            currrep++;
         }
         else
         {
-            a[i] = 0;
+            maxrep = max(currrep, maxrep);
+            currrep = 1;
         }
     }
-    cout << a << endl;
+    maxrep = max(currrep, maxrep);
+    if (maxrep > 2)
+    {
+        cout << "NO" << endl;
+    }
+    else
+    {
+        cout << "YES" << endl;
+    }
 }
 int main()
 {
     fast_cin();
-    //  ll t;
-    //  cin >> t;
-    //  for(int it=1;it<=t;it++) {
+    // ll t;
+    // cin >> t;
+    // for (int it = 1; it <= t; it++)
+    // {
     solve();
-    //  }
+    // }
     return 0;
 }

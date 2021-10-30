@@ -57,20 +57,36 @@ double eps = 1e-12;
 
 void solve()
 {
-    string a, b;
-    cin >> a >> b;
-    for (int i = 0; i < a.length(); i++)
+    int max = 100005;
+    ll k, l, m, n, d;
+    cin >> k >> l >> m >> n >> d;
+    int arr[max];
+    fill(arr, arr + max, 0);
+    for (int i = k; i <= d; i += k)
     {
-        if (a[i] != b[i])
+        arr[i] = 1;
+    }
+    for (int i = l; i <= d; i += l)
+    {
+        arr[i] = 1;
+    }
+    for (int i = m; i <= d; i += m)
+    {
+        arr[i] = 1;
+    }
+    for (int i = n; i <= d; i += n)
+    {
+        arr[i] = 1;
+    }
+    ll count = 0;
+    for (int i = 0; i < max; i++)
+    {
+        if (arr[i] > 0)
         {
-            a[i] = 1;
-        }
-        else
-        {
-            a[i] = 0;
+            count++;
         }
     }
-    cout << a << endl;
+    cout << count << endl;
 }
 int main()
 {

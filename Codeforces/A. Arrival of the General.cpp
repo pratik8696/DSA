@@ -57,28 +57,43 @@ double eps = 1e-12;
 
 void solve()
 {
-    string a, b;
-    cin >> a >> b;
-    for (int i = 0; i < a.length(); i++)
+    int n, maxi = INT_MIN, smalli = INT_MAX, maxidx, smallidx;
+    cin >> n;
+    int arr[n];
+    forn(i, n)
     {
-        if (a[i] != b[i])
+        cin >> arr[i];
+        if (maxi < arr[i])
         {
-            a[i] = 1;
+            maxi = arr[i];
+            maxidx = i;
         }
-        else
+        if (smalli >= arr[i])
         {
-            a[i] = 0;
+            smalli = arr[i];
+            smallidx = i;
         }
     }
-    cout << a << endl;
+    // cout << smallidx << " " << maxidx << endl;
+    ll distlast = n - 1 - smallidx;
+    ll distfirst = maxidx;
+    if (smallidx < maxidx)
+    {
+        cout << distlast + distfirst - 1 << endl;
+    }
+    else
+    {
+        cout << distlast + distfirst << endl;
+    }
 }
 int main()
 {
     fast_cin();
-    //  ll t;
-    //  cin >> t;
-    //  for(int it=1;it<=t;it++) {
+    // ll t;
+    // cin >> t;
+    // for (int it = 1; it <= t; it++)
+    // {
     solve();
-    //  }
+    // }
     return 0;
 }
