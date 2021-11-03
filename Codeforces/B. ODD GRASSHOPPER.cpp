@@ -55,46 +55,80 @@ double eps = 1e-12;
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
 
-bool compare(ll a, ll b)
-{
-    return a > b;
-}
-
 void solve()
 {
-    ll n, x;
-    cin >> n >> x;
-    ll arr[n];
-    forn(i, n)
+    ll pos, step;
+    cin>>pos>>step;
+    if (pos % 2 == 0)
     {
-        cin >> arr[i];
-    }
-    sort(arr, arr + n, compare);
-    ll i = 0, k = 1, sum = 0, count = 0;
-    sum = arr[i];
-    if (sum / k < x)
-    {
-        cout << 0 << endl;
-        return;
-    }
-    // cout << "THE SUM IS " << double(sum) << " " << double(sum) / double(k) << endl;
-    while (float(sum)/float(k) >= float(x) && i <= n-1)
-    {
-        i++;
-        k++;
-        sum += arr[i];
-        // cout<<i<<" " << "THE SUM IS " << float(sum) << " " << float(sum) / float(k) << endl;
-    }
-    if(sum/k>=x)
-    {
-        if(k>n)
+        if (step % 4 == 0)
         {
-            k=n;
+            cout << pos << endl;
+            return;
         }
-        cout<<k<<endl;
+        else if (step % 2 == 0)
+        {
+            ll lastpos = step / 2;
+            if (lastpos % 2 != 0)
+            {
+                cout << pos + 1 << endl;
+                return;
+            }
+            else
+            {
+                cout << pos - 1 << ln;
+                return;
+            }
+        }
+        else if(step%2!=0)
+        {
+            ll lastterm=step/2;
+            if(lastterm%2==0)
+            {
+                cout<<pos-step<<ln;
+                return;
+            }
+            else{
+                cout<<pos+step+1<<ln;
+                return;
+            }
+        }
     }
-    else{
-        cout<<k-1<<endl;
+    else
+    {
+        if (step % 4 == 0)
+        {
+            cout << pos << endl;
+            return;
+        }
+        else if (step % 2 == 0)
+        {
+            ll lastpos = step / 2;
+            if (lastpos % 2 != 0)
+            {
+                cout << pos - 1 << endl;
+                return;
+            }
+            else
+            {
+                cout << pos + 1 << ln;
+                return;
+            }
+        }
+        else if (step % 2 != 0)
+        {
+            ll lastterm = step / 2;
+            if (lastterm % 2 == 0)
+            {
+                cout << pos + step << ln;
+                return;
+            }
+            else
+            {
+                cout << pos - step - 1 << ln;
+                return;
+            }
+        }
     }
 }
 int main()

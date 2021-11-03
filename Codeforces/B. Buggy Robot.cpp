@@ -79,9 +79,9 @@ void solve()
         {
             ans = i + 1;
         }
-        cout<<i+1<<" "<<x<<" "<<y<<endl;
     }
     // cout << ans << endl;
+        cout<<n-abs(x)-abs(y)<<endl;
     // 
 }
 int main()

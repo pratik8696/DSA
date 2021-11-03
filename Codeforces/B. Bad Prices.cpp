@@ -55,47 +55,29 @@ double eps = 1e-12;
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
 
-bool compare(ll a, ll b)
-{
-    return a > b;
-}
-
 void solve()
 {
-    ll n, x;
-    cin >> n >> x;
-    ll arr[n];
+    int n;
+    cin >> n;
+    int arr[n];
     forn(i, n)
     {
         cin >> arr[i];
     }
-    sort(arr, arr + n, compare);
-    ll i = 0, k = 1, sum = 0, count = 0;
-    sum = arr[i];
-    if (sum / k < x)
+    int mini = arr[n - 1], count = 0;
+    for (int i = n - 2; i >= 0; i--)
     {
-        cout << 0 << endl;
-        return;
-    }
-    // cout << "THE SUM IS " << double(sum) << " " << double(sum) / double(k) << endl;
-    while (float(sum)/float(k) >= float(x) && i <= n-1)
-    {
-        i++;
-        k++;
-        sum += arr[i];
-        // cout<<i<<" " << "THE SUM IS " << float(sum) << " " << float(sum) / float(k) << endl;
-    }
-    if(sum/k>=x)
-    {
-        if(k>n)
+        if (arr[i] <= mini)
         {
-            k=n;
+            mini = min(arr[i], mini);
+            //  cout<<i<<" ";
         }
-        cout<<k<<endl;
+        else
+        {
+            count++;
+        }
     }
-    else{
-        cout<<k-1<<endl;
-    }
+    cout << count << ln;
 }
 int main()
 {

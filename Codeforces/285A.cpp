@@ -55,56 +55,52 @@ double eps = 1e-12;
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
 
-bool compare(ll a, ll b)
+void swap(int *a,int *b)
 {
-    return a > b;
+    int t=*a;
+    *a=*b;
+    *b=t;
 }
 
 void solve()
 {
-    ll n, x;
-    cin >> n >> x;
-    ll arr[n];
+    int n, k;
+    cin >> n >> k;
+    int arr[n];
     forn(i, n)
     {
-        cin >> arr[i];
+        arr[i]=i+1;
     }
-    sort(arr, arr + n, compare);
-    ll i = 0, k = 1, sum = 0, count = 0;
-    sum = arr[i];
-    if (sum / k < x)
+    int count = 0;
+    if(2*k>n)
     {
-        cout << 0 << endl;
-        return;
-    }
-    // cout << "THE SUM IS " << double(sum) << " " << double(sum) / double(k) << endl;
-    while (float(sum)/float(k) >= float(x) && i <= n-1)
-    {
-        i++;
-        k++;
-        sum += arr[i];
-        // cout<<i<<" " << "THE SUM IS " << float(sum) << " " << float(sum) / float(k) << endl;
-    }
-    if(sum/k>=x)
-    {
-        if(k>n)
+        for (int i = n-1; i>=0; i--)
         {
-            k=n;
+            cout<<arr[i]<<" ";
         }
-        cout<<k<<endl;
+        cout<<ln;
+        return;
+        
     }
-    else{
-        cout<<k-1<<endl;
+    for (int i = 0; i < n && count < k; i++, count++)
+    {
+        swap(&arr[i],&arr[i+1]);
+        i++;
     }
+    forn(i,n)
+    {
+        cout<<arr[i]<<" ";
+    }
+    cout<<ln;
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
-    for (int it = 1; it <= t; it++)
-    {
+    // ll t;
+    // cin >> t;
+    // for (int it = 1; it <= t; it++)
+    // {
         solve();
-    }
+    // }
     return 0;
 }

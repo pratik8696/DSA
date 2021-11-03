@@ -55,56 +55,39 @@ double eps = 1e-12;
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
 
-bool compare(ll a, ll b)
-{
-    return a > b;
-}
-
 void solve()
 {
-    ll n, x;
-    cin >> n >> x;
-    ll arr[n];
+    int s, n;
+    cin >> s >> n;
+    vector<pair<int, int>> m;
     forn(i, n)
     {
-        cin >> arr[i];
+        int strength,bonus;
+        cin >> strength>>bonus;
+        m.push_back(mp(strength,bonus));
     }
-    sort(arr, arr + n, compare);
-    ll i = 0, k = 1, sum = 0, count = 0;
-    sum = arr[i];
-    if (sum / k < x)
+    sort(all(m));
+    for (auto it : m)
     {
-        cout << 0 << endl;
-        return;
-    }
-    // cout << "THE SUM IS " << double(sum) << " " << double(sum) / double(k) << endl;
-    while (float(sum)/float(k) >= float(x) && i <= n-1)
-    {
-        i++;
-        k++;
-        sum += arr[i];
-        // cout<<i<<" " << "THE SUM IS " << float(sum) << " " << float(sum) / float(k) << endl;
-    }
-    if(sum/k>=x)
-    {
-        if(k>n)
+        if (s > it.first)
         {
-            k=n;
+            s += it.second;
         }
-        cout<<k<<endl;
+        else
+        {
+            cout << "NO" << ln;
+            return;
+        }
     }
-    else{
-        cout<<k-1<<endl;
-    }
+    cout << "YES" << ln;
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
-    for (int it = 1; it <= t; it++)
-    {
-        solve();
-    }
+    //  ll t;
+    //  cin >> t;
+    //  for(int it=1;it<=t;it++) {
+    solve();
+    //  }
     return 0;
 }
