@@ -57,62 +57,42 @@ double eps = 1e-12;
 
 void solve()
 {
-    string s;
+    string s, t = "";
     cin >> s;
-    s.pb('0');
-    map<string, int> v;
-    string k = "";
+    vector<string> p;
     for (int i = 0; i < s.length(); i++)
     {
-        if (s[i] == '4' || s[i] == '7')
+        t.pb(s[i]);
+        if (s[i] == '>')
         {
-            k.push_back(s[i]);
+            p.pb(t);
+            t = "";
+        }
+    }
+    int count = 0;
+    for (int i = 0; i < p.size(); i++)
+    {
+        if (p[i][1] != '/')
+        {
+            for (int j = 0; j < count; j++)
+            {
+                cout << " ";
+            }
+            cout<<p[i]<<ln;
+            count += 2;
         }
         else
         {
-            for (int j = 0; j < k.length(); j++)
+            count -= 2;
+            for (int j = 0; j < count; j++)
             {
-                for (int m = j; m < k.length(); m++)
-                {
-                    string temp = "";
-                    for (int z = j; z <= m; z++)
-                    {
-                        // cout << k[z];
-                        temp.pb(k[z]);
-                    }
-                    v[temp]++;
-                    // cout << ln;
-                }
+                cout << " ";
             }
-            k = "";
+            cout << p[i] << ln;
         }
-    }
-    if (v.size() > 0)
-    {
-        int maxi = INT_MIN;
-        string res = "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz", currres;
-        for (auto z : v)
-        {
-            if (z.second > maxi)
-            {
-                maxi = max(maxi, z.second);
-                res = z.first;
-            }
-            else if (z.second == maxi)
-            {
-                if (res > z.first)
-                {
-                    res = z.first;
-                }
-            }
-        }
-        cout << res << ln;
-    }
-    else
-    {
-        cout << -1 << endl;
     }
 }
+
 int main()
 {
     fast_cin();

@@ -57,60 +57,31 @@ double eps = 1e-12;
 
 void solve()
 {
-    string s;
-    cin >> s;
-    s.pb('0');
-    map<string, int> v;
-    string k = "";
-    for (int i = 0; i < s.length(); i++)
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
+    int n, k, pos = 0;
+    cin >> n >> k;
+    int arr[2 * n + 1];
+    for (int i = 1; i <= n; i++)
     {
-        if (s[i] == '4' || s[i] == '7')
-        {
-            k.push_back(s[i]);
-        }
-        else
-        {
-            for (int j = 0; j < k.length(); j++)
-            {
-                for (int m = j; m < k.length(); m++)
-                {
-                    string temp = "";
-                    for (int z = j; z <= m; z++)
-                    {
-                        // cout << k[z];
-                        temp.pb(k[z]);
-                    }
-                    v[temp]++;
-                    // cout << ln;
-                }
-            }
-            k = "";
-        }
+        cin >> arr[i];
     }
-    if (v.size() > 0)
+    for (int i = n + 1; i <= 2 * n; i++)
     {
-        int maxi = INT_MIN;
-        string res = "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz", currres;
-        for (auto z : v)
-        {
-            if (z.second > maxi)
-            {
-                maxi = max(maxi, z.second);
-                res = z.first;
-            }
-            else if (z.second == maxi)
-            {
-                if (res > z.first)
-                {
-                    res = z.first;
-                }
-            }
-        }
-        cout << res << ln;
+        arr[i] = arr[i - n];
     }
-    else
+    for (int i = k; i < 2 * n + 1; i++)
     {
-        cout << -1 << endl;
+        if (arr[i] == 1)
+        {
+            pos = i;
+            if (pos > n)
+            {
+                pos = pos - n;
+            }
+            cout << pos << ln;
+            return;
+        }
     }
 }
 int main()
