@@ -57,15 +57,39 @@ double eps = 1e-12;
 
 void solve()
 {
-    ll n;
+    int n;
     cin >> n;
-    ll k = 1, sum = 0;
-    for (ll i = n - 1; i >= 1; i--)
+    string s, one = "", two = "";
+    cin >> s;
+    for (int i = 0; i < n; i++)
     {
-        sum += i * k;
-        k++;
+        one.pb(s[i]);
     }
-    cout<<sum+n<<endl;
+    for (int i = n; i < s.length(); i++)
+    {
+        two.pb(s[i]);
+    }
+    sort(all(one));
+    sort(all(two));
+    int cto = 0, ctt = 0;
+    for (int i = 0; i < s.length() / 2; i++)
+    {
+        if ((one[i] - '0') > (two[i] - '0'))
+        {
+            cto++;
+        }
+        else if (((one[i] - '0') < (two[i] - '0')))
+        {
+            ctt++;
+        }
+    }
+    if (cto == s.length() / 2 || ctt == s.length() / 2)
+    {
+        cout << "YES" << endl;
+        return;
+    }
+    cout << "NO" << endl;
+    return;
 }
 int main()
 {

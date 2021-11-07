@@ -89,20 +89,30 @@ void solve()
         res_size = multiply(res_size, arr, i);
     }
 
+    int k = 1, carry = 0;
+    arr[0] = arr[0] + 1;
+    carry = arr[0] / 10;
+    arr[0] = arr[0] % 10;
+    while (carry)
+    {
+        arr[k] = arr[k] + carry;
+        carry = arr[k] / 10;
+        arr[k] = arr[k] % 10;
+    }
     for (int i = res_size - 1; i >= 0; i--)
     {
-        cout<<arr[i];
+        cout << arr[i];
     }
-    cout<<ln;
+    cout << ln;
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
-    for (int it = 1; it <= t; it++)
-    {
+    // ll t;
+    // cin >> t;
+    // for (int it = 1; it <= t; it++)
+    // {
         solve();
-    }
+    // }
     return 0;
 }

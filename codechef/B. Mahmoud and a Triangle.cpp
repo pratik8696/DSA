@@ -57,15 +57,25 @@ double eps = 1e-12;
 
 void solve()
 {
-    ll n;
+    int n;
+    ll x;
     cin >> n;
-    ll k = 1, sum = 0;
-    for (ll i = n - 1; i >= 1; i--)
+    int arr[n];
+    forn(i, n)
     {
-        sum += i * k;
-        k++;
+        cin >> x;
+        arr[i] = x;
     }
-    cout<<sum+n<<endl;
+    sort(al(arr, n));
+    for (int i = 0; i < n - 2; i++)
+    {
+        if (((arr[i] + arr[i + 1]) > arr[i + 2]))
+        {
+            cout << "YES" << ln;
+            return;
+        }
+    }
+    cout << "NO" << ln;
 }
 int main()
 {

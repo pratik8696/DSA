@@ -59,13 +59,7 @@ void solve()
 {
     ll n;
     cin >> n;
-    ll k = 1, sum = 0;
-    for (ll i = n - 1; i >= 1; i--)
-    {
-        sum += i * k;
-        k++;
-    }
-    cout<<sum+n<<endl;
+    cout << ceil(double(n) / double(5)) << ln;
 }
 int main()
 {

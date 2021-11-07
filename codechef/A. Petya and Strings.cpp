@@ -57,15 +57,28 @@ double eps = 1e-12;
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    ll k = 1, sum = 0;
-    for (ll i = n - 1; i >= 1; i--)
+    string a, b;
+    cin >> a >> b;
+    forn(i, a.length())
     {
-        sum += i * k;
-        k++;
+        char temp = toupper(a[i]);
+        a[i] = temp;
     }
-    cout<<sum+n<<endl;
+    forn(i, b.length())
+    {
+        char temp = toupper(b[i]);
+        b[i] = temp;
+    }
+    if(a<b)
+    {
+        cout<<-1<<ln;
+    }
+    else if(a>b){
+        cout<<1<<ln;
+    }
+    else{
+        cout<<0<<ln;
+    }
 }
 int main()
 {

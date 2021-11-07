@@ -55,17 +55,36 @@ double eps = 1e-12;
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
 
+ll factorial(ll a)
+{
+    if (a == 1 || a == 0)
+    {
+        return 0;
+    }
+    else
+    {
+        return (a * (a - 1)) / 2;
+    }
+}
+
 void solve()
 {
-    ll n;
-    cin >> n;
-    ll k = 1, sum = 0;
-    for (ll i = n - 1; i >= 1; i--)
+    ll n, m, minpairs;
+    cin >> n >> m;
+    ll minp = ceil(double(n) / double(m));
+    ll remp = n % m;
+    minpairs = factorial(minp) * (n / m);
+    if(remp>=2)
     {
-        sum += i * k;
-        k++;
+        minpairs+=factorial(remp);
     }
-    cout<<sum+n<<endl;
+    if (n % m == 0)
+    {
+        minpairs = factorial(minp) * m;
+    }
+    ll maxp = n - m + 1;
+    maxp = factorial(maxp);
+    cout << minpairs << " " << maxp << ln;
 }
 int main()
 {

@@ -55,17 +55,58 @@ double eps = 1e-12;
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
 
+vector<int> one;
+vector<int> two;
 void solve()
 {
-    ll n;
-    cin >> n;
-    ll k = 1, sum = 0;
-    for (ll i = n - 1; i >= 1; i--)
+    ll a, b;
+    cin >> a >> b;
+    while (a != 0)
     {
-        sum += i * k;
-        k++;
+        one.pb(a % 3);
+        a = a / 3;
     }
-    cout<<sum+n<<endl;
+    while (b != 0)
+    {
+        two.pb(b % 3);
+        b = b / 3;
+    }
+    ll size = max(one.size(), two.size());
+    if (one.size() < size)
+    {
+        int limit = size - one.size();
+        for (int i = 1; i <= limit; i++)
+        {
+            one.pb(0);
+        }
+    }
+    else if (two.size() < size)
+    {
+        int limit = size - two.size();
+        for (int i = 1; i <= limit; i++)
+        {
+            two.pb(0);
+        }
+    }
+    vector<int> res;
+    for (int i = 0; i < one.size(); i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            if ((one[i] + j) % 3 == two[i])
+            {
+                res.pb(j);
+                break;
+            }
+        }
+    }
+    ll h=1,sum=0;
+    for (auto l : res)
+    {
+        sum+=l*h;
+        h=h*3;
+    }
+    cout<<sum<<ln;
 }
 int main()
 {

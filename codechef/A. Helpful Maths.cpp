@@ -57,15 +57,22 @@ double eps = 1e-12;
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    ll k = 1, sum = 0;
-    for (ll i = n - 1; i >= 1; i--)
+    string s;
+    cin >> s;
+    vector<int> m;
+    for (int i = 0; i < s.length(); i++)
     {
-        sum += i * k;
-        k++;
+        if (s[i] != '+')
+        {
+            m.pb(s[i] - '0');
+        }
     }
-    cout<<sum+n<<endl;
+    sort(all(m));
+    cout << m[0];
+    for (int i = 1; i < m.size(); i++)
+    {
+        cout << "+" << m[i];
+    }
 }
 int main()
 {

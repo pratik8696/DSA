@@ -57,15 +57,36 @@ double eps = 1e-12;
 
 void solve()
 {
-    ll n;
+    int n, x = 0, y = 0;
     cin >> n;
-    ll k = 1, sum = 0;
-    for (ll i = n - 1; i >= 1; i--)
+    int arr[n];
+    forn(i, n)
     {
-        sum += i * k;
-        k++;
+        cin >> arr[i];
+        if (arr[i] == 100)
+        {
+            x++;
+        }
+        else
+        {
+            y++;
+        }
     }
-    cout<<sum+n<<endl;
+    if (x == 0 && y % 2 != 0)
+    {
+        cout << "NO" << ln;
+        return;
+    }
+    if ((x + 2 * y) % 2 == 0)
+    {
+        cout << "YES" << ln;
+        return;
+    }
+    else
+    {
+        cout << "NO" << endl;
+        return;
+    }
 }
 int main()
 {

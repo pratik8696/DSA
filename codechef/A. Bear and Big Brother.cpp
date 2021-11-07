@@ -57,15 +57,18 @@ double eps = 1e-12;
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    ll k = 1, sum = 0;
-    for (ll i = n - 1; i >= 1; i--)
+    ll a, b;
+    cin >> a >> b;
+    for (int i = 0; i < 1000; i++)
     {
-        sum += i * k;
-        k++;
+        ll newa = a * pow(3, i);
+        ll newb = b * pow(2, i);
+        if (newa > newb)
+        {
+            cout << i << endl;
+            return;
+        }
     }
-    cout<<sum+n<<endl;
 }
 int main()
 {

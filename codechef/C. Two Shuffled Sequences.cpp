@@ -54,26 +54,28 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
+#define max 200010
 
 void solve()
 {
-    ll n;
+    int n;
     cin >> n;
-    ll k = 1, sum = 0;
-    for (ll i = n - 1; i >= 1; i--)
+    int hash[max];
+    fill(al(hash, n), 0);
+    int arr[n];
+    forn(i, n)
     {
-        sum += i * k;
-        k++;
+        cin >> arr[i];
     }
-    cout<<sum+n<<endl;
 }
 int main()
 {
     fast_cin();
-    //  ll t;
-    //  cin >> t;
-    //  for(int it=1;it<=t;it++) {
-    solve();
-    //  }
+    ll t;
+    cin >> t;
+    for (int it = 1; it <= t; it++)
+    {
+        solve();
+    }
     return 0;
 }
