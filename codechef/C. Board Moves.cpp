@@ -54,60 +54,25 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define max 200010
-
-bool compare(int a,int b)
-{
-    return a>b;
-}
 
 void solve()
 {
-    int n;
+    ll n,sum=0;
     cin >> n;
-    int hash[max];
-    fill(al(hash, n), 0);
-    vector<int> rep;
-    set<int> org;
-    int arr[n];
-    forn(i, n)
+    for (ll i = 1,k=0; i <= n; i+=2,k++)
     {
-        cin >> arr[i];
-        org.insert(arr[i]);
-        if(hash[arr[i]]==1)
-        {
-            rep.pb(arr[i]);
-        }
-        else if(hash[arr[i]]==2)
-        {
-            cout<<"NO"<<endl;
-            return;
-        }
-        hash[arr[i]]++;
+        sum+=4*(i-1)*k;
     }
-    cout<<"YES"<<ln;
-    sort(all(rep),compare);
-    cout << org.size() << ln;
-    for (auto t : org)
-    {
-        cout << t << " ";
-    }
-    cout << ln;
-    cout<<rep.size()<<ln;
-    for(auto r:rep)
-    {
-        cout<<r<<" ";
-    }
-    cout<<ln;
+    cout<<sum<<ln;
 }
 int main()
 {
     fast_cin();
-    // ll t;
-    // cin >> t;
-    // for (int it = 1; it <= t; it++)
-    // {
+    ll t;
+    cin >> t;
+    for (int it = 1; it <= t; it++)
+    {
         solve();
-    // }
+    }
     return 0;
 }
