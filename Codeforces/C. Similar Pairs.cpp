@@ -57,33 +57,45 @@ double eps = 1e-12;
 
 void solve()
 {
-    int n;
+    ll n, even = 0, odd = 0, one = 0;
     cin >> n;
-    vector<ll> arr(n);
+    ll arr[n];
     forn(i, n)
     {
         cin >> arr[i];
-    }
-    sort(all(arr));
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < n; j++)
+        if (arr[i] % 2 == 0)
         {
-            if (i != j && arr[i] % 2 == arr[j] % 2 || (abs(arr[i] - arr[j]) == 1))
-            {
-                arr.erase(arr.begin() + i);
-                arr.erase(arr.begin() + j);
-            }
+            even++;
+        }
+        else
+        {
+            odd++;
         }
     }
-    if (arr.size() == 0)
+    sort(al(arr, n));
+    for (int i = 0; i < n - 1; i++)
     {
-        cout << "YES" << ln;
+        if (arr[i + 1] - arr[i]==1)
+        {
+            one++;
+            i++;
+        }
     }
-    else
+    // cout<<even<<" "<<odd<<" "<<one<<endl;
+    if (even % 2 == odd % 2)
     {
-        cout << "NO" << ln;
+        cout << "YES" << endl;
+        return;
     }
+    even = even - one;
+    odd = odd - one;
+    // cout << even << " " << odd << " " << one << endl;
+    if (even % 2 ==odd % 2 )
+    {
+        cout << "YES" << endl;
+        return;
+    }
+    cout<<"NO"<<endl;
 }
 int main()
 {

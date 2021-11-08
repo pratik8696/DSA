@@ -21,7 +21,7 @@
 #include <fstream>
 
 using namespace std;
-
+typedef unsigned long long ull;
 typedef long long ll;
 typedef long double ld;
 typedef pair<int, int> p32;
@@ -55,75 +55,82 @@ double eps = 1e-12;
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
 
-bool compare(ll a, ll b)
-{
-    return a > b;
-}
-
 void solve()
 {
-    int n;
-    cin >> n;
-    ll arr[n + 2];
-    set<ll> org;
-    vector<ll> rep;
-    int flag = 0;
+    int n, m;
+    cin >> n >> m;
+    int arr[n][m];
+    int arr1[n][m];
     forn(i, n)
     {
-        cin >> arr[i];
-        org.insert(-1 * arr[i]);
+        forn(j, m)
+        {
+            cin >> arr[i][j];
+            arr1[i][j] = arr[i][j];
+        }
     }
-    arr[n] = INT_MIN;
-    arr[n + 1] = -999999999999999;
-    sort(al(arr, n), compare);
-    if(arr[0]==arr[1])
+    forn(i, n)
     {
-        cout<<-1<<endl;
-        return;
+        for (int j = m - 1; j >= 0; j--)
+        {
+            if (arr[i][j] == 0)
+            {
+                arr[i][j] = arr[i][j + 1] - 1;
+            }
+        }
     }
+    forn(i, m)
+    {
+        for (int j = n - 1; j >= 0; j--)
+        {
+            if (arr1[j][i] == 0)
+            {
+                arr1[j][i] = arr1[j + 1][i] - 1;
+            }
+        }
+    }
+    ull sum = 0;
+    forn(i, n)
+    {
+        forn(j, m)
+        {
+            arr[i][j] = min(arr[i][j], arr1[i][j]);
+            sum += arr[i][j];
+        }
+    }
+
     for (int i = 0; i < n; i++)
     {
-        if (arr[i] == arr[i + 1] && arr[i + 1] != arr[i + 2])
+        for (int j = 0; j < m - 1; j++)
         {
-            flag = 1;
-            rep.pb(arr[i]);
-        }
-        if (arr[i] == arr[i + 1] && arr[i + 1] == arr[i + 2] && arr[i] == arr[i + 2])
-        {
-            cout << "-1" << endl;
-            return;
+            if (arr[i][j] >= arr[i][j+1])
+            {
+                cout << "-1" << endl;
+                return;
+            }
         }
     }
-    if (flag == 0)
+    for (int i = 0; i < m; i++)
     {
-        for (int i = 0; i < n; i++)
+        for (int j = 0; j < n-1; j++)
         {
-            cout << arr[i] << " ";
+            if(arr[j][i]>=arr[j+1][i])
+            {
+                cout << "-1" << endl;
+                return;
+            }
         }
-        cout << ln;
     }
-    else
-    {
-        sort(all(rep));
-        for(auto t:rep)
-        {
-            cout<<t<<" ";
-        }
-        for(auto t:org)
-        {
-            cout<<-1*t<<" ";
-        }
-        cout<<ln;
-    }
+    cout << sum << ln;
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
-    for (int it = 1; it <= t; it++)
-    {
-        solve();
-    }
+    // ll t;
+    // cin >> t;
+    // for (int it = 1; it <= t; it++)
+    // {
+    solve();
+    // }
     return 0;
 }

@@ -21,7 +21,7 @@
 #include <fstream>
 
 using namespace std;
-
+typedef unsigned long long ull;
 typedef long long ll;
 typedef long double ld;
 typedef pair<int, int> p32;
@@ -55,66 +55,27 @@ double eps = 1e-12;
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
 
-bool compare(ll a, ll b)
-{
-    return a > b;
-}
-
 void solve()
 {
-    int n;
-    cin >> n;
-    ll arr[n + 2];
-    set<ll> org;
-    vector<ll> rep;
-    int flag = 0;
-    forn(i, n)
-    {
-        cin >> arr[i];
-        org.insert(-1 * arr[i]);
-    }
-    arr[n] = INT_MIN;
-    arr[n + 1] = -999999999999999;
-    sort(al(arr, n), compare);
-    if(arr[0]==arr[1])
+    ll zero=0,one=0;
+    string s;
+    cin >> s;
+    if(s.length()%2!=0)
     {
         cout<<-1<<endl;
         return;
     }
-    for (int i = 0; i < n; i++)
+    forn(i,s.length())
     {
-        if (arr[i] == arr[i + 1] && arr[i + 1] != arr[i + 2])
+        if(s[i]=='0')
         {
-            flag = 1;
-            rep.pb(arr[i]);
+            zero++;
         }
-        if (arr[i] == arr[i + 1] && arr[i + 1] == arr[i + 2] && arr[i] == arr[i + 2])
-        {
-            cout << "-1" << endl;
-            return;
+        else{
+            one++;
         }
     }
-    if (flag == 0)
-    {
-        for (int i = 0; i < n; i++)
-        {
-            cout << arr[i] << " ";
-        }
-        cout << ln;
-    }
-    else
-    {
-        sort(all(rep));
-        for(auto t:rep)
-        {
-            cout<<t<<" ";
-        }
-        for(auto t:org)
-        {
-            cout<<-1*t<<" ";
-        }
-        cout<<ln;
-    }
+    cout<<abs(zero-one)/2<<ln;
 }
 int main()
 {
