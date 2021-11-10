@@ -55,30 +55,42 @@ double eps = 1e-12;
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
 
-void solve()
+struct node
 {
-    ull n, k;
-    cin >> n >> k;
-    if (n == 2)
+    node *right;
+    node *left;
+    int key;
+    node(int n)
     {
-        cout << 2 * k - 1 << ln;
-        return;
+        key = n;
+        right = NULL;
+        left = NULL;
     }
-    ull rem = k % (n - 1), mul = (k - 1) / (n - 1);
-    if (rem == 0)
+};
+// it prints the k+1 level i.e if
+// you enter k==2 then it will print the third level
+void printnode(node *root, int k)
+{
+    if (root != NULL)
     {
-        rem = n - 1;
+        if (k == 0)
+        {
+            cout << root->key << " ";
+        }
+        printnode(root->left, k - 1);
+        printnode(root->right, k - 1);
     }
-    cout << n * mul + rem << ln;
 }
+
 int main()
 {
-    fast_cin();
-    ll t;
-    cin >> t;
-    for (int it = 1; it <= t; it++)
-    {
-        solve();
-    }
-    return 0;
+    int k;
+    cin >> k;
+    node *root = new node(10);
+    root->left = new node(20);
+    root->right = new node(30);
+    root->left->left = new node(40);
+    root->left->right = new node(50);
+    root->right->right = new node(70);
+    printnode(root, k);
 }

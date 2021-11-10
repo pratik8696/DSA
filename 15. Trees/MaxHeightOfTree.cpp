@@ -55,30 +55,37 @@ double eps = 1e-12;
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
 
-void solve()
+struct node
 {
-    ull n, k;
-    cin >> n >> k;
-    if (n == 2)
+    node *right;
+    node *left;
+    int key;
+    node(int n)
     {
-        cout << 2 * k - 1 << ln;
-        return;
+        key = n;
+        right = NULL;
+        left = NULL;
     }
-    ull rem = k % (n - 1), mul = (k - 1) / (n - 1);
-    if (rem == 0)
+};
+
+int maxheight(node *root)
+{
+    if (root == NULL)
     {
-        rem = n - 1;
+        return 0;
     }
-    cout << n * mul + rem << ln;
+    else
+    {
+        return (max(maxheight(root->left), maxheight(root->right)) + 1);
+    }
 }
 int main()
 {
-    fast_cin();
-    ll t;
-    cin >> t;
-    for (int it = 1; it <= t; it++)
-    {
-        solve();
-    }
-    return 0;
+    node *root = new node(10);
+    root->left = new node(20);
+    root->right = new node(30);
+    root->right->left = new node(40);
+    root->right->right = new node(50);
+    root->right->right->right = new node(60);
+    cout<<maxheight(root)<<endl;
 }
