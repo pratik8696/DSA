@@ -57,57 +57,44 @@ double eps = 1e-12;
 
 void solve()
 {
-    int maxi = 300000;
     int n;
     cin >> n;
-    int hash[maxi];
-    fill(al(hash, maxi), 0);
-    int arr[n];
-    int flagend = 1;
-    set<int> s, s1;
-
-    forn(i, n)
+    string s, a = "", b = "";
+    cin >> s;
+    forn(i, s.length())
     {
-        cin >> arr[i];
-        s1.insert(-1 * arr[i]);
-        if (hash[arr[i]] == 1)
+        if (s[i] == '2')
         {
-            s.insert(arr[i]);
+            a.pb('1');
+            b.pb('1');
         }
-        if (hash[arr[i]] == 2)
+        else if (s[i] == '0')
         {
-            flagend = 0;
+            a.pb('0');
+            b.pb('0');
         }
-        hash[arr[i]]++;
-    }
-    if (flagend == 0)
-    {
-        cout << "NO" << ln;
-        return;
-    }
-    else
-    {
-        cout << "YES" << ln;
-        cout << s.size() << ln;
-        for (auto it : s)
+        else if (s[i] == '1')
         {
-            cout << it << " ";
-        }
-        cout << ln;
-        cout << s1.size() << ln;
-        for (auto it : s1)
-        {
-            cout << -1 * it << " ";
+            a.pb('1');
+            b.pb('0');
+            for (int j = i + 1; j < s.length(); j++)
+            {
+                a.pb('0');
+                b.pb(s[j]);
+            }
+            break;
         }
     }
+    cout << a << ln << b << ln;
 }
 int main()
 {
     fast_cin();
-    //  ll t;
-    //  cin >> t;
-    //  for(int it=1;it<=t;it++) {
-    solve();
-    //  }
+    ll t;
+    cin >> t;
+    for (int it = 1; it <= t; it++)
+    {
+        solve();
+    }
     return 0;
 }

@@ -57,57 +57,33 @@ double eps = 1e-12;
 
 void solve()
 {
-    int maxi = 300000;
     int n;
     cin >> n;
-    int hash[maxi];
-    fill(al(hash, maxi), 0);
-    int arr[n];
-    int flagend = 1;
-    set<int> s, s1;
+    ll a[n];
 
-    forn(i, n)
+    for (ll i = 0; i < n; i++)
     {
-        cin >> arr[i];
-        s1.insert(-1 * arr[i]);
-        if (hash[arr[i]] == 1)
-        {
-            s.insert(arr[i]);
-        }
-        if (hash[arr[i]] == 2)
-        {
-            flagend = 0;
-        }
-        hash[arr[i]]++;
+        cin >> a[i];
     }
-    if (flagend == 0)
+    ll res = 0;
+    for (ll i = 0; i < n - 1; i++)
     {
-        cout << "NO" << ln;
-        return;
-    }
-    else
-    {
-        cout << "YES" << ln;
-        cout << s.size() << ln;
-        for (auto it : s)
+        if (a[i] > a[i + 1])
         {
-            cout << it << " ";
-        }
-        cout << ln;
-        cout << s1.size() << ln;
-        for (auto it : s1)
-        {
-            cout << -1 * it << " ";
+            res += abs(a[i] - a[i + 1]);
         }
     }
+
+    cout << res << ln;
 }
 int main()
 {
     fast_cin();
-    //  ll t;
-    //  cin >> t;
-    //  for(int it=1;it<=t;it++) {
-    solve();
-    //  }
+    ll t;
+    cin >> t;
+    for (int it = 1; it <= t; it++)
+    {
+        solve();
+    }
     return 0;
 }

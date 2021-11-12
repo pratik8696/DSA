@@ -21,7 +21,7 @@
 #include <fstream>
 
 using namespace std;
-
+typedef unsigned long long ull;
 typedef long long ll;
 typedef long double ld;
 typedef pair<int, int> p32;
@@ -57,45 +57,59 @@ double eps = 1e-12;
 
 void solve()
 {
-    ll n, even = 0, odd = 0, one = 0;
+    int n;
     cin >> n;
-    ll arr[n];
+    int arr[n];
+    int even = 0, odd = 0;
     forn(i, n)
     {
         cin >> arr[i];
-        if (arr[i] % 2 == 0)
-        {
-            even++;
-        }
-        else
+        if (arr[i] & 1)
         {
             odd++;
         }
-    }
-    sort(al(arr, n));
-    for (int i = 0; i < n - 1; i++)
-    {
-        if (arr[i + 1] - arr[i]==1)
+        else
         {
-            one++;
-            i++;
+            even++;
         }
     }
-    // cout<<even<<" "<<odd<<" "<<one<<endl;
-    if (even % 2 == odd % 2)
+    if (n & 1)
     {
-        cout << "YES" << endl;
+        cout << "NO" << ln;
         return;
     }
-    even = even - one;
-    odd = odd - one;
-    // cout << even << " " << odd << " " << one << endl;
-    if (even % 2 ==odd % 2 )
+    else
     {
-        cout << "YES" << endl;
-        return;
+        sort(al(arr, n));
+        int one = 0;
+        forn(i, n - 1)
+        {
+            if (abs(arr[i + 1] - arr[i]) == 1)
+            {
+                one++;
+            }
+        }
+        if (even % 2 == 0 && odd % 2 == 0)
+        {
+            cout << "YES" << ln;
+            // cout<<even<<" "<<odd<<" "<<one<<ln;
+            return;
+        }
+        else
+        {
+            if (even % 2 != 0 && odd % 2 != 0 && one > 0)
+            {
+                cout << "YES" << ln;
+                // cout << even << " " << odd << " " << one << ln;
+                return;
+            }
+            else
+            {
+                cout << "NO" << endl;
+            }
+        }
     }
-    cout<<"NO"<<endl;
+    // cout << "NO" << endl;
 }
 int main()
 {

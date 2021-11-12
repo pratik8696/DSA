@@ -21,7 +21,7 @@
 #include <fstream>
 
 using namespace std;
-typedef unsigned long long ull;
+
 typedef long long ll;
 typedef long double ld;
 typedef pair<int, int> p32;
@@ -57,57 +57,82 @@ double eps = 1e-12;
 
 void solve()
 {
-    int maxi = 300000;
-    int n;
+    unordered_map<char, int> symbols = {{'(', 1}, {')', -1}};
+    int n, count = 0;
     cin >> n;
-    int hash[maxi];
-    fill(al(hash, maxi), 0);
-    int arr[n];
-    int flagend = 1;
-    set<int> s, s1;
-
-    forn(i, n)
+    string s;
+    cin >> s;
+    stack<char> st;
+    int open = 0, close = 0;
+    forn(i, s.length())
     {
-        cin >> arr[i];
-        s1.insert(-1 * arr[i]);
-        if (hash[arr[i]] == 1)
+        if (s[i] == '(')
         {
-            s.insert(arr[i]);
+            open++;
         }
-        if (hash[arr[i]] == 2)
+        else
         {
-            flagend = 0;
+            close++;
         }
-        hash[arr[i]]++;
     }
-    if (flagend == 0)
+    if (open != close)
     {
         cout << "NO" << ln;
         return;
     }
+    for (int i = 0; i < s.length(); i++)
+    {
+        if (symbols[s[i]] > 0)
+        {
+            st.push(s[i]);
+        }
+        else if (symbols[s[i]] < 0)
+        {
+            if (st.empty())
+            {
+                count++;
+            }
+            else
+            {
+                st.pop();
+            }
+        }
+    }
+    if (st.empty())
+    {
+
+        count = st.size() + count;
+        // cout << count / 2 << endl;
+    }
     else
     {
+        count = st.size() + count;
+        // cout << count / 2 << endl;
+    }
+    if (count == 0)
+    {
         cout << "YES" << ln;
-        cout << s.size() << ln;
-        for (auto it : s)
+    }
+    else
+    {
+        if ((count / 2) == 1 && (count % 2 == 0))
         {
-            cout << it << " ";
+            cout << "YES" << ln;
         }
-        cout << ln;
-        cout << s1.size() << ln;
-        for (auto it : s1)
+        else
         {
-            cout << -1 * it << " ";
+            cout << "NO" << ln;
         }
     }
 }
 int main()
 {
     fast_cin();
-    //  ll t;
-    //  cin >> t;
-    //  for(int it=1;it<=t;it++) {
+    // ll t;
+    // cin >> t;
+    // for (int it = 1; it <= t; it++)
+    // {
     solve();
-    //  }
+    // }
     return 0;
 }

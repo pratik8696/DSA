@@ -60,67 +60,54 @@ void solve()
     int n, m;
     cin >> n >> m;
     int arr[n][m];
-    int arr1[n][m];
+    // ll sum = 0;
     forn(i, n)
     {
         forn(j, m)
         {
             cin >> arr[i][j];
-            arr1[i][j] = arr[i][j];
         }
     }
-    forn(i, n)
+    // from right to left
+    ll sum = 0;
+    for (int i = n - 1; i >= 0; i--)
     {
         for (int j = m - 1; j >= 0; j--)
         {
             if (arr[i][j] == 0)
             {
-                arr[i][j] = arr[i][j + 1] - 1;
+                int x = arr[i][j + 1] - 1;
+                int y = arr[i + 1][j] - 1;
+                arr[i][j] = min(x, y);
             }
-        }
-    }
-    forn(i, m)
-    {
-        for (int j = n - 1; j >= 0; j--)
-        {
-            if (arr1[j][i] == 0)
-            {
-                arr1[j][i] = arr1[j + 1][i] - 1;
-            }
-        }
-    }
-    ull sum = 0;
-    forn(i, n)
-    {
-        forn(j, m)
-        {
-            arr[i][j] = min(arr[i][j], arr1[i][j]);
             sum += arr[i][j];
         }
     }
-
+    // return stage
     for (int i = 0; i < n; i++)
     {
         for (int j = 0; j < m - 1; j++)
         {
-            if (arr[i][j] >= arr[i][j+1])
+            if (arr[i][j] >= arr[i][j + 1])
             {
-                cout << "-1" << endl;
+                cout << -1 << endl;
                 return;
             }
         }
     }
+    // return stage
     for (int i = 0; i < m; i++)
     {
-        for (int j = 0; j < n-1; j++)
+        for (int j = 0; j < n - 1; j++)
         {
-            if(arr[j][i]>=arr[j+1][i])
+            if (arr[j][i] >= arr[j + 1][i])
             {
-                cout << "-1" << endl;
+                cout << -1 << endl;
                 return;
             }
         }
     }
+
     cout << sum << ln;
 }
 int main()

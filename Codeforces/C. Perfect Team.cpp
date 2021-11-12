@@ -57,57 +57,44 @@ double eps = 1e-12;
 
 void solve()
 {
-    int maxi = 300000;
-    int n;
-    cin >> n;
-    int hash[maxi];
-    fill(al(hash, maxi), 0);
-    int arr[n];
-    int flagend = 1;
-    set<int> s, s1;
-
-    forn(i, n)
+    ll a, b, c;
+    cin >> a >> b >> c;
+    if (c <= a && c <= b)
     {
-        cin >> arr[i];
-        s1.insert(-1 * arr[i]);
-        if (hash[arr[i]] == 1)
+        ll maxteam = min(a, b);
+        a = a - maxteam;
+        b = b - maxteam;
+        if (a + b + c >= maxteam)
         {
-            s.insert(arr[i]);
+            cout << maxteam << ln;
         }
-        if (hash[arr[i]] == 2)
+        else
         {
-            flagend = 0;
+            ll leftteam=maxteam-(a+b+c);
+            leftteam=(2*leftteam)/3;
+            cout<<a+b+c+leftteam<<ln;
         }
-        hash[arr[i]]++;
     }
-    if (flagend == 0)
+    else if (c >= a || c >= b)
     {
-        cout << "NO" << ln;
-        return;
-    }
-    else
-    {
-        cout << "YES" << ln;
-        cout << s.size() << ln;
-        for (auto it : s)
-        {
-            cout << it << " ";
-        }
-        cout << ln;
-        cout << s1.size() << ln;
-        for (auto it : s1)
-        {
-            cout << -1 * it << " ";
-        }
+        cout << min(a, b) << ln;
     }
 }
 int main()
 {
     fast_cin();
-    //  ll t;
-    //  cin >> t;
-    //  for(int it=1;it<=t;it++) {
-    solve();
-    //  }
+    ll t;
+    cin >> t;
+    for (int it = 1; it <= t; it++)
+    {
+        solve();
+    }
     return 0;
 }
+
+
+
+
+
+
+

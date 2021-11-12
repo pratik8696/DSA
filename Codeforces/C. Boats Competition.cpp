@@ -59,53 +59,55 @@ void solve()
 {
     int n;
     cin >> n;
-    vector<pair<int, int>> arr;
+    int arr[n];
     forn(i, n)
     {
-        int x;
-        cin >> x;
-        arr.pb(mp(x, 0));
+        cin >> arr[i];
     }
+    sort(arr, arr + n);
     map<int, int> m;
-    for (int i = 0; i < n; i++)
+    forn(i, n)
     {
-        for (int j = 0; j < n; j++)
+        forn(j, n)
         {
             if (i != j)
             {
-                m[arr[i].first + arr[j].first]++;
+                int sum = arr[i] + arr[j];
+                m[sum]++;
             }
         }
     }
-    int maxi = INT_MIN, maxpair = INT16_MIN;
+    vector<int> v;
     for (auto t : m)
     {
-        // cout << t.fi << " " << t.se << endl;
-        if (t.se > maxi)
-        {
-            maxi = t.se;
-            maxpair = t.fi;
-        }
+        v.pb(t.first);
     }
-    // cout << maxpair << " " << maxi << ln;
-    int count = 0;
-    for (int i = 0; i < n; i++)
+    int maxcount = 0;
+    for (int k = 0; k < v.size(); k++)
     {
-        for (int j = 0; j < n; j++)
+        int i = 0, j = n - 1, count = 0;
+        while (i < j)
         {
-            if ((arr[i].first + arr[j].first) == maxpair)
+            if (arr[i] + arr[j] == v[k])
             {
-                if (i != j && arr[i].second == 0 && arr[j].second == 0)
-                {
-                    arr[i].second = 1;
-                    arr[j].second = 1;
-                    count++;
-                }
+                i++;
+                j--;
+                count++;
+            }
+            else if (arr[i] + arr[j] > v[k])
+            {
+                j--;
+            }
+            else if (arr[i] + arr[j] < v[k])
+            {
+                i++;
             }
         }
+        maxcount = max(count, maxcount);
     }
-    cout<<count<<ln;
+    cout << maxcount << ln;
 }
+
 int main()
 {
     fast_cin();
@@ -117,167 +119,3 @@ int main()
     }
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// 1
-// 1
-// 1
-// 1
-// 1
-// 1
-// 1
-// 1
-// 1
-// 1
-// 1
-// 1
-// 2
-// 1 1
-// 2
-// 2 1
-// 2
-// 1 1
-// 2
-// 2 2
-// 2
-// 2 2
-// 2
-// 2 2
-// 3
-// 2 1 1
-// 3
-// 2 1 1
-// 3
-// 2 2 1
-// 3
-// 1 2 1
-// 3
-// 3 3 3
-// 3
-// 3 2 3
-// 4
-// 2 2 1 1
-// 4
-// 1 2 3 2
-// 4
-// 4 2 4 3
-// 4
-// 4 3 3 3
-// 4
-// 4 4 4 4
-// 4
-// 4 4 4 4
-// 5
-// 1 1 1 1 1
-// 5
-// 1 1 1 1 1
-// 5
-// 1 4 3 5 5
-// 5
-// 2 5 2 1 1
-// 5
-// 5 4 4 5 5
-// 5
-// 4 4 5 5 5
-// 6
-// 2 2 1 1 1 1
-// 6
-// 2 1 1 1 2 1
-// 6
-// 5 1 6 4 2 3
-// 6
-// 3 3 1 2 4 4
-// 6
-// 6 5 6 6 5 6
-// 6
-// 6 6 6 6 6 6
-// 7
-// 1 1 1 2 1 2 1
-// 7
-// 2 1 3 1 3 1 1
-// 7
-// 3 7 1 3 7 2 1
-// 7
-// 4 4 5 4 2 4 6
-// 7
-// 6 7 7 5 7 7 7
-// 7
-// 6 5 6 7 6 7 6

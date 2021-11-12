@@ -57,57 +57,88 @@ double eps = 1e-12;
 
 void solve()
 {
-    int maxi = 300000;
     int n;
     cin >> n;
-    int hash[maxi];
-    fill(al(hash, maxi), 0);
-    int arr[n];
-    int flagend = 1;
-    set<int> s, s1;
-
+    ll arr[n];
+    set<ll> s1;
+    set<ll> s2;
+    vector<ll> v;
+    int flagneg = 1, flagpos = 1;
     forn(i, n)
     {
         cin >> arr[i];
-        s1.insert(-1 * arr[i]);
-        if (hash[arr[i]] == 1)
+        if (arr[i] < 0)
         {
-            s.insert(arr[i]);
+            flagneg = 0;
         }
-        if (hash[arr[i]] == 2)
+        if(arr[i]>=0)
         {
-            flagend = 0;
+            flagpos = 0;
         }
-        hash[arr[i]]++;
     }
-    if (flagend == 0)
+    if (flagneg == 0 && flagpos == 0)
     {
-        cout << "NO" << ln;
-        return;
+        forn(i, n)
+        {
+            if (arr[i] < 0)
+            {
+                s1.insert(-1*arr[i]);
+                if (s2.size() > 0)
+                {
+                    auto it = s2.begin();
+                    v.pb(-1 * (*it));
+                    s2.clear();
+                }
+            }
+            else
+            {
+                s2.insert(-1*arr[i]);
+                if (s1.size() > 0)
+                {
+                    auto it = s1.begin();
+                    v.pb(-1 * (*it));
+                    s1.clear();
+                }
+            }
+        }
+        if (s1.size() > 0)
+        {
+            auto it = s1.begin();
+            v.pb(-1 * (*it));
+        }
+        if (s2.size() > 0)
+        {
+            auto it = s2.begin();
+            v.pb(-1 * (*it));
+        }
+        ll summ=0;
+        for (auto it : v)
+        {
+            summ=summ+it;
+            // cout << it << " "<<summ<<ln;
+        }
+        // cout << ln;
+        cout << summ << endl;
     }
     else
     {
-        cout << "YES" << ln;
-        cout << s.size() << ln;
-        for (auto it : s)
+        ll maxi = INT_MIN;
+        forn(i, n)
         {
-            cout << it << " ";
+            maxi = max(maxi, arr[i]);
         }
-        cout << ln;
-        cout << s1.size() << ln;
-        for (auto it : s1)
-        {
-            cout << -1 * it << " ";
-        }
+        cout << maxi << endl;
     }
+    
 }
 int main()
 {
     fast_cin();
-    //  ll t;
-    //  cin >> t;
-    //  for(int it=1;it<=t;it++) {
-    solve();
-    //  }
+    ll t;
+    cin >> t;
+    for (int it = 1; it <= t; it++)
+    {
+        solve();
+    }
     return 0;
 }
