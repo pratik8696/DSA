@@ -54,83 +54,38 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 3000
-
-char c[maxi][maxi];
 
 void solve()
 {
-    int n, m, k;
-    vector<ll> v;
-    ll count = 0;
-    cin >> n >> m >> k;
-    for (int i = 0; i < maxi; i++)
+    int n, k;
+    cin >> n >> k;
+    string s, res = "";
+    cin >> s;
+    int open = k / 2, j, close = k / 2;
+    ;
+    for (int i = 0; i < s.length(); i++)
     {
-        for (int j = 0; j < maxi; j++)
+        if (s[i] == '(' && open)
         {
-            c[i][j] = '*';
+            res.pb(s[i]);
+            open--;
+        }
+        else if (s[i] == ')' && close)
+        {
+            res.pb(s[i]);
+            close--;
         }
     }
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < m; j++)
-        {
-            cin >> c[i][j];
-        }
-    }
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < m + 1; j++)
-        {
-            if (c[i][j] == '.')
-            {
-                count++;
-            }
-            else
-            {
-                if (count >= k)
-                {
-                    v.pb(count);
-                }
-                count = 0;
-            }
-        }
-    }
-    if (k!=1)
-    {
-        for (int j = 0; j < m; j++)
-        {
-            for (int i = 0; i < n + 1; i++)
-            {
-                if (c[i][j] == '.')
-                {
-                    count++;
-                }
-                else
-                {
-                    if (count >= k)
-                    {
-                        v.pb(count);
-                    }
-                    count = 0;
-                }
-            }
-        }
-    }
-    ll sum = 0;
-    for (auto t : v)
-    {
-        sum += (t - k + 1);
-    }
-    cout << sum << ln;
+    cout << res << ln;
 }
 int main()
 {
     fast_cin();
-    //  ll t;
-    //  cin >> t;
-    //  for(int it=1;it<=t;it++) {
+    // ll t;
+    // cin >> t;
+    // for (int it = 1; it <= t; it++)
+    // {
     solve();
-    //  }
+    // }
     return 0;
 }

@@ -54,75 +54,101 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 3000
 
-char c[maxi][maxi];
+
 
 void solve()
 {
-    int n, m, k;
-    vector<ll> v;
-    ll count = 0;
-    cin >> n >> m >> k;
-    for (int i = 0; i < maxi; i++)
+    string s;
+    cin >> s;
+    int k, cone = 0, snow = 0;
+    cin >> k;
+    vector<pair<char, int>> v;
+    for (int i = 0; i < s.length(); i++)
     {
-        for (int j = 0; j < maxi; j++)
+        if (s[i] != '?' && s[i] != '*')
         {
-            c[i][j] = '*';
+            v.pb(mp(s[i], 0));
         }
-    }
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < m; j++)
+        else
         {
-            cin >> c[i][j];
-        }
-    }
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < m + 1; j++)
-        {
-            if (c[i][j] == '.')
+            if (s[i] == '?')
             {
-                count++;
+                v[v.size() - 1].second = 1;
+                cone++;
             }
             else
             {
-                if (count >= k)
-                {
-                    v.pb(count);
-                }
-                count = 0;
+                v[v.size() - 1].second = 2;
+                snow++;
             }
         }
     }
-    if (k!=1)
+    // for (auto t : v)
+    // {
+    //     cout << t.first;
+    // }
+    // cout << ln;
+    // for (auto t : v)
+    // {
+    //     cout << t.second;
+    // }
+    // cout << ln;
+    // new value of string;
+    int newl = v.size();
+    if (k == newl)
     {
-        for (int j = 0; j < m; j++)
+        for (auto t : v)
         {
-            for (int i = 0; i < n + 1; i++)
+            cout << t.first;
+        }
+        cout << ln;
+    }
+    else if (k < newl)
+    {
+        int remove = newl - k;
+        string res = "";
+        for (int i = 0; i < v.size(); i++)
+        {
+            if (remove && v[i].second != 0)
             {
-                if (c[i][j] == '.')
+                remove--;
+            }
+            else{
+                res.pb(v[i].first);
+            }
+        }
+        if(res.length()!=k)
+        {
+            cout<<"Impossible"<<ln;
+            return;
+        }
+        cout<<res<<ln;
+    }
+    else
+    {
+        int add=k-newl;
+        // cout<<add<<ln;
+        string res="";
+        for (int i = 0; i < v.size(); i++)
+        {
+            res.pb(v[i].first);
+            if(add&&v[i].second==2)
+            {
+                for(;add!=0;add--)
                 {
-                    count++;
-                }
-                else
-                {
-                    if (count >= k)
-                    {
-                        v.pb(count);
-                    }
-                    count = 0;
+                    res.pb(v[i].first);
                 }
             }
         }
+        if (res.length() != k)
+        {
+            cout << "Impossible" << ln;
+            return;
+        }
+        // cout<<res.length()<<ln;
+        cout << res << ln;
     }
-    ll sum = 0;
-    for (auto t : v)
-    {
-        sum += (t - k + 1);
-    }
-    cout << sum << ln;
 }
 int main()
 {

@@ -54,83 +54,57 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 3000
 
-char c[maxi][maxi];
+void swap(int *a, int *b)
+{
+    int t = *a;
+    *a = *b;
+    *b = t;
+}
 
 void solve()
 {
-    int n, m, k;
-    vector<ll> v;
-    ll count = 0;
-    cin >> n >> m >> k;
-    for (int i = 0; i < maxi; i++)
+    int n, low = INT_MAX;
+    cin >> n;
+    int arr[n];
+    forn(i, n)
     {
-        for (int j = 0; j < maxi; j++)
-        {
-            c[i][j] = '*';
-        }
+        cin >> arr[i];
+        low = min(low, arr[i]);
     }
-    for (int i = 0; i < n; i++)
+    for (int i = 0; i < n - 1; i++)
     {
-        for (int j = 0; j < m; j++)
+        for (int j = i+1; j < n; j++)
         {
-            cin >> c[i][j];
-        }
-    }
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < m + 1; j++)
-        {
-            if (c[i][j] == '.')
+            if (arr[i] > arr[j] && __gcd(arr[i], arr[j]) == low)
             {
-                count++;
-            }
-            else
-            {
-                if (count >= k)
-                {
-                    v.pb(count);
-                }
-                count = 0;
+                swap(&arr[i], &arr[j]);
             }
         }
     }
-    if (k!=1)
+    forn(i,n)
     {
-        for (int j = 0; j < m; j++)
+        cout<<arr[i]<<" ";
+    }
+    forn(i,n-1)
+    {
+        if(arr[i]>arr[i+1])
         {
-            for (int i = 0; i < n + 1; i++)
-            {
-                if (c[i][j] == '.')
-                {
-                    count++;
-                }
-                else
-                {
-                    if (count >= k)
-                    {
-                        v.pb(count);
-                    }
-                    count = 0;
-                }
-            }
+            cout<<"NO"<<ln;
+            return;
         }
     }
-    ll sum = 0;
-    for (auto t : v)
-    {
-        sum += (t - k + 1);
-    }
-    cout << sum << ln;
+    cout<<"YES"<<ln;
 }
+
 int main()
 {
     fast_cin();
-    //  ll t;
-    //  cin >> t;
-    //  for(int it=1;it<=t;it++) {
-    solve();
-    //  }
+    ll t;
+    cin >> t;
+    for (int it = 1; it <= t; it++)
+    {
+        solve();
+    }
     return 0;
 }
