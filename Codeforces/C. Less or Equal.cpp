@@ -21,7 +21,7 @@
 #include <fstream>
 
 using namespace std;
-
+typedef unsigned long long ull;
 typedef long long ll;
 typedef long double ld;
 typedef pair<int, int> p32;
@@ -57,19 +57,45 @@ double eps = 1e-12;
 
 void solve()
 {
-    ll n, sum = 0, k = 2;
-    cin >> n;
-    for (int i = 1; i <= n; i++)
+    int n, k;
+    cin >> n >> k;
+    int arr[n];
+    for (int i = 0; i < n; i++)
     {
-        sum += k;
-        k = k * 2;
+        cin >> arr[i];
     }
-    cout << sum << ln;
+    sort(al(arr, n));
+    if (k == 0)
+    {
+        if (arr[0] - 1 >= 1)
+        {
+            cout << arr[0] - 1 << ln;
+            return;
+        }
+        else
+        {
+            cout << -1 << ln;
+            return;
+        }
+    }
+    ll idx = upper_bound(al(arr, n), arr[k - 1]) - arr - 1;
+    // cout<<idx<<ln;
+    if ((idx + 1) == k)
+    {
+        cout << arr[k - 1] << ln;
+    }
+    else
+    {
+        cout << -1 << ln;
+    }
 }
-
 int main()
 {
     fast_cin();
+    //  ll t;
+    //  cin >> t;
+    //  for(int it=1;it<=t;it++) {
     solve();
+    //  }
     return 0;
 }

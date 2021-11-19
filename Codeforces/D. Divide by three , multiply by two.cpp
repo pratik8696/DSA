@@ -21,7 +21,7 @@
 #include <fstream>
 
 using namespace std;
-
+typedef unsigned long long ull;
 typedef long long ll;
 typedef long double ld;
 typedef pair<int, int> p32;
@@ -55,21 +55,42 @@ double eps = 1e-12;
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
 
-void solve()
+bool compare(pair<ll,ll> a,pair<ll,ll> b)
 {
-    ll n, sum = 0, k = 2;
-    cin >> n;
-    for (int i = 1; i <= n; i++)
-    {
-        sum += k;
-        k = k * 2;
-    }
-    cout << sum << ln;
+    return a.first>b.first;
 }
 
+void solve()
+{
+    int n;
+    cin >> n;
+    vector<pair<ll, ll>> v;
+    forn(i, n)
+    {
+        ll x, count = 0, realx;
+        cin >> x;
+        realx = x;
+        while (x % 3 == 0)
+        {
+            count++;
+            x = x / 3;
+        }
+
+        v.pb(mp(count - x, realx));
+    }
+    sort(all(v),compare);
+    for (auto t : v)
+    {
+        cout << t.second << " ";
+    }
+}
 int main()
 {
     fast_cin();
+    //  ll t;
+    //  cin >> t;
+    //  for(int it=1;it<=t;it++) {
     solve();
+    //  }
     return 0;
 }

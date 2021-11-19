@@ -21,7 +21,7 @@
 #include <fstream>
 
 using namespace std;
-
+typedef unsigned long long ull;
 typedef long long ll;
 typedef long double ld;
 typedef pair<int, int> p32;
@@ -57,19 +57,45 @@ double eps = 1e-12;
 
 void solve()
 {
-    ll n, sum = 0, k = 2;
-    cin >> n;
-    for (int i = 1; i <= n; i++)
+    string s;
+    cin >> s;
+    vector<pair<char, int>> v;
+    forn(i, s.length())
     {
-        sum += k;
-        k = k * 2;
+        if (i == 0)
+        {
+            v.pb(mp(s[i], 1));
+        }
+        else
+        {
+            if (s[i] == s[i - 1])
+            {
+                v[v.size() - 1].second++;
+            }
+            else
+            {
+                v.pb(mp(s[i], 1));
+            }
+        }
     }
-    cout << sum << ln;
+    for(auto t:v)
+    {
+        cout<<t.first<<" ";
+    }
+    cout<<ln;
+    for (auto t : v)
+    {
+        cout << t.second << " ";
+    }
+    cout << ln;
 }
-
 int main()
 {
     fast_cin();
+    //  ll t;
+    //  cin >> t;
+    //  for(int it=1;it<=t;it++) {
     solve();
+    //  }
     return 0;
 }

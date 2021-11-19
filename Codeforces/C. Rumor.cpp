@@ -21,7 +21,7 @@
 #include <fstream>
 
 using namespace std;
-
+typedef unsigned long long ull;
 typedef long long ll;
 typedef long double ld;
 typedef pair<int, int> p32;
@@ -57,19 +57,87 @@ double eps = 1e-12;
 
 void solve()
 {
-    ll n, sum = 0, k = 2;
-    cin >> n;
-    for (int i = 1; i <= n; i++)
+    ll n, m;
+    cin >> n >> m;
+    vector<pair<ll, ll>> v;
+    vector<pair<ll, ll>> k;
+    ll count = 1;
+    forn(i, n)
     {
-        sum += k;
-        k = k * 2;
+        ll x;
+        cin >> x;
+        v.pb(mp(x, 0));
     }
-    cout << sum << ln;
+    forn(i, m)
+    {
+        ll x, y;
+        cin >> x >> y;
+        k.pb(mp(x - 1, y - 1));
+    }
+    forn(i, m)
+    {
+        if (v[k[i].first].second != 0 || v[k[i].second].second != 0)
+        {
+            if (v[k[i].first].second != 0)
+            {
+                v[k[i].second].second = v[k[i].first].second;
+            }
+            else
+            {
+                v[k[i].first].second = v[k[i].second].second;
+            }
+        }
+        else
+        {
+            v[k[i].second].second = count;
+            v[k[i].first].second = count;
+            count++;
+        }
+    }
+    // for (auto t : v)
+    // {
+    //     cout << t.first << " ";
+    // }
+    // cout << ln;
+    // for (auto t : v)
+    // {
+    //     cout << t.second << " ";
+    // }
+    cout << ln;
+    ll sum = 0;
+    map<ll, ll> h;
+    forn(i, n)
+    {
+        if (v[i].second == 0)
+        {
+            sum += v[i].first;
+        }
+        else
+        {
+            if (h[v[i].second] == 0)
+            {
+                h[v[i].second] = v[i].first;
+            }
+            else
+            {
+                h[v[i].second] = min(v[i].first, h[v[i].second]);
+            }
+        }
+    }
+    for(auto t:h)
+    {
+        sum+=t.second;
+    }
+    cout<<sum<<ln;
 }
-
 int main()
 {
     fast_cin();
+    // ll t;
+    // cin >> t;
+    // for (int it = 1; it <= t; it++)
+    // {
     solve();
+    // }
     return 0;
 }

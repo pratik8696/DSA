@@ -21,7 +21,7 @@
 #include <fstream>
 
 using namespace std;
-
+typedef unsigned long long ull;
 typedef long long ll;
 typedef long double ld;
 typedef pair<int, int> p32;
@@ -55,21 +55,81 @@ double eps = 1e-12;
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
 
+ll highestPowerof2(ll n)
+{
+    ll res = 0;
+    for (ll i = n; i >= 1; i--)
+    {
+        // If i is a power of 2
+        if ((i & (i - 1)) == 0)
+        {
+            res = i;
+            break;
+        }
+    }
+    return res;
+}
 void solve()
 {
-    ll n, sum = 0, k = 2;
+    ll n, maxi = 0;
     cin >> n;
-    for (int i = 1; i <= n; i++)
+    vector<pair<ll, ll>> v;
+    map<ll, vector<ll>> m;
+    forn(i, n)
     {
-        sum += k;
-        k = k * 2;
+        ll x;
+        cin >> x;
+        v.pb(mp(x, 0));
+        m[x].pb(i);
+        maxi = max(maxi, x);
     }
-    cout << sum << ln;
+    maxi = 2 * maxi;
+    maxi = highestPowerof2(maxi);
+    forn(j, n)
+    {
+        for (ll i = 2; i <= maxi; i = i * 2)
+        {
+            if ((i - v[j].first) > 0)
+            {
+                if ((i - v[j].first) == v[j].first)
+                {
+                    if (m[(i - v[j].first)].size() > 1)
+                    {
+                        for (auto t : m[(i - v[j].first)])
+                        {
+                            v[t].second++;
+                        }
+                    }
+                }
+                else if (m[(i - v[j].first)].size() > 0)
+                {
+                    for (auto t : m[(i - v[j].first)])
+                    {
+                        v[t].second++;
+                    }
+                }
+            }
+        }
+    }
+    ll final = 0;
+    for (auto t : v)
+    {
+        // cout << t.second << " ";
+        if (t.second == 0)
+        {
+            // cout<<t.first<<ln;
+            final++;
+        }
+    }
+    cout << final << ln;
 }
-
 int main()
 {
     fast_cin();
+    //  ll t;
+    //  cin >> t;
+    //  for(int it=1;it<=t;it++) {
     solve();
+    //  }
     return 0;
 }
