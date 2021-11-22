@@ -57,19 +57,11 @@ double eps = 1e-12;
 
 void solve()
 {
-    int n;
+    ll n;
     cin >> n;
-    ll arr[n];
-    ll sum = 0;
-    for (int i = 0; i < n; i++)
+    for (ll i = 1; i <= n; i++)
     {
-        cin >> arr[i];
-        if (arr[i] == (-1))
-        {
-            arr[i] = (sum/(i));
-        }
-        sum += arr[i];
-        cout << arr[i] << " ";
+        cout << 2 * i - 1 << " ";
     }
     cout << ln;
 }

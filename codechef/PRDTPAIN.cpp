@@ -59,19 +59,50 @@ void solve()
 {
     int n;
     cin >> n;
-    ll arr[n];
-    ll sum = 0;
-    for (int i = 0; i < n; i++)
+    int arr[n];
+    forn(i, n)
     {
         cin >> arr[i];
-        if (arr[i] == (-1))
-        {
-            arr[i] = (sum/(i));
-        }
-        sum += arr[i];
-        cout << arr[i] << " ";
     }
-    cout << ln;
+    int maxi = 0;
+    for (int h = 0; h <= n - 3; h++)
+    {
+        for (int i = h; i < 3 + h; i++)
+        {
+            for (int j = h; j < 3 + h; j++)
+            {
+                for (int k = h; k < 3 + h; k++)
+                {
+                    if (i != j && j != k && i != k)
+                    {
+                        maxi = max(((arr[i] - arr[j]) * (arr[j] - arr[k])), maxi);
+                        cout << (((arr[i] - arr[j]) * (arr[j] - arr[k]))) << ln;
+                        cout << arr[i] << " " << arr[j] << " " << arr[k] << ln;
+                    }
+                }
+            }
+        }
+        cout<<"THIS IS MAX  -->  ";
+        cout<<maxi<<ln;
+    }
+    int maxifinal=0;
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            for (int k = 0; k < n; k++)
+            {
+                if (i != j && j != k && i != k)
+                {
+                    maxifinal = max(((arr[i] - arr[j]) * (arr[j] - arr[k])), maxifinal);
+                    cout << (((arr[i] - arr[j]) * (arr[j] - arr[k]))) << ln;
+                    cout << arr[i] << " " << arr[j] << " " << arr[k] << ln;
+                }
+            }
+        }
+    }
+    cout << "THIS IS MAX  -->  ";
+    cout << maxifinal << ln;
 }
 int main()
 {

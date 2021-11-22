@@ -59,28 +59,33 @@ void solve()
 {
     int n;
     cin >> n;
-    ll arr[n];
+    int arr[n + 1];
+    arr[0]=0;
     ll sum = 0;
-    for (int i = 0; i < n; i++)
+    for (int i = 1; i <= n; i++)
     {
         cin >> arr[i];
-        if (arr[i] == (-1))
-        {
-            arr[i] = (sum/(i));
-        }
         sum += arr[i];
-        cout << arr[i] << " ";
+        arr[i] = sum;
     }
-    cout << ln;
+    int q;
+    cin >> q;
+    while (q--)
+    {
+        int x, y;
+        cin >> x >> y;
+        x++;
+        y++;
+        cout << arr[y] - arr[x - 1] << ln;
+    }
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
-    for (int it = 1; it <= t; it++)
-    {
-        solve();
-    }
+    //  ll t;
+    //  cin >> t;
+    //  for(int it=1;it<=t;it++) {
+    solve();
+    //  }
     return 0;
 }

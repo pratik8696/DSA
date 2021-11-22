@@ -57,21 +57,38 @@ double eps = 1e-12;
 
 void solve()
 {
-    int n;
+    ll n;
     cin >> n;
     ll arr[n];
-    ll sum = 0;
-    for (int i = 0; i < n; i++)
+    forn(i, n)
     {
         cin >> arr[i];
-        if (arr[i] == (-1))
-        {
-            arr[i] = (sum/(i));
-        }
-        sum += arr[i];
-        cout << arr[i] << " ";
     }
-    cout << ln;
+    ll sum = 0;
+    for (ll i = 0; i <= n - 3; i++)
+    {
+        for (ll j = i + 2; j < n; j++)
+        {
+            ll i1 = i, j1 = j - 1, k1 = j, maxcurr = INT_MIN;
+            if (abs(i - j) > 2)
+            {
+                k1 = i;
+                i1 = j;
+                for (int z = i; z <= j; z++)
+                {
+                    maxcurr = max((arr[i1] - arr[z]) * (arr[z] - arr[k1]), maxcurr);
+                }
+                sum += maxcurr;
+            }
+            else
+            {
+                sum += (arr[i1] - arr[j1]) * (arr[j1] - arr[k1]);
+            }
+            // cout<<sum<<ln;
+            // cout << arr[i1] << " " << arr[j1] << " " << arr[k1] << ln;
+        }
+    }
+    cout << sum << ln;
 }
 int main()
 {

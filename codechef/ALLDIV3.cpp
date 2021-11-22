@@ -57,21 +57,37 @@ double eps = 1e-12;
 
 void solve()
 {
-    int n;
+    map<ll, ll> m;
+    ll n, one = 0, two = 0;
     cin >> n;
-    ll arr[n];
-    ll sum = 0;
-    for (int i = 0; i < n; i++)
+    int arr[n];
+    forn(i, n)
     {
         cin >> arr[i];
-        if (arr[i] == (-1))
+        if (arr[i] % 3 == 1)
         {
-            arr[i] = (sum/(i));
+            one++;
         }
-        sum += arr[i];
-        cout << arr[i] << " ";
+        if (arr[i] % 3 == 2)
+        {
+            two++;
+        }
     }
-    cout << ln;
+    if (one == 0 && two == 0)
+    {
+        cout << 0 << ln;
+        return;
+    }
+    ll mini = min(one, two);
+    ll rem = max(one, two) - mini;
+    if (rem % 3 == 0)
+    {
+        cout << mini + 2 * (rem / 3) << ln;
+    }
+    else
+    {
+        cout << -1 << ln;
+    }
 }
 int main()
 {

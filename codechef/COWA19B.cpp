@@ -59,19 +59,18 @@ void solve()
 {
     int n;
     cin >> n;
-    ll arr[n];
-    ll sum = 0;
-    for (int i = 0; i < n; i++)
+    int arr[n + 2],brr[n+2];
+    fill(al(arr, n + 2),0);
+    fill(al(brr, n + 2), 0);
+    int q;
+    cin >> q;
+    while (q--)
     {
-        cin >> arr[i];
-        if (arr[i] == (-1))
-        {
-            arr[i] = (sum/(i));
-        }
-        sum += arr[i];
-        cout << arr[i] << " ";
+        int l,r;
+        cin>>l>>r;
+        arr[l]+=-l+1;
+        brr[l]+=l;
     }
-    cout << ln;
 }
 int main()
 {
