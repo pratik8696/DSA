@@ -54,62 +54,103 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-
-bool dfs(int v, int par, int vis[], vector<int> arr[])
+#define maxi 100000
+vector<int> arr[maxi];
+int vis[maxi];
+vector<int> path;
+int cc;
+void dfs(int v)
 {
     vis[v] = 1;
-    for (int i = 0; i < arr[v].size(); i++)
+    path.pb(v);
+    for (auto child : arr[v])
     {
-        int child = arr[v][i];
         if (vis[child] == 0)
         {
-            if (dfs(child, v, vis, arr) == true)
-            {
-                return true;
-            }
+            dfs(child);
+        }
+    }
+}
+void solve()
+{
+    int n;
+    cin >> n;
+    forn(i, n - 1)
+    {
+        arr[i + 1].pb(i + 2);
+    }
+    int ar[n];
+    forn(i, n)
+    {
+        cin >> ar[i];
+        if (ar[i] == 0)
+        {
+            arr[i + 1].pb(n + 1);
         }
         else
         {
-            if (child != par)
+            arr[n + 1].pb(i + 1);
+        }
+    }
+    // for (int i = 1; i <= n + 1; i++)
+    // {
+    //     cout << i << "-->";
+    //     for (auto t : arr[i])
+    //     {
+    //         cout << t << " ";
+    //     }
+    //     cout << ln;
+    // }
+    if (arr[1].size() >= 1)
+    {
+        for (int i = 1; i <= n; i++)
+        {
+            if (vis[i] == 0)
             {
-                return true;
+                dfs(i);
+                cc++;
             }
         }
     }
-    return false;
-}
-
-void solve()
-{
-    int n, m;
-    cin >> n >> m;
-    vector<int> arr[n + 1];
-    int vis[n + 1];
-    fill(al(vis, n), 0);
-    while (m--)
+    else
     {
-        int a, b;
-        cin >> a >> b;
-        arr[a].pb(b);
-        arr[b].pb(a);
+        for (int i = n + 1; i >= 1; i--)
+        {
+            if (vis[i] == 0)
+            {
+                dfs(i);
+                cc++;
+            }
+        }
     }
-    if (dfs(1, -1, vis, arr))
+    if (cc != 1)
     {
-        cout << "Cycle Found" << ln;
+        cout << -1 << ln;
     }
     else
     {
-        cout << "No Cycle Found" << ln;
+        for (auto t : path)
+        {
+            cout << t << " ";
+        }
+        cout << ln;
     }
 }
 int main()
 {
     fast_cin();
-    // ll t;
-    // cin >> t;
-    // for (int it = 1; it <= t; it++)
-    // {
-    solve();
-    // }
+    ll t;
+    cin >> t;
+    for (int it = 1; it <= t; it++)
+    {
+        for (int i = 0; i < maxi; i++)
+        {
+            arr[i].clear();
+        }
+        fill(al(vis, maxi), 0);
+        path.clear();
+        cc = 0;
+        solve();
+    }
     return 0;
 }

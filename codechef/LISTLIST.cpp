@@ -55,61 +55,46 @@ double eps = 1e-12;
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
 
-bool dfs(int v, int par, int vis[], vector<int> arr[])
-{
-    vis[v] = 1;
-    for (int i = 0; i < arr[v].size(); i++)
-    {
-        int child = arr[v][i];
-        if (vis[child] == 0)
-        {
-            if (dfs(child, v, vis, arr) == true)
-            {
-                return true;
-            }
-        }
-        else
-        {
-            if (child != par)
-            {
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    vector<int> arr[n + 1];
-    int vis[n + 1];
-    fill(al(vis, n), 0);
-    while (m--)
+    int n, flag = 0;
+    cin >> n;
+    int arr[n];
+    map<int, int> m;
+    forn(i, n)
     {
-        int a, b;
-        cin >> a >> b;
-        arr[a].pb(b);
-        arr[b].pb(a);
+        cin >> arr[i];
+        m[arr[i]]++;
+        if (m[arr[i]] >= 2)
+        {
+            flag = 1;
+        }
     }
-    if (dfs(1, -1, vis, arr))
+    if (flag == 0 && m.size() != 1)
     {
-        cout << "Cycle Found" << ln;
+        cout << -1 << ln;
+        return;
     }
-    else
+    if (m.size() == 1)
     {
-        cout << "No Cycle Found" << ln;
+        cout << 0 << ln;
+        return;
     }
+    int maxi = INT_MIN;
+    for (auto t : m)
+    {
+        maxi = max(t.second, maxi);
+    }
+    cout << n - maxi + 1 << ln;
 }
 int main()
 {
     fast_cin();
-    // ll t;
-    // cin >> t;
-    // for (int it = 1; it <= t; it++)
-    // {
-    solve();
-    // }
+    ll t;
+    cin >> t;
+    for (int it = 1; it <= t; it++)
+    {
+        solve();
+    }
     return 0;
 }

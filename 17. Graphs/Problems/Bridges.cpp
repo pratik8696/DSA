@@ -55,51 +55,17 @@ double eps = 1e-12;
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
 
-bool dfs(int v, int par, int vis[], vector<int> arr[])
-{
-    vis[v] = 1;
-    for (int i = 0; i < arr[v].size(); i++)
-    {
-        int child = arr[v][i];
-        if (vis[child] == 0)
-        {
-            if (dfs(child, v, vis, arr) == true)
-            {
-                return true;
-            }
-        }
-        else
-        {
-            if (child != par)
-            {
-                return true;
-            }
-        }
-    }
-    return false;
-}
+
 
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    vector<int> arr[n + 1];
-    int vis[n + 1];
-    fill(al(vis, n), 0);
-    while (m--)
+    int n,m;
+    cin >> n>>m;
+    forn(i, m)
     {
-        int a, b;
-        cin >> a >> b;
-        arr[a].pb(b);
-        arr[b].pb(a);
-    }
-    if (dfs(1, -1, vis, arr))
-    {
-        cout << "Cycle Found" << ln;
-    }
-    else
-    {
-        cout << "No Cycle Found" << ln;
+        int a,b;
+        cin>>a>>b;
+        
     }
 }
 int main()
@@ -109,7 +75,7 @@ int main()
     // cin >> t;
     // for (int it = 1; it <= t; it++)
     // {
-    solve();
+        solve();
     // }
     return 0;
 }

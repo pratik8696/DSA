@@ -54,29 +54,18 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-
-bool dfs(int v, int par, int vis[], vector<int> arr[])
+ll countt = 1;
+void dfs(int v, int vis[], vector<int> arr[], int k)
 {
     vis[v] = 1;
-    for (int i = 0; i < arr[v].size(); i++)
+    for (auto child : arr[v])
     {
-        int child = arr[v][i];
         if (vis[child] == 0)
         {
-            if (dfs(child, v, vis, arr) == true)
-            {
-                return true;
-            }
-        }
-        else
-        {
-            if (child != par)
-            {
-                return true;
-            }
+            dfs(child, vis, arr, k + 1);
+            countt++;
         }
     }
-    return false;
 }
 
 void solve()
@@ -85,31 +74,44 @@ void solve()
     cin >> n >> m;
     vector<int> arr[n + 1];
     int vis[n + 1];
-    fill(al(vis, n), 0);
-    while (m--)
+    fill(al(vis, n + 1), 0);
+    forn(i, m)
     {
         int a, b;
         cin >> a >> b;
         arr[a].pb(b);
         arr[b].pb(a);
     }
-    if (dfs(1, -1, vis, arr))
+    // for cc
+    vector<ll> count;
+    ll cc = 0;
+    for (int i = 1; i < n + 1; i++)
     {
-        cout << "Cycle Found" << ln;
+        countt = 1;
+        if (vis[i] == 0)
+        {
+            dfs(i, vis, arr, 1);
+            cc++;
+            count.pb(countt);
+        }
     }
-    else
+    cout << cc << " ";
+    ull prod = 1;
+    for (auto t : count)
     {
-        cout << "No Cycle Found" << ln;
+        prod = ((prod % MOD) * (t % MOD)) % MOD;
     }
+    cout << prod << ln;
 }
+
 int main()
 {
     fast_cin();
-    // ll t;
-    // cin >> t;
-    // for (int it = 1; it <= t; it++)
-    // {
-    solve();
-    // }
+    ll t;
+    cin >> t;
+    for (int it = 1; it <= t; it++)
+    {
+        solve();
+    }
     return 0;
 }

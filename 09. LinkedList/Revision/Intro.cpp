@@ -55,61 +55,109 @@ double eps = 1e-12;
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
 
-bool dfs(int v, int par, int vis[], vector<int> arr[])
+struct node
 {
-    vis[v] = 1;
-    for (int i = 0; i < arr[v].size(); i++)
+    int data;
+    node *next;
+    node(int value)
     {
-        int child = arr[v][i];
-        if (vis[child] == 0)
-        {
-            if (dfs(child, v, vis, arr) == true)
-            {
-                return true;
-            }
-        }
-        else
-        {
-            if (child != par)
-            {
-                return true;
-            }
-        }
+        data = value;
+        next = NULL;
     }
-    return false;
+};
+node *head;
+node *temp, *last;
+
+void create(int n)
+{
+    int q;
+    cin >> q;
+    head = new node(q);
+    last = head;
+    n--;
+    while (n--)
+    {
+        cin >> q;
+        temp = new node(q);
+        last->next = temp;
+        last = temp;
+    }
+    cout << "LINKED LIST CREATED" << ln;
+}
+
+void maximum()
+{
+    int maxx=INT_MIN;
+    node *p = head;
+    while (p != NULL)
+    {
+        maxx=max(p->data,maxx);
+        p=p->next;
+    }
+    cout<<maxx<<ln;
+}
+
+void minimum()
+{
+    int maxx = INT_MAX;
+    node *p = head;
+    while (p != NULL)
+    {
+        maxx = min(p->data, maxx);
+        p = p->next;
+    }
+    cout << maxx << ln;
+}
+
+void print()
+{
+    node *p = head;
+    while (p != NULL)
+    {
+        cout << p->data << " ";
+        p = p->next;
+    }
+    cout<<ln;
+}
+
+void search()
+{
+    int key;
+    cin >> key;
+    node *p = head;
+    while (p != NULL)
+    {
+        if(key==p->data)
+        {
+           cout<<"MATCH FOUND"<<ln;
+           return;
+        }
+        p=p->next;
+    }
+    cout << "MATCH NOT FOUND" << ln;
 }
 
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    vector<int> arr[n + 1];
-    int vis[n + 1];
-    fill(al(vis, n), 0);
-    while (m--)
-    {
-        int a, b;
-        cin >> a >> b;
-        arr[a].pb(b);
-        arr[b].pb(a);
-    }
-    if (dfs(1, -1, vis, arr))
-    {
-        cout << "Cycle Found" << ln;
-    }
-    else
-    {
-        cout << "No Cycle Found" << ln;
-    }
+    int n;
+    cin >> n;
+    create(n);
+    print();
+    search();
+    maximum();
+    minimum();
+    // insert();
+    // deletion();
 }
+
 int main()
 {
     fast_cin();
-    // ll t;
-    // cin >> t;
-    // for (int it = 1; it <= t; it++)
-    // {
-    solve();
-    // }
+    ll t;
+    cin >> t;
+    for (int it = 1; it <= t; it++)
+    {
+        solve();
+    }
     return 0;
 }

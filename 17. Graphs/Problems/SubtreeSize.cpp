@@ -54,52 +54,42 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
+#define maxi 100000
+vector<int> arr[maxi];
+int vis[maxi];
+int subtree[maxi];
 
-bool dfs(int v, int par, int vis[], vector<int> arr[])
+int dfs(int v)
 {
     vis[v] = 1;
-    for (int i = 0; i < arr[v].size(); i++)
+    int curr_size = 1;
+    for (auto child : arr[v])
     {
-        int child = arr[v][i];
         if (vis[child] == 0)
         {
-            if (dfs(child, v, vis, arr) == true)
-            {
-                return true;
-            }
+            curr_size += dfs(child);
         }
-        else
-        {
-            if (child != par)
-            {
-                return true;
-            }
-        }
+        subtree[v]=curr_size;
+        return curr_size;
     }
-    return false;
+    return 0;
 }
 
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    vector<int> arr[n + 1];
-    int vis[n + 1];
-    fill(al(vis, n), 0);
-    while (m--)
+    int n;
+    cin >> n;
+    forn(i,n-1)
     {
-        int a, b;
-        cin >> a >> b;
+        int a,b;
+        cin>>a>>b;
         arr[a].pb(b);
         arr[b].pb(a);
     }
-    if (dfs(1, -1, vis, arr))
+    dfs(1);
+    for(int i=1;i<=n;i++)
     {
-        cout << "Cycle Found" << ln;
-    }
-    else
-    {
-        cout << "No Cycle Found" << ln;
+        cout<<subtree[i]<<" ";
     }
 }
 int main()
@@ -109,7 +99,7 @@ int main()
     // cin >> t;
     // for (int it = 1; it <= t; it++)
     // {
-    solve();
+        solve();
     // }
     return 0;
 }

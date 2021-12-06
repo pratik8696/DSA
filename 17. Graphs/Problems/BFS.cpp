@@ -54,62 +54,61 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
+#define maxi 100001
+vector<int> arr[maxi];
+int vis[maxi];
+int dist[maxi];
 
-bool dfs(int v, int par, int vis[], vector<int> arr[])
+void bfs(int v)
 {
     vis[v] = 1;
-    for (int i = 0; i < arr[v].size(); i++)
+    dist[v] = 0;
+    queue<int> q;
+    q.push(v);
+    while (!q.empty())
     {
-        int child = arr[v][i];
-        if (vis[child] == 0)
+        int curr = q.front();
+        q.pop();
+        for (auto child : arr[curr])
         {
-            if (dfs(child, v, vis, arr) == true)
+            if (vis[child] == 0)
             {
-                return true;
-            }
-        }
-        else
-        {
-            if (child != par)
-            {
-                return true;
+                q.push(child);
+                dist[child] = dist[curr] + 1;
+                vis[child] = 1;
             }
         }
     }
-    return false;
 }
 
 void solve()
 {
     int n, m;
     cin >> n >> m;
-    vector<int> arr[n + 1];
-    int vis[n + 1];
-    fill(al(vis, n), 0);
-    while (m--)
+    forn(i, m)
     {
         int a, b;
         cin >> a >> b;
         arr[a].pb(b);
         arr[b].pb(a);
     }
-    if (dfs(1, -1, vis, arr))
+    bfs(1);
+    cout<<dist[n]<<ln;
+    for (int i = 0; i <= n; i++)
     {
-        cout << "Cycle Found" << ln;
+        arr[i].clear();
     }
-    else
-    {
-        cout << "No Cycle Found" << ln;
-    }
+    fill(al(vis,maxi),0);
+    fill(al(dist, maxi), 0);
 }
 int main()
 {
     fast_cin();
-    // ll t;
-    // cin >> t;
-    // for (int it = 1; it <= t; it++)
-    // {
-    solve();
-    // }
+    ll t;
+    cin >> t;
+    for (int it = 1; it <= t; it++)
+    {
+        solve();
+    }
     return 0;
 }

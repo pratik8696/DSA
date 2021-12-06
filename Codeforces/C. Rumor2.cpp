@@ -54,53 +54,52 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
+#define maxi 100001
 
-bool dfs(int v, int par, int vis[], vector<int> arr[])
+vector<int> adj[maxi];
+int vis[maxi];
+int arr[maxi];
+int mini = INT_MAX;
+
+void dfs(int v)
 {
     vis[v] = 1;
-    for (int i = 0; i < arr[v].size(); i++)
+    mini = min(mini, arr[v - 1]);
+    for (auto child : adj[v])
     {
-        int child = arr[v][i];
         if (vis[child] == 0)
         {
-            if (dfs(child, v, vis, arr) == true)
-            {
-                return true;
-            }
-        }
-        else
-        {
-            if (child != par)
-            {
-                return true;
-            }
+            dfs(child);
         }
     }
-    return false;
 }
 
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    vector<int> arr[n + 1];
-    int vis[n + 1];
-    fill(al(vis, n), 0);
-    while (m--)
+    int n, q;
+    cin >> n>> q;
+    forn(i, n)
+    {
+        cin >> arr[i];
+    }
+    while (q--)
     {
         int a, b;
         cin >> a >> b;
-        arr[a].pb(b);
-        arr[b].pb(a);
+        adj[a].pb(b);
+        adj[b].pb(a);
     }
-    if (dfs(1, -1, vis, arr))
+    ll sum = 0;
+    for (int i = 1; i <= n; i++)
     {
-        cout << "Cycle Found" << ln;
+        if (vis[i] == 0)
+        {
+            dfs(i);
+            sum += mini;
+            mini = INT_MAX;
+        }
     }
-    else
-    {
-        cout << "No Cycle Found" << ln;
-    }
+    cout << sum << ln;
 }
 int main()
 {

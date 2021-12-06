@@ -55,61 +55,45 @@ double eps = 1e-12;
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
 
-bool dfs(int v, int par, int vis[], vector<int> arr[])
-{
-    vis[v] = 1;
-    for (int i = 0; i < arr[v].size(); i++)
-    {
-        int child = arr[v][i];
-        if (vis[child] == 0)
-        {
-            if (dfs(child, v, vis, arr) == true)
-            {
-                return true;
-            }
-        }
-        else
-        {
-            if (child != par)
-            {
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    vector<int> arr[n + 1];
-    int vis[n + 1];
-    fill(al(vis, n), 0);
-    while (m--)
+    int n;
+    cin >> n;
+    string s;
+    cin>>s;
+    map<char,int> m;
+    forn(i,s.length())
     {
-        int a, b;
-        cin >> a >> b;
-        arr[a].pb(b);
-        arr[b].pb(a);
+        m[s[i]]++;
     }
-    if (dfs(1, -1, vis, arr))
+    string res="";
+    for(auto t:m)
     {
-        cout << "Cycle Found" << ln;
+        if(t.second%n==0)
+        {
+            t.second=t.second/n;
+            while(t.second--)
+            {
+                res.pb(t.first);
+            }
+        }
+        else{
+            cout<<-1<<ln;
+            return;
+        }
     }
-    else
+    forn(i,n)
     {
-        cout << "No Cycle Found" << ln;
+        cout<<res;
     }
 }
 int main()
 {
     fast_cin();
-    // ll t;
-    // cin >> t;
-    // for (int it = 1; it <= t; it++)
-    // {
+    //  ll t;
+    //  cin >> t;
+    //  for(int it=1;it<=t;it++) {
     solve();
-    // }
+    //  }
     return 0;
 }

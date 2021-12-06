@@ -54,62 +54,82 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
+#define maxi 100001
+vector<int> arr[maxi];
+int vis[maxi];
+int cc[maxi];
+int curr;
 
-bool dfs(int v, int par, int vis[], vector<int> arr[])
+void dfs(int v)
 {
-    vis[v] = 1;
-    for (int i = 0; i < arr[v].size(); i++)
+    vis[v]=1;
+    cc[v]=curr;
+    for(auto child:arr[v])
     {
-        int child = arr[v][i];
-        if (vis[child] == 0)
+        if(vis[child]==0)
         {
-            if (dfs(child, v, vis, arr) == true)
-            {
-                return true;
-            }
+            dfs(child);
+        }
+    }
+}
+void solve()
+{
+    int n, k;
+    cin >> n >> k;
+    vector<pair<int, int>> rem;
+    forn(i, k)
+    {
+        int a, b;
+        string s;
+        cin >> a >> s >> b;
+        if (s == "!=")
+        {
+            rem.pb(mp(a, b));
         }
         else
         {
-            if (child != par)
-            {
-                return true;
-            }
+           arr[a].pb(b);
+           arr[b].pb(a);
+        }    
+    }
+    for (int i = 1; i <= n; i++)
+    {
+        if(vis[i]==0)
+        {
+            dfs(i);
+            curr++;
         }
     }
-    return false;
-}
-
-void solve()
-{
-    int n, m;
-    cin >> n >> m;
-    vector<int> arr[n + 1];
-    int vis[n + 1];
-    fill(al(vis, n), 0);
-    while (m--)
+    int flag=1;
+    for (auto t:rem)
     {
-        int a, b;
-        cin >> a >> b;
-        arr[a].pb(b);
-        arr[b].pb(a);
+        if(cc[t.first]==cc[t.second])
+        {
+            flag=0;
+        }
     }
-    if (dfs(1, -1, vis, arr))
+    if(flag==1)
     {
-        cout << "Cycle Found" << ln;
+        cout<<"YES"<<ln;
     }
-    else
-    {
-        cout << "No Cycle Found" << ln;
+    else{
+        cout<<"NO"<<ln;
     }
 }
 int main()
 {
     fast_cin();
-    // ll t;
-    // cin >> t;
-    // for (int it = 1; it <= t; it++)
-    // {
-    solve();
-    // }
+    ll t;
+    cin >> t;
+    for (int it = 1; it <= t; it++)
+    {
+        for (int i = 0; i < maxi; i++)
+        {
+            fill(all(arr[i]),0);
+        }
+        fill(al(vis,maxi),0);
+        fill(al(cc, maxi), 0);
+        solve();
+    }
     return 0;
 }

@@ -55,61 +55,81 @@ double eps = 1e-12;
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
 
-bool dfs(int v, int par, int vis[], vector<int> arr[])
+int timer = 1;
+void dfs(int v,int vis[],int in[],int out[],vector<int> arr[])
 {
     vis[v] = 1;
-    for (int i = 0; i < arr[v].size(); i++)
+    in[v] = timer++;
+    for (auto child : arr[v])
     {
-        int child = arr[v][i];
         if (vis[child] == 0)
         {
-            if (dfs(child, v, vis, arr) == true)
-            {
-                return true;
-            }
-        }
-        else
-        {
-            if (child != par)
-            {
-                return true;
-            }
+            dfs(child,vis,in,out,arr);
         }
     }
-    return false;
+    out[v] = timer++;
 }
 
 void solve()
 {
     int n, m;
     cin >> n >> m;
-    vector<int> arr[n + 1];
-    int vis[n + 1];
-    fill(al(vis, n), 0);
+    vector<int> arr[n+1];
+    int vis[n+1];
+    int in[n + 1];
+    int out[n + 1];
+    fill(al(vis,n+1),0);
+    fill(al(in, n + 1), 0);
+    fill(al(out, n + 1), 0);
     while (m--)
     {
         int a, b;
         cin >> a >> b;
-        arr[a].pb(b);
         arr[b].pb(a);
+        arr[a].pb(b);
     }
-    if (dfs(1, -1, vis, arr))
+    // for(int i=1;i<=n;i++)
+    // {
+    //     cout<<i<<"-->";
+    //     for(auto t:arr[i])
+    //     {
+    //         cout<<t<<" ";
+    //     }
+    //     cout<<ln;
+    // }
+    dfs(1,vis,in,out,arr);
+    int q;
+    cin>>q;
+    while(q--)
     {
-        cout << "Cycle Found" << ln;
+        int a,b;
+        cin>>a>>b;
+        if(in[a]<in[b]&&out[a]>out[b])
+        {
+            cout<<"YES"<<ln;
+        }
+        else{
+            cout<<"NO"<<ln;
+        }
     }
-    else
-    {
-        cout << "No Cycle Found" << ln;
-    }
+    // for (auto t : in)
+    // {
+    //     cout << t << " ";
+    // }
+    // cout << ln;
+    // for (auto t : out)
+    // {
+    //     cout << t << " ";
+    // }
+    // cout << ln;
 }
 int main()
 {
     fast_cin();
-    // ll t;
-    // cin >> t;
-    // for (int it = 1; it <= t; it++)
-    // {
+    //  ll t;
+    //  cin >> t;
+    //  for(int it=1;it<=t;it++) {
     solve();
-    // }
+    //  }
     return 0;
 }
