@@ -54,34 +54,33 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100000
+#define maxi 10000
 vector<int> arr[maxi];
-int vis[maxi];
 int in[maxi];
-int low[maxi];
-int timer;
-void dfs(int v, int par)
+vector<int> res;
+
+void kahns(int n)
 {
-    vis[v] = 1;
-    low[v] = in[v] = timer++;
-    for (auto child : arr[v])
+    queue<int> q;
+    for (int i = 1; i <= n; i++)
     {
-        if (child == par)
+        if (in[i] == 0)
         {
-            continue;
+            q.push(i);
         }
-        else if (vis[child] == 1)
+    }
+    while (!q.empty())
+    {
+        int curr = q.front();
+        q.pop();
+        res.pb(curr);
+        for (auto child : arr[curr])
         {
-            low[v] = min(low[v], in[child]);
-        }
-        else
-        {
-            dfs(child, v);
-            if (in[v]<low[child])
+            in[child]--;
+            if (in[child] == 0)
             {
-                cout << v << " " << child << ln;
+                q.push(child);
             }
-            low[v] = min(low[v], low[child]);
         }
     }
 }
@@ -95,24 +94,21 @@ void solve()
         int a, b;
         cin >> a >> b;
         arr[a].pb(b);
-        arr[b].pb(a);
+        in[b]++;
     }
-    for (int i = 1; i < n + 1; i++)
+    kahns(n);
+    for (auto t : res)
     {
-        if (vis[i] == 0)
-        {
-            dfs(i, -1);
-        }
+        cout << t << " ";
     }
 }
 int main()
 {
     fast_cin();
-    // ll t;
-    // cin >> t;
-    // for (int it = 1; it <= t; it++)
-    // {
+    //  ll t;
+    //  cin >> t;
+    //  for(int it=1;it<=t;it++) {
     solve();
-    // }
+    //  }
     return 0;
 }

@@ -54,65 +54,79 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100000
-vector<int> arr[maxi];
-int vis[maxi];
-int in[maxi];
-int low[maxi];
-int timer;
-void dfs(int v, int par)
+
+char winner(char a)
 {
-    vis[v] = 1;
-    low[v] = in[v] = timer++;
-    for (auto child : arr[v])
+    if (a == 'S')
     {
-        if (child == par)
-        {
-            continue;
-        }
-        else if (vis[child] == 1)
-        {
-            low[v] = min(low[v], in[child]);
-        }
-        else
-        {
-            dfs(child, v);
-            if (in[v]<low[child])
-            {
-                cout << v << " " << child << ln;
-            }
-            low[v] = min(low[v], low[child]);
-        }
+        return 'R';
+    }
+    else if (a == 'P')
+    {
+        return 'S';
+    }
+    else
+    {
+        return 'P';
     }
 }
 
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    forn(i, m)
+    int n;
+    cin >> n;
+    string s;
+    cin >> s;
+    int r[n];
+    fill(al(r, n), 0);
+    vector<int> res;
+    string k(s);
+    for (int i = 0; i < n; i++)
     {
-        int a, b;
-        cin >> a >> b;
-        arr[a].pb(b);
-        arr[b].pb(a);
-    }
-    for (int i = 1; i < n + 1; i++)
-    {
-        if (vis[i] == 0)
+        if (r[i] == 0)
         {
-            dfs(i, -1);
+            char curr = s[i];
+            for (int j = i ; j < n; j++)
+            {
+                char replace = winner(curr);
+                if (s[j] == curr)
+                {
+                    r[j]=1;
+                    res.pb(j);
+                }
+                else if (s[j] == replace)
+                {
+                    r[j] = 1;
+                    res.pb(j);
+                    curr = replace;
+                }
+            }
+            for (auto t : res)
+            {
+                k[t] = curr;
+            }
+            res.clear();
         }
+        else
+        {
+            continue;
+        }
+        // for (int h = 0; h < n; h++)
+        // {
+        //     cout << r[h] << " ";
+        // }
+        // cout << " " << i << ln;
     }
+    cout << k << ln;
 }
 int main()
 {
     fast_cin();
-    // ll t;
-    // cin >> t;
-    // for (int it = 1; it <= t; it++)
-    // {
-    solve();
-    // }
+    ll t;
+    cin >> t;
+    for (int it = 1; it <= t; it++)
+    {
+        solve();
+    }
     return 0;
 }

@@ -54,55 +54,45 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100000
-vector<int> arr[maxi];
-int vis[maxi];
-int in[maxi];
-int low[maxi];
-int timer;
-void dfs(int v, int par)
-{
-    vis[v] = 1;
-    low[v] = in[v] = timer++;
-    for (auto child : arr[v])
-    {
-        if (child == par)
-        {
-            continue;
-        }
-        else if (vis[child] == 1)
-        {
-            low[v] = min(low[v], in[child]);
-        }
-        else
-        {
-            dfs(child, v);
-            if (in[v]<low[child])
-            {
-                cout << v << " " << child << ln;
-            }
-            low[v] = min(low[v], low[child]);
-        }
-    }
-}
 
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    forn(i, m)
+    int n;
+    cin >> n;
+    vector<pair<int, int>> v;
+    vector<int> res;
+    forn(i, n)
     {
-        int a, b;
-        cin >> a >> b;
-        arr[a].pb(b);
-        arr[b].pb(a);
+        ll x;
+        cin >> x;
+        v.pb({x, i + 1});
     }
-    for (int i = 1; i < n + 1; i++)
+    sort(all(v));
+    ll sum = 0;
+    for (int i = 0; i <= n - 3; i++)
     {
-        if (vis[i] == 0)
+        sum += v[i].first;
+    }
+    if (sum == v[n - 2].first)
+    {
+        res.pb(v[n - 1].second);
+    }
+    ll last = sum + v[n - 2].first - v[n - 1].first;
+    for (int i = 0; i < n-1; i++)
+    {
+        if (v[i].first == last)
         {
-            dfs(i, -1);
+            res.pb(v[i].second);
         }
+    }
+    cout << res.size() << ln;
+    if (res.size() > 0)
+    {
+        for (auto t : res)
+        {
+            cout << t << " ";
+        }
+        cout << ln;
     }
 }
 int main()

@@ -54,56 +54,56 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100000
-vector<int> arr[maxi];
-int vis[maxi];
-int in[maxi];
-int low[maxi];
-int timer;
-void dfs(int v, int par)
+#define maxi 10000
+int arr[maxi][maxi];
+int vis[maxi][maxi];
+int n, m;
+int dx[] = {-1, 0, 1, 0};
+int dy[] = {0, 1, 0, -1};
+
+bool isvalid(int x, int y)
 {
-    vis[v] = 1;
-    low[v] = in[v] = timer++;
-    for (auto child : arr[v])
+    if (x < 1 || x > n || y < 1 || y > n || vis[x][y] == 1 || arr[x][y] == 0)
     {
-        if (child == par)
+        return false;
+    }
+    return true;
+}
+
+void dfson2d(int x, int y)
+{
+    vis[x][y] = 1;
+    for (int i = 0; i < 4; i++)
+    {
+        if (isvalid(x + dx[i], y + dy[i]))
         {
-            continue;
-        }
-        else if (vis[child] == 1)
-        {
-            low[v] = min(low[v], in[child]);
-        }
-        else
-        {
-            dfs(child, v);
-            if (in[v]<low[child])
-            {
-                cout << v << " " << child << ln;
-            }
-            low[v] = min(low[v], low[child]);
+            dfson2d(x + dx[i], y + dy[i]);
         }
     }
 }
-
+int cc = 0;
 void solve()
 {
-    int n, m;
     cin >> n >> m;
-    forn(i, m)
+    for (int i = 1; i < n + 1; i++)
     {
-        int a, b;
-        cin >> a >> b;
-        arr[a].pb(b);
-        arr[b].pb(a);
+        for (int j = 1; j < m + 1; j++)
+        {
+            cin >> arr[i][j];
+        }
     }
     for (int i = 1; i < n + 1; i++)
     {
-        if (vis[i] == 0)
+        for (int j = 1; j < m + 1; j++)
         {
-            dfs(i, -1);
+            if (vis[i][j] == 0 && arr[i][j] == 1)
+            {
+                cc++;
+                dfson2d(i, j);
+            }
         }
     }
+    cout << cc << ln;
 }
 int main()
 {

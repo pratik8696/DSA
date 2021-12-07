@@ -58,61 +58,59 @@ double eps = 1e-12;
 vector<int> arr[maxi];
 int vis[maxi];
 int in[maxi];
-int low[maxi];
-int timer;
-void dfs(int v, int par)
+vector<int> res;
+
+void kahns(int n)
 {
-    vis[v] = 1;
-    low[v] = in[v] = timer++;
-    for (auto child : arr[v])
+    queue<int> q;
+    for (int i = 1; i <=n; i++)
     {
-        if (child == par)
+        if(in[i]==0)
         {
-            continue;
+            q.push(i);
         }
-        else if (vis[child] == 1)
+    }
+    while(!q.empty())
+    {
+        int curr=q.front();
+        q.pop();
+        res.pb(curr);
+        for(auto node:arr[curr])
         {
-            low[v] = min(low[v], in[child]);
-        }
-        else
-        {
-            dfs(child, v);
-            if (in[v]<low[child])
+            in[node]--;
+            if(in[node]==0)
             {
-                cout << v << " " << child << ln;
+                q.push(node);
             }
-            low[v] = min(low[v], low[child]);
         }
+    }
+    for(auto t:res)
+    {
+        cout<<t<<" ";
     }
 }
 
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    forn(i, m)
+    int n,m;
+    cin >> n>>m;
+    forn(i,m)
     {
-        int a, b;
-        cin >> a >> b;
+        int a,b;
+        cin>>a>>b;
         arr[a].pb(b);
-        arr[b].pb(a);
+        in[b]++;
     }
-    for (int i = 1; i < n + 1; i++)
-    {
-        if (vis[i] == 0)
-        {
-            dfs(i, -1);
-        }
-    }
+    kahns(n);
 }
 int main()
 {
     fast_cin();
-    // ll t;
-    // cin >> t;
-    // for (int it = 1; it <= t; it++)
-    // {
-    solve();
-    // }
+    ll t;
+    cin >> t;
+    for (int it = 1; it <= t; it++)
+    {
+        solve();
+    }
     return 0;
 }
