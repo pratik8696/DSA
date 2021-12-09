@@ -54,13 +54,13 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100000
+#define maxi 1000
 vector<int> arr[maxi];
-vector<int> LCA[maxi];
+int LCA[maxi][maxi];
 int level[maxi];
 int vis[maxi];
-
 int n, m, maxn;
+
 void dfs(int v, int par)
 {
     LCA[v][0] = par;
@@ -87,9 +87,9 @@ void bfs(int v)
         {
             if (vis[child] == 0)
             {
-                queue.push(child);
-                dist[child] = dist[curr] + 1;
+                level[child] = level[curr] + 1;
                 vis[child] = 1;
+                q.push(child);
             }
         }
     }
@@ -142,13 +142,21 @@ void solve()
 {
     cin >> n >> m;
     maxn = log2(n);
-    for (int i = 1; i <= n; i++)
+    for (int i = 0; i < maxi; i++)
     {
-        if (vis[i] == 0)
+        for (int j = 0; j < maxi; j++)
         {
-            bfs(i);
+            LCA[i][j] = -1;
         }
     }
+    forn(i, m)
+    {
+        int a, b;
+        cin >> a >> b;
+        arr[a].pb(b);
+        arr[b].pb(a);
+    }
+    bfs(1);
     init();
     int q;
     cin >> q;
@@ -159,15 +167,10 @@ void solve()
         cout << lca(a, b) << ln;
     }
 }
+
 int main()
 {
     fast_cin();
-
-    // ll t;
-    // cin >> t;
-    // for (int it = 1; it <= t; it++)
-    // {
     solve();
-    // }
     return 0;
 }
