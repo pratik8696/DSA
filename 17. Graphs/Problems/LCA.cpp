@@ -140,16 +140,34 @@ int lca(int a, int b)
 
 void solve()
 {
-    cin >> n;
+    cin >> n >> m;
+    maxn = log2(n);
+    for (int i = 1; i <= n; i++)
+    {
+        if (vis[i] == 0)
+        {
+            bfs(i);
+        }
+    }
+    init();
+    int q;
+    cin >> q;
+    while (q--)
+    {
+        int a, b;
+        cin >> a >> b;
+        cout << lca(a, b) << ln;
+    }
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
-    for (int it = 1; it <= t; it++)
-    {
-        solve();
-    }
+
+    // ll t;
+    // cin >> t;
+    // for (int it = 1; it <= t; it++)
+    // {
+    solve();
+    // }
     return 0;
 }
