@@ -56,15 +56,29 @@ double eps = 1e-12;
 #define sz(x) ((ll)(x).size())
 #define maxi 100000
 vector<int> arr[maxi];
+vector<int> LCA[maxi];
+int level[maxi];
 int vis[maxi];
-int dist[maxi];
+
+int n, m, maxn;
+void dfs(int v, int par)
+{
+    LCA[v][0] = par;
+    for (auto child : arr[v])
+    {
+        if (child != par)
+        {
+            dfs(child, v);
+        }
+    }
+}
 
 void bfs(int v)
 {
     queue<int> q;
-    q.push(v);
     vis[v] = 1;
-    dist[v] = 0;
+    level[v] = 0;
+    q.push(v);
     while (!q.empty())
     {
         int curr = q.front();
@@ -73,7 +87,7 @@ void bfs(int v)
         {
             if (vis[child] == 0)
             {
-                q.push(child);
+                queue.push(child);
                 dist[child] = dist[curr] + 1;
                 vis[child] = 1;
             }
@@ -81,37 +95,61 @@ void bfs(int v)
     }
 }
 
-void solve()
+void init()
 {
-    int n, m;
-    cin >> n >> m;
-    forn(i, m)
+    dfs(1, -1);
+    for (int j = 1; j <= maxn; j++)
     {
-        int a, b;
-        cin >> a >> b;
-        arr[a].pb(b);
-        arr[b].pb(a);
-    }
-    for (int i = 1; i <= n; i++)
-    {
-        if (vis[i] == 0)
+        for (int i = 1; i <= n; i++)
         {
-            bfs(i);
+            if (LCA[i][j - 1] != -1)
+            {
+                int par = LCA[i][j - 1];
+                LCA[i][j] = LCA[par][j - 1];
+            }
         }
     }
-    for (int i = 1; i <= n; i++)
+}
+
+int lca(int a, int b)
+{
+    if (level[a] > level[b])
     {
-        cout << dist[i] << " ";
+        int temp = a;
+        a = b;
+        b = temp;
     }
-    cout << ln;
+    int d = level[b] - level[a];
+    while (d > 0)
+    {
+        int i = log2(d);
+        b = LCA[b][i];
+        d = d - pow(2, i);
+    }
+    if (a == b)
+    {
+        return a;
+    }
+    while (LCA[a][0] != LCA[b][0])
+    {
+        a = LCA[a][0];
+        b = LCA[b][0];
+    }
+    return LCA[a][0];
+}
+
+void solve()
+{
+    cin >> n;
 }
 int main()
 {
     fast_cin();
-    //  ll t;
-    //  cin >> t;
-    //  for(int it=1;it<=t;it++) {
-    solve();
-    //  }
+    ll t;
+    cin >> t;
+    for (int it = 1; it <= t; it++)
+    {
+        solve();
+    }
     return 0;
 }

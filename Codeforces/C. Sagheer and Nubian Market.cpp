@@ -54,56 +54,62 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100000
-vector<int> arr[maxi];
-int vis[maxi];
-int dist[maxi];
 
-void bfs(int v)
+struct val
 {
-    queue<int> q;
-    q.push(v);
-    vis[v] = 1;
-    dist[v] = 0;
-    while (!q.empty())
-    {
-        int curr = q.front();
-        q.pop();
-        for (auto child : arr[curr])
-        {
-            if (vis[child] == 0)
-            {
-                q.push(child);
-                dist[child] = dist[curr] + 1;
-                vis[child] = 1;
-            }
-        }
-    }
+    ll pisa;
+    ll idx;
+    ll totalpisa;
+};
+
+val arr[100001];
+bool compare(val a, val b)
+{
+    return a.totalpisa < b.totalpisa;
 }
 
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    forn(i, m)
+    int n, k;
+    cin >> n >> k;
+    int v[n];
+    forn(i, n)
     {
-        int a, b;
-        cin >> a >> b;
-        arr[a].pb(b);
-        arr[b].pb(a);
+        cin >> arr[i].pisa;
+        arr[i].idx = i + 1;
+        arr[i].totalpisa = arr[i].pisa + n * (i + 1);
     }
-    for (int i = 1; i <= n; i++)
+    sort(al(arr, n), compare);
+    forn(i, n)
     {
-        if (vis[i] == 0)
-        {
-            bfs(i);
-        }
-    }
-    for (int i = 1; i <= n; i++)
-    {
-        cout << dist[i] << " ";
+        cout << arr[i].pisa << " ";
     }
     cout << ln;
+    forn(i, n)
+    {
+        cout << arr[i].idx << " ";
+    }
+    cout << ln;
+    forn(i, n)
+    {
+        cout << arr[i].totalpisa << " ";
+    }
+    cout << ln;
+    ll basesum = 0, multiplier = 0, t = 0, totalsum = 0,count=0;
+    for (int i = 0; i < n; i++)
+    {
+        totalsum = basesum + (t * multiplier);
+        if ((basesum + arr[i].pisa + ((t + 1) * (multiplier + arr[i].idx))) <= k)
+        {
+            count++;
+            basesum += arr[i].pisa;
+            t++;
+            multiplier += arr[i].idx;
+        }
+        // cout << basesum << " " << t << " " << multiplier << " " << totalsum << ln;
+    }
+    totalsum = basesum + (t * multiplier);
+    cout<<count<<" "<<totalsum<<ln;
 }
 int main()
 {

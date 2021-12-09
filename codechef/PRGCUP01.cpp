@@ -54,28 +54,43 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100000
-vector<int> arr[maxi];
-int vis[maxi];
-int dist[maxi];
+#define maxi 10
+int arr[maxi][maxi];
+int vis[maxi][maxi];
+int dist[maxi][maxi];
+int n, m;
+int dx[] = {-2, -1, 1, 2, 2, 1, -1, -2};
+int dy[] = {1, 2, 2, 1, -1, -2, -2, -1};
 
-void bfs(int v)
+bool isvalid(int x, int y)
 {
-    queue<int> q;
-    q.push(v);
-    vis[v] = 1;
-    dist[v] = 0;
+    if (x < 1 || x > n || y < 1 || y > m || vis[x][y] == 1)
+    {
+        return false;
+    }
+    return true;
+}
+ 
+void bfson2d(int x, int y)
+{
+    queue<pair<int, int>> q;
+    vis[x][y] = 1;
+    dist[x][y] = 0;
+    q.push(mp(x, y));
     while (!q.empty())
     {
-        int curr = q.front();
+        int currx = q.front().first;
+        int curry = q.front().second;
         q.pop();
-        for (auto child : arr[curr])
+        for (int i = 0; i < 8; i++)
         {
-            if (vis[child] == 0)
+            if (isvalid(currx + dx[i], curry + dy[i]))
             {
-                q.push(child);
-                dist[child] = dist[curr] + 1;
-                vis[child] = 1;
+                int x1 = currx + dx[i];
+                int y1 = curry + dy[i];
+                dist[x1][y1] = dist[currx][curry] + 1;
+                vis[x1][y1] = 1;
+                q.push(mp(x1, y1));
             }
         }
     }
@@ -83,35 +98,32 @@ void bfs(int v)
 
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    forn(i, m)
-    {
-        int a, b;
-        cin >> a >> b;
-        arr[a].pb(b);
-        arr[b].pb(a);
-    }
-    for (int i = 1; i <= n; i++)
-    {
-        if (vis[i] == 0)
-        {
-            bfs(i);
-        }
-    }
-    for (int i = 1; i <= n; i++)
-    {
-        cout << dist[i] << " ";
-    }
-    cout << ln;
+    n = 8, m = 8;
+    char a, b;
+    int p, q, r, s;
+    cin >> a >> q >> b >> s;
+    p = a - 96;
+    r = b - 96;
+    bfson2d(p, q);
+    cout<<dist[r][s]<<ln;
 }
 int main()
 {
     fast_cin();
-    //  ll t;
-    //  cin >> t;
-    //  for(int it=1;it<=t;it++) {
-    solve();
-    //  }
+    ll t;
+    cin >> t;
+    for (int it = 1; it <= t; it++)
+    {
+        for (int i = 0; i < maxi; i++)
+        {
+            for (int j = 0; j < maxi; j++)
+            {
+                vis[i][j] = 0;
+                arr[i][j] = 0;
+                dist[i][j] = 0;
+            }
+        }
+        solve();
+    }
     return 0;
 }

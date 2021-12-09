@@ -54,64 +54,73 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100000
-vector<int> arr[maxi];
-int vis[maxi];
-int dist[maxi];
+#define maxi 100001
+#define arsize 10001
 
-void bfs(int v)
+struct edge
 {
-    queue<int> q;
-    q.push(v);
-    vis[v] = 1;
-    dist[v] = 0;
-    while (!q.empty())
+    int a;
+    int b;
+    int w;
+};
+
+edge arr[maxi];
+int par[arsize];
+
+void merge(int a, int b)
+{
+    par[a] = b;
+}
+
+int find(int a)
+{
+    if (par[a] == -1)
     {
-        int curr = q.front();
-        q.pop();
-        for (auto child : arr[curr])
-        {
-            if (vis[child] == 0)
-            {
-                q.push(child);
-                dist[child] = dist[curr] + 1;
-                vis[child] = 1;
-            }
-        }
+        return a;
     }
+    return par[a]=find(par[a]);
+}
+
+bool compare(edge a, edge b)
+{
+    return a.w < b.w;
 }
 
 void solve()
 {
     int n, m;
     cin >> n >> m;
+    for (int i = 0; i <= n; i++)
+    {
+        par[i] = -1;
+    }
+    ll sum = 0;
     forn(i, m)
     {
-        int a, b;
-        cin >> a >> b;
-        arr[a].pb(b);
-        arr[b].pb(a);
+        cin >> arr[i].a >> arr[i].b >> arr[i].w;
     }
-    for (int i = 1; i <= n; i++)
+    sort(al(arr, m), compare);
+    for (int i = 0; i < m; i++)
     {
-        if (vis[i] == 0)
+        int a = find(arr[i].a);
+        int b = find(arr[i].b);
+        if (a != b)
         {
-            bfs(i);
+            sum += arr[i].w;
+            merge(a, b);
         }
     }
-    for (int i = 1; i <= n; i++)
-    {
-        cout << dist[i] << " ";
-    }
-    cout << ln;
+    cout << sum << ln;
 }
+
 int main()
 {
     fast_cin();
-    //  ll t;
-    //  cin >> t;
-    //  for(int it=1;it<=t;it++) {
+    // ll t;
+    // cin >> t;
+    // for (int it = 1; it <= t; it++)
+    // {
     solve();
-    //  }
+    // }
     return 0;
 }

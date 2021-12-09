@@ -59,31 +59,22 @@ vector<int> arr[maxi];
 int vis[maxi];
 int dist[maxi];
 
-void bfs(int v)
+void dfs(int v, int d)
 {
-    queue<int> q;
-    q.push(v);
     vis[v] = 1;
-    dist[v] = 0;
-    while (!q.empty())
+    dist[v] = d;
+    for (auto child : arr[v])
     {
-        int curr = q.front();
-        q.pop();
-        for (auto child : arr[curr])
+        if (vis[child] == 0)
         {
-            if (vis[child] == 0)
-            {
-                q.push(child);
-                dist[child] = dist[curr] + 1;
-                vis[child] = 1;
-            }
+            dfs(child, d + 1);
         }
     }
 }
 
 void solve()
 {
-    int n, m;
+    int n, m; // n is the no of nodes and m is the no of edges
     cin >> n >> m;
     forn(i, m)
     {
@@ -92,11 +83,12 @@ void solve()
         arr[a].pb(b);
         arr[b].pb(a);
     }
+    vector<int> v;
     for (int i = 1; i <= n; i++)
     {
         if (vis[i] == 0)
         {
-            bfs(i);
+            dfs(i, 0);
         }
     }
     for (int i = 1; i <= n; i++)
@@ -105,13 +97,15 @@ void solve()
     }
     cout << ln;
 }
+
 int main()
 {
     fast_cin();
-    //  ll t;
-    //  cin >> t;
-    //  for(int it=1;it<=t;it++) {
-    solve();
-    //  }
+    ll t;
+    cin >> t;
+    for (int it = 1; it <= t; it++)
+    {
+        solve();
+    }
     return 0;
 }
