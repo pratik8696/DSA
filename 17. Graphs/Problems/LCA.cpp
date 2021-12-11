@@ -19,7 +19,6 @@
 #include <stack>
 #include <iomanip>
 #include <fstream>
-
 using namespace std;
 typedef unsigned long long ull;
 typedef long long ll;
@@ -47,9 +46,9 @@ double eps = 1e-12;
 #define fi first
 #define se second
 #define INF 2e18
-#define fast_cin()                    \
-    ios_base::sync_with_stdio(false); \
-    cin.tie(NULL);                    \
+#define fast_cin()                    
+    ios_base::sync_with_stdio(false); 
+    cin.tie(NULL);                    
     cout.tie(NULL)
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
