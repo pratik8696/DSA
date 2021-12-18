@@ -54,14 +54,42 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-bool isvalid(int mid, int arr[], int n, int prata)
+#define maxi 100001
+ll n, m, a, totalmoney;
+ll boy[maxi], bike[maxi];
+
+bool isvalid(int count)
 {
-    int count = 0;
-    for (int i = 0; i < n; i++)
+    int i = 0, j = 0;
+    ll k = 0;
+    while (i < n && j < m)
     {
-        count += (-1 + sqrt(1 + (8 * mid) / arr[i])) / 2;
+        if (boy[i] >= bike[j])
+        {
+            totalmoney += boy[i] - a;
+            a = 0;
+            k++;
+            i++;
+            j++;
+        }
+        else if (boy[i] < bike[j])
+        {
+            ll remamt = bike[j] - boy[i];
+            if (remamt <= a)
+            {
+                totalmoney += boy[i];
+                a = a - remamt;
+                k++;
+                i++;
+                j++;
+            }
+            else
+            {
+                i++;
+            }
+        }
     }
-    if (count >= prata)
+    if (k >= count)
     {
         return true;
     }
@@ -70,38 +98,54 @@ bool isvalid(int mid, int arr[], int n, int prata)
 
 void solve()
 {
-    int n, k;
-    cin >> n >> k;
-    int arr[k];
-    forn(i, k)
+    cin >> n >> m >> a;
+    forn(i, n)
     {
-        cin >> arr[i];
+        cin >> boy[i];
     }
-    sort(al(arr, k));
-    int i = 0, j = 1000000, ans = 0;
+    forn(i, m)
+    {
+        cin >> bike[i];
+    }
+    sort(al(boy, n));
+    sort(al(bike, m));
+    forn(i, n)
+    {
+        cout << boy[i] << " ";
+    }
+    cout << ln;
+    forn(i, m)
+    {
+        cout << bike[i] << " ";
+    }
+    cout << ln;
+    ll i = 0, j = n, ans = 0, moneyused;
     while (i <= j)
     {
-        int mid = (i + j) / 2;
-        if (isvalid(mid, arr, k, n))
+        ll mid = (i + j) / 2;
+        if (isvalid(mid))
         {
             ans = mid;
-            j = mid - 1;
+            i = mid + 1;
+            moneyused = totalmoney;
+            totalmoney = 0;
         }
         else
         {
-            i = mid + 1;
+            j = mid - 1;
         }
     }
-    cout<<ans<<ln;
+    cout << ans << " " << moneyused << ln;
 }
+
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
-    for (int it = 1; it <= t; it++)
-    {
-        solve();
-    }
+    // ll t;
+    // cin >> t;
+    // for (int it = 1; it <= t; it++)
+    // {
+    solve();
+    // }
     return 0;
 }

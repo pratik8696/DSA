@@ -54,14 +54,23 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-bool isvalid(int mid, int arr[], int n, int prata)
+#define maxi 100001
+ll n, m, k;
+ll arr[maxi];
+
+bool isvalid(ll time)
 {
-    int count = 0;
+    ll count = 0, tt = 0;
     for (int i = 0; i < n; i++)
     {
-        count += (-1 + sqrt(1 + (8 * mid) / arr[i])) / 2;
+        count++;
+        if (count == m || i == n - 1)
+        {
+            tt += arr[i] * k;
+        }
+        count = 0;
     }
-    if (count >= prata)
+    if (tt <= time)
     {
         return true;
     }
@@ -70,19 +79,17 @@ bool isvalid(int mid, int arr[], int n, int prata)
 
 void solve()
 {
-    int n, k;
-    cin >> n >> k;
-    int arr[k];
-    forn(i, k)
+    cin >> n >> m >> k;
+    forn(i, n)
     {
         cin >> arr[i];
     }
-    sort(al(arr, k));
-    int i = 0, j = 1000000, ans = 0;
+    sort(al(arr, n));
+    ll i = 0, j = 10000000000, ans = 0;
     while (i <= j)
     {
-        int mid = (i + j) / 2;
-        if (isvalid(mid, arr, k, n))
+        ll mid = (i + j) / 2;
+        if (isvalid(mid))
         {
             ans = mid;
             j = mid - 1;
@@ -92,7 +99,7 @@ void solve()
             i = mid + 1;
         }
     }
-    cout<<ans<<ln;
+    cout << ans << ln;
 }
 int main()
 {

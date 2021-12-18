@@ -54,45 +54,22 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-bool isvalid(int mid, int arr[], int n, int prata)
-{
-    int count = 0;
-    for (int i = 0; i < n; i++)
-    {
-        count += (-1 + sqrt(1 + (8 * mid) / arr[i])) / 2;
-    }
-    if (count >= prata)
-    {
-        return true;
-    }
-    return false;
-}
 
 void solve()
 {
-    int n, k;
-    cin >> n >> k;
-    int arr[k];
-    forn(i, k)
+    ll a, b, n;
+    cin >> a >> b >> n;
+    ll arr[n];
+    forn(i, n)
     {
         cin >> arr[i];
     }
-    sort(al(arr, k));
-    int i = 0, j = 1000000, ans = 0;
-    while (i <= j)
+    sort(al(arr, n));
+    int i=0,j=INF;
+    while(i<=j)
     {
-        int mid = (i + j) / 2;
-        if (isvalid(mid, arr, k, n))
-        {
-            ans = mid;
-            j = mid - 1;
-        }
-        else
-        {
-            i = mid + 1;
-        }
+        
     }
-    cout<<ans<<ln;
 }
 int main()
 {

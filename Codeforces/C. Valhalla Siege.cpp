@@ -54,54 +54,62 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-bool isvalid(int mid, int arr[], int n, int prata)
-{
-    int count = 0;
-    for (int i = 0; i < n; i++)
-    {
-        count += (-1 + sqrt(1 + (8 * mid) / arr[i])) / 2;
-    }
-    if (count >= prata)
-    {
-        return true;
-    }
-    return false;
-}
 
 void solve()
 {
-    int n, k;
-    cin >> n >> k;
-    int arr[k];
-    forn(i, k)
+    ll n, q;
+    ll sum = 0, queries = 0;
+    cin >> n >> q;
+    ll arr[n + 1], bin[q];
+    fill(al(arr, n + 1), 0);
+    for (ll i = 1; i <= n; i++)
     {
-        cin >> arr[i];
+        ll x;
+        cin >> x;
+        sum += x;
+        arr[i] = sum;
     }
-    sort(al(arr, k));
-    int i = 0, j = 1000000, ans = 0;
-    while (i <= j)
+    for (ll i = 0; i < q; i++)
     {
-        int mid = (i + j) / 2;
-        if (isvalid(mid, arr, k, n))
+        ll y;
+        cin >> y;
+        queries += y;
+        bin[i] = queries;
+        if (queries >= arr[n])
         {
-            ans = mid;
-            j = mid - 1;
+            queries = 0;
+        }
+    }
+    // for (int i = 1; i <= n; i++)
+    // {
+    //     cout << arr[i] << " ";
+    // }
+    // cout << ln;
+    // forn(i, q)
+    // {
+    //     cout << bin[i] << " ";
+    // }
+    // cout << ln;
+    forn(i, q)
+    {
+        ll idx = lower_bound(arr + 1, arr + n + 1, bin[i]) - arr;
+        if (bin[i] < arr[idx])
+        {
+            idx--;
+        }
+        if (idx >= n)
+        {
+            cout << n << ln;
         }
         else
         {
-            i = mid + 1;
+            cout << n - idx << ln;
         }
     }
-    cout<<ans<<ln;
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
-    for (int it = 1; it <= t; it++)
-    {
-        solve();
-    }
+    solve();
     return 0;
 }

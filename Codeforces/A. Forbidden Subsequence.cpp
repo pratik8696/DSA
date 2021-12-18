@@ -54,45 +54,58 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-bool isvalid(int mid, int arr[], int n, int prata)
-{
-    int count = 0;
-    for (int i = 0; i < n; i++)
-    {
-        count += (-1 + sqrt(1 + (8 * mid) / arr[i])) / 2;
-    }
-    if (count >= prata)
-    {
-        return true;
-    }
-    return false;
-}
 
 void solve()
 {
-    int n, k;
-    cin >> n >> k;
-    int arr[k];
-    forn(i, k)
+    string s, y;
+    cin >> s >> y;
+    sort(all(s));
+    map<char, int> m;
+    int a = 0, b = 0, c = 0;
+    string z = "";
+    forn(i, s.length())
     {
-        cin >> arr[i];
-    }
-    sort(al(arr, k));
-    int i = 0, j = 1000000, ans = 0;
-    while (i <= j)
-    {
-        int mid = (i + j) / 2;
-        if (isvalid(mid, arr, k, n))
+        if (s[i] == 'a')
         {
-            ans = mid;
-            j = mid - 1;
+            a++;
+        }
+        else if (s[i] == 'b')
+        {
+            b++;
+        }
+        else if (s[i] == 'c')
+        {
+            c++;
         }
         else
         {
-            i = mid + 1;
+            z.pb(s[i]);
         }
     }
-    cout<<ans<<ln;
+    sort(all(z));
+    if (a == 0 || b == 0 || c == 0)
+    {
+        cout << s << ln;
+        return;
+    }
+    if (y == "abc")
+    {
+        while (a--)
+        {
+            cout << 'a';
+        }
+        while (c--)
+        {
+            cout << 'c';
+        }
+        while (b--)
+        {
+            cout << 'b';
+        }
+        cout << z << ln;
+        return;
+    }
+    cout << s << ln;
 }
 int main()
 {

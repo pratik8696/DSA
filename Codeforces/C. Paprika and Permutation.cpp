@@ -54,46 +54,57 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-bool isvalid(int mid, int arr[], int n, int prata)
-{
-    int count = 0;
-    for (int i = 0; i < n; i++)
-    {
-        count += (-1 + sqrt(1 + (8 * mid) / arr[i])) / 2;
-    }
-    if (count >= prata)
-    {
-        return true;
-    }
-    return false;
-}
 
 void solve()
 {
-    int n, k;
-    cin >> n >> k;
-    int arr[k];
-    forn(i, k)
+    ll n;
+    cin >> n;
+    ll arr[n];
+    map<ll, ll> pp;
+    vector<ll> vec;
+    for (ll i = 0; i < n; i++)
     {
         cin >> arr[i];
-    }
-    sort(al(arr, k));
-    int i = 0, j = 1000000, ans = 0;
-    while (i <= j)
-    {
-        int mid = (i + j) / 2;
-        if (isvalid(mid, arr, k, n))
+        if (arr[i] <= n && pp[arr[i]] == 0)
         {
-            ans = mid;
-            j = mid - 1;
+            pp[arr[i]] = 1;
         }
         else
         {
-            i = mid + 1;
+            vec.pb(arr[i]);
         }
     }
-    cout<<ans<<ln;
+    
+    ll z = 0;
+
+    sort(al(arr, n));
+    sort(all(vec));
+
+
+    for (ll i = 0; i < n; i++)
+    {
+        if (pp[i + 1] == 1)
+        {
+
+        }
+        else
+        {
+            if (vec[z] >= (2 * (i + 1)) + 1 && z < vec.size())
+            {
+                z++;
+                continue;
+            }
+            else
+            {
+                cout << "-1" << endl;
+                return;
+            }
+        }
+    }
+    cout << vec.size() << endl;
 }
+
+
 int main()
 {
     fast_cin();

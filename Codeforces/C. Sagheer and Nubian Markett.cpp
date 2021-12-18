@@ -54,15 +54,25 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-bool isvalid(int mid, int arr[], int n, int prata)
+#define maxi 100001
+ll arr[maxi], curr[maxi];
+ll n, money, lastmoney;
+
+bool isvalid(ll count)
 {
-    int count = 0;
-    for (int i = 0; i < n; i++)
+    forn(i, n)
     {
-        count += (-1 + sqrt(1 + (8 * mid) / arr[i])) / 2;
+        arr[i] = arr[i] + (i + 1) * count;
     }
-    if (count >= prata)
+    sort(al(arr, n));
+    ll sum = 0;
+    for (int i = 0; i < count; i++)
     {
+        sum += arr[i];
+    }
+    if (sum <= money)
+    {
+        lastmoney = sum;
         return true;
     }
     return false;
@@ -70,38 +80,41 @@ bool isvalid(int mid, int arr[], int n, int prata)
 
 void solve()
 {
-    int n, k;
-    cin >> n >> k;
-    int arr[k];
-    forn(i, k)
+    cin >> n >> money;
+    forn(i, n)
     {
         cin >> arr[i];
+        curr[i] = arr[i];
     }
-    sort(al(arr, k));
-    int i = 0, j = 1000000, ans = 0;
+    ll i = 0, j = n, ans = 0;
     while (i <= j)
     {
-        int mid = (i + j) / 2;
-        if (isvalid(mid, arr, k, n))
+        ll mid = (i + j) / 2;
+        forn(k, n)
+        {
+            arr[k] = curr[k];
+        }
+        if (isvalid(mid))
         {
             ans = mid;
-            j = mid - 1;
+            i = mid + 1;
         }
         else
         {
-            i = mid + 1;
+            j = mid - 1;
         }
     }
-    cout<<ans<<ln;
+    cout << ans << " " << lastmoney << ln;
 }
+
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
-    for (int it = 1; it <= t; it++)
-    {
-        solve();
-    }
+    // ll t;
+    // cin >> t;
+    // for (int it = 1; it <= t; it++)
+    // {
+    solve();
+    // }
     return 0;
 }

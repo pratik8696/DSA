@@ -54,54 +54,39 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-bool isvalid(int mid, int arr[], int n, int prata)
-{
-    int count = 0;
-    for (int i = 0; i < n; i++)
-    {
-        count += (-1 + sqrt(1 + (8 * mid) / arr[i])) / 2;
-    }
-    if (count >= prata)
-    {
-        return true;
-    }
-    return false;
-}
 
 void solve()
 {
-    int n, k;
+    ll n, k;
     cin >> n >> k;
-    int arr[k];
-    forn(i, k)
+    ll arr[n];
+    forn(i, n)
     {
         cin >> arr[i];
     }
-    sort(al(arr, k));
-    int i = 0, j = 1000000, ans = 0;
-    while (i <= j)
+    ull count = 0;
+    for (ll i = 0; i < n; i++)
     {
-        int mid = (i + j) / 2;
-        if (isvalid(mid, arr, k, n))
+        ll idx = lower_bound(al(arr, n), k + arr[i]) - arr;
+        if(idx==n)
         {
-            ans = mid;
-            j = mid - 1;
+            idx--;
         }
-        else
+        if (arr[idx] - arr[i] > k)
         {
-            i = mid + 1;
+            idx--;
+        }
+        ull res=idx-i-1;
+        if (res >= 0)
+        {
+            count += (res)*(res+1)/2;
         }
     }
-    cout<<ans<<ln;
+    cout << count << ln;
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
-    for (int it = 1; it <= t; it++)
-    {
-        solve();
-    }
+    solve();
     return 0;
 }
