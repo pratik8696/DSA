@@ -59,27 +59,37 @@ void solve()
 {
     int n;
     cin >> n;
-    map<int, int> m;
+    ll arr[2 * n];
+    ll smallest = INT_MAX, idx = 0;
     forn(i, n)
     {
-        ll x;
-        cin >> x;
-        m[x]++;
+        cin >> arr[i];
+        arr[n + i] = arr[i];
+        smallest = min(arr[i], smallest);
     }
-    int q;
-    cin>>q;
-    while(q--)
+    forn(i, n)
     {
-        int a;
-        cin>>a;
-        if(m[a]==0)
+        if (arr[i] == smallest)
         {
-            cout<<a<<" IS NOT PRESENT"<<ln;
-        }
-        else{
-            cout<<a<<" IS PRESENT "<<m[a]<<" TIMES"<<ln;
+            idx = i;
+            break;
         }
     }
+
+    for (int i = idx; i < idx + n - 1; i++)
+    {
+        if (arr[i] > arr[i + 1])
+        {
+            cout << "-1" << ln;
+            return;
+        }
+    }
+    if (n - idx == n)
+    {
+        cout << 0 << ln;
+        return;
+    }
+    cout << n - idx << ln;
 }
 int main()
 {

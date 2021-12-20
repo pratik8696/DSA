@@ -59,33 +59,29 @@ void solve()
 {
     int n;
     cin >> n;
-    map<int, int> m;
+    int arr[n];
     forn(i, n)
     {
-        ll x;
-        cin >> x;
-        m[x]++;
+        cin >> arr[i];
     }
-    int q;
-    cin>>q;
-    while(q--)
+    ll count = 0;
+    for (int i = 0; i < n - 1; i++)
     {
-        int a;
-        cin>>a;
-        if(m[a]==0)
+        for (int j = i + 1; j < n; j++)
         {
-            cout<<a<<" IS NOT PRESENT"<<ln;
-        }
-        else{
-            cout<<a<<" IS PRESENT "<<m[a]<<" TIMES"<<ln;
+            if (arr[j] - arr[i] == j - i)
+            {
+                count++;
+            }
         }
     }
+    cout << count << ln;
 }
 int main()
 {
     fast_cin();
-    ll t = 1;
-    // cin >> t;
+    ll t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

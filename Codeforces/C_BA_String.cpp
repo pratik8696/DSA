@@ -57,35 +57,20 @@ double eps = 1e-12;
 
 void solve()
 {
-    int n;
-    cin >> n;
-    map<int, int> m;
-    forn(i, n)
+    int n, k, x;
+    cin >> n >> k >> x;
+    string s;
+    cin >> s;
+    for (int i = 1; i <= 9; i++)
     {
-        ll x;
-        cin >> x;
-        m[x]++;
-    }
-    int q;
-    cin>>q;
-    while(q--)
-    {
-        int a;
-        cin>>a;
-        if(m[a]==0)
-        {
-            cout<<a<<" IS NOT PRESENT"<<ln;
-        }
-        else{
-            cout<<a<<" IS PRESENT "<<m[a]<<" TIMES"<<ln;
-        }
+           
     }
 }
 int main()
 {
     fast_cin();
-    ll t = 1;
-    // cin >> t;
+    ll t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

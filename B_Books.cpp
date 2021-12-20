@@ -54,32 +54,62 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
+#define maxi 100001
+ll n, t;
+int arr[maxi];
 
+bool isvalid(int bookscount)
+{
+    ll i = 0, j = 0;
+    ll currsum = 0, maxcount = INT_MIN;
+    while (j < n)
+    {
+        if (currsum + arr[j] <= t)
+        {
+            currsum += arr[j++];
+        }
+        else if (currsum + arr[j] - arr[i] <= t)
+        {
+            currsum = currsum + arr[j] - arr[i];
+            j++, i++;
+        }
+        else if (currsum + arr[j] - arr[i] >= t)
+        {
+            j = i;
+            j++, i++;
+            currsum = 0;
+        }
+        maxcount = max(maxcount, j - i);
+    }
+    if(maxcount>=bookscount)
+    {
+        return true;
+    }
+    return false;
+}
 void solve()
 {
-    int n;
-    cin >> n;
-    map<int, int> m;
+    cin >> n >> t;
     forn(i, n)
     {
-        ll x;
-        cin >> x;
-        m[x]++;
+        cin >> arr[i];
     }
-    int q;
-    cin>>q;
-    while(q--)
+    ll i = 0, j = n;
+    ll maxcount=0;
+    while (i<=j)
     {
-        int a;
-        cin>>a;
-        if(m[a]==0)
+        ll mid = (i + j) / 2;
+        if (isvalid(mid))
         {
-            cout<<a<<" IS NOT PRESENT"<<ln;
+            maxcount = mid;
+            i = mid + 1;
         }
-        else{
-            cout<<a<<" IS PRESENT "<<m[a]<<" TIMES"<<ln;
+        else
+        {
+            j = mid - 1;
         }
     }
+    cout << maxcount << ln;
 }
 int main()
 {

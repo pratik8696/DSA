@@ -59,33 +59,40 @@ void solve()
 {
     int n;
     cin >> n;
-    map<int, int> m;
+    vector<pair<ll, ll>> v;
     forn(i, n)
     {
-        ll x;
-        cin >> x;
-        m[x]++;
+        ll a, b;
+        cin >> a >> b;
+        v.pb(mp(a, b));
     }
-    int q;
-    cin>>q;
-    while(q--)
+    ll sumone = 0, sumtwo = 0;
+    string res = "";
+    for (auto t : v)
     {
-        int a;
-        cin>>a;
-        if(m[a]==0)
+        if (sumone + t.first - sumtwo <= 500)
         {
-            cout<<a<<" IS NOT PRESENT"<<ln;
+            sumone += t.first;
+            res.pb('A');
         }
-        else{
-            cout<<a<<" IS PRESENT "<<m[a]<<" TIMES"<<ln;
+        else if (sumtwo + t.second - sumone <= 500)
+        {
+            sumtwo += t.second;
+            res.pb('G');
+        }
+        else
+        {
+            cout << -1 << ln;
+            return;
         }
     }
+    cout << res << ln;ue
 }
 int main()
 {
     fast_cin();
     ll t = 1;
-    // cin >> t;
+    //  cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

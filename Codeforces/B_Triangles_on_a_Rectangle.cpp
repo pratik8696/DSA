@@ -57,35 +57,52 @@ double eps = 1e-12;
 
 void solve()
 {
-    int n;
-    cin >> n;
-    map<int, int> m;
-    forn(i, n)
+    ll w, h;
+    cin >> w >> h;
+    ll a;
+    cin >> a;
+    ll xl[a];
+    forn(i, a)
     {
-        ll x;
-        cin >> x;
-        m[x]++;
+        cin >> xl[i];
     }
-    int q;
-    cin>>q;
-    while(q--)
+    ll first = (xl[a - 1] - xl[0]) * h;
+    // cout << first << ln;
+    ll b;
+    cin >> b;
+    ll xu[b];
+    forn(i, b)
     {
-        int a;
-        cin>>a;
-        if(m[a]==0)
-        {
-            cout<<a<<" IS NOT PRESENT"<<ln;
-        }
-        else{
-            cout<<a<<" IS PRESENT "<<m[a]<<" TIMES"<<ln;
-        }
+        cin >> xu[i];
     }
+    ll second = (xu[b - 1] - xu[0]) * h;
+    // cout << second << ln;
+    ll c;
+    cin >> c;
+    ll yl[c];
+    forn(i, c)
+    {
+        cin >> yl[i];
+    }
+    ll third = (yl[c - 1] - yl[0]) * w;
+    // cout << third << ln;
+    ll d;
+    cin >> d;
+    ll yu[d];
+    forn(i, d)
+    {
+        cin >> yu[i];
+    }
+    ll fourth = (yu[d - 1] - yu[0]) * w;
+    // cout << fourth << ln;
+    ll maxi = std::max({first, second, third, fourth});
+    cout << maxi << ln;
 }
 int main()
 {
     fast_cin();
-    ll t = 1;
-    // cin >> t;
+    ll t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

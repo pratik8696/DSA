@@ -54,32 +54,28 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-
+#define maxi 200
+int arr[maxi][maxi];
+int pre[maxi][maxi];
+int n, m;
 void solve()
 {
-    int n;
-    cin >> n;
-    map<int, int> m;
-    forn(i, n)
+    cin >> n >> m;
+    for (int i = 1; i <= n; i++)
     {
-        ll x;
-        cin >> x;
-        m[x]++;
-    }
-    int q;
-    cin>>q;
-    while(q--)
-    {
-        int a;
-        cin>>a;
-        if(m[a]==0)
+        for (int j = 1; j <= m; j++)
         {
-            cout<<a<<" IS NOT PRESENT"<<ln;
-        }
-        else{
-            cout<<a<<" IS PRESENT "<<m[a]<<" TIMES"<<ln;
+            cin >> arr[i][j];
         }
     }
+    for (int i = 1; i <= n; i++)
+    {
+        for (int j = 1; j <= m; j++)
+        {
+            pre[i][j] = arr[i][j] || pre[i - 1][j] || pre[i][j - 1];
+        }
+    }
+
 }
 int main()
 {

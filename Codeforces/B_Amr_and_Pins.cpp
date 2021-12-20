@@ -57,29 +57,22 @@ double eps = 1e-12;
 
 void solve()
 {
-    int n;
-    cin >> n;
-    map<int, int> m;
-    forn(i, n)
+    ll r, x, y, x1, y1;
+    cin >> r >> x >> y >> x1 >> y1;
+    ll distx = abs(x1 - x);
+    ll disty = abs(y1 - y);
+    ll xstep = distx / (2 * r);
+    ll ystep = disty / (2 * r);
+    distx = distx % (2 * r);
+    disty = disty % (2 * r);
+    cout << xstep << " " << ystep << ln;
+    cout << distx << " " << disty << ln;
+    if (distx != 0 || disty != 0)
     {
-        ll x;
-        cin >> x;
-        m[x]++;
+        xstep++;
     }
-    int q;
-    cin>>q;
-    while(q--)
-    {
-        int a;
-        cin>>a;
-        if(m[a]==0)
-        {
-            cout<<a<<" IS NOT PRESENT"<<ln;
-        }
-        else{
-            cout<<a<<" IS PRESENT "<<m[a]<<" TIMES"<<ln;
-        }
-    }
+    cout << xstep << " " << ystep << ln;
+    cout << xstep + ystep << ln;
 }
 int main()
 {

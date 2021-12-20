@@ -57,35 +57,40 @@ double eps = 1e-12;
 
 void solve()
 {
-    int n;
-    cin >> n;
-    map<int, int> m;
-    forn(i, n)
+    ull x, y, target;
+    cin >> x >> y >> target;
+    target = target % 6;
+    // cout<<target<<ln;
+    if (target == 0)
     {
-        ll x;
-        cin >> x;
-        m[x]++;
+        cout << (x - y + 2 * MOD) % MOD << ln;
     }
-    int q;
-    cin>>q;
-    while(q--)
+    else if (target == 1)
     {
-        int a;
-        cin>>a;
-        if(m[a]==0)
-        {
-            cout<<a<<" IS NOT PRESENT"<<ln;
-        }
-        else{
-            cout<<a<<" IS PRESENT "<<m[a]<<" TIMES"<<ln;
-        }
+        cout << (x + MOD) % MOD << ln;
+    }
+    else if (target == 2)
+    {
+        cout << (y + MOD) % MOD << ln;
+    }
+    else if (target == 3)
+    {
+        cout << (y - x + 2 * MOD) % MOD << ln;
+    }
+    else if (target == 4)
+    {
+        cout << (-1 * x + MOD) % MOD << ln;
+    }
+    else if (target == 5)
+    {
+        cout << (-1 * y + MOD) % MOD << ln;
     }
 }
 int main()
 {
     fast_cin();
     ll t = 1;
-    // cin >> t;
+    //  cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

@@ -57,28 +57,67 @@ double eps = 1e-12;
 
 void solve()
 {
-    int n;
-    cin >> n;
-    map<int, int> m;
-    forn(i, n)
+    string s, t;
+    cin >> s >> t;
+    map<char, int> smap, tmap;
+    forn(i, s.length())
     {
-        ll x;
-        cin >> x;
-        m[x]++;
+        smap[s[i]]++;
     }
-    int q;
-    cin>>q;
-    while(q--)
+    forn(i, t.length())
     {
-        int a;
-        cin>>a;
-        if(m[a]==0)
+        tmap[t[i]]++;
+    }
+    bool flag = 1;
+    for (auto t : tmap)
+    {
+        char c = t.first;
+        if (tmap[c] <= smap[c])
         {
-            cout<<a<<" IS NOT PRESENT"<<ln;
         }
-        else{
-            cout<<a<<" IS PRESENT "<<m[a]<<" TIMES"<<ln;
+        else
+        {
+            flag = 0;
         }
+    }
+    if (flag)
+    {
+        if (s.length() == t.length())
+        {
+            cout << "array" << ln;
+            return;
+        }
+        else
+        {
+            int i = 0, j = 0;
+            string res = "";
+            while (j < t.length() && i < s.length())
+            {
+                if (s[i] == t[j])
+                {
+                    res.pb(s[i]);
+                    i++;
+                    j++;
+                }
+                else
+                {
+                    i++;
+                }
+            }
+            // cout<<res<<ln;
+            if (!t.compare(res))
+            {
+                cout << "automaton" << ln;
+            }
+            else
+            {
+                cout << "both" << ln;
+            }
+        }
+    }
+    else
+    {
+        cout << "need tree" << ln;
     }
 }
 int main()

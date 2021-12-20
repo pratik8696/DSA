@@ -57,35 +57,34 @@ double eps = 1e-12;
 
 void solve()
 {
-    int n;
-    cin >> n;
-    map<int, int> m;
-    forn(i, n)
+    string s;
+    cin >> s;
+    ll counte = 0, countn = 0;
+    forn(i, s.length())
     {
-        ll x;
-        cin >> x;
-        m[x]++;
-    }
-    int q;
-    cin>>q;
-    while(q--)
-    {
-        int a;
-        cin>>a;
-        if(m[a]==0)
+        if (s[i] == 'N')
         {
-            cout<<a<<" IS NOT PRESENT"<<ln;
+            countn++;
         }
-        else{
-            cout<<a<<" IS PRESENT "<<m[a]<<" TIMES"<<ln;
+        else
+        {
+            counte++;
         }
+    }
+    if (countn == 1)
+    {
+        cout << "NO" << ln;
+    }
+    else
+    {
+        cout << "YES" << ln;
     }
 }
 int main()
 {
     fast_cin();
-    ll t = 1;
-    // cin >> t;
+    ll t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

@@ -59,25 +59,61 @@ void solve()
 {
     int n;
     cin >> n;
-    map<int, int> m;
+    int arr[n];
+    vector<int> first, second;
+    ll f = 0, s = 0;
     forn(i, n)
     {
-        ll x;
-        cin >> x;
-        m[x]++;
-    }
-    int q;
-    cin>>q;
-    while(q--)
-    {
-        int a;
-        cin>>a;
-        if(m[a]==0)
+        cin >> arr[i];
+        if (arr[i] >= 0)
         {
-            cout<<a<<" IS NOT PRESENT"<<ln;
+            first.pb(arr[i]);
+            f += arr[i];
         }
-        else{
-            cout<<a<<" IS PRESENT "<<m[a]<<" TIMES"<<ln;
+        else
+        {
+            second.pb(abs(arr[i]));
+            s += abs(arr[i]);
+        }
+    }
+    if (f > s)
+    {
+        cout << "first" << ln;
+        return;
+    }
+    else if (f < s)
+    {
+        cout << "second" << ln;
+        return;
+    }
+    else
+    {
+        if (f == s)
+        {
+            ll mini = min(first.size(), second.size());
+            for (int i = 0; i < mini; i++)
+            {
+                if (first[i] > second[i])
+                {
+                    cout << "first" << ln;
+                    return;
+                }
+                else if (second[i] > first[i])
+                {
+                    cout << "second" << ln;
+                    return;
+                }
+            }
+        }
+        if (arr[n - 1] < 0)
+        {
+            cout << "second" << ln;
+            return;
+        }
+        else
+        {
+            cout << "first" << ln;
+            return;
         }
     }
 }
