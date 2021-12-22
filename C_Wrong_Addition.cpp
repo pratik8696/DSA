@@ -19,10 +19,9 @@
 #include <stack>
 #include <iomanip>
 #include <fstream>
-
 using namespace std;
-typedef unsigned long long ull;
 typedef long long ll;
+typedef unsigned long long int ull;
 typedef long double ld;
 typedef pair<int, int> p32;
 typedef pair<ll, ll> p64;
@@ -35,64 +34,80 @@ typedef vector<vector<p64>> vvp64;
 typedef vector<p64> vp64;
 typedef vector<p32> vp32;
 ll MOD = 1000000007;
-double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
-#define forsn(i, s, e) for (ll i = s; i < e; i++)
-#define rforn(i, s) for (ll i = s; i >= 0; i--)
-#define rforsn(i, s, e) for (ll i = s; i >= e; i--)
 #define ln "\n"
-#define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
 #define pb push_back
-#define fi first
-#define se second
-#define INF 2e18
 #define fast_cin()                    \
     ios_base::sync_with_stdio(false); \
     cin.tie(NULL);                    \
     cout.tie(NULL)
 #define all(x) (x).begin(), (x).end()
-#define al(arr, n) arr, arr + n
+#define alll(arr, n) (arr), (arr) + (n)
 #define sz(x) ((ll)(x).size())
+
 
 void solve()
 {
-    int n;
-    cin >> n;
-    vector<pair<ll, ll>> v;
-    forn(i, n)
+    ll n, m, i, j, k, x, y;
+    string result;
+    cin >> n >> m;
+    while (n && m)
     {
-        ll a, b;
-        cin >> a >> b;
-        v.pb(mp(a, b));
-    }
-    ll sumone = 0, sumtwo = 0;
-    string res = "";
-    for (auto t : v)
-    {
-        if (sumone + t.first - sumtwo <= 500)
+        char c;
+        if (m < n)
         {
-            sumone += t.first;
-            res.pb('A');
+            cout << "-1\n";
+            return;
         }
-        else if (sumtwo + t.second - sumone <= 500)
+        x = m % 10;
+        y = n % 10;
+        if (x >= y)
         {
-            sumtwo += t.second;
-            res.pb('G');
+            c = (x - y) + '0';
+            result.pb(c);
+            n /= 10;
+            m /= 10;
         }
         else
         {
-            cout << -1 << ln;
-            return;
+            x = m % 100;
+            if (x - y > 9 || x - y < 0)
+            {
+                cout << "-1\n";
+                return;
+            }
+
+            c = (x - y) + '0';
+            result.pb(c);
+            n /= 10;
+            m /= 100;
         }
     }
-    cout << res << ln;
+    if (n)
+    {
+        cout << "-1\n";
+        return;
+    }
+    while (m > 0)
+    {
+        k = m % 10;
+        result.pb(k + '0');
+        m /= 10;
+    }
+    reverse(result.begin(), result.end());
+    i = 0;
+    while (i < result.size() && result[i] == '0')
+        i++;
+    result = result.substr(i);
+    cout << result << endl;
 }
+
 int main()
 {
     fast_cin();
-    ll t = 1;
-    //  cin >> t;
+    ll t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

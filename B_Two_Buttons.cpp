@@ -57,42 +57,24 @@ double eps = 1e-12;
 
 void solve()
 {
-    int n;
-    cin >> n;
-    vector<pair<ll, ll>> v;
-    forn(i, n)
+    ll n, m;
+    cin >> n >> m;
+    if (m <= n)
     {
-        ll a, b;
-        cin >> a >> b;
-        v.pb(mp(a, b));
+        cout << abs(m - n) << ln;
     }
-    ll sumone = 0, sumtwo = 0;
-    string res = "";
-    for (auto t : v)
+    else if (m > n)
     {
-        if (sumone + t.first - sumtwo <= 500)
-        {
-            sumone += t.first;
-            res.pb('A');
-        }
-        else if (sumtwo + t.second - sumone <= 500)
-        {
-            sumtwo += t.second;
-            res.pb('G');
-        }
-        else
-        {
-            cout << -1 << ln;
-            return;
-        }
+        ll mul = m / n;
+        ll sub = abs((n * mul) - m);
+        cout << max(mul, sub) << ln;
     }
-    cout << res << ln;
 }
 int main()
 {
     fast_cin();
     ll t = 1;
-    //  cin >> t;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

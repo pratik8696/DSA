@@ -54,45 +54,63 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
+#define maxi 1001
+char arr[maxi][maxi];
+int vis[maxi][maxi];
+int n, m;
+int dx[] = {-1, 0, 1, 0};
+int dy[] = {0, 1, 0, -1};
+
+bool isvalid(int x, int y)
+{
+    if (x < 1 || x > n || y < 1 || y > m || vis[x][y] == 1 || arr[x][y] == '#')
+    {
+        return false;
+    }
+    return true;
+}
+
+void dfson2d(int x, int y)
+{
+    vis[x][y] = 1;
+    for (int i = 0; i < 4; i++)
+    {
+        if (isvalid(x + dx[i], y + dy[i]))
+        {
+            dfson2d(x + dx[i], y + dy[i]);
+        }
+    }
+}
 
 void solve()
 {
-    int n;
-    cin >> n;
-    vector<pair<ll, ll>> v;
-    forn(i, n)
+    cin >> n >> m;
+    for (int i = 1; i <= n; i++)
     {
-        ll a, b;
-        cin >> a >> b;
-        v.pb(mp(a, b));
-    }
-    ll sumone = 0, sumtwo = 0;
-    string res = "";
-    for (auto t : v)
-    {
-        if (sumone + t.first - sumtwo <= 500)
+        for (int j = 1; j <= m; j++)
         {
-            sumone += t.first;
-            res.pb('A');
-        }
-        else if (sumtwo + t.second - sumone <= 500)
-        {
-            sumtwo += t.second;
-            res.pb('G');
-        }
-        else
-        {
-            cout << -1 << ln;
-            return;
+            cin >> arr[i][j];
         }
     }
-    cout << res << ln;
+    ll cc = 0;
+    for (int i = 1; i <= n; i++)
+    {
+        for (int j = 1; j <= m; j++)
+        {
+            if (vis[i][j] == 0 && arr[i][j] == '.')
+            {
+                dfson2d(i, j);
+                cc++;
+            }
+        }
+    }
+    cout << cc << ln;
 }
 int main()
 {
     fast_cin();
     ll t = 1;
-    //  cin >> t;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

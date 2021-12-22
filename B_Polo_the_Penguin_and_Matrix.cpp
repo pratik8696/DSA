@@ -57,36 +57,67 @@ double eps = 1e-12;
 
 void solve()
 {
-    int n;
-    cin >> n;
-    vector<pair<ll, ll>> v;
+    ll n, m, d;
+    cin >> n >> m >> d;
+    n = n * m;
+    ll arr[n];
+    unordered_set<int> s;
     forn(i, n)
     {
-        ll a, b;
-        cin >> a >> b;
-        v.pb(mp(a, b));
+        cin >> arr[i];
+        s.insert(arr[i]);
     }
-    ll sumone = 0, sumtwo = 0;
-    string res = "";
-    for (auto t : v)
+    if (s.size() == 1)
     {
-        if (sumone + t.first - sumtwo <= 500)
+        cout << 0 << ln;
+        return;
+    }
+    sort(al(arr, n));
+    ll mid = arr[n / 2], secondmid = arr[n / 2 - 1];
+    bool f = 1, g = 1;
+    for (int i = 0; i < n; i++)
+    {
+        if (abs(mid - arr[i]) % d != 0)
         {
-            sumone += t.first;
-            res.pb('A');
-        }
-        else if (sumtwo + t.second - sumone <= 500)
-        {
-            sumtwo += t.second;
-            res.pb('G');
-        }
-        else
-        {
-            cout << -1 << ln;
-            return;
+            f = 0;
         }
     }
-    cout << res << ln;
+    for (int i = 0; i < n; i++)
+    {
+        if (abs(secondmid - arr[i]) % d != 0)
+        {
+            g = 0;
+        }
+    }
+    if (f == 0 && g == 0)
+    {
+        cout << -1 << ln;
+        return;
+    }
+    ll stepone = 0, steptwo = 0;
+    if (f)
+    {
+        for (int i = 0; i < n; i++)
+        {
+            stepone += abs(mid - arr[i]) / d;
+        }
+    }
+    if (g)
+    {
+        for (int i = 0; i < n; i++)
+        {
+            steptwo += abs(secondmid - arr[i]) / d;
+        }
+    }
+    if (stepone == 0)
+    {
+        stepone = INT_MAX;
+    }
+    if (steptwo == 0)
+    {
+        steptwo = INT_MAX;
+    }
+    cout << min(stepone, steptwo) << ln;
 }
 int main()
 {

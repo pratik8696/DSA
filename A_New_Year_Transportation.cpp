@@ -54,45 +54,46 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
+#define maxi 100000
+vector<int> arr[maxi];
+int vis[maxi];
+
+void dfs(int v)
+{
+    vis[v] = 1;
+    for (auto child : arr[v])
+    {
+        if (vis[child] == 0)
+        {
+            dfs(child);
+        }
+    }
+}
 
 void solve()
 {
-    int n;
-    cin >> n;
-    vector<pair<ll, ll>> v;
-    forn(i, n)
+    int n, target;
+    cin >> n >> target;
+    forn(i, n-1)
     {
-        ll a, b;
-        cin >> a >> b;
-        v.pb(mp(a, b));
+        ll a;
+        cin>>a;
+        arr[i+1].pb(a+i+1);
     }
-    ll sumone = 0, sumtwo = 0;
-    string res = "";
-    for (auto t : v)
+    dfs(1);
+    if(vis[target]==1)
     {
-        if (sumone + t.first - sumtwo <= 500)
-        {
-            sumone += t.first;
-            res.pb('A');
-        }
-        else if (sumtwo + t.second - sumone <= 500)
-        {
-            sumtwo += t.second;
-            res.pb('G');
-        }
-        else
-        {
-            cout << -1 << ln;
-            return;
-        }
+        cout<<"YES"<<ln;
     }
-    cout << res << ln;
+    else{
+        cout<<"NO"<<ln;
+    }
 }
 int main()
 {
     fast_cin();
-    ll t = 1;
-    //  cin >> t;
+    ll t=1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

@@ -57,42 +57,39 @@ double eps = 1e-12;
 
 void solve()
 {
-    int n;
+    ll n;
     cin >> n;
-    vector<pair<ll, ll>> v;
+    ll arr[n + 1], diff[n + 1];
+    arr[n] = 0, diff[n] = 0;
     forn(i, n)
     {
-        ll a, b;
-        cin >> a >> b;
-        v.pb(mp(a, b));
+        cin >> arr[i];
+        diff[i] = arr[i];
     }
-    ll sumone = 0, sumtwo = 0;
-    string res = "";
-    for (auto t : v)
+    ll maxi = INT_MIN, secondmaxi = INT_MIN, totalsum = 0;
+    set<ll> s;
+    for (int i = 0; i <= n; i++)
     {
-        if (sumone + t.first - sumtwo <= 500)
+        maxi = max(maxi, arr[i]);
+        arr[i] = maxi;
+        arr[i] = arr[i] - diff[i];
+        arr[n] = 0;
+        cout<<arr[i]<<" "<<arr[i]+diff[i]<<" ";
+        s.insert(-1 * arr[i]);
+        if (arr[i] == 0 && s.size() > 0)
         {
-            sumone += t.first;
-            res.pb('A');
+            totalsum += abs(*s.begin());
+            s.clear();
         }
-        else if (sumtwo + t.second - sumone <= 500)
-        {
-            sumtwo += t.second;
-            res.pb('G');
-        }
-        else
-        {
-            cout << -1 << ln;
-            return;
-        }
+        cout << totalsum << ln;
     }
-    cout << res << ln;
+    cout << totalsum << ln;
 }
 int main()
 {
     fast_cin();
     ll t = 1;
-    //  cin >> t;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

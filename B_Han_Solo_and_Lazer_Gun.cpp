@@ -57,42 +57,31 @@ double eps = 1e-12;
 
 void solve()
 {
-    int n;
-    cin >> n;
-    vector<pair<ll, ll>> v;
+    int n, x0, y0;
+    cin >> n >> x0 >> y0;
+    int x[n], y[n];
+    map<double, int> m;
     forn(i, n)
     {
-        ll a, b;
-        cin >> a >> b;
-        v.pb(mp(a, b));
-    }
-    ll sumone = 0, sumtwo = 0;
-    string res = "";
-    for (auto t : v)
-    {
-        if (sumone + t.first - sumtwo <= 500)
+        cin >> x[i] >> y[i];
+        double xslope = x0 - x[i];
+        double yslope = y0 - y[i];
+        if (xslope == 0)
         {
-            sumone += t.first;
-            res.pb('A');
-        }
-        else if (sumtwo + t.second - sumone <= 500)
-        {
-            sumtwo += t.second;
-            res.pb('G');
+            m[1000000000]++;
         }
         else
         {
-            cout << -1 << ln;
-            return;
+            m[yslope / xslope]++;
         }
     }
-    cout << res << ln;
+    cout<<m.size()<<ln;
 }
 int main()
 {
     fast_cin();
-    ll t = 1;
-    //  cin >> t;
+    ll t=1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();
