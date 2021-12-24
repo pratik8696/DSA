@@ -54,36 +54,48 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100000
-vector<int> arr[maxi];
-int vis[maxi], dist[maxi];
+#define maxi 1010
+int arr[maxi][maxi];
+int vis[maxi][maxi];
+int dist[maxi][maxi];
+int n = maxi - 5, m = maxi - 5;
+int dx[] = {-1, 0, 1, 0};
+int dy[] = {0, 1, 0, -1};
+ll xa, ya, xb, yb, xc, yc;
 
-void create()
+bool isvalid(int x, int y)
 {
-    for (int i = 1; i < 10010; i++)
+    if (x < 1 || x > n || y < 1 || y > m || vis[x][y] == 1 || arr[x][y] == -10)
     {
-        arr[i].pb(i - 1);
-        arr[i].pb(2 * i);
+        return false;
     }
+    return true;
 }
-
-void bfs(int v)
+void bfson2d(int x, int y)
 {
-    queue<int> q;
-    q.push(v);
-    vis[v] = 1;
-    dist[v] = 0;
+    queue<pair<int, int>> q;
+    vis[x][y] = 1;
+    dist[x][y] = 0;
+    q.push(mp(x, y));
     while (!q.empty())
     {
-        int curr = q.front();
+        int currx = q.front().first;
+        int curry = q.front().second;
         q.pop();
-        for (auto child : arr[curr])
+        for (int i = 0; i < 4; i++)
         {
-            if (vis[child] == 0)
+            if (isvalid(currx + dx[i], curry + dy[i]))
             {
-                q.push(child);
-                dist[child] = dist[curr] + 1;
-                vis[child] = 1;
+                int x1 = currx + dx[i];
+                int y1 = curry + dy[i];
+                dist[x1][y1] = dist[currx][curry] + 1;
+                vis[x1][y1] = 1;
+                q.push(mp(x1, y1));
+                if (x1 == xb && y1 == yb)
+                {
+                    cout << dist[x1][y1] << ln;
+                    return;
+                }
             }
         }
     }
@@ -91,20 +103,27 @@ void bfs(int v)
 
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    bfs(n);
-    
-    cout << dist[m] << ln;
+    cin >> xa >> ya >> xb >> yb >> xc >> yc;
+    arr[xc][yc] = -10;
+    bfson2d(xa, ya);
 }
 int main()
 {
     fast_cin();
-    ll t = 1;
-    create();
-    // cin >> t;
+    ll t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
+        for (int i = 0; i < maxi; i++)
+        {
+            for (int j = 0; j < maxi; j++)
+            {
+                arr[i][j] = 0;
+                vis[i][j] = 0;
+                dist[i][j] = 0;
+                xa = 0, yb = 0, xc = 0, yc = 0, xb = 0, yb = 0;
+            }
+        }
         solve();
     }
     return 0;

@@ -54,54 +54,69 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100000
-vector<int> arr[maxi];
-int vis[maxi], dist[maxi];
-
-void create()
-{
-    for (int i = 1; i < 10010; i++)
-    {
-        arr[i].pb(i - 1);
-        arr[i].pb(2 * i);
-    }
-}
-
-void bfs(int v)
-{
-    queue<int> q;
-    q.push(v);
-    vis[v] = 1;
-    dist[v] = 0;
-    while (!q.empty())
-    {
-        int curr = q.front();
-        q.pop();
-        for (auto child : arr[curr])
-        {
-            if (vis[child] == 0)
-            {
-                q.push(child);
-                dist[child] = dist[curr] + 1;
-                vis[child] = 1;
-            }
-        }
-    }
-}
 
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    bfs(n);
-    
-    cout << dist[m] << ln;
+    ll zero, one;
+    cin >> zero >> one;
+    if (zero > one)
+    {
+        if (abs(zero - one) == 1)
+        {
+            for (int i = 1; i <= one; i++)
+            {
+                cout << "01";
+            }
+            cout << "0" << ln;
+        }
+        else
+        {
+            cout << -1 << ln;
+        }
+    }
+    else if (one - 2 <= 2 * zero)
+    {
+        ll zc = zero;
+        ll rem = one - zero;
+        ll size = 2 * zc;
+        ll arr[2 * zc];
+        fill(al(arr, 2 * zc), 1);
+        string res = "";
+        for (int i = 0; i < zc; i++)
+        {
+            res.pb('1');
+            res.pb('0');
+        }
+        for (int i = 0; i < res.length(); i++)
+        {
+            if (res[i] == '1' && rem)
+            {
+                arr[i]++;
+                rem--;
+            }
+        }
+        for (int i = 0; i < 2 * zc; i++)
+        {
+            while (arr[i]--)
+            {
+                cout << res[i];
+            }
+        }
+        while (rem--)
+        {
+            cout << 1;
+        }
+        cout << ln;
+    }
+    else
+    {
+        cout << -1 << ln;
+    }
 }
 int main()
 {
     fast_cin();
     ll t = 1;
-    create();
     // cin >> t;
     for (int it = 1; it <= t; it++)
     {

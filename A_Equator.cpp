@@ -54,55 +54,137 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100000
-vector<int> arr[maxi];
-int vis[maxi], dist[maxi];
-
-void create()
-{
-    for (int i = 1; i < 10010; i++)
-    {
-        arr[i].pb(i - 1);
-        arr[i].pb(2 * i);
-    }
-}
-
-void bfs(int v)
-{
-    queue<int> q;
-    q.push(v);
-    vis[v] = 1;
-    dist[v] = 0;
-    while (!q.empty())
-    {
-        int curr = q.front();
-        q.pop();
-        for (auto child : arr[curr])
-        {
-            if (vis[child] == 0)
-            {
-                q.push(child);
-                dist[child] = dist[curr] + 1;
-                vis[child] = 1;
-            }
-        }
-    }
-}
-
+/*
+1 1 1 1
+1 1 1 6
+1 1 2 5
+1 1 3 4
+1 1 4 3
+1 1 4 10
+1 1 5 2
+1 1 5 9
+1 1 6 1
+1 1 6 8
+1 1 7 7
+1 1 8 6
+1 1 9 5
+1 1 10 4
+1 2 1 5
+1 2 2 4
+1 2 3 3
+1 2 3 10
+1 2 4 2
+1 2 4 9
+1 2 5 1
+1 2 5 8
+1 2 6 7
+1 2 7 6
+1 2 8 5
+1 2 9 4
+1 2 10 3
+1 3 1 4
+1 3 2 3
+1 3 2 10
+1 3 3 2
+1 3 3 9
+1 3 4 1
+1 3 4 8
+1 3 5 7
+1 3 6 6
+1 3 7 5
+1 3 8 4
+1 3 9 3
+1 3 10 2
+1 4 1 3
+1 4 1 10
+1 4 2 2
+1 4 2 9
+1 4 3 1
+1 4 3 8
+1 4 4 7
+1 4 5 6
+1 4 6 5
+1 4 7 4
+1 4 8 3
+1 4 9 2
+1 4 10 1
+1 4 10 10
+1 5 1 2
+1 5 1 9
+1 5 2 1
+1 5 2 8
+1 5 3 7
+1 5 4 6
+1 5 5 5
+1 5 6 4
+1 5 7 3
+1 5 8 2
+1 5 9 1
+1 5 9 10
+1 5 10 9
+1 6 1 1
+1 6 1 8
+1 6 2 7
+1 6 3 6
+1 6 4 5
+1 6 5 4
+1 6 6 3
+1 6 7 2
+1 6 8 1
+1 6 8 10
+1 6 9 9
+1 6 10 8
+1 7 1 7
+1 7 2 6
+1 7 3 5
+1 7 4 4
+1 7 5 3
+1 7 6 2
+1 7 7 1
+1 7 7 10
+1 7 8 9
+1 7 9 8
+1 7 10 7
+1 8 1 6
+1 8 2 5
+1 8 3 4
+1 8 4 3
+1 8 5 2
+1 8 6 1
+1 8 6 10
+1 8 7 9
+1 8 8 8
+1 8 9 7
+*/
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    bfs(n);
-    
-    cout << dist[m] << ln;
+    int n;
+    cin >> n;
+    ll arr[n],sum=0;
+    forn(i, n)
+    {
+        cin >> arr[i];
+        sum+=arr[i];
+    }
+    ll finalsum=sum;
+    for (int i = 0; i < n; i++)
+    {
+        if(sum-arr[i]<=finalsum/2)
+        {
+            cout<<i+1<<ln;
+            return;
+        }
+        else{
+            sum=sum-arr[i];
+        }
+        // cout<<sum<<ln;
+    }
 }
 int main()
 {
     fast_cin();
     ll t = 1;
-    create();
-    // cin >> t;
+    //  cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

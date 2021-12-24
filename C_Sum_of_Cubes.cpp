@@ -54,55 +54,34 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100000
-vector<int> arr[maxi];
-int vis[maxi], dist[maxi];
-
-void create()
-{
-    for (int i = 1; i < 10010; i++)
-    {
-        arr[i].pb(i - 1);
-        arr[i].pb(2 * i);
-    }
-}
-
-void bfs(int v)
-{
-    queue<int> q;
-    q.push(v);
-    vis[v] = 1;
-    dist[v] = 0;
-    while (!q.empty())
-    {
-        int curr = q.front();
-        q.pop();
-        for (auto child : arr[curr])
-        {
-            if (vis[child] == 0)
-            {
-                q.push(child);
-                dist[child] = dist[curr] + 1;
-                vis[child] = 1;
-            }
-        }
-    }
-}
+#define maxi 10010
+ll cubes[maxi];
 
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    bfs(n);
-    
-    cout << dist[m] << ln;
+    ll n;
+    cin >> n;
+    for (int i = 0; i < maxi; i++)
+    {
+        ll rempart = n - cubes[i];
+        ll idx = lower_bound(al(cubes, maxi), rempart) - cubes;
+        if (cubes[i] + cubes[idx] == n && rempart != 0)
+        {
+            cout<<"YES"<<ln;
+            return;
+        }
+    }
+    cout<<"NO"<<ln;
 }
 int main()
 {
     fast_cin();
-    ll t = 1;
-    create();
-    // cin >> t;
+    ll t;
+    cin >> t;
+    for (ll i = 0; i < maxi; i++)
+    {
+        cubes[i] = ((i + 1) * (i + 1) * (i + 1));
+    }
     for (int it = 1; it <= t; it++)
     {
         solve();

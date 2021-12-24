@@ -54,55 +54,85 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100000
-vector<int> arr[maxi];
-int vis[maxi], dist[maxi];
-
-void create()
-{
-    for (int i = 1; i < 10010; i++)
-    {
-        arr[i].pb(i - 1);
-        arr[i].pb(2 * i);
-    }
-}
-
-void bfs(int v)
-{
-    queue<int> q;
-    q.push(v);
-    vis[v] = 1;
-    dist[v] = 0;
-    while (!q.empty())
-    {
-        int curr = q.front();
-        q.pop();
-        for (auto child : arr[curr])
-        {
-            if (vis[child] == 0)
-            {
-                q.push(child);
-                dist[child] = dist[curr] + 1;
-                vis[child] = 1;
-            }
-        }
-    }
-}
+#define maxi 1001
+ll arr[maxi][maxi];
 
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    bfs(n);
-    
-    cout << dist[m] << ln;
+    int n;
+    cin >> n;
+    if (n == 2)
+    {
+        cout << -1 << ln;
+        return;
+    }
+    ll size = n * n;
+    int val[size];
+    forn(i, size)
+    {
+        val[i] = i + 1;
+    }
+    if (n % 2 == 0)
+    {
+        ll a = 0, b = size / 2, k = 0;
+        for (int i = 1; i <= n; i++)
+        {
+            for (int j = 1; j <= n; j++)
+            {
+                if (k == 0)
+                {
+                    arr[i][j] = val[a++];
+                    k = 1;
+                }
+                else
+                {
+                    arr[i][j] = val[b++];
+                    k = 0;
+                }
+                // cout << arr[i][j] << ln;
+            }
+        }
+    }
+    else
+    {
+        ll a = 0, b = size / 2 + 1, lastval = size / 2, k = 0;
+        for (int i = 1; i <= n; i++)
+        {
+            for (int j = 1; j <= n; j++)
+            {
+                if (k == 0)
+                {
+                    arr[i][j] = val[a++];
+                    k = 1;
+                }
+                else
+                {
+                    arr[i][j] = val[b++];
+                    k = 0;
+                }
+                if (i == n && j == n)
+                {
+                    arr[i][j] = val[lastval];
+                }
+                // cout << arr[i][j] << ln;
+            }
+        }
+    }
+    for (int i = 1; i <= n; i++)
+    {
+        for (int j = 1; j <= n; j++)
+        {
+            cout << arr[i][j] << " ";
+        }
+        cout << ln;
+    }
 }
+
 int main()
 {
     fast_cin();
-    ll t = 1;
-    create();
-    // cin >> t;
+    ll t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

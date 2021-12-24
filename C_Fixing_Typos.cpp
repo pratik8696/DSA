@@ -54,54 +54,63 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100000
-vector<int> arr[maxi];
-int vis[maxi], dist[maxi];
-
-void create()
-{
-    for (int i = 1; i < 10010; i++)
-    {
-        arr[i].pb(i - 1);
-        arr[i].pb(2 * i);
-    }
-}
-
-void bfs(int v)
-{
-    queue<int> q;
-    q.push(v);
-    vis[v] = 1;
-    dist[v] = 0;
-    while (!q.empty())
-    {
-        int curr = q.front();
-        q.pop();
-        for (auto child : arr[curr])
-        {
-            if (vis[child] == 0)
-            {
-                q.push(child);
-                dist[child] = dist[curr] + 1;
-                vis[child] = 1;
-            }
-        }
-    }
-}
 
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    bfs(n);
-    
-    cout << dist[m] << ln;
+    string s;
+    cin >> s;
+    vector<pair<char, int>> v;
+    char prev = s[0];
+    ll count = 0;
+    s.pb(0);
+    for (int i = 0; i < s.length(); i++)
+    {
+        if (s[i] == prev)
+        {
+            count++;
+        }
+        else
+        {
+            v.pb({s[i - 1], count});
+            prev = s[i];
+            count = 0;
+            i--;
+        }
+    }
+    for (int i = 0; i < v.size(); i++)
+    {
+        if (i == 0)
+        {
+            if (v[i].second > 2)
+            {
+                v[i].second = 2;
+            }
+        }
+        else if (v[i].second >= 2)
+        {
+            if (v[i - 1].second == 2)
+            {
+                v[i].second = 1;
+            }
+            else
+            {
+                v[i].second = 2;
+            }
+        }
+    }
+    for (int i = 0; i < v.size(); i++)
+    {
+        while (v[i].second--)
+        {
+            cout << v[i].first;
+        }
+    }
+    cout << ln;
 }
 int main()
 {
     fast_cin();
     ll t = 1;
-    create();
     // cin >> t;
     for (int it = 1; it <= t; it++)
     {

@@ -54,55 +54,90 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100000
-vector<int> arr[maxi];
-int vis[maxi], dist[maxi];
+set<ll> bucket;
+vector<ll> sortbucket;
 
-void create()
+void cr(ll s)
 {
-    for (int i = 1; i < 10010; i++)
+    // cout<<s<<ln;
+    bucket.insert(s);
+    if (s > 9999999999)
     {
-        arr[i].pb(i - 1);
-        arr[i].pb(2 * i);
+        return;
     }
-}
-
-void bfs(int v)
-{
-    queue<int> q;
-    q.push(v);
-    vis[v] = 1;
-    dist[v] = 0;
-    while (!q.empty())
+    set<char> b;
+    string ss = to_string(s);
+    int k = 0;
+    forn(i, ss.length())
     {
-        int curr = q.front();
-        q.pop();
-        for (auto child : arr[curr])
+        b.insert(ss[i]);
+    }
+    char first, second;
+    for (auto t : b)
+    {
+        if (k == 0)
         {
-            if (vis[child] == 0)
-            {
-                q.push(child);
-                dist[child] = dist[curr] + 1;
-                vis[child] = 1;
-            }
+            first = t;
+            k = 1;
         }
+        else
+        {
+            second = t;
+        }
+    }
+    ll t = s, p = s;
+    t = t * 10 + first - '0';
+    p = p * 10 + second - '0';
+    cr(t);
+    if (b.size() == 1)
+    {
+        for (int i = 0; i <= 9; i++)
+        {
+            ll k = s;
+            k = k * 10 + i;
+            cr(k);
+        }
+    }
+    else
+    {
+        cr(p);
     }
 }
 
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    bfs(n);
-    
-    cout << dist[m] << ln;
+    int n;
+    cin >> n;
+    // cout << sortbucket.size() << ln;
+    ll idx = upper_bound(all(sortbucket), (n)) - sortbucket.begin();
+    cout << idx << ln;
 }
 int main()
 {
     fast_cin();
     ll t = 1;
-    create();
-    // cin >> t;
+    for (int i = 1; i <= 9; i++)
+    {
+        cr(i);
+    }
+    for (int i = 10; i <= 100; i++)
+    {
+        string s = to_string(i);
+        set<char> t;
+        forn(i, s.length())
+        {
+            t.insert(s[i]);
+        }
+        if (t.size() == 2)
+        {
+            cr(i);
+        }
+    }
+    for (auto t : bucket)
+    {
+        sortbucket.pb((t));
+    }
+    sort(all(sortbucket));
     for (int it = 1; it <= t; it++)
     {
         solve();

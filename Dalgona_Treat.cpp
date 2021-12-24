@@ -2,6 +2,7 @@
 #pragma GCC target("sse,sse2,sse3,ssse3,sse4,popcnt,abm,mmx,avx,avx2,fma")
 #pragma GCC optimize("unroll-loops")
 #include <bits/stdc++.h>
+#include <boost/multiprecision/cpp_int.hpp>
 #include <complex>
 #include <queue>
 #include <set>
@@ -54,55 +55,72 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100000
-vector<int> arr[maxi];
-int vis[maxi], dist[maxi];
 
-void create()
+bool is(ll sub)
 {
-    for (int i = 1; i < 10010; i++)
+    ll fl = floor(sqrt(sub));
+    ll ce = ceil(sqrt(sub));
+    if (fl == ce)
     {
-        arr[i].pb(i - 1);
-        arr[i].pb(2 * i);
+        return true;
     }
-}
-
-void bfs(int v)
-{
-    queue<int> q;
-    q.push(v);
-    vis[v] = 1;
-    dist[v] = 0;
-    while (!q.empty())
-    {
-        int curr = q.front();
-        q.pop();
-        for (auto child : arr[curr])
-        {
-            if (vis[child] == 0)
-            {
-                q.push(child);
-                dist[child] = dist[curr] + 1;
-                vis[child] = 1;
-            }
-        }
-    }
+    return false;
 }
 
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    bfs(n);
-    
-    cout << dist[m] << ln;
+    int n;
+    cin >> n;
+    int256_t sum = 0;
+    if (is(n))
+    {
+        cout << n * sqrt(n) << ln;
+        cout << n << " " << n << ln;
+        return;
+    }
+    if (n % 2 != 0)
+    {
+        sum = (n - 1) * (n - 1) * (n - 1);
+        int256_t start = floor(sqrt(sum));
+        for (int256_t i = start + 1; i < start + 100000; i++)
+        {
+            int256_t sub = i * i - sum;
+            int256_t fl = floor(sqrt(sub));
+            int256_t ce = ceil(sqrt(sub));
+            if (fl == ce)
+            {
+                cout << i << ln;
+                cout << n - 1 << " " << n - 1 << ln;
+                cout << sqrt(sub) << " " << 1 << ln;
+                return;
+            }
+        }
+    }
+    else if (n % 2 == 0)
+    {
+        sum = (n / 2) * (n / 2) * (n / 2);
+        int256_t start = floor(sqrt(sum));
+        for (int256_t i = start + 1; i < start + 10000; i++)
+        {
+            int256_t sub = i * i - sum;
+            int256_t fl = floor(sqrt(sub));
+            int256_t ce = ceil(sqrt(sub));
+            if (fl == ce)
+            {
+                cout << i << ln;
+                cout << n - 1 << " " << n - 1 << ln;
+                cout << sqrt(sub) << " " << 1 << ln;
+                return;
+            }
+            // cout << i << " " << start << " " << fl << " " << ce << " " << sub << ln;
+        }
+    }
 }
 int main()
 {
     fast_cin();
-    ll t = 1;
-    create();
-    // cin >> t;
+    ll t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

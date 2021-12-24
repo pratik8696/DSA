@@ -54,54 +54,39 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100000
-vector<int> arr[maxi];
-int vis[maxi], dist[maxi];
-
-void create()
-{
-    for (int i = 1; i < 10010; i++)
-    {
-        arr[i].pb(i - 1);
-        arr[i].pb(2 * i);
-    }
-}
-
-void bfs(int v)
-{
-    queue<int> q;
-    q.push(v);
-    vis[v] = 1;
-    dist[v] = 0;
-    while (!q.empty())
-    {
-        int curr = q.front();
-        q.pop();
-        for (auto child : arr[curr])
-        {
-            if (vis[child] == 0)
-            {
-                q.push(child);
-                dist[child] = dist[curr] + 1;
-                vis[child] = 1;
-            }
-        }
-    }
-}
 
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    bfs(n);
-    
-    cout << dist[m] << ln;
+    int n;
+    cin >> n;
+    int arr[n];
+    forn(i, n)
+    {
+        cin >> arr[i];
+    }
+    sort(al(arr, n));
+    ll i = 0, j = 0, count = 0;
+    while (j < n)
+    {
+        if (arr[j] > arr[i])
+        {
+            count++;
+            j++;
+            i++;
+            // j++;
+        }
+        else if (arr[j] <= arr[i])
+        {
+            j++;
+        }
+        // cout << i << " " << j << ln;
+    }
+    cout << count << ln;
 }
 int main()
 {
     fast_cin();
     ll t = 1;
-    create();
     // cin >> t;
     for (int it = 1; it <= t; it++)
     {
