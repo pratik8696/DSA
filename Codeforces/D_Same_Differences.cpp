@@ -60,22 +60,18 @@ void solve()
     int n;
     cin >> n;
     int arr[n];
+    map<int, int> m;
+    ll count = 0;
     forn(i, n)
     {
         cin >> arr[i];
-    }
-    ll count = 0;
-    for (int i = 0; i < n - 1; i++)
-    {
-        for (int j = i + 1; j < n; j++)
+        if (m[arr[i] - i] > 0)
         {
-            if (arr[j] - arr[i] == j - i)
-            {
-                count++;
-            }
+            count += m[arr[i] - i];
         }
+        m[arr[i] - i]++;
     }
-    cout << count << ln;
+    cout<<count<<ln;
 }
 int main()
 {
