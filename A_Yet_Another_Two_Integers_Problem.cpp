@@ -54,69 +54,24 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100010
-vector<int> arr[maxi];
-int vis[maxi];
-int c[maxi];
-
-bool dfs(int v, bool col)
-{
-    vis[v] = 1;
-    c[v] = col;
-    for (auto child : arr[v])
-    {
-        if (vis[child] == 0)
-        {
-            if (dfs(child, !col) == false)
-            {
-                return false;
-            }
-        }
-        else
-        {
-            if (c[child] == c[v])
-            {
-                return false;
-            }
-        }
-    }
-    return true;
-}
 
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    forn(i, m)
+    ll a, b;
+    cin >> a >> b;
+    ll diff = (a - b);
+    ll res = abs(diff) / 10;
+    if (diff % 10 != 0)
     {
-        ll a, b;
-        cin >> a >> b;
-        arr[a].pb(b);
-        arr[b].pb(a);
+        res++;
     }
-    for (int i = 1; i <= n; i++)
-    {
-        if (vis[i] == 0)
-        {
-            if (dfs(i, 0) == false)
-            {
-                cout << "IMPOSSIBLE" << ln;
-                return;
-            }
-        }
-    }
-
-    for (int i = 1; i <= n; i++)
-    {
-        cout << c[i] + 1 << " ";
-    }
-    cout << ln;
+    cout<<res<<ln;
 }
 int main()
 {
     fast_cin();
-    ll t = 1;
-    //  cin >> t;
+    ll t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

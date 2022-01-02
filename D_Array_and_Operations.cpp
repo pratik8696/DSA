@@ -54,69 +54,35 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100010
-vector<int> arr[maxi];
-int vis[maxi];
-int c[maxi];
-
-bool dfs(int v, bool col)
-{
-    vis[v] = 1;
-    c[v] = col;
-    for (auto child : arr[v])
-    {
-        if (vis[child] == 0)
-        {
-            if (dfs(child, !col) == false)
-            {
-                return false;
-            }
-        }
-        else
-        {
-            if (c[child] == c[v])
-            {
-                return false;
-            }
-        }
-    }
-    return true;
-}
 
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    forn(i, m)
+    int n, k;
+    cin >> n >> k;
+    v64 arr;
+    forn(i, n)
     {
-        ll a, b;
-        cin >> a >> b;
-        arr[a].pb(b);
-        arr[b].pb(a);
+        ll x;
+        cin >> x;
+        arr.pb(x);
     }
-    for (int i = 1; i <= n; i++)
+    sort(all(arr));
+    ll sum = 0;
+    for (int i = n - 1; i >= n - k; i--)
     {
-        if (vis[i] == 0)
-        {
-            if (dfs(i, 0) == false)
-            {
-                cout << "IMPOSSIBLE" << ln;
-                return;
-            }
-        }
+        sum += arr[i - k] / arr[i];
     }
-
-    for (int i = 1; i <= n; i++)
+    for (int i = 0; i < n - 2 * k; i++)
     {
-        cout << c[i] + 1 << " ";
+        sum += arr[i];
     }
-    cout << ln;
+    cout << sum << ln;
 }
 int main()
 {
     fast_cin();
-    ll t = 1;
-    //  cin >> t;
+    ll t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

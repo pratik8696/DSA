@@ -54,69 +54,79 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100010
-vector<int> arr[maxi];
-int vis[maxi];
-int c[maxi];
-
-bool dfs(int v, bool col)
-{
-    vis[v] = 1;
-    c[v] = col;
-    for (auto child : arr[v])
-    {
-        if (vis[child] == 0)
-        {
-            if (dfs(child, !col) == false)
-            {
-                return false;
-            }
-        }
-        else
-        {
-            if (c[child] == c[v])
-            {
-                return false;
-            }
-        }
-    }
-    return true;
-}
 
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    forn(i, m)
+    ll a, b, x, y, n;
+    cin >> a >> b >> x >> y >> n;
+    ll ra = a, rb = b, rx = x, ry = y, rn = n;
+    ll productone = INT_MAX, producttwo = INT_MAX;
+
+
+    ll kksh3 = b - y;
+    if (kksh3 < n)
     {
-        ll a, b;
-        cin >> a >> b;
-        arr[a].pb(b);
-        arr[b].pb(a);
+        n = n - kksh3;
+        b = y;
     }
-    for (int i = 1; i <= n; i++)
+    else if (kksh3 >= n)
     {
-        if (vis[i] == 0)
+        b = b - n;
+        n = 0;
+    }
+    if (n > 0)
+    {
+        ll kksh4 = abs(x - a);
+        if (kksh4 <= n)
         {
-            if (dfs(i, 0) == false)
-            {
-                cout << "IMPOSSIBLE" << ln;
-                return;
-            }
+            n = n - kksh4;
+            a = x;
+        }
+        else
+        {
+            a = a - n;
+            n = 0;
         }
     }
-
-    for (int i = 1; i <= n; i++)
+    productone = a * b;
+    a = ra, b = rb, x = rx, y = ry, n = rn;
+    ll kksh1 = (a - y);
+    if (kksh1 < n)
     {
-        cout << c[i] + 1 << " ";
+        n = n - kksh1;
+        a = x;
     }
-    cout << ln;
+    else
+    {
+        cout << "HEHEEE" << ln;
+        a = a - n;
+        n = 0;
+    }
+    if (n > 0)
+    {
+        cout << "HEHE" << ln;
+        ll kksh2 = abs(x - b);
+        if (kksh2 <= n)
+        {
+            n = n - kksh2;
+            b = y;
+        }
+        else
+        {
+            b = b - n;
+            n = 0;
+        }
+    }
+    cout << a << " " << b << " " << n << ln;
+    producttwo = a * b;
+    cout << productone << " " << producttwo << ln;
+    cout << min(producttwo, productone) << ln;
 }
 int main()
 {
     fast_cin();
-    ll t = 1;
-    //  cin >> t;
+    ll t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

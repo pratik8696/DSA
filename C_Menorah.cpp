@@ -54,69 +54,87 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100010
-vector<int> arr[maxi];
-int vis[maxi];
-int c[maxi];
 
-bool dfs(int v, bool col)
+ll check(string a, string b)
 {
-    vis[v] = 1;
-    c[v] = col;
-    for (auto child : arr[v])
+    ll oz = 0, zo = 0;
+    for (ll i = 0; i < a.length(); i++)
     {
-        if (vis[child] == 0)
+        if (a[i] == '1' && b[i] == '0')
         {
-            if (dfs(child, !col) == false)
-            {
-                return false;
-            }
+            oz++;
+        }
+        if (a[i] == '0' && b[i] == '1')
+        {
+            zo++;
+        }
+    }
+    if (oz != zo)
+    {
+        return INF;
+    }
+    return oz + zo;
+}
+
+ll change(string a, string b, char x)
+{
+    ll idx = -1;
+    for (int i = 0; i < a.length(); i++)
+    {
+        if (a[i] == '1' && b[i] == x)
+        {
+            idx = i;
+            break;
+        }
+    }
+    if (idx == -1)
+    {
+        return INF;
+    }
+    for (ll i = 0; i < a.length(); i++)
+    {
+        if (i == idx)
+        {
+            continue;
         }
         else
         {
-            if (c[child] == c[v])
+            if (a[i] == '1')
             {
-                return false;
+                a[i] = '0';
+            }
+            else
+            {
+                a[i] = '1';
             }
         }
     }
-    return true;
+    return check(a, b);
 }
 
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    forn(i, m)
+    int n;
+    cin >> n;
+    string p, q;
+    cin >> p >> q;
+    ll ans = check(p, q);
+    ans = min(ans, 1 + change(p, q, '0'));
+    ans = min(ans, 1 + change(p, q, '1'));
+    if (ans >= INT_MAX)
     {
-        ll a, b;
-        cin >> a >> b;
-        arr[a].pb(b);
-        arr[b].pb(a);
+        cout << -1 << ln;
     }
-    for (int i = 1; i <= n; i++)
+    else
     {
-        if (vis[i] == 0)
-        {
-            if (dfs(i, 0) == false)
-            {
-                cout << "IMPOSSIBLE" << ln;
-                return;
-            }
-        }
+        cout << ans << ln;
     }
-
-    for (int i = 1; i <= n; i++)
-    {
-        cout << c[i] + 1 << " ";
-    }
-    cout << ln;
 }
 int main()
 {
     fast_cin();
-    ll t = 1;
-    //  cin >> t;
+    ll t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

@@ -54,69 +54,70 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100010
-vector<int> arr[maxi];
-int vis[maxi];
-int c[maxi];
-
-bool dfs(int v, bool col)
-{
-    vis[v] = 1;
-    c[v] = col;
-    for (auto child : arr[v])
-    {
-        if (vis[child] == 0)
-        {
-            if (dfs(child, !col) == false)
-            {
-                return false;
-            }
-        }
-        else
-        {
-            if (c[child] == c[v])
-            {
-                return false;
-            }
-        }
-    }
-    return true;
-}
 
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    forn(i, m)
+    ll n;
+    cin >> n;
+    ll k1;
+    cin >> k1;
+    deque<int> p;
+    deque<int> q;
+    forn(i, k1)
     {
-        ll a, b;
-        cin >> a >> b;
-        arr[a].pb(b);
-        arr[b].pb(a);
+        ll a;
+        cin >> a;
+        p.pb(a);
     }
-    for (int i = 1; i <= n; i++)
+    ll k2;
+    cin >> k2;
+    forn(i, k2)
     {
-        if (vis[i] == 0)
-        {
-            if (dfs(i, 0) == false)
-            {
-                cout << "IMPOSSIBLE" << ln;
-                return;
-            }
-        }
+        ll b;
+        cin >> b;
+        q.pb(b);
     }
 
-    for (int i = 1; i <= n; i++)
+    ll match = 0;
+    while (p.size() != 0 && q.size() != 0)
     {
-        cout << c[i] + 1 << " ";
+        ll pf = p.front();
+        p.pop_front();
+        ll qf = q.front();
+        q.pop_front();
+        if (pf > qf)
+        {
+            p.pb(qf);
+            p.pb(pf);
+        }
+        else
+        {
+            q.pb(pf);
+            q.pb(qf);
+        }
+        match++;
+        // cout << p.size() << " " << q.size() << ln;
+        if (match > 1e7)
+        {
+            cout << -1 << ln;
+            return;
+        }
     }
-    cout << ln;
+    cout << match << " ";
+    if (p.size())
+    {
+        cout << 1 << ln;
+    }
+    else
+    {
+        cout << 2 << ln;
+    }
 }
 int main()
 {
     fast_cin();
     ll t = 1;
-    //  cin >> t;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

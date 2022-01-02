@@ -54,64 +54,52 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100010
-vector<int> arr[maxi];
-int vis[maxi];
-int c[maxi];
 
-bool dfs(int v, bool col)
+ll n;
+bool isvalid(ll k)
 {
-    vis[v] = 1;
-    c[v] = col;
-    for (auto child : arr[v])
+    ll in = k * k + 4 * n;
+    ll d = sqrt(in);
+    if (d * d == in)
     {
-        if (vis[child] == 0)
-        {
-            if (dfs(child, !col) == false)
-            {
-                return false;
-            }
-        }
-        else
-        {
-            if (c[child] == c[v])
-            {
-                return false;
-            }
-        }
+        return true;
     }
-    return true;
+    return false;
+}
+
+ll sumofdigit(ll n)
+{
+    ll sum = 0;
+    while (n)
+    {
+        sum += n % 10;
+        n = n / 10;
+    }
+    return sum;
 }
 
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    forn(i, m)
+    cin >> n;
+    for (ll i = 1; i < 163; i++)
     {
-        ll a, b;
-        cin >> a >> b;
-        arr[a].pb(b);
-        arr[b].pb(a);
-    }
-    for (int i = 1; i <= n; i++)
-    {
-        if (vis[i] == 0)
+        if (isvalid(i))
         {
-            if (dfs(i, 0) == false)
+            ll dd = (sqrt(i * i + 4 * n) - i);
+            if (dd % 2 == 0)
             {
-                cout << "IMPOSSIBLE" << ln;
-                return;
+                dd = dd / 2;
+                if (sumofdigit(dd) == i)
+                {
+                    cout << dd << ln;
+                    return;
+                }
             }
         }
     }
-
-    for (int i = 1; i <= n; i++)
-    {
-        cout << c[i] + 1 << " ";
-    }
-    cout << ln;
+    cout << -1 << ln;
 }
+
 int main()
 {
     fast_cin();

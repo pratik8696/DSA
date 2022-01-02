@@ -54,105 +54,135 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 200010
-ll n, k;
-ll arr[maxi], sum = 0, brr[maxi];
-
-ll isvalid(ll mid)
-{
-    ll minsteps = INT_MAX;
-    ll org = arr[0], tsum = sum, j = n - 1;
-    ll steps = 0;
-    steps += org - mid;
-    tsum += -org + mid;
-    if (tsum <= k)
-    {
-        return steps;
-    }
-    // cout << tsum << " " << steps << " " << i << ln;
-    while (tsum >= k && j >= 0)
-    {
-        ll ae = arr[j--];
-        tsum = tsum - ae + mid;
-        steps++;
-        // cout << tsum << " " << steps << " " << ae << " " << i << ln;
-    }
-    if (tsum <= k)
-    {
-        // cout << tsum << " " << k << ln;
-        minsteps = min(steps, minsteps);
-        return minsteps;
-    }
-    return INT_MAX;
-    // cout << steps << ln;
-}
-
+/*
+5
+3
+6 6 1
+1
+9
+6
+1 1 1 2 2 2
+2
+8 6
+6
+6 2 3 4 5 1
+*/
 void solve()
 {
-
-    cin >> n >> k;
-
+    ll n;
+    cin >> n;
+    ll arr[n];
+    ll even = 0, odd = 0;
+    char e = '1', o = '0';
+    string s = "";
+    queue<ll> ee, oo,ooo;
     forn(i, n)
     {
         cin >> arr[i];
-        brr[i] = arr[i];
-        sum += arr[i];
-    }
-
-    if (sum <= k)
-    {
-        cout << 0 << ln;
-        return;
-    }
-
-    if (n == 1)
-    {
-        if (arr[0] > k)
+        if (arr[i] & 1)
         {
-            cout << abs(k - arr[0]) << ln;
-            return;
+            oo.push(i);
+            ooo.push(i);
+            s.pb(o);
+            odd++;
+        }
+        else
+        {
+            ee.push(i);
+            s.pb(e);
+            even++;
         }
     }
-
-    sort(al(arr, n));
-    // ll steps = 0;
-    // ll ttsum = sum;
-    // if (1)
-    // {
-    //     ll i = 0, j = n - 1;
-    //     while (ttsum > k && j >= 0)
-    //     {
-    //         ttsum = ttsum - arr[j] + arr[i];
-    //         j--;
-    //         steps++;
-    //     }
-    //     // cout << steps << endl;
-    // }
-    ll minans = INT_MAX;
-
-    if (1)
+    // cout << s << ln;
+    if (even - odd == 1)
     {
-        ll i = INT_MIN, j = arr[0], ans;
-        while (i <= j)
+        // 10101
+        ll sum = 0;
+        string res = "";
+        while (odd--)
         {
-            ll mid = (i + j) / 2;
-            ans = isvalid(mid);
-            // cout << ans << ln;
-            if (ans < minans)
-            {
-                i = mid + 1;
-            }
-            else
-            {
-                j = mid - 1;
-            }
-            minans = min(ans, minans);
+            res.pb('1');
+            res.pb('0');
         }
-        cout << minans << ln;
+        res.pb('1');
+        // cout << res << ln;
+        for (int i = 0; i < res.length(); i++)
+        {
+            if (res[i] == '1')
+            {
+                sum += abs(ee.front() - i);
+                // cout << ee.front() << ln;
+                ee.pop();
+            }
+        }
+        cout << sum << ln;
+        // cout << res << ln;
     }
-    // cout << min(minans, steps) << ln;
+    else if (odd - even == 1)
+    {
+        // 01010
+        ll sum = 0;
+        string res = "";
+        while (even--)
+        {
+            res.pb('0');
+            res.pb('1');
+        }
+        res.pb('0');
+        for (int i = 0; i < res.length(); i++)
+        {
+            if (res[i] == '0')
+            {
+                sum += abs(oo.front() - i);
+                oo.pop();
+            }
+        }
+        cout << sum << ln;
+        // cout << res << ln;
+    }
+    else if (even == odd)
+    {
+        ll sum = 0, sum2 = 0;
+        string res = "", res2 = "";
+
+        while (odd--)
+        {
+            res.pb('0');
+            res.pb('1');
+        }
+
+        while (even--)
+        {
+            res2.pb('1');
+            res2.pb('0');
+        }
+
+        // cout << res << " " << res2 << ln;
+        for (int i = 0; i < res.length(); i++)
+        {
+            if (res[i] == '0')
+            {
+                sum += abs(oo.front() - i);
+                oo.pop();
+            }
+        }
+
+        for (int i = 0; i < res2.length(); i++)
+        {
+            if (res2[i] == '0')
+            {
+                sum2 += abs(ooo.front() - i);
+                ooo.pop();
+            }
+        }
+
+        cout << min(sum, sum2) << ln;
+    }
+    else
+    {
+        cout << -1 << ln;
+    }
 }
-
 int main()
 {
     fast_cin();
@@ -160,13 +190,6 @@ int main()
     cin >> t;
     for (int it = 1; it <= t; it++)
     {
-        n = 0, k = 0, sum = 0;
-        for (int i = 0; i < maxi; i++)
-        {
-            arr[i] = 0;
-            brr[i] = 0;
-        }
-
         solve();
     }
     return 0;

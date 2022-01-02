@@ -54,63 +54,25 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100010
-vector<int> arr[maxi];
-int vis[maxi];
-int c[maxi];
-
-bool dfs(int v, bool col)
-{
-    vis[v] = 1;
-    c[v] = col;
-    for (auto child : arr[v])
-    {
-        if (vis[child] == 0)
-        {
-            if (dfs(child, !col) == false)
-            {
-                return false;
-            }
-        }
-        else
-        {
-            if (c[child] == c[v])
-            {
-                return false;
-            }
-        }
-    }
-    return true;
-}
 
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    forn(i, m)
+    int n;
+    cin >> n;
+    int arr[n];
+    forn(i, n)
     {
-        ll a, b;
-        cin >> a >> b;
-        arr[a].pb(b);
-        arr[b].pb(a);
+        cin >> arr[i];
     }
-    for (int i = 1; i <= n; i++)
+    for (int i = 0; i < n; i++)
     {
-        if (vis[i] == 0)
+        if ((i + 1) == arr[arr[arr[i]-1]-1])
         {
-            if (dfs(i, 0) == false)
-            {
-                cout << "IMPOSSIBLE" << ln;
-                return;
-            }
+            cout << "YES" << ln;
+            return;
         }
     }
-
-    for (int i = 1; i <= n; i++)
-    {
-        cout << c[i] + 1 << " ";
-    }
-    cout << ln;
+    cout << "NO" << ln;
 }
 int main()
 {

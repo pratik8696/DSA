@@ -54,27 +54,27 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100010
+#define maxi 200010
 vector<int> arr[maxi];
 int vis[maxi];
-int c[maxi];
+int col[maxi];
 
-bool dfs(int v, bool col)
+bool dfs(int v, bool c)
 {
     vis[v] = 1;
-    c[v] = col;
+    col[v] = c;
     for (auto child : arr[v])
     {
         if (vis[child] == 0)
         {
-            if (dfs(child, !col) == false)
+            if (dfs(child, !c) == false)
             {
                 return false;
             }
         }
         else
         {
-            if (c[child] == c[v])
+            if (col[v] == col[child])
             {
                 return false;
             }
@@ -87,30 +87,35 @@ void solve()
 {
     int n, m;
     cin >> n >> m;
+    vector<pair<int, int>> v;
     forn(i, m)
     {
         ll a, b;
         cin >> a >> b;
+        v.pb(mp(a, b));
         arr[a].pb(b);
         arr[b].pb(a);
     }
-    for (int i = 1; i <= n; i++)
+    if (dfs(1, 0))
     {
-        if (vis[i] == 0)
+        cout << "YES" << ln;
+        for (int i = 0; i < m; i++)
         {
-            if (dfs(i, 0) == false)
+            if (col[v[i].first] == 0)
             {
-                cout << "IMPOSSIBLE" << ln;
-                return;
+                cout << "1";
+            }
+            else
+            {
+                cout << "0";
             }
         }
+        cout << ln;
     }
-
-    for (int i = 1; i <= n; i++)
+    else
     {
-        cout << c[i] + 1 << " ";
+        cout << "NO" << ln;
     }
-    cout << ln;
 }
 int main()
 {

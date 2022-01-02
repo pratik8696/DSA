@@ -54,69 +54,47 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100010
-vector<int> arr[maxi];
-int vis[maxi];
-int c[maxi];
-
-bool dfs(int v, bool col)
-{
-    vis[v] = 1;
-    c[v] = col;
-    for (auto child : arr[v])
-    {
-        if (vis[child] == 0)
-        {
-            if (dfs(child, !col) == false)
-            {
-                return false;
-            }
-        }
-        else
-        {
-            if (c[child] == c[v])
-            {
-                return false;
-            }
-        }
-    }
-    return true;
-}
 
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    forn(i, m)
+    ll n, k;
+    cin >> n >> k;
+    k++;
+    string s;
+    cin >> s;
+    queue<ll> q;
+    ll prev = INT_MIN;
+    for (ll i = 0; i < n; i++)
     {
-        ll a, b;
-        cin >> a >> b;
-        arr[a].pb(b);
-        arr[b].pb(a);
-    }
-    for (int i = 1; i <= n; i++)
-    {
-        if (vis[i] == 0)
+        if (s[i] == '1')
         {
-            if (dfs(i, 0) == false)
-            {
-                cout << "IMPOSSIBLE" << ln;
-                return;
-            }
+            q.push(i);
         }
     }
-
-    for (int i = 1; i <= n; i++)
+    q.push(INT_MAX);
+    ll count = 0;
+    for (ll i = 0; i < n; i++)
     {
-        cout << c[i] + 1 << " ";
+        if (i - prev >= k && q.front() - i >= k)
+        {
+            s[i] = '1';
+            count++;
+            prev = i;
+        }
+        if (s[i] == '1' && q.front() == i)
+        {
+            q.pop();
+            prev = i;
+        }
     }
-    cout << ln;
+    // cout << s << ln;
+    cout << count << ln;
 }
 int main()
 {
     fast_cin();
-    ll t = 1;
-    //  cin >> t;
+    ll t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

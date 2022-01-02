@@ -54,69 +54,49 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100010
-vector<int> arr[maxi];
-int vis[maxi];
-int c[maxi];
-
-bool dfs(int v, bool col)
-{
-    vis[v] = 1;
-    c[v] = col;
-    for (auto child : arr[v])
-    {
-        if (vis[child] == 0)
-        {
-            if (dfs(child, !col) == false)
-            {
-                return false;
-            }
-        }
-        else
-        {
-            if (c[child] == c[v])
-            {
-                return false;
-            }
-        }
-    }
-    return true;
-}
 
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    forn(i, m)
+    ll n;
+    cin >> n;
+    ll arr[n];
+    ll totalsum = 0;
+    forn(i, n)
     {
-        ll a, b;
-        cin >> a >> b;
-        arr[a].pb(b);
-        arr[b].pb(a);
+        cin >> arr[i];
+        totalsum += arr[i];
     }
-    for (int i = 1; i <= n; i++)
+    sort(al(arr, n));
+    int q;
+    cin >> q;
+    forn(i, q)
     {
-        if (vis[i] == 0)
+        ll defence, attack;
+        cin >> defence >> attack;
+        ll idxone = lower_bound(al(arr, n), defence) - arr;
+        ll idxtwo = lower_bound(al(arr, n), defence) - arr - 1;
+        if (idxtwo < 0)
         {
-            if (dfs(i, 0) == false)
-            {
-                cout << "IMPOSSIBLE" << ln;
-                return;
-            }
+            idxtwo = 0;
         }
+        if (idxone > n - 1)
+        {
+            idxone = n - 1;
+        }
+        ll soldierone = arr[idxone];
+        ll soldiertwo = arr[idxtwo];
+        ll costdefenceone = 0, costattackone = 0, remone = totalsum - soldierone;
+        ll costdefencetwo = 0, costattacktwo = 0, remtwo = totalsum - soldiertwo;
+        ll coinone = max(0ll, defence - soldierone) + max(0ll, attack - remone);
+        ll cointwo = max(0ll, defence - soldiertwo) + max(0ll, attack - remtwo);
+        cout << min(coinone, cointwo) << ln;
     }
-
-    for (int i = 1; i <= n; i++)
-    {
-        cout << c[i] + 1 << " ";
-    }
-    cout << ln;
 }
 int main()
 {
     fast_cin();
     ll t = 1;
-    //  cin >> t;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

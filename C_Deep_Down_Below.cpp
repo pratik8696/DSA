@@ -54,30 +54,18 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100010
-vector<int> arr[maxi];
-int vis[maxi];
-int c[maxi];
 
-bool dfs(int v, bool col)
+bool isvalid(ll power, vector<p64> v)
 {
-    vis[v] = 1;
-    c[v] = col;
-    for (auto child : arr[v])
+    for (int i = 0; i < v.size(); i++)
     {
-        if (vis[child] == 0)
+        if (power >= v[i].first)
         {
-            if (dfs(child, !col) == false)
-            {
-                return false;
-            }
+            power += v[i].second;
         }
         else
         {
-            if (c[child] == c[v])
-            {
-                return false;
-            }
+            return false;
         }
     }
     return true;
@@ -85,38 +73,49 @@ bool dfs(int v, bool col)
 
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    forn(i, m)
-    {
-        ll a, b;
-        cin >> a >> b;
-        arr[a].pb(b);
-        arr[b].pb(a);
-    }
-    for (int i = 1; i <= n; i++)
-    {
-        if (vis[i] == 0)
-        {
-            if (dfs(i, 0) == false)
-            {
-                cout << "IMPOSSIBLE" << ln;
-                return;
-            }
-        }
-    }
+    ll n;
+    cin >> n;
+    v64 arr[n + 1];
+    vector<pair<ll, ll>> v;
 
     for (int i = 1; i <= n; i++)
     {
-        cout << c[i] + 1 << " ";
+        ll maxval = INT_MIN;
+        ll x;
+        cin >> x;
+        for (int k = 0; k < x; k++)
+        {
+            ll y;
+            cin >> y;
+            arr[i].pb(y);
+            maxval = max(y - k + 1, maxval);
+        }
+        v.pb({maxval, x});
     }
-    cout << ln;
+
+    sort(all(v));
+
+    ll i = v[0].first, j = v[v.size() - 1].first, ans;
+    while (i <= j)
+    {
+        ll mid = (i + j) / 2;
+        if (isvalid(mid, v))
+        {
+            j = mid - 1;
+            ans = mid;
+        }
+        else
+        {
+            i = mid + 1;
+        }
+    }
+    cout << ans << ln;
 }
 int main()
 {
     fast_cin();
-    ll t = 1;
-    //  cin >> t;
+    ll t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

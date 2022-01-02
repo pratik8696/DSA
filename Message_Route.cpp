@@ -54,61 +54,70 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100010
-vector<int> arr[maxi];
-int vis[maxi];
-int c[maxi];
+#define maxi 100100
+vector<ll> arr[maxi];
+ll vis[maxi];
+ll dist[maxi];
+map<ll, ll> m;
 
-bool dfs(int v, bool col)
+void bfs(ll v, ll d)
 {
+    queue<ll> q;
     vis[v] = 1;
-    c[v] = col;
-    for (auto child : arr[v])
+    dist[v] = d;
+    q.push(v);
+    while (!q.empty())
     {
-        if (vis[child] == 0)
+        int curr = q.front();
+        q.pop();
+        for (auto child : arr[curr])
         {
-            if (dfs(child, !col) == false)
+            if (vis[child] == 0)
             {
-                return false;
-            }
-        }
-        else
-        {
-            if (c[child] == c[v])
-            {
-                return false;
+                m[child] = curr;
+                dist[child] = dist[curr] + 1;
+                q.push(child);
+                vis[child] = 1;
             }
         }
     }
-    return true;
+}
+
+vector<ll> v;
+void path(ll n)
+{
+    v.pb(n);
+    if (m[n] == 0)
+    {
+        return;
+    }
+    // cout << m[n] << " ";
+    path(m[n]);
 }
 
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    forn(i, m)
+    ll n, k;
+    cin >> n >> k;
+    forn(i, k)
     {
         ll a, b;
         cin >> a >> b;
         arr[a].pb(b);
         arr[b].pb(a);
     }
-    for (int i = 1; i <= n; i++)
+    bfs(1, 1);
+    if (dist[n] == 0)
     {
-        if (vis[i] == 0)
-        {
-            if (dfs(i, 0) == false)
-            {
-                cout << "IMPOSSIBLE" << ln;
-                return;
-            }
-        }
+        cout << "IMPOSSIBLE" << ln;
+        return;
     }
-
-    for (int i = 1; i <= n; i++)
+    cout << dist[n] << ln;
+    path(n);
+    reverse(all(v));
+    for (auto t : v)
     {
-        cout << c[i] + 1 << " ";
+        cout << t << " ";
     }
     cout << ln;
 }

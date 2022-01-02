@@ -54,69 +54,67 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100010
-vector<int> arr[maxi];
-int vis[maxi];
-int c[maxi];
-
-bool dfs(int v, bool col)
-{
-    vis[v] = 1;
-    c[v] = col;
-    for (auto child : arr[v])
-    {
-        if (vis[child] == 0)
-        {
-            if (dfs(child, !col) == false)
-            {
-                return false;
-            }
-        }
-        else
-        {
-            if (c[child] == c[v])
-            {
-                return false;
-            }
-        }
-    }
-    return true;
-}
 
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    forn(i, m)
+    ll n, k;
+    cin >> n >> k;
+    int arr[n];
+    v64 pos, neg;
+    forn(i, n)
     {
-        ll a, b;
-        cin >> a >> b;
-        arr[a].pb(b);
-        arr[b].pb(a);
-    }
-    for (int i = 1; i <= n; i++)
-    {
-        if (vis[i] == 0)
+        cin >> arr[i];
+        if (arr[i] >= 0)
         {
-            if (dfs(i, 0) == false)
+            pos.pb(arr[i]);
+        }
+        else
+        {
+            neg.pb(abs(arr[i]));
+        }
+    }
+    sort(all(pos));
+    sort(all(neg));
+    ll td = 0, cd = 0, bag = k;
+    for (ll i = 0; i < pos.size(); i++)
+    {
+        if (bag > 0)
+        {
+            bag--;
+            td += pos[i];
+        }
+        if (bag == 0 && i != pos.size() - 1)
+        {
+            td += cd;
+            bag = k;
+        }
+    }
+    if (neg.size() > 0)
+    {
+        cout << "HEHE" << ln;
+        td += pos[pos.size() - 1];
+        cd = 0, bag = k;
+        for (ll i = 0; i < neg.size(); i++)
+        {
+            if (bag > 0)
             {
-                cout << "IMPOSSIBLE" << ln;
-                return;
+                bag--;
+                td += neg[i];
+            }
+            if (bag == 0 && i != neg.size() - 1)
+            {
+                td += cd;
+                bag = k;
             }
         }
     }
-
-    for (int i = 1; i <= n; i++)
-    {
-        cout << c[i] + 1 << " ";
-    }
-    cout << ln;
+    cout << td << ln;
 }
 int main()
 {
     fast_cin();
-    ll t = 1;
-    //  cin >> t;
+    ll t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

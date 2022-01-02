@@ -55,32 +55,28 @@ double eps = 1e-12;
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
 #define maxi 100010
-vector<int> arr[maxi];
-int vis[maxi];
-int c[maxi];
+vector<p64> arr[maxi];
+v64 dist(maxi, INF);
 
-bool dfs(int v, bool col)
+void dijsktra(int v)
 {
-    vis[v] = 1;
-    c[v] = col;
-    for (auto child : arr[v])
+    priority_queue<p64, vector<p64>, greater<p64>> pq;
+    pq.push({v, 0});
+    dist[v] = 0;
+    while (!pq.empty())
     {
-        if (vis[child] == 0)
+        int curr_node = pq.top().first;
+        int curr_dist = pq.top().second;
+        pq.pop();
+        for (auto edge : arr[curr_node])
         {
-            if (dfs(child, !col) == false)
+            if (curr_dist + edge.second < dist[edge.first])
             {
-                return false;
-            }
-        }
-        else
-        {
-            if (c[child] == c[v])
-            {
-                return false;
+                dist[edge.first] = edge.second + curr_dist;
+                pq.push(mp(edge.first, dist[edge.first]));
             }
         }
     }
-    return true;
 }
 
 void solve()
@@ -89,26 +85,15 @@ void solve()
     cin >> n >> m;
     forn(i, m)
     {
-        ll a, b;
-        cin >> a >> b;
-        arr[a].pb(b);
-        arr[b].pb(a);
+        ll a, b, c;
+        cin >> a >> b >> c;
+        arr[a].pb(mp(b, c));
+        arr[b].pb(mp(a, c));
     }
+    dijsktra(1);
     for (int i = 1; i <= n; i++)
     {
-        if (vis[i] == 0)
-        {
-            if (dfs(i, 0) == false)
-            {
-                cout << "IMPOSSIBLE" << ln;
-                return;
-            }
-        }
-    }
-
-    for (int i = 1; i <= n; i++)
-    {
-        cout << c[i] + 1 << " ";
+        cout << dist[i] << " ";
     }
     cout << ln;
 }

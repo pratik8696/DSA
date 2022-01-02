@@ -52,71 +52,59 @@ double eps = 1e-12;
     cin.tie(NULL);                    \
     cout.tie(NULL)
 #define all(x) (x).begin(), (x).end()
-#define al(arr, n) arr, arr + n
+#define al(one, n) one, one + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100010
-vector<int> arr[maxi];
-int vis[maxi];
-int c[maxi];
-
-bool dfs(int v, bool col)
-{
-    vis[v] = 1;
-    c[v] = col;
-    for (auto child : arr[v])
-    {
-        if (vis[child] == 0)
-        {
-            if (dfs(child, !col) == false)
-            {
-                return false;
-            }
-        }
-        else
-        {
-            if (c[child] == c[v])
-            {
-                return false;
-            }
-        }
-    }
-    return true;
-}
 
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    forn(i, m)
+    ll n, k;
+    cin >> n >> k;
+    string xx;
+    cin >> xx;
+    ll one[n];
+    ll zero[n];
+    for (int i = 0; i < n; i++)
     {
-        ll a, b;
-        cin >> a >> b;
-        arr[a].pb(b);
-        arr[b].pb(a);
-    }
-    for (int i = 1; i <= n; i++)
-    {
-        if (vis[i] == 0)
+        if (xx[i] == '1')
         {
-            if (dfs(i, 0) == false)
-            {
-                cout << "IMPOSSIBLE" << ln;
-                return;
-            }
+            one[i] = 1;
+            zero[i] = 1;
+        }
+        else
+        {
+            one[i] = 0;
+            zero[i] = 0;
         }
     }
-
-    for (int i = 1; i <= n; i++)
+    for (int i = 1; i <= (n - k); i++)
     {
-        cout << c[i] + 1 << " ";
+        one[i] = (one[i - 1] ^ one[i]);
     }
-    cout << ln;
+    int result = 0;
+
+    if (one[n - k] == 1)
+        result++;
+
+    int l = 0;
+    int r = (n - k + 1);
+    int post = one[n - k];
+    while (r < n)
+    {
+        post = post ^ zero[l];
+        post = post ^ zero[r];
+        if (post == 1)
+            result++;
+        l++;
+        r++;
+    }
+    cout << result << endl;
 }
+
 int main()
 {
     fast_cin();
-    ll t = 1;
-    //  cin >> t;
+    ll t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

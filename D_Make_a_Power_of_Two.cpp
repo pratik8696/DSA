@@ -54,69 +54,51 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100010
-vector<int> arr[maxi];
-int vis[maxi];
-int c[maxi];
 
-bool dfs(int v, bool col)
+v64 com;
+
+ll compare(string a, string b)
 {
-    vis[v] = 1;
-    c[v] = col;
-    for (auto child : arr[v])
+    string res = "";
+    int i = 0, j = 0;
+    while (j < b.length())
     {
-        if (vis[child] == 0)
+        if (a[i] == b[j])
         {
-            if (dfs(child, !col) == false)
-            {
-                return false;
-            }
+            res.pb(a[i]);
+            i++;
+            j++;
         }
         else
         {
-            if (c[child] == c[v])
-            {
-                return false;
-            }
+            j++;
         }
     }
-    return true;
+    ll turn = b.size() + a.size() - 2 * res.size();
+    return turn;
 }
 
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    forn(i, m)
+    string s;
+    cin >> s;
+    ll mini = INT_MAX;
+    for (int i = 0; i < com.size(); i++)
     {
-        ll a, b;
-        cin >> a >> b;
-        arr[a].pb(b);
-        arr[b].pb(a);
+        string t = to_string(com[i]);
+        mini = min(compare(t, s), mini);
     }
-    for (int i = 1; i <= n; i++)
-    {
-        if (vis[i] == 0)
-        {
-            if (dfs(i, 0) == false)
-            {
-                cout << "IMPOSSIBLE" << ln;
-                return;
-            }
-        }
-    }
-
-    for (int i = 1; i <= n; i++)
-    {
-        cout << c[i] + 1 << " ";
-    }
-    cout << ln;
+    cout << mini << ln;
 }
 int main()
 {
     fast_cin();
+    for (ll i = 0; i < 60; i++)
+    {
+        com.pb(powl(2, i));
+    }
     ll t = 1;
-    //  cin >> t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

@@ -54,69 +54,40 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100010
-vector<int> arr[maxi];
-int vis[maxi];
-int c[maxi];
-
-bool dfs(int v, bool col)
-{
-    vis[v] = 1;
-    c[v] = col;
-    for (auto child : arr[v])
-    {
-        if (vis[child] == 0)
-        {
-            if (dfs(child, !col) == false)
-            {
-                return false;
-            }
-        }
-        else
-        {
-            if (c[child] == c[v])
-            {
-                return false;
-            }
-        }
-    }
-    return true;
-}
 
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    forn(i, m)
+    int n, m, x;
+    cin >> n >> m >> x;
+    int arr[n];
+    forn(i, n)
     {
-        ll a, b;
-        cin >> a >> b;
-        arr[a].pb(b);
-        arr[b].pb(a);
+        cin >> arr[i];
     }
-    for (int i = 1; i <= n; i++)
+    sort(al(arr, n));
+    priority_queue<p64, vector<p64>, greater<p64>> pq;
+    for (int i = n - 1, k = m; k != 0; i++, k--)
     {
-        if (vis[i] == 0)
-        {
-            if (dfs(i, 0) == false)
-            {
-                cout << "IMPOSSIBLE" << ln;
-                return;
-            }
-        }
+        pq.push({arr[i], k});
+        cout << arr[i] << " " << k << ln;
     }
-
-    for (int i = 1; i <= n; i++)
+    cout<<ln;
+    vector<p64> ss;
+    for (int i = 0; i < n - m; i++)
     {
-        cout << c[i] + 1 << " ";
+        ss.pb({arr[i], 0});
+    }
+    for (auto t : ss)
+    {
+        cout << t.first << " ";
     }
     cout << ln;
 }
 int main()
 {
     fast_cin();
-    ll t = 1;
-    //  cin >> t;
+    ll t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

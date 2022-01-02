@@ -54,69 +54,39 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100010
-vector<int> arr[maxi];
-int vis[maxi];
-int c[maxi];
-
-bool dfs(int v, bool col)
-{
-    vis[v] = 1;
-    c[v] = col;
-    for (auto child : arr[v])
-    {
-        if (vis[child] == 0)
-        {
-            if (dfs(child, !col) == false)
-            {
-                return false;
-            }
-        }
-        else
-        {
-            if (c[child] == c[v])
-            {
-                return false;
-            }
-        }
-    }
-    return true;
-}
 
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    forn(i, m)
+    int n;
+    cin >> n;
+    string s;
+    cin >> s;
+    vector<pair<int, string>> v;
+    v.pb({s.find("aa"), "aa"});
+    v.pb({s.find("aba"), "aba"});
+    v.pb({s.find("aca"), "aca"});
+    v.pb({s.find("abca"), "abca"});
+    v.pb({s.find("acba"), "acba"});
+    v.pb({s.find("abbacca"), "abbacca"});
+    v.pb({s.find("accabba"), "accabba"});
+    v.pb({s.find("abcabca"), "abcabca"});
+    v.pb({s.find("acbacba"), "acbacba"});
+
+    for (int i = 0; i < v.size(); i++)
     {
-        ll a, b;
-        cin >> a >> b;
-        arr[a].pb(b);
-        arr[b].pb(a);
-    }
-    for (int i = 1; i <= n; i++)
-    {
-        if (vis[i] == 0)
+        if (v[i].first != -1)
         {
-            if (dfs(i, 0) == false)
-            {
-                cout << "IMPOSSIBLE" << ln;
-                return;
-            }
+            cout << v[i].second.length() << ln;
+            return;
         }
     }
-
-    for (int i = 1; i <= n; i++)
-    {
-        cout << c[i] + 1 << " ";
-    }
-    cout << ln;
+    cout << -1 << ln;
 }
 int main()
 {
     fast_cin();
-    ll t = 1;
-    //  cin >> t;
+    ll t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

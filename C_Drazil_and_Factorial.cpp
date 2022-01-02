@@ -54,61 +54,62 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100010
-vector<int> arr[maxi];
-int vis[maxi];
-int c[maxi];
-
-bool dfs(int v, bool col)
-{
-    vis[v] = 1;
-    c[v] = col;
-    for (auto child : arr[v])
-    {
-        if (vis[child] == 0)
-        {
-            if (dfs(child, !col) == false)
-            {
-                return false;
-            }
-        }
-        else
-        {
-            if (c[child] == c[v])
-            {
-                return false;
-            }
-        }
-    }
-    return true;
-}
 
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    forn(i, m)
+    int n;
+    cin >> n;
+    string s;
+    cin >> s;
+    vector<int> v;
+    for (int i = 0; i < s.length(); i++)
     {
-        ll a, b;
-        cin >> a >> b;
-        arr[a].pb(b);
-        arr[b].pb(a);
-    }
-    for (int i = 1; i <= n; i++)
-    {
-        if (vis[i] == 0)
+        if (s[i] == '2')
         {
-            if (dfs(i, 0) == false)
-            {
-                cout << "IMPOSSIBLE" << ln;
-                return;
-            }
+            v.pb(2);
+        }
+        else if (s[i] == '3')
+        {
+            v.pb(3);
+        }
+        else if (s[i] == '4')
+        {
+            v.pb(3);
+            v.pb(2);
+            v.pb(2);
+        }
+        else if (s[i] == '5')
+        {
+            v.pb(5);
+        }
+        else if (s[i] == '6')
+        {
+            v.pb(5);
+            v.pb(3);
+        }
+        else if (s[i] == '7')
+        {
+            v.pb(7);
+        }
+        else if (s[i] == '8')
+        {
+            v.pb(7);
+            v.pb(2);
+            v.pb(2);
+            v.pb(2);
+        }
+        else if (s[i] == '9')
+        {
+            v.pb(7);
+            v.pb(3);
+            v.pb(3);
+            v.pb(2);
         }
     }
-
-    for (int i = 1; i <= n; i++)
+    sort(all(v));
+    for (int i = v.size() - 1; i >= 0; i--)
     {
-        cout << c[i] + 1 << " ";
+        cout << v[i];
     }
     cout << ln;
 }
@@ -116,7 +117,7 @@ int main()
 {
     fast_cin();
     ll t = 1;
-    //  cin >> t;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

@@ -54,69 +54,78 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100010
-vector<int> arr[maxi];
-int vis[maxi];
-int c[maxi];
 
-bool dfs(int v, bool col)
+ll fastexpo(ll a, ll b)
 {
-    vis[v] = 1;
-    c[v] = col;
-    for (auto child : arr[v])
+    if (b == 0)
     {
-        if (vis[child] == 0)
-        {
-            if (dfs(child, !col) == false)
-            {
-                return false;
-            }
-        }
-        else
-        {
-            if (c[child] == c[v])
-            {
-                return false;
-            }
-        }
+        return 1;
     }
-    return true;
+    if (a == 0)
+    {
+        return 0;
+    }
+    ll y = fastexpo(a, b / 2);
+    if (b % 2 == 0)
+    {
+        return y * y;
+    }
+    else
+    {
+        return a * y * y;
+    }
 }
 
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    forn(i, m)
+    ll n, k;
+    cin >> n >> k;
+    k++;
+    ll arr[n], brr[n];
+    forn(i, n)
     {
-        ll a, b;
-        cin >> a >> b;
-        arr[a].pb(b);
-        arr[b].pb(a);
+        cin >> arr[i];
     }
-    for (int i = 1; i <= n; i++)
+    for (int i = 0; i < n - 1; i++)
     {
-        if (vis[i] == 0)
+        ll abc = abs(arr[i + 1] - arr[i]);
+        brr[i] = pow(10, abc) - 1;
+    }
+    forn(i, n)
+    {
+        arr[i] = fastexpo(10, arr[i]);
+    }
+    brr[n - 1] = INF;
+    vector<int> v;
+
+    for (int i = 0; i < n; i++)
+    {
+        if (k - brr[i] > 0)
         {
-            if (dfs(i, 0) == false)
-            {
-                cout << "IMPOSSIBLE" << ln;
-                return;
-            }
+            v.pb(brr[i]);
+            k = k - brr[i];
+        }
+        else if (k - brr[i] <= 0)
+        {
+            v.pb(k);
+            k = 0;
+            break;
         }
     }
 
-    for (int i = 1; i <= n; i++)
+    ll finalsum = 0;
+    for (int i = 0; i < v.size(); i++)
     {
-        cout << c[i] + 1 << " ";
+        finalsum += arr[i] * v[i];
     }
-    cout << ln;
+    cout << finalsum << ln;
 }
+
 int main()
 {
     fast_cin();
-    ll t = 1;
-    //  cin >> t;
+    ll t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

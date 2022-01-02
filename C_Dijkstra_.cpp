@@ -54,63 +54,65 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100010
-vector<int> arr[maxi];
-int vis[maxi];
-int c[maxi];
+#define maxi 200010
+vector<p64> arr[maxi];
+v64 dist(maxi, INF);
+int res[maxi];
 
-bool dfs(int v, bool col)
+void dijsktra(int v)
 {
-    vis[v] = 1;
-    c[v] = col;
-    for (auto child : arr[v])
+    priority_queue<p64, vector<p64>, greater<p64>> pq;
+    dist[v] = 0;
+    pq.push({v, 0});
+    while (!pq.empty())
     {
-        if (vis[child] == 0)
+        ll curr_node = pq.top().first;
+        ll curr_dist = pq.top().second;
+        pq.pop();
+        if (curr_dist > dist[curr_node])
         {
-            if (dfs(child, !col) == false)
-            {
-                return false;
-            }
+            continue;
         }
-        else
+        for (auto edge : arr[curr_node])
         {
-            if (c[child] == c[v])
+            if (edge.second + curr_dist < dist[edge.first])
             {
-                return false;
+                res[edge.first] = curr_node;
+                dist[edge.first] = edge.second + curr_dist;
+                pq.push({edge.first, dist[edge.first]});
             }
         }
     }
-    return true;
 }
 
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    forn(i, m)
+    ll n, mm;
+    cin >> n >> mm;
+    forn(i, mm)
     {
-        ll a, b;
-        cin >> a >> b;
-        arr[a].pb(b);
-        arr[b].pb(a);
+        ll a, b, w;
+        cin >> a >> b >> w;
+        arr[a].pb({b, w});
+        arr[b].pb({a, w});
     }
-    for (int i = 1; i <= n; i++)
+    dijsktra(1);
+    if (dist[n] == INF)
     {
-        if (vis[i] == 0)
-        {
-            if (dfs(i, 0) == false)
-            {
-                cout << "IMPOSSIBLE" << ln;
-                return;
-            }
-        }
+        cout << -1 << ln;
+        return;
     }
-
-    for (int i = 1; i <= n; i++)
+    vector<int> ans;
+    for (int i = n; i > 0;)
     {
-        cout << c[i] + 1 << " ";
+        ans.pb(i);
+        i = res[i];
     }
-    cout << ln;
+    reverse(all(ans));
+    for (auto t : ans)
+    {
+        cout << t << " ";
+    }
 }
 int main()
 {

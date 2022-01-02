@@ -54,69 +54,63 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100010
-vector<int> arr[maxi];
-int vis[maxi];
-int c[maxi];
 
-bool dfs(int v, bool col)
+int arr[2] = {4, 7};
+set<ll> s;
+
+void create(ll x)
 {
-    vis[v] = 1;
-    c[v] = col;
-    for (auto child : arr[v])
+    if (x > MOD)
     {
-        if (vis[child] == 0)
-        {
-            if (dfs(child, !col) == false)
-            {
-                return false;
-            }
-        }
-        else
-        {
-            if (c[child] == c[v])
-            {
-                return false;
-            }
-        }
+        return;
     }
-    return true;
+    s.insert(x);
+    forn(i, 2)
+    {
+        create(x * 10 + arr[i]);
+    }
 }
 
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    forn(i, m)
+    int val;
+    cin >> val;
+    ll n = 0;
+    create(n);
+    vector<int> v(all(s));
+    vector<ll> final;
+    sort(all(v));
+    for (auto t : v)
     {
-        ll a, b;
-        cin >> a >> b;
-        arr[a].pb(b);
-        arr[b].pb(a);
-    }
-    for (int i = 1; i <= n; i++)
-    {
-        if (vis[i] == 0)
+        string temp = to_string(t);
+        ll f = 0, se = 0;
+        for (int i = 0; i < temp.length(); i++)
         {
-            if (dfs(i, 0) == false)
+            if (temp[i] == '4')
             {
-                cout << "IMPOSSIBLE" << ln;
-                return;
+                f++;
+            }
+            else
+            {
+                se++;
             }
         }
+        if (se == f)
+        {
+            final.pb(t);
+        }
     }
-
-    for (int i = 1; i <= n; i++)
+    for(auto t:final)
     {
-        cout << c[i] + 1 << " ";
+        cout<<t<<" ";
     }
-    cout << ln;
 }
+
 int main()
 {
     fast_cin();
     ll t = 1;
-    //  cin >> t;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

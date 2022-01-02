@@ -1,3 +1,4 @@
+// problem based on finding and printing cylces in a graph
 #pragma GCC optimize("Ofast")
 #pragma GCC target("sse,sse2,sse3,ssse3,sse4,popcnt,abm,mmx,avx,avx2,fma")
 #pragma GCC optimize("unroll-loops")
@@ -57,66 +58,71 @@ double eps = 1e-12;
 #define maxi 100010
 vector<int> arr[maxi];
 int vis[maxi];
-int c[maxi];
+vector<int> path;
 
-bool dfs(int v, bool col)
+bool dfs(int v, int par)
 {
     vis[v] = 1;
-    c[v] = col;
+    path.pb(v);
     for (auto child : arr[v])
     {
         if (vis[child] == 0)
         {
-            if (dfs(child, !col) == false)
+            if (dfs(child, v) == true)
             {
-                return false;
+                return true;
             }
         }
-        else
+        else if (vis[child] == 1 && par != child)
         {
-            if (c[child] == c[v])
-            {
-                return false;
-            }
+            path.pb(child);
+            return true;
         }
     }
-    return true;
+    path.pop_back();
+    return false;
 }
-
 void solve()
 {
     int n, m;
     cin >> n >> m;
+    ll a, b;
+    vector<int> d;
     forn(i, m)
     {
-        ll a, b;
         cin >> a >> b;
+        d.pb(a);
+        d.pb(b);
         arr[a].pb(b);
         arr[b].pb(a);
     }
-    for (int i = 1; i <= n; i++)
+    // dfs(c)
+    if (path.size() == 0)
     {
-        if (vis[i] == 0)
+        cout << "IMPOSSIBLE" << ln;
+        return;
+    }
+    ll last = path[path.size() - 1], k = 1;
+
+    for (int i = 0; i < path.size(); i++)
+    {
+        if (path[i] == last)
         {
-            if (dfs(i, 0) == false)
-            {
-                cout << "IMPOSSIBLE" << ln;
-                return;
-            }
+            k = i;
+            break;
         }
     }
-
-    for (int i = 1; i <= n; i++)
+    cout << path.size() - k << ln;
+    for (int i = k; i < path.size(); i++)
     {
-        cout << c[i] + 1 << " ";
+        cout << path[i] << " ";
     }
-    cout << ln;
 }
 int main()
 {
     fast_cin();
     ll t = 1;
-    //  cin >> t;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

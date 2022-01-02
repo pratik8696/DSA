@@ -54,69 +54,79 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100010
-vector<int> arr[maxi];
-int vis[maxi];
-int c[maxi];
-
-bool dfs(int v, bool col)
-{
-    vis[v] = 1;
-    c[v] = col;
-    for (auto child : arr[v])
-    {
-        if (vis[child] == 0)
-        {
-            if (dfs(child, !col) == false)
-            {
-                return false;
-            }
-        }
-        else
-        {
-            if (c[child] == c[v])
-            {
-                return false;
-            }
-        }
-    }
-    return true;
-}
+#define maxi 400
+char arr[maxi][maxi];
+int n;
 
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    forn(i, m)
-    {
-        ll a, b;
-        cin >> a >> b;
-        arr[a].pb(b);
-        arr[b].pb(a);
-    }
+    int k = 0, a = -1, b = -1, c = -1, d = -1;
+    cin >> n;
     for (int i = 1; i <= n; i++)
     {
-        if (vis[i] == 0)
+        for (int j = 1; j <= n; j++)
         {
-            if (dfs(i, 0) == false)
+            cin >> arr[i][j];
+            if (arr[i][j] == '*' && k == 0)
             {
-                cout << "IMPOSSIBLE" << ln;
-                return;
+                a = i;
+                b = j;
+                k++;
+            }
+            else if (arr[i][j] == '*')
+            {
+                c = i;
+                d = j;
             }
         }
     }
-
+    // cout << a << " " << b << ln;
+    // cout << c << " " << d << ln;
+    if (a == c)
+    {
+        if (a - 1 >= 1)
+        {
+            arr[a - 1][b] = '*';
+            arr[a - 1][d] = '*';
+        }
+        else
+        {
+            arr[a + 1][b] = '*';
+            arr[a + 1][d] = '*';
+        }
+    }
+    else if (b == d)
+    {
+        if (b - 1 >= 1)
+        {
+            arr[a][b - 1] = '*';
+            arr[c][b - 1] = '*';
+        }
+        else
+        {
+            arr[a][b + 1] = '*';
+            arr[c][b + 1] = '*';
+        }
+    }
+    else
+    {
+        arr[c][b] = '*';
+        arr[a][d] = '*';
+    }
     for (int i = 1; i <= n; i++)
     {
-        cout << c[i] + 1 << " ";
+        for (int j = 1; j <= n; j++)
+        {
+            cout << arr[i][j];
+        }
+        cout << ln;
     }
-    cout << ln;
 }
 int main()
 {
     fast_cin();
-    ll t = 1;
-    //  cin >> t;
+    ll t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

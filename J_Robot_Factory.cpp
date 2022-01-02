@@ -54,61 +54,67 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100010
-vector<int> arr[maxi];
-int vis[maxi];
-int c[maxi];
+#define maxi 4001
+int arr[maxi][maxi];
+int vis[maxi][maxi];
+int n, m;
+int dx[] = {-1, 0, 1, 0};
+int dy[] = {0, 1, 0, -1};
 
-bool dfs(int v, bool col)
+bool isvalid(int x, int y)
 {
-    vis[v] = 1;
-    c[v] = col;
-    for (auto child : arr[v])
+    if (x < 1 || x > n || y < 1 || y > m || vis[x][y] == 1)
     {
-        if (vis[child] == 0)
-        {
-            if (dfs(child, !col) == false)
-            {
-                return false;
-            }
-        }
-        else
-        {
-            if (c[child] == c[v])
-            {
-                return false;
-            }
-        }
+        return false;
     }
     return true;
 }
 
+ll xx;
+
+void dfson2d(int x, int y)
+{
+    // cout<<x<<" "<<y<<ln;
+    vis[x][y] = 1;
+    xx++;
+    string s = bitset<4>(arr[x][y]).to_string();
+    for (int i = 0; i < 4; i++)
+    {
+        if (isvalid(x + dx[i], y + dy[i]) && s[i] == '0')
+        {
+            dfson2d(x + dx[i], y + dy[i]);
+        }
+    }
+}
+
 void solve()
 {
-    int n, m;
     cin >> n >> m;
-    forn(i, m)
-    {
-        ll a, b;
-        cin >> a >> b;
-        arr[a].pb(b);
-        arr[b].pb(a);
-    }
     for (int i = 1; i <= n; i++)
     {
-        if (vis[i] == 0)
+        for (int j = 1; j <= m; j++)
         {
-            if (dfs(i, 0) == false)
+            cin >> arr[i][j];
+        }
+    }
+    v64 res;
+    for (int i = 1; i <= n; i++)
+    {
+        for (int j = 1; j <= m; j++)
+        {
+            if (vis[i][j] == 0)
             {
-                cout << "IMPOSSIBLE" << ln;
-                return;
+                dfson2d(i, j);
+                res.pb(xx);
+                // cout << xx << " ";
+                xx = 0;
             }
         }
     }
-
-    for (int i = 1; i <= n; i++)
+    sort(all(res));
+    for (int i = res.size() - 1; i >= 0; i--)
     {
-        cout << c[i] + 1 << " ";
+        cout << res[i] << " ";
     }
     cout << ln;
 }
@@ -116,7 +122,7 @@ int main()
 {
     fast_cin();
     ll t = 1;
-    //  cin >> t;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

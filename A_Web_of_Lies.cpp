@@ -54,63 +54,61 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100010
-vector<int> arr[maxi];
-int vis[maxi];
-int c[maxi];
-
-bool dfs(int v, bool col)
-{
-    vis[v] = 1;
-    c[v] = col;
-    for (auto child : arr[v])
-    {
-        if (vis[child] == 0)
-        {
-            if (dfs(child, !col) == false)
-            {
-                return false;
-            }
-        }
-        else
-        {
-            if (c[child] == c[v])
-            {
-                return false;
-            }
-        }
-    }
-    return true;
-}
+#define maxi 200010
+int arr[maxi];
 
 void solve()
 {
     int n, m;
     cin >> n >> m;
+    ll ans = n;
     forn(i, m)
     {
         ll a, b;
         cin >> a >> b;
-        arr[a].pb(b);
-        arr[b].pb(a);
-    }
-    for (int i = 1; i <= n; i++)
-    {
-        if (vis[i] == 0)
+        ll mini = min(a, b);
+        if (arr[mini] == 0)
         {
-            if (dfs(i, 0) == false)
+            ans--;
+        }
+        arr[mini]--;
+    }
+    // cout << ans << ln;
+    int q;
+    cin >> q;
+    forn(i, q)
+    {
+        ll op;
+        cin >> op;
+        if (op == 1)
+        {
+            ll a, b;
+            cin >> a >> b;
+            ll mini = min(a, b);
+            if (arr[mini] == 0)
             {
-                cout << "IMPOSSIBLE" << ln;
-                return;
+                ans--;
+            }
+            arr[mini]--;
+        }
+        else if (op == 2)
+        {
+
+            ll a, b;
+            cin >> a >> b;
+            ll mini = min(a, b);
+            arr[mini]++;
+            // ab zinda kar dena hai
+            if (arr[mini] == 0)
+            {
+                ans++;
             }
         }
+        else if (op == 3)
+        {
+            cout << ans << ln;
+        }
     }
-
-    for (int i = 1; i <= n; i++)
-    {
-        cout << c[i] + 1 << " ";
-    }
-    cout << ln;
 }
 int main()
 {
