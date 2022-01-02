@@ -54,7 +54,7 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 1001
+#define maxi 1010
 char arr[maxi][maxi];
 int vis[maxi][maxi];
 char step[maxi][maxi];
@@ -63,7 +63,6 @@ int n, m;
 int a, b, c, d;
 int dx[] = {-1, 0, 1, 0};
 int dy[] = {0, 1, 0, -1};
-string s = "";
 bool isvalid(int x, int y)
 {
     if (x < 1 || x > n || y < 1 || y > m || vis[x][y] == 1 || arr[x][y] == '#')
@@ -72,12 +71,15 @@ bool isvalid(int x, int y)
     }
     return true;
 }
+
+map<pair<ll, ll>, pair<ll, ll>> par;
 void bfson2d(int x, int y)
 {
     queue<pair<int, int>> q;
     step[x][y] = 'O';
     vis[x][y] = 1;
     dist[x][y] = 0;
+    par[mp(x, y)] = mp(-1, -1);
     q.push(mp(x, y));
     while (!q.empty())
     {
@@ -90,7 +92,7 @@ void bfson2d(int x, int y)
             {
                 int x1 = currx + dx[i];
                 int y1 = curry + dy[i];
-
+                par[mp(x1, y1)] = mp(currx, curry);
                 if (i == 0)
                 {
                     step[x1][y1] = 'U';
@@ -107,13 +109,23 @@ void bfson2d(int x, int y)
                 {
                     step[x1][y1] = 'L';
                 }
-                s.pb(step[x1][y1]);
                 dist[x1][y1] = dist[currx][curry] + 1;
                 vis[x1][y1] = 1;
                 q.push(mp(x1, y1));
             }
         }
     }
+}
+ll kk = 0;
+string ress = "";
+void path(int x, int y)
+{
+    if (x == -1 && y == -1)
+    {
+        return;
+    }
+    ress.pb(step[x][y]);
+    path(par[mp(x, y)].first, par[mp(x, y)].second);
 }
 
 void solve()
@@ -137,36 +149,21 @@ void solve()
         }
     }
     bfson2d(a, b);
-    // for (int i = 1; i < n + 1; i++)
-    // {
-    //     for (int j = 1; j < m + 1; j++)
-    //     {
-    //         cout << dist[i][j] << " ";
-    //     }
-    //     cout << ln;
-    // }
-    // cout << ln;
-    // for (int i = 1; i < n + 1; i++)
-    // {
-    //     for (int j = 1; j < m + 1; j++)
-    //     {
-    //         cout << step[i][j] << " ";
-    //     }
-    //     cout << ln;
-    // }
-    if (dist[c][d] == 0)
+
+    if (vis[c][d] == 0)
     {
         cout << "NO" << ln;
         return;
     }
+    path(c, d);
     cout << "YES" << ln;
     cout << dist[c][d] << ln;
-    for (int i = 0; i <= 9; i++)
-    {
-        cout << s[i];
-    }
+    ress.pop_back();
+    reverse(all(ress));
+    cout << ress << ln;
     cout << ln;
 }
+
 int main()
 {
     fast_cin();

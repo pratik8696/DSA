@@ -55,21 +55,51 @@ double eps = 1e-12;
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
 
+ll n;
+bool isvalid(ll k)
+{
+    ll in = k * k + 4 * n;
+    ll d = sqrt(in);
+    if (d * d == in)
+    {
+        return true;
+    }
+    return false;
+}
+
+ll sumofdigit(ll n)
+{
+    ll sum = 0;
+    while (n)
+    {
+        sum += n % 10;
+        n = n / 10;
+    }
+    return sum;
+}
+
 void solve()
 {
-    ll n;
     cin >> n;
-    ll fourtimes = 4 * n;
-    ll neartonumber = ceil(sqrtl(fourtimes));
-    ll i = neartonumber;
-    ll sumofdigits = i * i - fourtimes;
-    if (sumofdigits != 0 && ((-sumofdigits + sqrtl (sumofdigits + fourtimes)) / 2) > 0)
+    for (ll i = 1; i < 163; i++)
     {
-        cout << (-sumofdigits + sqrtl(sumofdigits + fourtimes)) / 2 << ln;
-        return;
+        if (isvalid(i))
+        {
+            ll dd = (sqrt(i * i + 4 * n) - i);
+            if (dd % 2 == 0)
+            {
+                dd = dd / 2;
+                if (sumofdigit(dd) == i)
+                {
+                    cout << dd << ln;
+                    return;
+                }
+            }
+        }
     }
     cout << -1 << ln;
 }
+
 int main()
 {
     fast_cin();
@@ -81,3 +111,13 @@ int main()
     }
     return 0;
 }
+
+/*
+1. Check borderline constraints. Can a variable you are dividing by be 0?
+2. Use ll while using bitshifts
+3. Do not erase from set while iterating it
+4. Initialise everything
+5. Read the task carefully, is something unique, sorted, adjacent, guaranteed??
+6. DO NOT use if(!mp[x]) if you want to iterate the map later
+7. Are you using i in all loops? Are the i's conflicting?
+*/
