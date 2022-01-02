@@ -57,54 +57,10 @@ double eps = 1e-12;
 
 void solve()
 {
-    ll n, m, x;
-    cin >> n >> m >> x;
-    vector<p64> v, ss;
-    map<ll, ll> res;
-    priority_queue<p64, vector<p64>, greater<p64>> pq;
-    forn(i, n)
-    {
-        ll y;
-        cin >> y;
-        v.pb({y, i + 1});
-    }
-    sort(all(v));
-    for (int i = n - 1, k = m; i >= n - m; i--, k--)
-    {
-        pq.push(v[i]);
-        res[v[i].second] = k;
-        // cout << v[i].first << " ";
-    }
-    // cout << ln;
-    for (int i = 0; i < n - m; i++)
-    {
-        ll val = pq.top().first;
-        ll idx = pq.top().second;
-        pq.pop();
-        val += v[i].first;
-        res[v[i].second] = res[idx];
-        pq.push({val, idx});
-    }
-    v64 fi;
-    while (!pq.empty())
-    {
-        fi.pb(pq.top().first);
-        pq.pop();
-    }
-    sort(all(fi));
-    if (fi[fi.size() - 1] - fi[0] <= x)
-    {
-        cout << "YES" << ln;
-        for (int i = 1; i <= n; i++)
-        {
-            cout << res[i] << " ";
-        }
-        cout << ln;
-    }
-    else
-    {
-        cout << "NO" << ln;
-    }
+    ll s;
+    cin >> s;
+    ll start = -1 * (s - 1);
+    cout << start << " " << start + 2 * s - 1 << ln;
 }
 int main()
 {
