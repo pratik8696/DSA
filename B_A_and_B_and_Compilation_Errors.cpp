@@ -57,53 +57,50 @@ double eps = 1e-12;
 
 void solve()
 {
-    // 9--> 1001
-    // 21--> 10101
-    // 1+4+16  (3)
-    // 1+4+8+8
-    // 1+2+2+16 (4)
-    // 1+1+1+2+16
-    // 1+1+1+1+1+16
-    // 1+1+1+1+1+8+8
-    ll n, k;
-    cin >> n >> k;
-    ll count = __builtin_popcount(n);
-    if (k >= count && k <= n)
+    int n;
+    cin >> n;
+    int arr[n], brr[n - 1], crr[n - 2];
+    forn(i, n)
     {
-        priority_queue<ll> pq;
-        string s = bitset<65>(n).to_string();
-        reverse(all(s));
-        forn(i, s.length())
-        {
-            if (s[i] == '1')
-            {
-                pq.push(pow(2ll, i));
-            }
-        }
-        while (pq.size() != k)
-        {
-            ll largest = pq.top();
-            pq.pop();
-            largest = largest / 2;
-            pq.push(largest);
-            pq.push(largest);
-        }
-        cout << "YES" << ln;
-        while (!pq.empty())
-        {
-            cout << pq.top() << " ";
-            pq.pop();
-        }
+        cin >> arr[i];
     }
-    else
+    forn(i, n - 1)
     {
-        cout << "NO" << ln;
+        cin >> brr[i];
     }
+    forn(i, n - 2)
+    {
+        cin >> crr[i];
+    }
+
+    ll first = 0;
+    for (int i = 0; i < n; i++)
+    {
+        first = first ^ arr[i];
+    }
+
+    ll second = 0;
+    for (int i = 0; i < n-1; i++)
+    {
+        second = second ^ brr[i];
+    }
+
+    ll third = 0;
+    for (int i = 0; i < n-2; i++)
+    {
+        third = third ^ crr[i];
+    }
+
+    ll res1 = first ^ second;
+    ll res2 = second ^ third;
+
+    cout << res1 << ln;
+    cout << res2 << ln;
 }
 int main()
 {
     fast_cin();
-    ll t = 1;
+    ll t=1;
     // cin >> t;
     for (int it = 1; it <= t; it++)
     {

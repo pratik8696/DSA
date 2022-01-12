@@ -57,54 +57,32 @@ double eps = 1e-12;
 
 void solve()
 {
-    // 9--> 1001
-    // 21--> 10101
-    // 1+4+16  (3)
-    // 1+4+8+8
-    // 1+2+2+16 (4)
-    // 1+1+1+2+16
-    // 1+1+1+1+1+16
-    // 1+1+1+1+1+8+8
-    ll n, k;
-    cin >> n >> k;
-    ll count = __builtin_popcount(n);
-    if (k >= count && k <= n)
+    ll n;
+    cin >> n;
+    ll i = 0, j = 1e6;
+    while (i <= j)
     {
-        priority_queue<ll> pq;
-        string s = bitset<65>(n).to_string();
-        reverse(all(s));
-        forn(i, s.length())
+        if ((i * i + i + j + j * j) / 2 == n && (i * i + i + j + j * j) % 2 == 0 && i > 0 && j > 0)
         {
-            if (s[i] == '1')
-            {
-                pq.push(pow(2ll, i));
-            }
+            cout << "YES" << ln;
+            return;
         }
-        while (pq.size() != k)
+        else if ((i * i + i + j + j * j) / 2 > n)
         {
-            ll largest = pq.top();
-            pq.pop();
-            largest = largest / 2;
-            pq.push(largest);
-            pq.push(largest);
+            j--;
         }
-        cout << "YES" << ln;
-        while (!pq.empty())
+        else
         {
-            cout << pq.top() << " ";
-            pq.pop();
+            i++;
         }
     }
-    else
-    {
-        cout << "NO" << ln;
-    }
+    cout << "NO" << ln;
 }
 int main()
 {
     fast_cin();
     ll t = 1;
-    // cin >> t;
+    //  cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

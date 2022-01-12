@@ -57,54 +57,65 @@ double eps = 1e-12;
 
 void solve()
 {
-    // 9--> 1001
-    // 21--> 10101
-    // 1+4+16  (3)
-    // 1+4+8+8
-    // 1+2+2+16 (4)
-    // 1+1+1+2+16
-    // 1+1+1+1+1+16
-    // 1+1+1+1+1+8+8
-    ll n, k;
-    cin >> n >> k;
-    ll count = __builtin_popcount(n);
-    if (k >= count && k <= n)
+    ll n;
+    cin >> n;
+    ll arr[n];
+    forn(i, n)
     {
-        priority_queue<ll> pq;
-        string s = bitset<65>(n).to_string();
-        reverse(all(s));
-        forn(i, s.length())
+        cin >> arr[i];
+    }
+    sort(al(arr, n));
+    map<ll, ll> m, res;
+    v64 a;
+    for (int i = 0; i < n; i++)
+    {
+        if (arr[i] <= n && m[arr[i]] == 0)
         {
-            if (s[i] == '1')
+            m[arr[i]]++;
+            res[arr[i]]++;
+        }
+        else
+        {
+            a.pb(arr[i]);
+        }
+    }
+
+    for (ll i = 0; i < a.size(); i++)
+    {
+        set<ll> k;
+        ll num = a[i];
+        while (num > 0)
+        {
+            if (num <= n)
             {
-                pq.push(pow(2ll, i));
+                if (m[num] == 0)
+                {
+                    m[num]++;
+                    break;
+                }
             }
-        }
-        while (pq.size() != k)
-        {
-            ll largest = pq.top();
-            pq.pop();
-            largest = largest / 2;
-            pq.push(largest);
-            pq.push(largest);
-        }
-        cout << "YES" << ln;
-        while (!pq.empty())
-        {
-            cout << pq.top() << " ";
-            pq.pop();
+            k.insert(num);
+            num = num / 2;
         }
     }
-    else
+
+    for (int i = 1; i <= n; i++)
     {
-        cout << "NO" << ln;
+        if (m[i] == 0)
+        {
+            cout << "NO" << ln;
+            return;
+        }
     }
+    cout << "YES" << ln;
+    return;
 }
+
 int main()
 {
     fast_cin();
-    ll t = 1;
-    // cin >> t;
+    ll t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

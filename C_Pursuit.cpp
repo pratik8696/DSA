@@ -54,57 +54,96 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
+#define maxi 100010
+ll n;
+ll arr[maxi], brr[maxi];
+
+bool isvalid(ll extramatch)
+{
+    ll newmatches = n + extramatch;
+    // cout << "Newmatches " << newmatches << ln;
+    ll validity = newmatches - newmatches / 4;
+    // cout << "validity " << validity << ln;
+    ll sumofa = 0, sumofb = 0;
+    for (int i = n - 1, valid = validity; i >= 0 && valid; i--, valid--)
+    {
+        sumofb = sumofb + brr[i];
+        // cout << "Sumofb " << sumofb << ln;
+    }
+    // cout << "Sumofb " << sumofb << ln;
+    sumofa = extramatch * 100;
+    // cout << "Sumofa " << sumofa << ln;
+    ll validityofa = validity - extramatch;
+    for (int i = n - 1, valid = validityofa; i >= 0 && valid; i--, valid--)
+    {
+        sumofa += arr[i];
+        // cout << "Sumofa " << sumofa << ln;
+    }
+    // cout << "Sumofa " << sumofa << ln;
+    if (sumofa >= sumofb)
+    {
+        return true;
+    }
+    return false;
+}
 
 void solve()
 {
-    // 9--> 1001
-    // 21--> 10101
-    // 1+4+16  (3)
-    // 1+4+8+8
-    // 1+2+2+16 (4)
-    // 1+1+1+2+16
-    // 1+1+1+1+1+16
-    // 1+1+1+1+1+8+8
-    ll n, k;
-    cin >> n >> k;
-    ll count = __builtin_popcount(n);
-    if (k >= count && k <= n)
+    cin >> n;
+    forn(i, n)
     {
-        priority_queue<ll> pq;
-        string s = bitset<65>(n).to_string();
-        reverse(all(s));
-        forn(i, s.length())
+        cin >> arr[i];
+    }
+    forn(i, n)
+    {
+        cin >> brr[i];
+    }
+    sort(al(arr, n));
+    sort(al(brr, n));
+    ll matches = n - n / 4, sumofa = 0, sumofb = 0;
+    // forn(i, n)
+    // {
+    //     cout << arr[i] << " ";
+    // }
+    // cout << ln;
+    // forn(i, n)
+    // {
+    //     cout << brr[i] << " ";
+    // }
+    // cout << ln;
+    for (int i = n - 1, valid = matches; i >= 0 && matches; i--, valid--)
+    {
+        sumofa += arr[i];
+        sumofb += brr[i];
+    }
+    // cout << sumofa << " " << sumofb << ln;
+    // if (sumofa >= sumofb)
+    // {
+    //     cout << 0 << ln;
+    //     return;
+    // }
+    // cout << isvalid(1) << ln;
+    ll i = 0, j = INT_MAX, ans = INT_MAX;
+    while (i <= j)
+    {
+        ll mid = (i + j) / 2;
+        if (isvalid(mid))
         {
-            if (s[i] == '1')
-            {
-                pq.push(pow(2ll, i));
-            }
+            j = mid - 1;
+            ans = min(ans, mid);
         }
-        while (pq.size() != k)
+        else
         {
-            ll largest = pq.top();
-            pq.pop();
-            largest = largest / 2;
-            pq.push(largest);
-            pq.push(largest);
-        }
-        cout << "YES" << ln;
-        while (!pq.empty())
-        {
-            cout << pq.top() << " ";
-            pq.pop();
+            i = mid + 1;
         }
     }
-    else
-    {
-        cout << "NO" << ln;
-    }
+    cout << ans << ln;
 }
 int main()
 {
     fast_cin();
-    ll t = 1;
-    // cin >> t;
+    ll t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

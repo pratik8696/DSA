@@ -55,56 +55,69 @@ double eps = 1e-12;
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
 
+bool compare(p64 a, p64 b)
+{
+    return a.second < b.second;
+}
+
 void solve()
 {
-    // 9--> 1001
-    // 21--> 10101
-    // 1+4+16  (3)
-    // 1+4+8+8
-    // 1+2+2+16 (4)
-    // 1+1+1+2+16
-    // 1+1+1+1+1+16
-    // 1+1+1+1+1+8+8
-    ll n, k;
-    cin >> n >> k;
-    ll count = __builtin_popcount(n);
-    if (k >= count && k <= n)
+    ll n, l, k;
+    cin >> n >> l >> k;
+    ll arr[n], brr[n];
+    forn(i, n)
     {
-        priority_queue<ll> pq;
-        string s = bitset<65>(n).to_string();
-        reverse(all(s));
-        forn(i, s.length())
+        cin >> arr[i];
+    }
+    forn(i, n)
+    {
+        cin >> brr[i];
+    }
+    vp64 v, o;
+    if (k == 0)
+    {
+        ll result = 0;
+        for (ll i = 0; i < n; i++)
         {
-            if (s[i] == '1')
+            if (i == n - 1)
             {
-                pq.push(pow(2ll, i));
+                result += (l - arr[i]) * brr[i];
+            }
+            else
+            {
+                result += (arr[i + 1] - arr[i]) * brr[i];
             }
         }
-        while (pq.size() != k)
-        {
-            ll largest = pq.top();
-            pq.pop();
-            largest = largest / 2;
-            pq.push(largest);
-            pq.push(largest);
-        }
-        cout << "YES" << ln;
-        while (!pq.empty())
-        {
-            cout << pq.top() << " ";
-            pq.pop();
-        }
+        cout << result << ln;
+        return;
     }
-    else
+    v.pb({arr[0], brr[0]});
+    for (ll i = 1; i < n; i++)
     {
-        cout << "NO" << ln;
+        o.pb({arr[i], brr[i]});
     }
+    sort(all(o), compare);
+    for (ll i = 0; i < o.size(); i++)
+    {
+        if (v[v.size() - 1].second > o[i].second)
+        {
+            v.pb({o[i].fi, o[i].se});
+        }
+    }
+    v.pb({l, 0});
+    sort(all(v));
+    ll time = 0;
+    for (ll i = 0; i < v.size() - 1; i++)
+    {
+        time += v[i].second * (v[i + 1].first - v[i].first);
+    }
+    cout << time << ln;
 }
 int main()
 {
     fast_cin();
     ll t = 1;
-    // cin >> t;
+    //  cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

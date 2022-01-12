@@ -54,51 +54,56 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
+#define maxi 10000
+int n, k;
+ll arr[maxi], ing[maxi], curr[maxi];
+
+bool isvalid(ll req)
+{
+    ll reqamt = 0;
+    for (int i = 0; i < n; i++)
+    {
+        ll amthona = ing[i] * req;
+        if (amthona > arr[i])
+        {
+            ll require = amthona - arr[i];
+            reqamt += require;
+        }
+    }
+    if (reqamt <= k)
+    {
+        return true;
+    }
+    return false;
+}
 
 void solve()
 {
-    // 9--> 1001
-    // 21--> 10101
-    // 1+4+16  (3)
-    // 1+4+8+8
-    // 1+2+2+16 (4)
-    // 1+1+1+2+16
-    // 1+1+1+1+1+16
-    // 1+1+1+1+1+8+8
-    ll n, k;
     cin >> n >> k;
-    ll count = __builtin_popcount(n);
-    if (k >= count && k <= n)
+    forn(i, n)
     {
-        priority_queue<ll> pq;
-        string s = bitset<65>(n).to_string();
-        reverse(all(s));
-        forn(i, s.length())
+        cin >> ing[i];
+    }
+    forn(i, n)
+    {
+        cin >> arr[i];
+        curr[i] = arr[i] / ing[i];
+    }
+    ll i = 0, j = INT_MAX, ans = 0;
+    while (i <= j)
+    {
+        ll mid = (i + j) / 2;
+        if (isvalid(mid))
         {
-            if (s[i] == '1')
-            {
-                pq.push(pow(2ll, i));
-            }
+            i = mid + 1;
+            ans = max(mid, ans);
         }
-        while (pq.size() != k)
+        else
         {
-            ll largest = pq.top();
-            pq.pop();
-            largest = largest / 2;
-            pq.push(largest);
-            pq.push(largest);
-        }
-        cout << "YES" << ln;
-        while (!pq.empty())
-        {
-            cout << pq.top() << " ";
-            pq.pop();
+            j = mid - 1;
         }
     }
-    else
-    {
-        cout << "NO" << ln;
-    }
+    cout << ans << ln;
 }
 int main()
 {

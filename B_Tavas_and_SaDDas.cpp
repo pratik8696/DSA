@@ -55,56 +55,58 @@ double eps = 1e-12;
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
 
+set<ll> s;
+vector<ll> res;
+//  234,369,86420,17,95,8,11,777
+//  15 159
+//  246 246 2468
+void generate(ll x)
+{
+    // cout << x << ln;
+    s.insert(x);
+    if (x > 1e17)
+    {
+        return;
+    }
+    ll temp = x;
+    ll last = temp % 10;
+    temp = temp / 10;
+    ll slast = temp % 10;
+    ll diff = slast - last;
+    for (int i = 1; i <= 9; i++)
+    {
+        if (last - i == diff)
+        {
+            generate(x * 10 + i);
+        }
+    }
+}
+
 void solve()
 {
-    // 9--> 1001
-    // 21--> 10101
-    // 1+4+16  (3)
-    // 1+4+8+8
-    // 1+2+2+16 (4)
-    // 1+1+1+2+16
-    // 1+1+1+1+1+16
-    // 1+1+1+1+1+8+8
-    ll n, k;
-    cin >> n >> k;
-    ll count = __builtin_popcount(n);
-    if (k >= count && k <= n)
-    {
-        priority_queue<ll> pq;
-        string s = bitset<65>(n).to_string();
-        reverse(all(s));
-        forn(i, s.length())
-        {
-            if (s[i] == '1')
-            {
-                pq.push(pow(2ll, i));
-            }
-        }
-        while (pq.size() != k)
-        {
-            ll largest = pq.top();
-            pq.pop();
-            largest = largest / 2;
-            pq.push(largest);
-            pq.push(largest);
-        }
-        cout << "YES" << ln;
-        while (!pq.empty())
-        {
-            cout << pq.top() << " ";
-            pq.pop();
-        }
-    }
-    else
-    {
-        cout << "NO" << ln;
-    }
+    ll n;
+    cin >> n;
+    ll idx = lower_bound(all(res), n) - res.begin();
+    cout << res[idx] << ln;
 }
 int main()
 {
     fast_cin();
+    for (ll i = 1; i < 11; i++)
+    {
+        s.insert(i);
+    }
+    for (ll i = 11; i <= 99; i++)
+    {
+        generate(i);
+    }
+    for (auto t : s)
+    {
+        res.pb(t);
+    }
+    sort(all(res));
     ll t = 1;
-    // cin >> t;
+    //  cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

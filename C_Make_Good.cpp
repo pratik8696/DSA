@@ -57,54 +57,60 @@ double eps = 1e-12;
 
 void solve()
 {
-    // 9--> 1001
-    // 21--> 10101
-    // 1+4+16  (3)
-    // 1+4+8+8
-    // 1+2+2+16 (4)
-    // 1+1+1+2+16
-    // 1+1+1+1+1+16
-    // 1+1+1+1+1+8+8
-    ll n, k;
-    cin >> n >> k;
-    ll count = __builtin_popcount(n);
-    if (k >= count && k <= n)
+    ll n, sum = 0, xx = 0;
+    cin >> n;
+    ll arr[n];
+    forn(i, n)
     {
-        priority_queue<ll> pq;
-        string s = bitset<65>(n).to_string();
-        reverse(all(s));
-        forn(i, s.length())
+        cin >> arr[i];
+        xx = xx ^ arr[i];
+        sum += arr[i];
+    }
+    sum = sum / 2;
+    string a = bitset<65>(sum).to_string();
+    string b = bitset<65>(xx).to_string();
+    if (a.compare(b) == 0)
+    {
+        cout << 0 << ln;
+        return;
+    }
+    v64 res;
+    for (int i = 0; i < a.length(); i++)
+    {
+        if (a[i] == '1' && b[i] == '0')
         {
-            if (s[i] == '1')
-            {
-                pq.push(pow(2ll, i));
-            }
+            res.pb(1);
         }
-        while (pq.size() != k)
+        else if (a[i] == '0' && b[i] == '1')
         {
-            ll largest = pq.top();
-            pq.pop();
-            largest = largest / 2;
-            pq.push(largest);
-            pq.push(largest);
+            res.pb(1);
         }
-        cout << "YES" << ln;
-        while (!pq.empty())
+        else if (a[i] == '0' && b[i] == '0')
         {
-            cout << pq.top() << " ";
-            pq.pop();
+            res.pb(0);
+        }
+        else if (a[i] == '1' && b[i] == '1')
+        {
+            res.pb(0);
         }
     }
-    else
+    reverse(all(res));
+    ll result = 0;
+    for (int i = 0; i < res.size(); i++)
     {
-        cout << "NO" << ln;
+        if (res[i] == 1)
+        {
+            result += powl(2, i);
+        }
     }
+    cout << 1 << ln;
+    cout << result << ln;
 }
 int main()
 {
     fast_cin();
-    ll t = 1;
-    // cin >> t;
+    ll t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

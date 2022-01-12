@@ -55,51 +55,34 @@ double eps = 1e-12;
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
 
+bool compare(ll a, ll b)
+{
+    return a > b;
+}
+
 void solve()
 {
-    // 9--> 1001
-    // 21--> 10101
-    // 1+4+16  (3)
-    // 1+4+8+8
-    // 1+2+2+16 (4)
-    // 1+1+1+2+16
-    // 1+1+1+1+1+16
-    // 1+1+1+1+1+8+8
     ll n, k;
     cin >> n >> k;
-    ll count = __builtin_popcount(n);
-    if (k >= count && k <= n)
+    ll arr[n];
+    forn(i, n)
     {
-        priority_queue<ll> pq;
-        string s = bitset<65>(n).to_string();
-        reverse(all(s));
-        forn(i, s.length())
-        {
-            if (s[i] == '1')
-            {
-                pq.push(pow(2ll, i));
-            }
-        }
-        while (pq.size() != k)
-        {
-            ll largest = pq.top();
-            pq.pop();
-            largest = largest / 2;
-            pq.push(largest);
-            pq.push(largest);
-        }
-        cout << "YES" << ln;
-        while (!pq.empty())
-        {
-            cout << pq.top() << " ";
-            pq.pop();
-        }
+        cin >> arr[i];
     }
-    else
+    v64 diff;
+    for (int i = 0; i < n - 1; i++)
     {
-        cout << "NO" << ln;
+        diff.pb(arr[i + 1] - arr[i]);
     }
+    ll currdiff = arr[n - 1] - arr[0];
+    sort(all(diff), compare);
+    for (int i = 0; i < k - 1; i++)
+    {
+        currdiff = currdiff - diff[i];
+    }
+    cout << currdiff << ln;
 }
+
 int main()
 {
     fast_cin();

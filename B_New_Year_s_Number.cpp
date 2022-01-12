@@ -54,46 +54,29 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
+set<ll> s;
+int arr[2] = {2020, 2021};
 
+void create(ll x)
+{
+    for (size_t i = 0; i < 1000; i++)
+    {
+        for (size_t j = 0; j < 1000; j++)
+        {
+
+            s.insert(i * 2020 + j * 2021);
+        }
+    }
+}
+int it;
 void solve()
 {
-    // 9--> 1001
-    // 21--> 10101
-    // 1+4+16  (3)
-    // 1+4+8+8
-    // 1+2+2+16 (4)
-    // 1+1+1+2+16
-    // 1+1+1+1+1+16
-    // 1+1+1+1+1+8+8
-    ll n, k;
-    cin >> n >> k;
-    ll count = __builtin_popcount(n);
-    if (k >= count && k <= n)
+    ll n;
+    cin >> n;
+    // cout << s.count(n) << ln;
+    if (s.count(n) != 0 && n != 0)
     {
-        priority_queue<ll> pq;
-        string s = bitset<65>(n).to_string();
-        reverse(all(s));
-        forn(i, s.length())
-        {
-            if (s[i] == '1')
-            {
-                pq.push(pow(2ll, i));
-            }
-        }
-        while (pq.size() != k)
-        {
-            ll largest = pq.top();
-            pq.pop();
-            largest = largest / 2;
-            pq.push(largest);
-            pq.push(largest);
-        }
         cout << "YES" << ln;
-        while (!pq.empty())
-        {
-            cout << pq.top() << " ";
-            pq.pop();
-        }
     }
     else
     {
@@ -103,9 +86,10 @@ void solve()
 int main()
 {
     fast_cin();
-    ll t = 1;
-    // cin >> t;
-    for (int it = 1; it <= t; it++)
+    create(0);
+    ll t;
+    cin >> t;
+    for (it = 1; it <= t; it++)
     {
         solve();
     }

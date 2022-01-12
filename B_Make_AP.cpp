@@ -57,43 +57,39 @@ double eps = 1e-12;
 
 void solve()
 {
-    // 9--> 1001
-    // 21--> 10101
-    // 1+4+16  (3)
-    // 1+4+8+8
-    // 1+2+2+16 (4)
-    // 1+1+1+2+16
-    // 1+1+1+1+1+16
-    // 1+1+1+1+1+8+8
-    ll n, k;
-    cin >> n >> k;
-    ll count = __builtin_popcount(n);
-    if (k >= count && k <= n)
+    ll a, b, c;
+    cin >> a >> b >> c;
+    bool flag = false;
+    ll x1 = 2 * b - c;
+    if (x1 % a == 0)
     {
-        priority_queue<ll> pq;
-        string s = bitset<65>(n).to_string();
-        reverse(all(s));
-        forn(i, s.length())
+        ll res = x1 / a;
+        if (res > 0)
         {
-            if (s[i] == '1')
-            {
-                pq.push(pow(2ll, i));
-            }
+            flag = true;
         }
-        while (pq.size() != k)
+    }
+    ll x2 = a + c;
+    if ((x2) % (2 * b) == 0)
+    {
+        ll res = x2 / 2 * b;
+        if (res > 0)
         {
-            ll largest = pq.top();
-            pq.pop();
-            largest = largest / 2;
-            pq.push(largest);
-            pq.push(largest);
+            flag=true;
         }
+    }
+    ll x3 = 2 * b - a;
+    if (x3 % c == 0)
+    {
+        ll res = x3 / c;
+        if (res > 0)
+        {
+            flag = true;
+        }
+    }
+    if (flag)
+    {
         cout << "YES" << ln;
-        while (!pq.empty())
-        {
-            cout << pq.top() << " ";
-            pq.pop();
-        }
     }
     else
     {
@@ -103,8 +99,8 @@ void solve()
 int main()
 {
     fast_cin();
-    ll t = 1;
-    // cin >> t;
+    ll t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

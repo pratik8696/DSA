@@ -57,54 +57,35 @@ double eps = 1e-12;
 
 void solve()
 {
-    // 9--> 1001
-    // 21--> 10101
-    // 1+4+16  (3)
-    // 1+4+8+8
-    // 1+2+2+16 (4)
-    // 1+1+1+2+16
-    // 1+1+1+1+1+16
-    // 1+1+1+1+1+8+8
-    ll n, k;
-    cin >> n >> k;
-    ll count = __builtin_popcount(n);
-    if (k >= count && k <= n)
+    int n;
+    cin >> n;
+    map<ll, v64> m;
+    forn(i, n)
     {
-        priority_queue<ll> pq;
-        string s = bitset<65>(n).to_string();
-        reverse(all(s));
-        forn(i, s.length())
+        ll x;
+        cin >> x;
+        m[x].pb(i);
+    }
+    ll maxi = INT_MIN;
+    for (auto t : m)
+    {
+        for (size_t i = 0; i < t.second.size() - 1; i++)
         {
-            if (s[i] == '1')
-            {
-                pq.push(pow(2ll, i));
-            }
-        }
-        while (pq.size() != k)
-        {
-            ll largest = pq.top();
-            pq.pop();
-            largest = largest / 2;
-            pq.push(largest);
-            pq.push(largest);
-        }
-        cout << "YES" << ln;
-        while (!pq.empty())
-        {
-            cout << pq.top() << " ";
-            pq.pop();
+            maxi = max(n - t.second[i + 1] + t.second[i], maxi);
         }
     }
-    else
+    if (maxi == INT_MIN)
     {
-        cout << "NO" << ln;
+        cout << -1 << ln;
+        return;
     }
+    cout << maxi << ln;
 }
 int main()
 {
     fast_cin();
-    ll t = 1;
-    // cin >> t;
+    ll t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

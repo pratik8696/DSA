@@ -54,58 +54,36 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-
+int it;
 void solve()
 {
-    // 9--> 1001
-    // 21--> 10101
-    // 1+4+16  (3)
-    // 1+4+8+8
-    // 1+2+2+16 (4)
-    // 1+1+1+2+16
-    // 1+1+1+1+1+16
-    // 1+1+1+1+1+8+8
-    ll n, k;
-    cin >> n >> k;
-    ll count = __builtin_popcount(n);
-    if (k >= count && k <= n)
+    ll a, b, k;
+    cin >> a >> b >> k;
+    ll arr[k], brr[k];
+    map<ll, ll> boy, girl;
+    forn(i, k)
     {
-        priority_queue<ll> pq;
-        string s = bitset<65>(n).to_string();
-        reverse(all(s));
-        forn(i, s.length())
-        {
-            if (s[i] == '1')
-            {
-                pq.push(pow(2ll, i));
-            }
-        }
-        while (pq.size() != k)
-        {
-            ll largest = pq.top();
-            pq.pop();
-            largest = largest / 2;
-            pq.push(largest);
-            pq.push(largest);
-        }
-        cout << "YES" << ln;
-        while (!pq.empty())
-        {
-            cout << pq.top() << " ";
-            pq.pop();
-        }
+        cin >> arr[i];
+        boy[arr[i]]++;
     }
-    else
+    forn(i, k)
     {
-        cout << "NO" << ln;
+        cin >> brr[i];
+        girl[brr[i]]++;
     }
+    ll res = 0;
+    for (int i = 0; i < k; i++)
+    {
+        res += k - boy[arr[i]] - girl[brr[i]] + 1;
+    }
+    cout << res / 2 << ln;
 }
 int main()
 {
     fast_cin();
-    ll t = 1;
-    // cin >> t;
-    for (int it = 1; it <= t; it++)
+    ll t;
+    cin >> t;
+    for (it = 1; it <= t; it++)
     {
         solve();
     }
