@@ -55,46 +55,48 @@ double eps = 1e-12;
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
 
+ll cf(ll x, ll y)
+{
+    ll val = x / y;
+    if (x % y != 0)
+    {
+        val++;
+    }
+    return val;
+}
+
 void solve()
 {
     ll n;
     cin >> n;
-    ull arr[n];
-    vector<ull> c;
+    ll arr[n], res[n];
+
     forn(i, n)
     {
+        ll turn = 0;
         cin >> arr[i];
-    }
-    ull res = 1;
-    for (ll i = 2; i <= 21; i++)
-    {
-        res = res * i;
-        c.pb(res);
-    }
-    for (ll i = 22; i < n+10; i++)
-    {
-        c.pb(res);
-    }
-    // forn(i,n)
-    // {
-    //     cout<<c[i]<<" ";
-    // }
-    // cout<<ln;
-    for (int i = 0; i < n; i++)
-    {
-        if (arr[i] % c[i] == 0)
+        if (arr[i] - i > 0)
         {
-            cout << "NO" << ln;
-            return;
+            turn = cf((arr[i] - i), n);
+        }
+        res[i] = n * turn + i + 1;
+    }
+    ll mini = INT_MAX, idx;
+    forn(i, n)
+    {
+        if (res[i] < mini)
+        {
+            mini = res[i];
+            idx = i + 1;
         }
     }
-    cout << "YES" << ln;
+    cout << idx << ln;
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

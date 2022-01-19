@@ -57,44 +57,58 @@ double eps = 1e-12;
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    ull arr[n];
-    vector<ull> c;
+    ll n, q;
+    cin >> n >> q;
+    ll arr[n], brr[n + 1];
+    fill(al(brr, n + 1), 0);
+    ll sum = 0;
     forn(i, n)
     {
         cin >> arr[i];
     }
-    ull res = 1;
-    for (ll i = 2; i <= 21; i++)
+    while (q--)
     {
-        res = res * i;
-        c.pb(res);
+        ll a, b;
+        cin >> a >> b;
+        brr[a - 1] += 1;
+        brr[b] += -1;
     }
-    for (ll i = 22; i < n+10; i++)
+    v64 res;
+    for (int i = 0; i < n + 1; i++)
     {
-        c.pb(res);
-    }
-    // forn(i,n)
-    // {
-    //     cout<<c[i]<<" ";
-    // }
-    // cout<<ln;
-    for (int i = 0; i < n; i++)
-    {
-        if (arr[i] % c[i] == 0)
+        sum += brr[i];
+        brr[i] = sum;
+        // cout << brr[i] << " ";
+        if (i != n)
         {
-            cout << "NO" << ln;
-            return;
+            res.pb(sum);
         }
     }
-    cout << "YES" << ln;
+    // cout << ln;
+    sort(all(res), greater<ll>());
+    sort(al(arr, n), greater<ll>());
+    ll result = 0;
+    // for (ll i = 0; i < n; i++)
+    // {
+    //     cout << res[i] << " ";
+    // }
+    // cout << ln;
+    // for (ll i = 0; i < n; i++)
+    // {
+    //     cout << arr[i] << " ";
+    // }
+    // cout << ln;
+    for (ll i = 0; i < n; i++)
+    {
+        result += arr[i] * res[i];
+    }
+    cout << result << ln;
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    //  cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

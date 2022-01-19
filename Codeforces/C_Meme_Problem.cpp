@@ -59,37 +59,20 @@ void solve()
 {
     ll n;
     cin >> n;
-    ull arr[n];
-    vector<ull> c;
-    forn(i, n)
+    ll d = n * n - 4 * n;
+    if (d >= 0)
     {
-        cin >> arr[i];
+        double D = sqrtl(d);
+        double x = (n + D) / 2;
+        cout<<"Y ";
+        cout << fixed << setprecision(10)<< x << " " << n - x << ln;
     }
-    ull res = 1;
-    for (ll i = 2; i <= 21; i++)
+    else
     {
-        res = res * i;
-        c.pb(res);
+        cout << "N" << ln;
     }
-    for (ll i = 22; i < n+10; i++)
-    {
-        c.pb(res);
-    }
-    // forn(i,n)
-    // {
-    //     cout<<c[i]<<" ";
-    // }
-    // cout<<ln;
-    for (int i = 0; i < n; i++)
-    {
-        if (arr[i] % c[i] == 0)
-        {
-            cout << "NO" << ln;
-            return;
-        }
-    }
-    cout << "YES" << ln;
 }
+
 int main()
 {
     fast_cin();

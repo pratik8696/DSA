@@ -55,47 +55,55 @@ double eps = 1e-12;
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
 
+bool compare(p64 a, p64 b)
+{
+    return a.first > b.first;
+}
+
+int it;
+
 void solve()
 {
-    ll n;
-    cin >> n;
-    ull arr[n];
-    vector<ull> c;
+    ll n, W;
+    cin >> n >> W;
+    vp64 res;
     forn(i, n)
     {
-        cin >> arr[i];
+        ll x;
+        cin >> x;
+        res.pb({x, i + 1});
     }
-    ull res = 1;
-    for (ll i = 2; i <= 21; i++)
+    sort(all(res), compare);
+    ull sum = 0;
+    v64 arr;
+    for (auto t : res)
     {
-        res = res * i;
-        c.pb(res);
-    }
-    for (ll i = 22; i < n+10; i++)
-    {
-        c.pb(res);
-    }
-    // forn(i,n)
-    // {
-    //     cout<<c[i]<<" ";
-    // }
-    // cout<<ln;
-    for (int i = 0; i < n; i++)
-    {
-        if (arr[i] % c[i] == 0)
+        if (sum + t.first <= W)
         {
-            cout << "NO" << ln;
-            return;
+            sum += t.first;
+            arr.pb(t.second);
         }
     }
-    cout << "YES" << ln;
+    if ((sum * 2ll) >= W && sum <= W && arr.size() >= 1ll)
+    {
+        cout << arr.size() << ln;
+        sort(all(arr));
+        for (auto t : arr)
+        {
+            cout << t << " ";
+        }
+        cout << ln;
+        return;
+    }
+    cout << -1 << ln;
+    return;
 }
 int main()
 {
     fast_cin();
     ll t;
     cin >> t;
-    for (int it = 1; it <= t; it++)
+    for (it = 1; it <= t; it++)
     {
         solve();
     }

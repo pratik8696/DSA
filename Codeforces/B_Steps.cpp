@@ -57,44 +57,48 @@ double eps = 1e-12;
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    ull arr[n];
-    vector<ull> c;
-    forn(i, n)
+    ll n, m;
+    cin >> n >> m;
+    ll x, y;
+    cin >> x >> y;
+    ll q, step = 0;
+    cin >> q;
+    while (q--)
     {
-        cin >> arr[i];
-    }
-    ull res = 1;
-    for (ll i = 2; i <= 21; i++)
-    {
-        res = res * i;
-        c.pb(res);
-    }
-    for (ll i = 22; i < n+10; i++)
-    {
-        c.pb(res);
-    }
-    // forn(i,n)
-    // {
-    //     cout<<c[i]<<" ";
-    // }
-    // cout<<ln;
-    for (int i = 0; i < n; i++)
-    {
-        if (arr[i] % c[i] == 0)
+        ll i, j;
+        cin >> i >> j;
+        ll mini = INT_MAX;
+        if (i > 0)
         {
-            cout << "NO" << ln;
-            return;
+            mini = min(mini, abs((n - x) / i));
+        }
+        if (j > 0)
+        {
+            mini = min(mini, abs((m - y) / j));
+        }
+        if (i < 0)
+        {
+            mini = min(mini, abs((x - 1) / i));
+        }
+        if (j < 0)
+        {
+            mini = min(mini, abs((y - 1) / j));
+        }
+        if (mini != INT_MAX)
+        {
+            x += mini * i;
+            y += mini * j;
+            // cout << mini << ln;
+            step += mini;
         }
     }
-    cout << "YES" << ln;
+    cout << step << ln;
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

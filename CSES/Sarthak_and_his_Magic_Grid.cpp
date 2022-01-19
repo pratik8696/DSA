@@ -59,36 +59,12 @@ void solve()
 {
     ll n;
     cin >> n;
-    ull arr[n];
-    vector<ull> c;
-    forn(i, n)
+    for (ll i = 0; i < n; i++)
     {
-        cin >> arr[i];
+        for (ll j = 0; j < n; j++)
+            cout << "2 ";
+        cout << endl;
     }
-    ull res = 1;
-    for (ll i = 2; i <= 21; i++)
-    {
-        res = res * i;
-        c.pb(res);
-    }
-    for (ll i = 22; i < n+10; i++)
-    {
-        c.pb(res);
-    }
-    // forn(i,n)
-    // {
-    //     cout<<c[i]<<" ";
-    // }
-    // cout<<ln;
-    for (int i = 0; i < n; i++)
-    {
-        if (arr[i] % c[i] == 0)
-        {
-            cout << "NO" << ln;
-            return;
-        }
-    }
-    cout << "YES" << ln;
 }
 int main()
 {

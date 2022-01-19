@@ -54,47 +54,74 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
+#define maxi 100010
+vector<int> arr[maxi];
+bool colour[maxi];
+int vis[maxi];
+
+bool dfs(int v, bool col)
+{
+    vis[v] = 1;
+    colour[v] = col;
+    for (auto child : arr[v])
+    {
+        if (vis[child] == 0)
+        {
+            if (dfs(child, !col) == false)
+            {
+                return false;
+            }
+        }
+        else
+        {
+            if (colour[child] == colour[v])
+            {
+                return false;
+            }
+        }
+    }
+    return true;
+}
 
 void solve()
 {
-    ll n;
+    int n;
     cin >> n;
-    ull arr[n];
-    vector<ull> c;
-    forn(i, n)
+    forn(i, n - 1)
     {
-        cin >> arr[i];
+        ll a, b;
+        cin >> a >> b;
+        arr[a].pb(b);
+        arr[b].pb(a);
     }
-    ull res = 1;
-    for (ll i = 2; i <= 21; i++)
+    if (dfs(1, 0))
     {
-        res = res * i;
-        c.pb(res);
-    }
-    for (ll i = 22; i < n+10; i++)
-    {
-        c.pb(res);
-    }
-    // forn(i,n)
-    // {
-    //     cout<<c[i]<<" ";
-    // }
-    // cout<<ln;
-    for (int i = 0; i < n; i++)
-    {
-        if (arr[i] % c[i] == 0)
+        ll one = 0, zero = 0;
+        for (int i = 1; i <= n; i++)
         {
-            cout << "NO" << ln;
-            return;
+            // cout << colour[i] << " ";
+            if (colour[i]==1)
+            {
+                one++;
+            }
+            else
+            {
+                zero++;
+            }
         }
+        cout << one * zero - n + 1 << ln;
+        return;
     }
-    cout << "YES" << ln;
+    else
+    {
+        cout << 0 << ln;
+    }
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

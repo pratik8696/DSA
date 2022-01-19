@@ -59,36 +59,8 @@ void solve()
 {
     ll n;
     cin >> n;
-    ull arr[n];
-    vector<ull> c;
-    forn(i, n)
-    {
-        cin >> arr[i];
-    }
-    ull res = 1;
-    for (ll i = 2; i <= 21; i++)
-    {
-        res = res * i;
-        c.pb(res);
-    }
-    for (ll i = 22; i < n+10; i++)
-    {
-        c.pb(res);
-    }
-    // forn(i,n)
-    // {
-    //     cout<<c[i]<<" ";
-    // }
-    // cout<<ln;
-    for (int i = 0; i < n; i++)
-    {
-        if (arr[i] % c[i] == 0)
-        {
-            cout << "NO" << ln;
-            return;
-        }
-    }
-    cout << "YES" << ln;
+    ll res = powl(2, log2(n));
+    cout << res - 1 << ln;
 }
 int main()
 {

@@ -59,42 +59,46 @@ void solve()
 {
     ll n;
     cin >> n;
-    ull arr[n];
-    vector<ull> c;
+    ll arr[n];
     forn(i, n)
     {
         cin >> arr[i];
     }
-    ull res = 1;
-    for (ll i = 2; i <= 21; i++)
-    {
-        res = res * i;
-        c.pb(res);
-    }
-    for (ll i = 22; i < n+10; i++)
-    {
-        c.pb(res);
-    }
-    // forn(i,n)
-    // {
-    //     cout<<c[i]<<" ";
-    // }
-    // cout<<ln;
+
+    v64 res;
+    res.pb(0);
+    ll x = 0;
     for (int i = 0; i < n; i++)
     {
-        if (arr[i] % c[i] == 0)
+        x += arr[i];
+        res.pb(x);
+    }
+    // ll s = 0;
+    // for (int i = 0; i < res.size(); i++)
+    // {
+    //     cout << res[i] << " ";
+    // }
+    ll q;
+    cin >> q;
+    while (q--)
+    {
+        ll l, r;
+        cin >> l >> r;
+        if (l == r)
         {
-            cout << "NO" << ln;
-            return;
+            cout << 0 << ln;
+        }
+        else
+        {
+            cout << (res[r] - res[l - 1]) / 10 << ln;
         }
     }
-    cout << "YES" << ln;
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

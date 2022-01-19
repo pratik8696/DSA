@@ -57,14 +57,14 @@ double eps = 1e-12;
 
 void solve()
 {
-    ll n, k;
-    cin >> n >> k;
-    int arr[n];
+    ll n, bag;
+    cin >> n >> bag;
+    ll arr[n];
     v64 pos, neg;
     forn(i, n)
     {
         cin >> arr[i];
-        if (arr[i] >= 0)
+        if (arr[i] > 0)
         {
             pos.pb(arr[i]);
         }
@@ -75,40 +75,68 @@ void solve()
     }
     sort(all(pos));
     sort(all(neg));
-    ll td = 0, cd = 0, bag = k;
-    for (ll i = 0; i < pos.size(); i++)
+    ll prev = 0, k = bag, sum = 0;
+    if (pos.size() > 0)
     {
-        if (bag > 0)
+        for (ll i = 0; i < pos.size(); i++)
         {
-            bag--;
-            td += pos[i];
-        }
-        if (bag == 0 && i != pos.size() - 1)
-        {
-            td += cd;
-            bag = k;
+            ll curr = pos[i];
+            if (k > 0)
+            {
+                sum += curr - prev;
+                k--;
+            }
+            if (k == 0 && i != pos.size() - 1)
+            {
+                sum += 2 * prev;
+                k = bag;
+            }
+            prev = curr;
         }
     }
-    if (neg.size() > 0)
-    {
-        cout << "HEHE" << ln;
-        td += pos[pos.size() - 1];
-        cd = 0, bag = k;
-        for (ll i = 0; i < neg.size(); i++)
-        {
-            if (bag > 0)
-            {
-                bag--;
-                td += neg[i];
-            }
-            if (bag == 0 && i != neg.size() - 1)
-            {
-                td += cd;
-                bag = k;
-            }
-        }
-    }
-    cout << td << ln;
+    cout << neg.size() << ln;
+    // if (neg.size() > 0 && pos.size() > 0)
+    // {
+    //     sum += pos[pos.size() - 1];
+    //     ll pp = 0, kk = bag;
+    //     for (ll i = 0; i < neg.size(); i++)
+    //     {
+    //         ll curr = neg[i];
+    //         if (kk > 0)
+    //         {
+    //             sum += curr - pp;
+    //             kk--;
+    //         }
+    //         if (kk == 0&&i!=neg.size()-1)
+    //         {
+    //             sum += 2 * pp;
+    //             kk = bag;
+    //         }
+    //         pp = curr;
+    //     }
+    // }
+
+    // if (neg.size() > 0 && pos.size() == 0)
+    // {
+    //     ll pp = 0, kk = bag;
+    //     for (ll i = 0; i < neg.size(); i++)
+    //     {
+    //         ll curr = neg[i];
+    //         if (kk > 0)
+    //         {
+    //             sum += curr - pp;
+    //             kk--;
+    //         }
+    //         if (kk == 0&&i!=neg.size()-1)
+    //         {
+    //             sum += 2 * pp;
+    //             kk = bag;
+    //         }
+    //         pp = curr;
+    //     }
+    // }
+
+    cout << sum << ln;
 }
 int main()
 {

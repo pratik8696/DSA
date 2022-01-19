@@ -57,39 +57,25 @@ double eps = 1e-12;
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    ull arr[n];
-    vector<ull> c;
-    forn(i, n)
+    ll m, x;
+    cin >> m >> x;
+    ll store[x + 1];
+    store[1] = 1;
+    for (int i = 2; i < x + 1; i++)
     {
-        cin >> arr[i];
+        ll temp = (m % i);
+        if (temp == 0)
+            temp = i;
+        store[i] = store[i - 1];
+        if (store[i] >= temp)
+            store[i]++;
     }
-    ull res = 1;
-    for (ll i = 2; i <= 21; i++)
-    {
-        res = res * i;
-        c.pb(res);
-    }
-    for (ll i = 22; i < n+10; i++)
-    {
-        c.pb(res);
-    }
-    // forn(i,n)
-    // {
-    //     cout<<c[i]<<" ";
-    // }
-    // cout<<ln;
-    for (int i = 0; i < n; i++)
-    {
-        if (arr[i] % c[i] == 0)
-        {
-            cout << "NO" << ln;
-            return;
-        }
-    }
-    cout << "YES" << ln;
+    for (int i = 1; i <= x; i++)
+        cout << store[i] << " ";
+    cout << endl;
 }
+
+
 int main()
 {
     fast_cin();

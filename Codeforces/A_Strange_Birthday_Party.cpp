@@ -55,40 +55,43 @@ double eps = 1e-12;
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
 
+bool compare(ll a, ll b)
+{
+    return a > b;
+}
+
 void solve()
 {
-    ll n;
-    cin >> n;
-    ull arr[n];
-    vector<ull> c;
+    ll n, m, x;
+    cin >> n >> m;
+    ll arr[n], prize[m];
+    priority_queue<p64, vp64, greater<p64>> pq;
     forn(i, n)
     {
         cin >> arr[i];
     }
-    ull res = 1;
-    for (ll i = 2; i <= 21; i++)
+    sort(al(arr, n), compare);
+    forn(i, m)
     {
-        res = res * i;
-        c.pb(res);
+        cin >> x;
+        prize[i] = x;
+        pq.push({x, i + 1});
     }
-    for (ll i = 22; i < n+10; i++)
+    ll sum = 0;
+    for (ll i = 0; i < n; i++)
     {
-        c.pb(res);
-    }
-    // forn(i,n)
-    // {
-    //     cout<<c[i]<<" ";
-    // }
-    // cout<<ln;
-    for (int i = 0; i < n; i++)
-    {
-        if (arr[i] % c[i] == 0)
+        if (prize[arr[i] - 1] > pq.top().first && arr[i] >= pq.top().second)
         {
-            cout << "NO" << ln;
-            return;
+            sum += pq.top().first;
+            pq.pop();
         }
+        else
+        {
+            sum += prize[arr[i] - 1];
+        }
+        // cout << prize[arr[i] - 1] << " " << pq.top().first << ln;
     }
-    cout << "YES" << ln;
+    cout << sum << ln;
 }
 int main()
 {

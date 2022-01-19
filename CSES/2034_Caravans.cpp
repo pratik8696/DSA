@@ -54,47 +54,59 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
+#define maxi 100010
+vector<ll> arr[maxi];
+ll vis[maxi], dist[maxi];
+
+void bfs(int v)
+{
+    queue<ll> q;
+    q.push(v);
+    vis[v] = 1;
+    dist[v] = 0;
+    while (!q.empty())
+    {
+        ll curr = q.front();
+        q.pop();
+        for (auto child : arr[curr])
+        {
+            if (vis[child] == 0)
+            {
+                q.push(child);
+                vis[child] = 1;
+                dist[child] = dist[curr] + 1;
+            }
+        }
+    }
+}
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    ull arr[n];
-    vector<ull> c;
-    forn(i, n)
+    ll n, m;
+    cin >> n >> m;
+    forn(i, m)
     {
-        cin >> arr[i];
+        ll a, b;
+        cin >> a >> b;
+        arr[a].pb(b);
+        arr[b].pb(a);
     }
-    ull res = 1;
-    for (ll i = 2; i <= 21; i++)
+    ll s, f, r;
+    cin >> s >> f >> r;
+    bfs(r);
+    // cout << min(dist[s], dist[f])<<ln;
+    for (int i = 1; i <= n; i++)
     {
-        res = res * i;
-        c.pb(res);
+        cout << dist[i] << " ";
     }
-    for (ll i = 22; i < n+10; i++)
-    {
-        c.pb(res);
-    }
-    // forn(i,n)
-    // {
-    //     cout<<c[i]<<" ";
-    // }
-    // cout<<ln;
-    for (int i = 0; i < n; i++)
-    {
-        if (arr[i] % c[i] == 0)
-        {
-            cout << "NO" << ln;
-            return;
-        }
-    }
-    cout << "YES" << ln;
+    cout << ln;
 }
+
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

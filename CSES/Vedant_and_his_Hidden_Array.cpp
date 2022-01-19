@@ -57,39 +57,30 @@ double eps = 1e-12;
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    ull arr[n];
-    vector<ull> c;
-    forn(i, n)
+    ll n, a;
+    cin >> n >> a;
+
+    if (n == 1)
     {
-        cin >> arr[i];
+        if (a % 2 == 0)
+            cout << "Even\n";
+        else
+            cout << "Odd\n";
     }
-    ull res = 1;
-    for (ll i = 2; i <= 21; i++)
+    else
     {
-        res = res * i;
-        c.pb(res);
-    }
-    for (ll i = 22; i < n+10; i++)
-    {
-        c.pb(res);
-    }
-    // forn(i,n)
-    // {
-    //     cout<<c[i]<<" ";
-    // }
-    // cout<<ln;
-    for (int i = 0; i < n; i++)
-    {
-        if (arr[i] % c[i] == 0)
+        if (a % 2 == 1)
         {
-            cout << "NO" << ln;
-            return;
+            if (n % 2 == 0)
+                cout << "Even\n";
+            else
+                cout << "Odd\n";
         }
+        else
+            cout << "Impossible\n";
     }
-    cout << "YES" << ln;
 }
+
 int main()
 {
     fast_cin();

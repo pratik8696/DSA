@@ -59,36 +59,36 @@ void solve()
 {
     ll n;
     cin >> n;
-    ull arr[n];
-    vector<ull> c;
+    ll arr[n];
     forn(i, n)
     {
         cin >> arr[i];
     }
-    ull res = 1;
-    for (ll i = 2; i <= 21; i++)
+    sort(al(arr, n));
+    ll has = arr[0], req = 0;
+    for (ll i = 1; i < n; i++)
     {
-        res = res * i;
-        c.pb(res);
+        req += arr[n - 1] - arr[i];
     }
-    for (ll i = 22; i < n+10; i++)
+    ll rem = 0;
+    if (has > req)
     {
-        c.pb(res);
-    }
-    // forn(i,n)
-    // {
-    //     cout<<c[i]<<" ";
-    // }
-    // cout<<ln;
-    for (int i = 0; i < n; i++)
-    {
-        if (arr[i] % c[i] == 0)
+        ll remain = has - req;
+        if (has >= n - 1)
         {
-            cout << "NO" << ln;
-            return;
+            rem = remain % (n - 1);
+        }
+        else
+        {
+            rem = n - 1 - remain;
         }
     }
-    cout << "YES" << ln;
+    else
+    {
+        rem = req - has;
+    }
+
+    cout << rem << ln;
 }
 int main()
 {

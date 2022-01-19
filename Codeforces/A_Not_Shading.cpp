@@ -57,39 +57,66 @@ double eps = 1e-12;
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    ull arr[n];
-    vector<ull> c;
-    forn(i, n)
+    ll n, m, r, c;
+    cin >> n >> m >> r >> c;
+    char s[n + 1][m + 1];
+    ll flag = 0;
+    for (ll i = 1; i <= n; i++)
     {
-        cin >> arr[i];
-    }
-    ull res = 1;
-    for (ll i = 2; i <= 21; i++)
-    {
-        res = res * i;
-        c.pb(res);
-    }
-    for (ll i = 22; i < n+10; i++)
-    {
-        c.pb(res);
-    }
-    // forn(i,n)
-    // {
-    //     cout<<c[i]<<" ";
-    // }
-    // cout<<ln;
-    for (int i = 0; i < n; i++)
-    {
-        if (arr[i] % c[i] == 0)
+        for (ll j = 1; j <= m; j++)
         {
-            cout << "NO" << ln;
-            return;
+            cin >> s[i][j];
+            if (s[i][j] == 'B')
+            {
+                flag = 1;
+            }
         }
     }
-    cout << "YES" << ln;
+
+    if (flag == 0)
+    {
+        cout << "-1" << endl;
+        return;
+    }
+
+    if (s[r][c] == 'B')
+    {
+        cout << "0" << endl;
+        return;
+    }
+
+    if (n == 1 || m == 1)
+    {
+        cout << "1" << endl;
+        return;
+    }
+    flag = 0;
+    for (ll i = 1; i <= n; i++)
+    {
+        if (s[i][c] == 'B')
+        {
+            flag = 1;
+        }
+    }
+    for (ll i = 1; i <= m; i++)
+    {
+        if (s[r][i] == 'B')
+        {
+            flag = 1;
+        }
+    }
+    if (flag == 1)
+    {
+        cout << "1" << endl;
+        return;
+    }
+    else
+    {
+        cout << "2" << endl;
+        return;
+    }
 }
+
 int main()
 {
     fast_cin();

@@ -57,39 +57,69 @@ double eps = 1e-12;
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    ull arr[n];
-    vector<ull> c;
+    ll n, g;
+    cin >> n >> g;
+    ll arr[n + 1];
     forn(i, n)
     {
         cin >> arr[i];
     }
-    ull res = 1;
-    for (ll i = 2; i <= 21; i++)
+    arr[n] = INT_MIN;
+    v64 res;
+    ll k = 0;
+    if (n > 1)
     {
-        res = res * i;
-        c.pb(res);
-    }
-    for (ll i = 22; i < n+10; i++)
-    {
-        c.pb(res);
-    }
-    // forn(i,n)
-    // {
-    //     cout<<c[i]<<" ";
-    // }
-    // cout<<ln;
-    for (int i = 0; i < n; i++)
-    {
-        if (arr[i] % c[i] == 0)
+        if (arr[0] > arr[1])
         {
-            cout << "NO" << ln;
-            return;
+            res.pb(arr[0]);
+            k = 1;
         }
     }
-    cout << "YES" << ln;
+    else
+    {
+        cout << arr[0] << ln;
+        return;
+    }
+    for (int i = 0; i < n; i++)
+    {
+        if (arr[i] < arr[i + 1] && k == 0)
+        {
+        }
+        else if (k == 0)
+        {
+            res.pb(arr[i]);
+            // cout << arr[i] << " ";
+            k = 1;
+        }
+        else if (arr[i] > arr[i + 1] && k == 1)
+        {
+        }
+        else if (k == 1)
+        {
+            res.pb(arr[i]);
+            // cout << arr[i] << " ";
+            k = 0;
+        }
+    }
+    if (res.size() % 2 == 0)
+    {
+        res.pop_back();
+    }
+    ll pos = 0, neg = 0;
+    for (int i = 0; i < res.size(); i++)
+    {
+        if (i & 1)
+        {
+            pos = pos - res[i];
+        }
+        else
+        {
+            pos += res[i];
+        }
+    }
+    cout << pos << ln;
 }
+
 int main()
 {
     fast_cin();

@@ -55,46 +55,54 @@ double eps = 1e-12;
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
 
+bool isPrime(int x)
+{
+    if(x==1)
+    {
+        return false;
+    }
+    for (int d = 2; d * d <= x; d++)
+    {
+        if (x % d == 0)
+            return false;
+    }
+    return true;
+}
+
 void solve()
 {
-    ll n;
+    ll n, count = 0;
     cin >> n;
-    ull arr[n];
-    vector<ull> c;
-    forn(i, n)
+    set<ll> ss;
+    for (ll i = 1; i <= n; i++)
     {
-        cin >> arr[i];
-    }
-    ull res = 1;
-    for (ll i = 2; i <= 21; i++)
-    {
-        res = res * i;
-        c.pb(res);
-    }
-    for (ll i = 22; i < n+10; i++)
-    {
-        c.pb(res);
-    }
-    // forn(i,n)
-    // {
-    //     cout<<c[i]<<" ";
-    // }
-    // cout<<ln;
-    for (int i = 0; i < n; i++)
-    {
-        if (arr[i] % c[i] == 0)
+        string s = to_string(i);
+        ll sum = 0, temp = i;
+        while (temp)
         {
-            cout << "NO" << ln;
-            return;
+            ll q = temp % 10;
+            sum += powl(q, s.length());
+            temp = temp / 10;
+        }
+        string p = to_string(sum);
+        if (p.length() == s.length())
+        {
+            if (isPrime(sum))
+            {
+                ss.insert(sum);
+                count++;
+            }
         }
     }
-    cout << "YES" << ln;
+    cout << count << ln;
+    // cout<<ss.size()<<ln;
 }
+
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

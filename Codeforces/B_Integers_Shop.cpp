@@ -57,39 +57,55 @@ double eps = 1e-12;
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    ull arr[n];
-    vector<ull> c;
-    forn(i, n)
+    ll q;
+    cin >> q;
+    ll mini = INT_MAX, mincost = INT_MAX;
+    ll maxi = INT_MIN, maxcost = INT_MAX;
+    ll maxlen = INT_MIN, maxlcost = INT_MAX;
+    while (q--)
     {
-        cin >> arr[i];
-    }
-    ull res = 1;
-    for (ll i = 2; i <= 21; i++)
-    {
-        res = res * i;
-        c.pb(res);
-    }
-    for (ll i = 22; i < n+10; i++)
-    {
-        c.pb(res);
-    }
-    // forn(i,n)
-    // {
-    //     cout<<c[i]<<" ";
-    // }
-    // cout<<ln;
-    for (int i = 0; i < n; i++)
-    {
-        if (arr[i] % c[i] == 0)
+        ll l, r, c;
+        cin >> l >> r >> c;
+
+        if (mini > l)
         {
-            cout << "NO" << ln;
-            return;
+            mini = l;
+            mincost = c;
         }
+        else if (mini == l)
+        {
+            mincost = min(c, mincost);
+        }
+
+        if (maxi < r)
+        {
+            maxi = r;
+            maxcost = c;
+        }
+        else if (maxi == r)
+        {
+            maxcost = min(c, maxcost);
+        }
+
+        if (maxlen < r - l + 1)
+        {
+            maxlen = r - l + 1;
+            maxlcost = c;
+        }
+        else if (maxlen == r - l + 1)
+        {
+            maxlcost = min(maxlcost, c);
+        }
+
+        ll ans = maxcost + mincost;
+        if (maxlen == maxi - mini + 1)
+        {
+            ans = min(ans, maxlcost);
+        }
+        cout << ans << ln;
     }
-    cout << "YES" << ln;
 }
+
 int main()
 {
     fast_cin();

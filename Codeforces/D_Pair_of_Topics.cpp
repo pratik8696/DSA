@@ -57,44 +57,58 @@ double eps = 1e-12;
 
 void solve()
 {
-    ll n;
+    ull n;
     cin >> n;
-    ull arr[n];
-    vector<ull> c;
+    ull arr[n], brr[n];
+    v64 v;
     forn(i, n)
     {
         cin >> arr[i];
     }
-    ull res = 1;
-    for (ll i = 2; i <= 21; i++)
+    forn(i, n)
     {
-        res = res * i;
-        c.pb(res);
+        cin >> brr[i];
+        v.pb(arr[i] - brr[i]);
     }
-    for (ll i = 22; i < n+10; i++)
+    sort(all(v));
+    v64 pos, neg, zero;
+    for (int i = 0; i < v.size(); i++)
     {
-        c.pb(res);
-    }
-    // forn(i,n)
-    // {
-    //     cout<<c[i]<<" ";
-    // }
-    // cout<<ln;
-    for (int i = 0; i < n; i++)
-    {
-        if (arr[i] % c[i] == 0)
+        if (v[i] > 0)
         {
-            cout << "NO" << ln;
-            return;
+            pos.pb(v[i]);
+        }
+        else if (v[i] < 0)
+        {
+            neg.pb(v[i]);
+        }
+        else if (v[i] == 0)
+        {
+            zero.pb(v[i]);
         }
     }
-    cout << "YES" << ln;
+    ull ans = 0;
+    sort(all(pos));
+    sort(all(neg));
+    if (neg.size() > 0 && pos.size() > 0)
+    {
+        forn(i, neg.size())
+        {
+            ull search = abs(neg[i]) + 1;
+            ull idx = lower_bound(all(pos), search) - pos.begin();
+            ans += pos.size() - idx;
+        }
+    }
+    ull poss = pos.size(), zeroo = zero.size();
+    ans += (poss * (poss - 1)) / 2;
+    ans += zeroo * poss;
+    cout << ans << ln;
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    //  cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

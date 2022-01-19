@@ -57,45 +57,36 @@ double eps = 1e-12;
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    ull arr[n];
-    vector<ull> c;
-    forn(i, n)
+    forn(i, 100000)
     {
-        cin >> arr[i];
-    }
-    ull res = 1;
-    for (ll i = 2; i <= 21; i++)
-    {
-        res = res * i;
-        c.pb(res);
-    }
-    for (ll i = 22; i < n+10; i++)
-    {
-        c.pb(res);
-    }
-    // forn(i,n)
-    // {
-    //     cout<<c[i]<<" ";
-    // }
-    // cout<<ln;
-    for (int i = 0; i < n; i++)
-    {
-        if (arr[i] % c[i] == 0)
+        string s = bitset<65>(i).to_string();
+        ll z = 0;
+        forn(j, s.length())
         {
-            cout << "NO" << ln;
-            return;
+            if (s[j] == '1')
+            {
+                for (int k = j; k < s.length(); k++)
+                {
+                    if (s[k] == '0')
+                    {
+                        z++;
+                    }
+                    j = k;
+                }
+            }
+        }
+        if (z == 1)
+        {
+            cout << i << ln;
         }
     }
-    cout << "YES" << ln;
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
-    for (int it = 1; it <= t; it++)
+    ll t = 1;
+//  cin >> t;
+ for(int it=1;it<=t;it++)
     {
         solve();
     }

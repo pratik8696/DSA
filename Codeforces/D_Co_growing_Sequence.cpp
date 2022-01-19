@@ -55,40 +55,49 @@ double eps = 1e-12;
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
 
+ll convert(v32 res)
+{
+    reverse(all(res));
+    ll sum = 0;
+    for (ll i = 0; i < res.size(); i++)
+    {
+        if (res[i] == 1)
+        {
+            sum += powl(2, i);
+        }
+    }
+    return sum;
+}
+
 void solve()
 {
-    ll n;
+    int n;
     cin >> n;
-    ull arr[n];
-    vector<ull> c;
+    int arr[n];
     forn(i, n)
     {
         cin >> arr[i];
     }
-    ull res = 1;
-    for (ll i = 2; i <= 21; i++)
+    cout << 0 << " ";
+    for (int i = 1; i < n; i++)
     {
-        res = res * i;
-        c.pb(res);
-    }
-    for (ll i = 22; i < n+10; i++)
-    {
-        c.pb(res);
-    }
-    // forn(i,n)
-    // {
-    //     cout<<c[i]<<" ";
-    // }
-    // cout<<ln;
-    for (int i = 0; i < n; i++)
-    {
-        if (arr[i] % c[i] == 0)
+        string prev = bitset<32>(arr[i - 1]).to_string(), curr = bitset<32>(arr[i]).to_string();
+        v32 res;
+        forn(j, 32)
         {
-            cout << "NO" << ln;
-            return;
+            if (prev[j] == '1' && curr[j] != '1')
+            {
+                res.pb(1);
+            }
+            else
+            {
+                res.pb(0);
+            }
         }
+        arr[i] = convert(res) ^ arr[i];
+        cout << convert(res) << " ";
     }
-    cout << "YES" << ln;
+    cout << ln;
 }
 int main()
 {

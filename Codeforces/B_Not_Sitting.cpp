@@ -54,42 +54,88 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
+#define maxi 1001
+#include <iostream>
+#include <bits/stdc++.h>
+#define ll long long
+#define mod 1000000007
+#define ull unsigned long long
+using namespace std;
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    ull arr[n];
-    vector<ull> c;
-    forn(i, n)
+    ll n, m;
+    cin >> n >> m;
+    ll a[n + 1][m + 1];
+    map<ll, ll> mp;
+    vector<ll> v;
+    for (ll i = 1; i <= n; i++)
     {
-        cin >> arr[i];
-    }
-    ull res = 1;
-    for (ll i = 2; i <= 21; i++)
-    {
-        res = res * i;
-        c.pb(res);
-    }
-    for (ll i = 22; i < n+10; i++)
-    {
-        c.pb(res);
-    }
-    // forn(i,n)
-    // {
-    //     cout<<c[i]<<" ";
-    // }
-    // cout<<ln;
-    for (int i = 0; i < n; i++)
-    {
-        if (arr[i] % c[i] == 0)
+        for (ll j = 1; j <= m; j++)
         {
-            cout << "NO" << ln;
-            return;
+            a[i][j] = (i + j);
+            v.push_back(i + j);
         }
     }
-    cout << "YES" << ln;
+    ll pren = n;
+    ll prem = m;
+    /* for(ll i=1;i<=pren/2;i++)
+     { for(ll j=1;j<=prem/2;j++)
+        { ll mx1=abs(a[i][j]-v[0]);
+          ll mx2=abs(a[i][j]-v[v.size()-1]);
+          ll mx3=max(mx1,mx2);
+          mp[mx3]++;
+        }
+
+     }
+     */
+    sort(all(v));
+    if (pren % 2 != 0)
+        pren++;
+    if (prem % 2 != 0)
+        prem++;
+    /* for(ll i=1;i<=pren/2;i++)
+     { for(ll j=1;j<=prem/2;j++)
+        { ll mx1=abs(a[i][j]-v[0]);
+          ll mx2=abs(a[i][j]-v[v.size()-1]);
+          ll mx3=max(mx1,mx2);
+          mp[mx3]++;
+        }
+
+     }
+     */
+    for (ll i = 1; i <= pren / 2; i++)
+    {
+        for (ll j = m; j > prem / 2; j--)
+        {
+            a[i][j] = a[i][m + 1 - j];
+        }
+    }
+    for (ll i = (n / 2) + 1; i <= n; i++)
+    {
+        for (ll j = 1; j <= prem; j++)
+        {
+            a[i][j] = a[n + 1 - i][j];
+        }
+    }
+
+    for (ll i = 1; i <= n; i++)
+    {
+        for (ll j = 1; j <= m; j++)
+        {
+            ll mx1 = abs(a[i][j] - v[0]);
+            ll mx2 = abs(a[i][j] - v[v.size() - 1]);
+            ll mx3 = max(mx1, mx2);
+            mp[mx3]++;
+        }
+    }
+
+    for (auto it = mp.begin(); it != mp.end(); it++)
+        for (ll i = 0; i < it->second; i++)
+            cout << it->first << " ";
+    cout << endl;
 }
+
 int main()
 {
     fast_cin();

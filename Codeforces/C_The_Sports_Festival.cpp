@@ -59,42 +59,67 @@ void solve()
 {
     ll n;
     cin >> n;
-    ull arr[n];
-    vector<ull> c;
+    ll arr[n];
     forn(i, n)
     {
         cin >> arr[i];
     }
-    ull res = 1;
-    for (ll i = 2; i <= 21; i++)
+    ll k = 10000, minii = INT_MAX;
+    v64 v;
+    while (k--)
     {
-        res = res * i;
-        c.pb(res);
-    }
-    for (ll i = 22; i < n+10; i++)
-    {
-        c.pb(res);
-    }
-    // forn(i,n)
-    // {
-    //     cout<<c[i]<<" ";
-    // }
-    // cout<<ln;
-    for (int i = 0; i < n; i++)
-    {
-        if (arr[i] % c[i] == 0)
+        ll maxx = INT_MIN, mini = INT_MAX;
+        ll sum = 0;
+        for (ll i = 0; i < n; i++)
         {
-            cout << "NO" << ln;
-            return;
+            maxx = max(arr[i], maxx);
+            mini = min(arr[i], mini);
+            sum += maxx - mini;
+        }
+        // cout << sum << ln;
+        next_permutation(al(arr, n));
+        minii=min(minii,sum);
+    }
+    k=10000;
+    while (k--)
+    {
+        ll maxx = INT_MIN, mini = INT_MAX;
+        ll sum = 0;
+        for (ll i = 0; i < n; i++)
+        {
+            maxx = max(arr[i], maxx);
+            mini = min(arr[i], mini);
+            sum += maxx - mini;
+        }
+        // cout << sum << ln;
+        if (sum == mini)
+        {
+            forn(j, n)
+            {
+                // cout << arr[j] << " ";
+                v.pb(arr[j]);
+            }
+            cout << ln;
+        }
+        next_permutation(al(arr, n));
+    }
+    int z = 0;
+    for (int i = 0; i < v.size(); i++)
+    {
+        cout << v[i] << " ";
+        z++;
+        if (z == n)
+        {
+            cout << ln;
+            z=0;
         }
     }
-    cout << "YES" << ln;
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    //  cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

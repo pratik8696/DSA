@@ -1,4 +1,3 @@
-// problem based on finding and printing cylces in a graph
 #pragma GCC optimize("Ofast")
 #pragma GCC target("sse,sse2,sse3,ssse3,sse4,popcnt,abm,mmx,avx,avx2,fma")
 #pragma GCC optimize("unroll-loops")
@@ -56,14 +55,14 @@ double eps = 1e-12;
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
 #define maxi 100010
-vector<int> arr[maxi];
+vector<ll> arr[maxi];
 int vis[maxi];
-vector<int> path;
 
+v64 res;
 bool dfs(int v, int par)
 {
     vis[v] = 1;
-    path.pb(v);
+    res.pb(v);
     for (auto child : arr[v])
     {
         if (vis[child] == 0)
@@ -73,51 +72,68 @@ bool dfs(int v, int par)
                 return true;
             }
         }
-        else if (vis[child] == 1 && par != child)
+        else if (par != child)
         {
-            path.pb(child);
+            res.pb(child);
             return true;
         }
     }
-    path.pop_back();
+    res.pop_back();
     return false;
 }
+
 void solve()
 {
-    int n, m;
+    ll n, m;
     cin >> n >> m;
-    ll a, b;
-    vector<int> d;
     forn(i, m)
     {
+        ll a, b;
         cin >> a >> b;
-        d.pb(a);
-        d.pb(b);
         arr[a].pb(b);
         arr[b].pb(a);
     }
-    // dfs(c)
-    if (path.size() == 0)
+    for (ll i = 1; i <= n; i++)
     {
-        cout << "IMPOSSIBLE" << ln;
-        return;
-    }
-    ll last = path[path.size() - 1], k = 1;
-
-    for (int i = 0; i < path.size(); i++)
-    {
-        if (path[i] == last)
+        if (vis[i] == 0)
         {
-            k = i;
-            break;
+            if (dfs(i, -1) == true)
+            {
+                reverse(all(res));
+                v64 s;
+                ll xx = res[0];
+                s.pb(xx);
+                for (int i = 1; i < res.size(); i++)
+                {
+                    if (res[i] == xx)
+                    {
+                        s.pb(res[i]);
+                        cout << s.size() << ln;
+                        for (auto t : s)
+                        {
+                            cout << t << " ";
+                        }
+                        cout << ln;
+                        break;
+                    }
+                    else
+                    {
+                        s.pb(res[i]);
+                    }
+                }
+                s.clear();
+                res.clear();
+            }
+            else
+            {
+                res.clear();
+            }
         }
     }
-    cout << path.size() - k << ln;
-    for (int i = k; i < path.size(); i++)
-    {
-        cout << path[i] << " ";
-    }
+    cout << "IMPOSSIBLE" << ln;
+    return;
 }
+
 int main()
 {
     fast_cin();

@@ -57,44 +57,20 @@ double eps = 1e-12;
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    ull arr[n];
-    vector<ull> c;
-    forn(i, n)
-    {
-        cin >> arr[i];
-    }
-    ull res = 1;
-    for (ll i = 2; i <= 21; i++)
-    {
-        res = res * i;
-        c.pb(res);
-    }
-    for (ll i = 22; i < n+10; i++)
-    {
-        c.pb(res);
-    }
-    // forn(i,n)
-    // {
-    //     cout<<c[i]<<" ";
-    // }
-    // cout<<ln;
-    for (int i = 0; i < n; i++)
-    {
-        if (arr[i] % c[i] == 0)
-        {
-            cout << "NO" << ln;
-            return;
-        }
-    }
-    cout << "YES" << ln;
+    ll n, m;
+    cin >> n >> m;
+    ll maxteam = n - m + 1;
+    ll resmax = (maxteam * (maxteam - 1)) / 2;
+    ll miniteam = n / m;
+    ll remteam = n % m;
+    ll mini = (remteam * (miniteam + 1) * miniteam) / 2 + ((m - remteam) * (miniteam * (miniteam - 1))) / 2;
+    cout << mini << " " << resmax << ln;
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    //  cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

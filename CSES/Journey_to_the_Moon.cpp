@@ -54,41 +54,46 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
+#define maxi 10000
+vector<int> arr[maxi];
+int vis[maxi];
+
+ll cc;
+void dfs(int v)
+{
+    vis[v] = 1;
+    cc++;
+    for (auto child : arr[v])
+    {
+        if (vis[child] == 0)
+        {
+            dfs(child);
+        }
+    }
+}
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    ull arr[n];
-    vector<ull> c;
-    forn(i, n)
+    v64 res;
+    int n, m;
+    cin >> n >> m;
+    forn(i, m)
     {
-        cin >> arr[i];
+        ll a, b;
+        cin >> a >> b;
+        arr[a].pb(b);
+        arr[b].pb(a);
     }
-    ull res = 1;
-    for (ll i = 2; i <= 21; i++)
-    {
-        res = res * i;
-        c.pb(res);
-    }
-    for (ll i = 22; i < n+10; i++)
-    {
-        c.pb(res);
-    }
-    // forn(i,n)
-    // {
-    //     cout<<c[i]<<" ";
-    // }
-    // cout<<ln;
     for (int i = 0; i < n; i++)
     {
-        if (arr[i] % c[i] == 0)
+        if (vis[i] == 0)
         {
-            cout << "NO" << ln;
-            return;
+            dfs(i);
+            res.pb(cc);
+            cc = 0;
         }
     }
-    cout << "YES" << ln;
+    
 }
 int main()
 {

@@ -58,37 +58,34 @@ double eps = 1e-12;
 void solve()
 {
     ll n;
+    priority_queue<ll> pq;
     cin >> n;
-    ull arr[n];
-    vector<ull> c;
+    ll arr[n], pos[n];
     forn(i, n)
     {
         cin >> arr[i];
     }
-    ull res = 1;
-    for (ll i = 2; i <= 21; i++)
+    forn(i, n)
     {
-        res = res * i;
-        c.pb(res);
-    }
-    for (ll i = 22; i < n+10; i++)
-    {
-        c.pb(res);
-    }
-    // forn(i,n)
-    // {
-    //     cout<<c[i]<<" ";
-    // }
-    // cout<<ln;
-    for (int i = 0; i < n; i++)
-    {
-        if (arr[i] % c[i] == 0)
+        cin >> pos[i];
+        if (pos[i] == 0)
         {
-            cout << "NO" << ln;
-            return;
+            pq.push(arr[i]);
         }
     }
-    cout << "YES" << ln;
+    for (int i = 0; i < n; i++)
+    {
+        if (pos[i] == 0)
+        {
+            cout << pq.top() << " ";
+            pq.pop();
+        }
+        else
+        {
+            cout << arr[i] << " ";
+        }
+    }
+    cout<<ln;
 }
 int main()
 {

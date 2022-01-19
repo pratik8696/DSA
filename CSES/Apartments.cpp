@@ -57,44 +57,44 @@ double eps = 1e-12;
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    ull arr[n];
-    vector<ull> c;
+    ll n, m, x;
+    cin >> n >> m >> x;
+    ll arr[n], size[m];
     forn(i, n)
     {
         cin >> arr[i];
     }
-    ull res = 1;
-    for (ll i = 2; i <= 21; i++)
+    forn(i, m)
     {
-        res = res * i;
-        c.pb(res);
+        cin >> size[i];
     }
-    for (ll i = 22; i < n+10; i++)
+    sort(al(arr, n));
+    sort(al(size, m));
+    ll i = 0, j = 0, count = 0;
+    while (i < n && j < m)
     {
-        c.pb(res);
-    }
-    // forn(i,n)
-    // {
-    //     cout<<c[i]<<" ";
-    // }
-    // cout<<ln;
-    for (int i = 0; i < n; i++)
-    {
-        if (arr[i] % c[i] == 0)
+        if (arr[i] - x <= size[j] && size[j] <= arr[i] + x)
         {
-            cout << "NO" << ln;
-            return;
+            i++;
+            j++;
+            count++;
+        }
+        if (size[j] < arr[i] - x)
+        {
+            j++;
+        }
+        if (size[j] > arr[i] + x)
+        {
+            i++;
         }
     }
-    cout << "YES" << ln;
+    cout << count << ln;
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

@@ -54,26 +54,34 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define maxi 100010
+#define maxi 100005
 vector<p64> arr[maxi];
-v64 dist(maxi, INF);
+ull dist[maxi], vis[maxi];
 
-void dijsktra(int v)
+void dijkstra()
 {
-    priority_queue<p64, vector<p64>, greater<p64>> pq;
-    pq.push({v, 0});
-    dist[v] = 0;
+    priority_queue < pair<ull, ull>, vector<pair<ull, ull>>, greater<pair<ull, ull>>> pq;
+    pq.push({1ll, 0ll});
+    dist[1] = 0;
     while (!pq.empty())
     {
-        int curr_node = pq.top().first;
-        int curr_dist = pq.top().second;
+        ull curr_node = pq.top().first;
+        ull curr_leng = pq.top().second;
         pq.pop();
-        for (auto edge : arr[curr_node])
+        if (vis[curr_node] == 1ll)
         {
-            if (curr_dist + edge.second < dist[edge.first])
+            continue;
+        }
+        else
+        {
+            vis[curr_node] = 1ll;
+            for (auto edge : arr[curr_node])
             {
-                dist[edge.first] = edge.second + curr_dist;
-                pq.push(mp(edge.first, dist[edge.first]));
+                if (curr_leng + edge.second < dist[edge.first])
+                {
+                    dist[edge.first] = curr_leng + edge.second;
+                    pq.push({edge.first, dist[edge.first]});
+                }
             }
         }
     }
@@ -81,17 +89,17 @@ void dijsktra(int v)
 
 void solve()
 {
-    int n, m;
+    fill(al(dist, maxi), INF);
+    ull n, m;
     cin >> n >> m;
     forn(i, m)
     {
-        ll a, b, c;
+        ull a, b, c;
         cin >> a >> b >> c;
-        arr[a].pb(mp(b, c));
-        arr[b].pb(mp(a, c));
+        arr[a].pb({b, c});
     }
-    dijsktra(1);
-    for (int i = 1; i <= n; i++)
+    dijkstra();
+    for (ull i = 1; i <= n; i++)
     {
         cout << dist[i] << " ";
     }

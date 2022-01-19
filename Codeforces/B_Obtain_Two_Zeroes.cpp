@@ -57,38 +57,25 @@ double eps = 1e-12;
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    ull arr[n];
-    vector<ull> c;
-    forn(i, n)
+    ll a, b;
+    cin >> a >> b;
+    if (a == 0 && b == 0)
     {
-        cin >> arr[i];
+        cout << "YES" << ln;
+        return;
     }
-    ull res = 1;
-    for (ll i = 2; i <= 21; i++)
+    ll maxi = max(a, b);
+    ll mini = min(a, b);
+    if (a != 0 && b != 0)
     {
-        res = res * i;
-        c.pb(res);
-    }
-    for (ll i = 22; i < n+10; i++)
-    {
-        c.pb(res);
-    }
-    // forn(i,n)
-    // {
-    //     cout<<c[i]<<" ";
-    // }
-    // cout<<ln;
-    for (int i = 0; i < n; i++)
-    {
-        if (arr[i] % c[i] == 0)
+        if ((maxi + mini) % 3 == 0 && 2 * mini >= maxi)
         {
-            cout << "NO" << ln;
+            cout << "YES" << ln;
             return;
         }
     }
-    cout << "YES" << ln;
+    cout << "NO" << ln;
+    return;
 }
 int main()
 {

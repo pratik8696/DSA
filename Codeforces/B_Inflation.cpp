@@ -54,41 +54,61 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
+ll n, k;
+
+bool isvalid(ll extra, ll arr[], ll brr[])
+{
+    bool flag = 1;
+    ll sum = 0;
+    arr[0] += extra;
+    for (ll i = 1; i < n; i++)
+    {
+        sum += arr[i - 1];
+        if (arr[i] * 100 <= sum * k)
+        {
+            continue;
+        }
+        else
+        {
+            flag = 0;
+        }
+    }
+    forn(i, n)
+    {
+        arr[i] = brr[i];
+    }
+    if (flag)
+    {
+        return true;
+    }
+    return false;
+}
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    ull arr[n];
-    vector<ull> c;
+    cin >> n >> k;
+    ll arr[n], brr[n];
     forn(i, n)
     {
         cin >> arr[i];
+        brr[i] = arr[i];
     }
-    ull res = 1;
-    for (ll i = 2; i <= 21; i++)
+    ll i = 0, j = 1e16, ans;
+    while (i <= j)
     {
-        res = res * i;
-        c.pb(res);
-    }
-    for (ll i = 22; i < n+10; i++)
-    {
-        c.pb(res);
-    }
-    // forn(i,n)
-    // {
-    //     cout<<c[i]<<" ";
-    // }
-    // cout<<ln;
-    for (int i = 0; i < n; i++)
-    {
-        if (arr[i] % c[i] == 0)
+        ll mid = i + (j - i) / 2;
+        if (isvalid(mid,arr,brr))
         {
-            cout << "NO" << ln;
-            return;
+            // cout<<mid<<ln;
+            ans = mid;
+            j = mid - 1;
+        }
+        else
+        {
+            i = mid + 1;
         }
     }
-    cout << "YES" << ln;
+    cout << ans << ln;
 }
 int main()
 {

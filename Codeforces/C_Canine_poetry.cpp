@@ -57,38 +57,28 @@ double eps = 1e-12;
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    ull arr[n];
-    vector<ull> c;
-    forn(i, n)
+    string s;
+    cin >> s;
+    if (s.length() == 1)
     {
-        cin >> arr[i];
+        cout << 0 << ln;
+        return;
     }
-    ull res = 1;
-    for (ll i = 2; i <= 21; i++)
+    ll sum = 0;
+    for (int i = 0; i < s.length(); i++)
     {
-        res = res * i;
-        c.pb(res);
-    }
-    for (ll i = 22; i < n+10; i++)
-    {
-        c.pb(res);
-    }
-    // forn(i,n)
-    // {
-    //     cout<<c[i]<<" ";
-    // }
-    // cout<<ln;
-    for (int i = 0; i < n; i++)
-    {
-        if (arr[i] % c[i] == 0)
+        if (s[i] == s[i + 2] && i < s.length() - 2 && s[i] != '?')
         {
-            cout << "NO" << ln;
-            return;
+            s[i + 2] = '?';
+            sum++;
+        }
+        if (s[i] == s[i + 1] && i < s.length() - 1 && s[i] != '?')
+        {
+            s[i + 1] = '?';
+            sum++;
         }
     }
-    cout << "YES" << ln;
+    cout << sum << ln;
 }
 int main()
 {

@@ -57,44 +57,37 @@ double eps = 1e-12;
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    ull arr[n];
-    vector<ull> c;
+    ll n, s;
+    cin >> n >> s;
+    map<double, ll> m;
     forn(i, n)
     {
-        cin >> arr[i];
+        ll x, y, c;
+        cin >> x >> y >> c;
+        ll dist = x * x + y * y;
+        m[sqrtl(dist)] += c;
     }
-    ull res = 1;
-    for (ll i = 2; i <= 21; i++)
+    ll rem = 1e6 - s;
+    for (auto t : m)
     {
-        res = res * i;
-        c.pb(res);
-    }
-    for (ll i = 22; i < n+10; i++)
-    {
-        c.pb(res);
-    }
-    // forn(i,n)
-    // {
-    //     cout<<c[i]<<" ";
-    // }
-    // cout<<ln;
-    for (int i = 0; i < n; i++)
-    {
-        if (arr[i] % c[i] == 0)
+        if (rem > 0)
         {
-            cout << "NO" << ln;
+            rem = rem - t.second;
+        }
+        if (rem <= 0)
+        {
+            cout << fixed << setprecision(7) << t.first << ln;
             return;
         }
+        // cout << t.first << " " << t.second << ln;
     }
-    cout << "YES" << ln;
+    cout << -1 << ln;
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    //  cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

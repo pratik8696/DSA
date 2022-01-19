@@ -55,44 +55,51 @@ double eps = 1e-12;
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
 
+v64 v;
+void create()
+{
+    ll sum = 0;
+    for (ll i = 1; i < 1e5+100; i++)
+    {
+        sum += i;
+        v.pb(sum);
+    }
+}
+
 void solve()
 {
-    ll n;
-    cin >> n;
-    ull arr[n];
-    vector<ull> c;
+    ll n, k;
+    cin >> n >> k;
+    string res = "";
     forn(i, n)
     {
-        cin >> arr[i];
+        res.pb('a');
     }
-    ull res = 1;
-    for (ll i = 2; i <= 21; i++)
+    ll idx = lower_bound(all(v), k) - v.begin();
+    ll first = idx + 1;
+    ll second = v[idx] - k;
+    if (second == 0)
     {
-        res = res * i;
-        c.pb(res);
+        second = first - 1;
     }
-    for (ll i = 22; i < n+10; i++)
+    else
     {
-        c.pb(res);
+        second = first - second-1;
     }
-    // forn(i,n)
-    // {
-    //     cout<<c[i]<<" ";
-    // }
-    // cout<<ln;
     for (int i = 0; i < n; i++)
     {
-        if (arr[i] % c[i] == 0)
+        if (i == first || i == second)
         {
-            cout << "NO" << ln;
-            return;
+            res[i] = 'b';
         }
     }
-    cout << "YES" << ln;
+    reverse(all(res));
+    cout << res << ln;
 }
 int main()
 {
     fast_cin();
+    create();
     ll t;
     cin >> t;
     for (int it = 1; it <= t; it++)
