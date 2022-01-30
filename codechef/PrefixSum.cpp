@@ -55,33 +55,162 @@ double eps = 1e-12;
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
 
+// function for prime factorization
+vector<pair<ll, ll>> pf(ll n)
+{
+    vector<pair<ll, ll>> prime;
+    for (int i = 2; i <= sqrt(n); i++)
+    {
+        if (n % i == 0)
+        {
+            int count = 0;
+            while (n % i == 0)
+            {
+                count++;
+                n = n / i;
+            }
+            prime.pb(mp(i, count));
+        }
+    }
+    if (n > 1)
+    {
+        prime.pb(mp(n, 1));
+    }
+    return prime;
+}
+
+// sum of digits of a number
+ll sumofno(ll n)
+{
+    ll sum = 0;
+    while (n != 0)
+    {
+        sum += n % 10;
+        n = n / 10;
+    }
+    return sum;
+}
+
+// function for modularexpo
+ll modexpo(long long a, long long n, long long p)
+{
+    ll res = 1;
+    while (n)
+    {
+        if (n % 2)
+        {
+            res = (res * a) % p;
+            n--;
+        }
+        else
+        {
+            a = (a * a) % p;
+            n /= 2;
+        }
+    }
+    return res;
+}
+
+// function for fast expo
+ll fastexpo(ll a, ll b)
+{
+    if (b == 0)
+    {
+        return 1;
+    }
+    if (a == 0)
+    {
+        return 0;
+    }
+    ll y = fastexpo(a, b / 2);
+    if (b % 2 == 0)
+    {
+        return y * y;
+    }
+    else
+    {
+        return a * y * y;
+    }
+}
+
+// ll popcount(ll n)
+//{
+// ll c = 0;
+// for (; n; ++c)
+// n &= n - 1;
+// return c;
+// }
+// 10
+// 1 2 3 4  5  6  7  8  9  10
+// 0 1 3 6 10 15 21 28 36 45 55
+// 0 1 2 3  4 5  6   7  8  9 10
+// 5
+// l r
+// arr[r]-arr[l-1]
+// 1 6
+// 8 10
+// 3 10
+// 1 2 3 4 5  6 7
+// 0 0 0 0 0  0 
+// 100 2 0 0 -9 0 -101
+// 100 102 102 102 93 93 0
+// 0  0  0  0  0 
+// -8 0  0  0  +8
+// -8 -8 -8 -8 0
+// 1
+// 1 4 -8
+// 2 4 2
+// 5 6 1
+// 1 6 100
+// 5
+// 1 6
+// 8 10
+// 3 10
+
+// 9 2 4 5 7 8  1  10
+// 0 0 0 0 0 0  0  0 
+// 1 1 1 2 -1 -2 -1 -1
+// 1 2 3 5  4  2  1  0
+
+
+// 6
+// 1 7
+// 2 5
+// 3 6
+// 4 5
+// 4 4
+
 void solve()
 {
     ll n;
     cin >> n;
-    ll arr[n], res = 0, sum = 0;
+    ll arr[n];
     forn(i, n)
     {
         cin >> arr[i];
+    }
+    v64 res;
+    res.pb(0);
+    ll sum = 0;
+    forn(i, n)
+    {
         sum += arr[i];
-        res = res ^ arr[i];
+        res.pb(sum);
     }
-    if (sum == 2 * res)
+    int q;
+    cin >> q;
+    forn(i, q)
     {
-        cout << 0 << ln;
-        cout << ln;
-    }
-    else
-    {
-        cout << 2 << ln;
-        cout << res << " " << sum + res << ln;
+        ll l, r;
+        cin >> l >> r;
+        cout << res[r] - res[l - 1] << ln;
     }
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    //  cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

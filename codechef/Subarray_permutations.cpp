@@ -91,24 +91,38 @@ ll sumofno(ll n)
     return sum;
 }
 
-// function for modularexpo
-ll modexpo(long long a, long long n, long long p)
+// modular exponentiation
+long long modpow(long long val, long long deg, long long mod)
 {
-    ll res = 1;
-    while (n)
+    if (!deg)
+        return 1 % mod;
+    if (deg & 1)
+        return modpow(val, deg - 1, mod) * val % mod;
+    long long res = modpow(val, deg >> 1, mod);
+    return (res * res) % mod;
+}
+
+const int N = 1e6 + 100;
+long long fact[N];
+// initialise the factorial
+void initfact()
+{
+    fact[0] = 1;
+    for (int i = 1; i < N; i++)
     {
-        if (n % 2)
-        {
-            res = (res * a) % p;
-            n--;
-        }
-        else
-        {
-            a = (a * a) % p;
-            n /= 2;
-        }
+        fact[i] = (fact[i - 1] * i);
+        fact[i] %= MOD;
     }
-    return res;
+}
+
+// formula for c
+ll C(ll n, ll i)
+{
+    ll res = fact[n];
+    ll div = fact[n - i] * fact[i];
+    div %= MOD;
+    div = modpow(div, MOD - 2, MOD);
+    return (res * div) % MOD;
 }
 
 // function for fast expo
@@ -161,29 +175,59 @@ bool pow2(ll x)
     return false;
 }
 
+void swap(ll *a, ll *b)
+{
+    ll temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
 void solve()
 {
-    ll n;
-    cin >> n;
-    ll arr[n], res[3];
-    fill(al(res, 3), 0);
+    ll n, k;
+    cin >> n >> k;
+    if (k == 1 && n == 1)
+    {
+        cout << 1 << ln;
+        return;
+    }
+    else if (k == 1)
+    {
+        cout << -1 << ln;
+        return;
+    }
+    ll arr[n];
     forn(i, n)
     {
-        cin >> arr[i];
-        arr[i] = arr[i] % 3;
-        res[arr[i]]++;
+        arr[i] = i + 1;
     }
-    for (ll i = 0; i < 3; i++)
+    reverse(al(arr, n));
+    if (k == 2)
     {
-        cout << res[i] << "  ";
+        for (ll i = 0; i < n - 1; i++)
+        {
+            swap(&arr[i], &arr[i + 1]);
+            i++;
+        }
+        swap(&arr[0], &arr[n - 1]);
     }
-    cout << ln;
-    for (ll i = 0; i < 3; i++)
+    else
     {
-        cout << res[i] - n / 3 << " ";
+        ll swaps = n - k;
+        // cout << swaps << ln;
+        for (ll i = 0, j = swaps; i < n && j; i++, j--)
+        {
+            swap(&arr[i], &arr[i + 1]);
+            i++;
+        }
+    }
+    forn(i, n)
+    {
+        cout << arr[i] << " ";
     }
     cout << ln;
 }
+
 int main()
 {
     fast_cin();

@@ -54,34 +54,78 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
+#define maxi 100
+vector<int> arr[maxi];
+ll vis[maxi];
+
+void dfs(int v)
+{
+    for (auto child : arr[v])
+    {
+        vis[child]++;
+    }
+}
 
 void solve()
 {
+    ll x, y;
     ll n;
     cin >> n;
-    ll arr[n], res = 0, sum = 0;
-    forn(i, n)
+    map<p64, ll> m;
+    ll t = (n * (n - 1)) / 2 - 1;
+    while (t--)
     {
-        cin >> arr[i];
-        sum += arr[i];
-        res = res ^ arr[i];
+        ll a, b;
+        cin >> a >> b;
+        arr[b].pb(a);
+        ll mini = min(a, b);
+        ll maxx = max(a, b);
+        m[{mini, maxx}]++;
     }
-    if (sum == 2 * res)
+
+    for (ll i = 1; i <= n; i++)
     {
-        cout << 0 << ln;
-        cout << ln;
+        for (ll j = 1; j <= n; j++)
+        {
+            if (i != j)
+            {
+                ll mini = min(i, j);
+                ll maxx = max(i, j);
+                // cout << mini << " " << maxx << ln;
+                m[{mini, maxx}]++;
+                if (m[{mini, maxx}] == 1)
+                {
+                    x = mini;
+                    y = maxx;
+                }
+            }
+        }
+    }
+    for (ll i = 1; i <= n; i++)
+    {
+        dfs(i);
+    }
+
+    // for (ll i = 1; i <= n; i++)
+    // {
+    //     cout << vis[i] << " ";
+    // }
+    // cout << ln;
+    // cout << x << " " << y << ln;
+    if (vis[x] > vis[y])
+    {
+        cout << x << " " << y << ln;
     }
     else
     {
-        cout << 2 << ln;
-        cout << res << " " << sum + res << ln;
+        cout << y << " " << x << ln;
     }
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

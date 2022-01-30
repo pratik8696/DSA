@@ -19,10 +19,9 @@
 #include <stack>
 #include <iomanip>
 #include <fstream>
-
 using namespace std;
-typedef unsigned long long ull;
 typedef long long ll;
+typedef unsigned long long int ull;
 typedef long double ld;
 typedef pair<int, int> p32;
 typedef pair<ll, ll> p64;
@@ -35,48 +34,51 @@ typedef vector<vector<p64>> vvp64;
 typedef vector<p64> vp64;
 typedef vector<p32> vp32;
 ll MOD = 1000000007;
-double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
-#define forsn(i, s, e) for (ll i = s; i < e; i++)
-#define rforn(i, s) for (ll i = s; i >= 0; i--)
-#define rforsn(i, s, e) for (ll i = s; i >= e; i--)
 #define ln "\n"
-#define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
 #define pb push_back
-#define fi first
-#define se second
-#define INF 2e18
 #define fast_cin()                    \
     ios_base::sync_with_stdio(false); \
     cin.tie(NULL);                    \
     cout.tie(NULL)
 #define all(x) (x).begin(), (x).end()
-#define al(arr, n) arr, arr + n
+#define alll(arr, n) (arr), (arr) + (n)
 #define sz(x) ((ll)(x).size())
 
-void solve()
+// function for fast expo
+ll fastexpo(ll a, ll b)
 {
-    ll n;
-    cin >> n;
-    ll arr[n], res = 0, sum = 0;
-    forn(i, n)
+    if (b == 0)
     {
-        cin >> arr[i];
-        sum += arr[i];
-        res = res ^ arr[i];
+        return 1;
     }
-    if (sum == 2 * res)
+    if (a == 0)
     {
-        cout << 0 << ln;
-        cout << ln;
+        return 0;
+    }
+    ll y = fastexpo(a, b / 2);
+    if (b % 2 == 0)
+    {
+        return y * y;
     }
     else
     {
-        cout << 2 << ln;
-        cout << res << " " << sum + res << ln;
+        return a * y * y;
     }
 }
+
+void solve()
+{
+    ull n, res = 0;
+    cin >> n;
+    for (ull i = 0; i < 62; i++)
+    {
+        res += n / fastexpo(2, i);
+    }
+    cout << res << ln;
+}
+
 int main()
 {
     fast_cin();
@@ -88,13 +90,3 @@ int main()
     }
     return 0;
 }
-
-/*
-1. Check borderline constraints. Can a variable you are dividing by be 0?
-2. Use ll while using bitshifts
-3. Do not erase from set while iterating it
-4. Initialise everything
-5. Read the task carefully, is something unique, sorted, adjacent, guaranteed??
-6. DO NOT use if(!mp[x]) if you want to iterate the map later
-7. Are you using i in all loops? Are the i's conflicting?
-*/

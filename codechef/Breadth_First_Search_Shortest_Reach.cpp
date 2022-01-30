@@ -151,36 +151,61 @@ ll ce(ll x, ll y)
     return res;
 }
 
-bool pow2(ll x)
+#define maxi 100010
+vector<int> arr[maxi];
+int vis[maxi], dist[maxi];
+
+void bfs(ll v)
 {
-    ll res = x & (x - 1);
-    if (res == 0)
+    fill(al(dist, maxi), 0);
+    fill(al(vis, maxi), 0);
+    queue<ll> q;
+    vis[v] = 1;
+    dist[v] = 0;
+    q.push(v);
+    while (!q.empty())
     {
-        return true;
+        int curr = q.front();
+        q.pop();
+        for (auto child : arr[curr])
+        {
+            if (vis[child] == 0)
+            {
+                q.push(child);
+                dist[child] = dist[curr] + 1;
+                vis[child] = 1;
+            }
+        }
     }
-    return false;
 }
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    ll arr[n], res[3];
-    fill(al(res, 3), 0);
-    forn(i, n)
+    ll n, m;
+    cin >> n >> m;
+    forn(i, m)
     {
-        cin >> arr[i];
-        arr[i] = arr[i] % 3;
-        res[arr[i]]++;
+        ll a, b;
+        cin >> a >> b;
+        arr[a].pb(b);
+        arr[b].pb(a);
     }
-    for (ll i = 0; i < 3; i++)
+    ll s;
+    cin >> s;
+    bfs(s);
+    for (ll i = 1; i <= n; i++)
     {
-        cout << res[i] << "  ";
-    }
-    cout << ln;
-    for (ll i = 0; i < 3; i++)
-    {
-        cout << res[i] - n / 3 << " ";
+        if (i != s)
+        {
+            if (dist[i] != 0)
+            {
+                cout << dist[i] * 6 << " ";
+            }
+            else
+            {
+                cout << -1 << " ";
+            }
+        }
     }
     cout << ln;
 }
@@ -191,6 +216,10 @@ int main()
     cin >> t;
     for (int it = 1; it <= t; it++)
     {
+        for (ll i = 0; i < maxi; i++)
+        {
+            arr[i].clear();
+        }
         solve();
     }
     return 0;

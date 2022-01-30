@@ -161,28 +161,60 @@ bool pow2(ll x)
     return false;
 }
 
+#define maxi 1000
+ll arr[maxi][maxi];
+ll vis[maxi][maxi];
 void solve()
 {
-    ll n;
-    cin >> n;
-    ll arr[n], res[3];
-    fill(al(res, 3), 0);
-    forn(i, n)
+    ll n, m;
+    cin >> n >> m;
+    for (ll i = 1; i <= n; i++)
     {
-        cin >> arr[i];
-        arr[i] = arr[i] % 3;
-        res[arr[i]]++;
+        for (ll j = 1; j <= m; j++)
+        {
+            cin >> arr[i][j];
+        }
     }
-    for (ll i = 0; i < 3; i++)
+    ll total = 0;
+    for (ll i = 1; i <= n; i++)
     {
-        cout << res[i] << "  ";
+        for (ll j = 1; j <= m; j++)
+        {
+            if (vis[i][j] == 0)
+            {
+                v64 res;
+                res.pb(arr[i][j]);
+                if (j != m - j + 1)
+                {
+                    res.pb(arr[i][m - j + 1]);
+                }
+                if (i != n - i + 1)
+                {
+                    res.pb(arr[n - i + 1][j]);
+                }
+                if (i != n - i + 1 && j != m - j + 1)
+                {
+                    res.pb(arr[n - i + 1][m - j + 1]);
+                }
+                sort(all(res));
+                ll sum = 0;
+                for (auto t : res)
+                {
+                    sum += t;
+                }
+                sum = sum / res.size();
+                for (auto t : res)
+                {
+                    total += abs(t - sum);
+                }
+                vis[i][j] = 1;
+                vis[i][m - j + 1] = 1;
+                vis[n - i + 1][j] = 1;
+                vis[n - i + 1][m - j + 1] = 1;
+            }
+        }
     }
-    cout << ln;
-    for (ll i = 0; i < 3; i++)
-    {
-        cout << res[i] - n / 3 << " ";
-    }
-    cout << ln;
+    cout << total << ln;
 }
 int main()
 {

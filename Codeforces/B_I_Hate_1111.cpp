@@ -59,24 +59,29 @@ void solve()
 {
     ll n;
     cin >> n;
-    ll arr[n], res = 0, sum = 0;
-    forn(i, n)
+    if (n % 11 == 0)
     {
-        cin >> arr[i];
-        sum += arr[i];
-        res = res ^ arr[i];
+        cout << "YES" << ln;
+        return;
     }
-    if (sum == 2 * res)
+    else if (n % 111 == 0)
     {
-        cout << 0 << ln;
-        cout << ln;
+        cout << "YES" << ln;
+        return;
     }
     else
     {
-        cout << 2 << ln;
-        cout << res << " " << sum + res << ln;
+        ll mod = n % 11;
+        ll s = n - mod * 111;
+        if (s % 11 == 0 && s > 0)
+        {
+            cout << "YES" << ln;
+            return;
+        }
     }
+    cout << "NO" << ln;
 }
+
 int main()
 {
     fast_cin();

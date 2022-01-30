@@ -55,33 +55,102 @@ double eps = 1e-12;
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
 
+ll generate(string s)
+{
+    ll arr[3];
+    fill(al(arr, 3), 0);
+    forn(i, s.length())
+    {
+        if (s[i] == 'A')
+        {
+            arr[0] = 1;
+        }
+        else if (s[i] == 'B')
+        {
+            arr[1] = 1;
+        }
+        else if (s[i] == 'C')
+        {
+            arr[2] = 1;
+        }
+    }
+    ll res = 0;
+    forn(i, 3)
+    {
+        res += arr[i] * powl(2, i);
+    }
+    return res;
+}
+
 void solve()
 {
-    ll n;
+    int n;
     cin >> n;
-    ll arr[n], res = 0, sum = 0;
+    vp64 res;
+    map<ll, ll> m;
     forn(i, n)
     {
-        cin >> arr[i];
-        sum += arr[i];
-        res = res ^ arr[i];
+        string s;
+        ll a;
+        cin >> a >> s;
+        res.pb({a, generate(s)});
+        if (m[res[i].second] == 0)
+        {
+            m[res[i].second] = a;
+        }
+        else
+        {
+            m[res[i].second] = min(m[res[i].second], a);
+        }
     }
-    if (sum == 2 * res)
+    ll one = INT_MAX, two = INT_MAX, three = INT_MAX, four = INT_MAX, five = INT_MAX, six = INT_MAX, seven = INT_MAX;
+    if (m[1] != 0)
     {
-        cout << 0 << ln;
-        cout << ln;
+        one = m[1];
+    }
+    if (m[2] != 0)
+    {
+        two = m[2];
+    }
+    if (m[3] != 0)
+    {
+        three = m[3];
+    }
+    if (m[4] != 0)
+    {
+        four = m[4];
+    }
+    if (m[5] != 0)
+    {
+        five = m[5];
+    }
+    if (m[6] != 0)
+    {
+        six = m[6];
+    }
+    if (m[7] != 0)
+    {
+        seven = m[7];
+    }
+    ll first = min((one + two), three) + four;
+    ll second = min(two, three) + five;
+    ll third = min({one, three, five}) + six;
+    ll fourth = seven;
+    ll ans = min({first, second, third, fourth});
+    if (ans != INT_MAX)
+    {
+        cout << ans << ln;
     }
     else
     {
-        cout << 2 << ln;
-        cout << res << " " << sum + res << ln;
+        cout << -1 << ln;
     }
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

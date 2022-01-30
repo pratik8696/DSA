@@ -161,29 +161,67 @@ bool pow2(ll x)
     return false;
 }
 
+#define maxi 101
+vector<int> arr[maxi];
+int vis[maxi], dist[maxi];
+
+void bfs(ll v)
+{
+    queue<ll> q;
+    vis[v] = 1;
+    dist[v] = 0;
+    q.push(v);
+    while (!q.empty())
+    {
+        ll curr = q.front();
+        q.pop();
+        for (auto child : arr[curr])
+        {
+            if (vis[child] == 0)
+            {
+                vis[child] = 1;
+                dist[child] = dist[curr] + 1;
+                q.push(child);
+            }
+        }
+    }
+}
+
 void solve()
 {
     ll n;
     cin >> n;
-    ll arr[n], res[3];
-    fill(al(res, 3), 0);
     forn(i, n)
     {
-        cin >> arr[i];
-        arr[i] = arr[i] % 3;
-        res[arr[i]]++;
+        ll a, b;
+        cin >> a >> b;
+        arr[a].pb(b);
     }
-    for (ll i = 0; i < 3; i++)
+    ll m;
+    cin >> m;
+    forn(i, m)
     {
-        cout << res[i] << "  ";
+        ll a, b;
+        cin >> a >> b;
+        arr[a].pb(b);
+    }
+    for (ll i = 1; i < 100; i++)
+    {
+        for (ll j = 1; j <= 6; j++)
+        {
+            arr[i].pb(i + j);
+        }
+    }
+    bfs(1);
+    for (ll i = 1; i <= 100; i++)
+    {
+        cout << dist[i] << " ";
     }
     cout << ln;
-    for (ll i = 0; i < 3; i++)
-    {
-        cout << res[i] - n / 3 << " ";
-    }
-    cout << ln;
+    // fill(al(dist, maxi), 0);
+    // fill(al(vis, maxi), 0);
 }
+
 int main()
 {
     fast_cin();
@@ -191,6 +229,10 @@ int main()
     cin >> t;
     for (int it = 1; it <= t; it++)
     {
+        for (ll i = 0; i < maxi; i++)
+        {
+            arr[i].clear();
+        }
         solve();
     }
     return 0;

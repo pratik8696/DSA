@@ -161,34 +161,73 @@ bool pow2(ll x)
     return false;
 }
 
+#define maxi 100010
+vector<int> arr[maxi];
+int vis[maxi], low[maxi], in[maxi];
+ll timer;
+bool flag;
+vp64 res;
+
+void dfs(int v, int par)
+{
+    vis[v] = 1;
+    low[v] = timer;
+    in[v] = timer;
+    timer++;
+    for (auto child : arr[v])
+    {
+        if (child == par)
+            continue;
+        else if (vis[child] == 1)
+        {
+            low[v] = min(low[v], in[child]);
+            if (in[v] < in[child])
+            {
+                res.pb({child, v});
+            }
+        }
+        else
+        {
+            dfs(child, v);
+            if (low[child] > in[v])
+            {
+                // here is the bridge
+                flag = 1;
+                return;
+            }
+            res.pb({v, child});
+            low[v] = min(low[v], low[child]);
+        }
+    }
+}
+
 void solve()
 {
-    ll n;
-    cin >> n;
-    ll arr[n], res[3];
-    fill(al(res, 3), 0);
-    forn(i, n)
+    ll n, m;
+    cin >> n >> m;
+    forn(i, m)
     {
-        cin >> arr[i];
-        arr[i] = arr[i] % 3;
-        res[arr[i]]++;
+        ll a, b;
+        cin >> a >> b;
+        arr[a].pb(b);
+        arr[b].pb(a);
     }
-    for (ll i = 0; i < 3; i++)
+    dfs(1, -1);
+    if (flag == true)
     {
-        cout << res[i] << "  ";
+        cout << 0 << ln;
+        return;
     }
-    cout << ln;
-    for (ll i = 0; i < 3; i++)
+    for (auto t : res)
     {
-        cout << res[i] - n / 3 << " ";
+        cout << t.first << " " << t.second << ln;
     }
-    cout << ln;
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    //  cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

@@ -55,31 +55,34 @@ double eps = 1e-12;
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
 
+v64 res;
+
+void create()
+{
+    forn(i,10100)
+    {
+        ll k=__builtin_popcount(i+1);
+        if(k%2==0)
+        {
+            res.pb(i+1);
+        }
+    }
+}
+
 void solve()
 {
     ll n;
     cin >> n;
-    ll arr[n], res = 0, sum = 0;
-    forn(i, n)
+    forn(i,n)
     {
-        cin >> arr[i];
-        sum += arr[i];
-        res = res ^ arr[i];
+        cout<<res[i]<<" ";
     }
-    if (sum == 2 * res)
-    {
-        cout << 0 << ln;
-        cout << ln;
-    }
-    else
-    {
-        cout << 2 << ln;
-        cout << res << " " << sum + res << ln;
-    }
+    cout<<ln;
 }
 int main()
 {
     fast_cin();
+    create();
     ll t;
     cin >> t;
     for (int it = 1; it <= t; it++)

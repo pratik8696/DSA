@@ -55,33 +55,137 @@ double eps = 1e-12;
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
 
-void solve()
+// function for prime factorization
+vector<pair<ll, ll>> pf(ll n)
 {
-    ll n;
-    cin >> n;
-    ll arr[n], res = 0, sum = 0;
-    forn(i, n)
+    vector<pair<ll, ll>> prime;
+    for (int i = 2; i <= sqrt(n); i++)
     {
-        cin >> arr[i];
-        sum += arr[i];
-        res = res ^ arr[i];
+        if (n % i == 0)
+        {
+            int count = 0;
+            while (n % i == 0)
+            {
+                count++;
+                n = n / i;
+            }
+            prime.pb(mp(i, count));
+        }
     }
-    if (sum == 2 * res)
+    if (n > 1)
     {
-        cout << 0 << ln;
-        cout << ln;
+        prime.pb(mp(n, 1));
+    }
+    return prime;
+}
+
+// sum of digits of a number
+ll sumofno(ll n)
+{
+    ll sum = 0;
+    while (n != 0)
+    {
+        sum += n % 10;
+        n = n / 10;
+    }
+    return sum;
+}
+
+// function for modularexpo
+ll modexpo(long long a, long long n, long long p)
+{
+    ll res = 1;
+    while (n)
+    {
+        if (n % 2)
+        {
+            res = (res * a) % p;
+            n--;
+        }
+        else
+        {
+            a = (a * a) % p;
+            n /= 2;
+        }
+    }
+    return res;
+}
+
+// function for fast expo
+ll fastexpo(ll a, ll b)
+{
+    if (b == 0)
+    {
+        return 1;
+    }
+    if (a == 0)
+    {
+        return 0;
+    }
+    ll y = fastexpo(a, b / 2);
+    if (b % 2 == 0)
+    {
+        return y * y;
     }
     else
     {
-        cout << 2 << ln;
-        cout << res << " " << sum + res << ln;
+        return a * y * y;
+    }
+}
+
+ll popcount(ll n)
+{
+    ll c = 0;
+    for (; n; ++c)
+        n &= n - 1;
+    return c;
+}
+
+ll ce(ll x, ll y)
+{
+    ll res = x / y;
+    if (x % y != 0)
+    {
+        res++;
+    }
+    return res;
+}
+
+bool pow2(ll x)
+{
+    ll res = x & (x - 1);
+    if (res == 0)
+    {
+        return true;
+    }
+    return false;
+}
+
+void solve()
+{
+    map<ll, ll> m;
+    ll n;
+    cin >> n;
+    ll arr[n];
+    forn(i, n)
+    {
+        cin >> arr[i];
+        m[arr[i]]++;
+    }
+    for (ll i = 1; i < 4000; i++)
+    {
+        if (m[i] == 0)
+        {
+            cout << i << ln;
+            return;
+        }
     }
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    //  cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

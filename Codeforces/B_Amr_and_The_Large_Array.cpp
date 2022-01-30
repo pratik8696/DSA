@@ -165,30 +165,51 @@ void solve()
 {
     ll n;
     cin >> n;
-    ll arr[n], res[3];
-    fill(al(res, 3), 0);
+    ll arr[n];
+    map<ll, v64> m;
+    map<ll, ll> count;
     forn(i, n)
     {
         cin >> arr[i];
-        arr[i] = arr[i] % 3;
-        res[arr[i]]++;
+        m[arr[i]].pb(i + 1);
+        count[arr[i]]++;
     }
-    for (ll i = 0; i < 3; i++)
+    ll maxcount = 0;
+    v64 res;
+    for (auto t : count)
     {
-        cout << res[i] << "  ";
+        maxcount = max(maxcount, t.second);
     }
-    cout << ln;
-    for (ll i = 0; i < 3; i++)
+    for (auto t : count)
     {
-        cout << res[i] - n / 3 << " ";
+        if (t.second == maxcount)
+        {
+            res.pb(t.first);
+        }
     }
-    cout << ln;
+    ll mindiff = INT_MAX, first = -1, second = -1;
+    for (ll j = 0; j < res.size(); j++)
+    {
+        auto v = m[res[j]];
+        ll diff = 0;
+        for (ll i = 0; i < v.size() - 1; i++)
+        {
+            diff += v[i + 1] - v[i];
+        }
+        if (mindiff > diff)
+        {
+            first = v[0];
+            second = v[v.size() - 1];
+            mindiff = diff;
+        }
+    }
+    cout << first << " " << second << ln;
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

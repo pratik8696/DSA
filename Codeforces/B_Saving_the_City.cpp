@@ -133,63 +133,88 @@ ll fastexpo(ll a, ll b)
     }
 }
 
-ll popcount(ll n)
-{
-    ll c = 0;
-    for (; n; ++c)
-        n &= n - 1;
-    return c;
-}
+// ll popcount(ll n)
+//{
+// ll c = 0;
+// for (; n; ++c)
+// n &= n - 1;
+// return c;
+// }
 
-ll ce(ll x, ll y)
-{
-    ll res = x / y;
-    if (x % y != 0)
-    {
-        res++;
-    }
-    return res;
-}
-
-bool pow2(ll x)
-{
-    ll res = x & (x - 1);
-    if (res == 0)
-    {
-        return true;
-    }
-    return false;
-}
+ll it;
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    ll arr[n], res[3];
-    fill(al(res, 3), 0);
-    forn(i, n)
+    v64 res, c;
+    ll a, b;
+    cin >> a >> b;
+    string s;
+    cin >> s;
+    // if (it == 943)
+    // {
+    //     cout << s << ln;
+    //     return;
+    // }
+    forn(i, s.length())
     {
-        cin >> arr[i];
-        arr[i] = arr[i] % 3;
-        res[arr[i]]++;
+        if (s[i] == '1')
+        {
+            res.pb(i + 1);
+        }
     }
-    for (ll i = 0; i < 3; i++)
+    if (res.size() == 0)
     {
-        cout << res[i] << "  ";
+        cout << 0 << ln;
+        return;
     }
-    cout << ln;
-    for (ll i = 0; i < 3; i++)
+    ll count = 1;
+    forn(i, res.size())
     {
-        cout << res[i] - n / 3 << " ";
+        if (res[i + 1] - res[i] == 1)
+        {
+            count++;
+        }
+        else
+        {
+            c.pb(count);
+            count = 1;
+        }
     }
-    cout << ln;
+    res.pop_back();
+    // for (auto t : res)
+    // {
+    //     cout << t << " ";
+    // }
+    // cout << ln;
+    // for (auto t : c)
+    // {
+    //     cout << t << " ";
+    // }
+    // cout << ln;
+    ll chunk = c.size();
+    ll sum = 0;
+    forn(i, res.size())
+    {
+        if (res[i + 1] - res[i] > 1)
+        {
+            ll dist = res[i + 1] - res[i] - 1;
+            if (dist * b < a)
+            {
+                chunk--;
+                sum += dist * b;
+            }
+        }
+    }
+    ll res1 = c.size() * a, res2 = sum + chunk * a;
+    cout << min(res1, res2) << ln;
 }
+
 int main()
 {
     fast_cin();
     ll t;
     cin >> t;
-    for (int it = 1; it <= t; it++)
+    for (it = 1; it <= t; it++)
     {
         solve();
     }

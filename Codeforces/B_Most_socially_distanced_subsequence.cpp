@@ -59,57 +59,34 @@ void solve()
 {
     ll n;
     cin >> n;
-    ll arr[n + 1];
+    ll arr[n];
     forn(i, n)
     {
         cin >> arr[i];
     }
-    arr[n] = INT_MIN;
     v64 res;
-    ll k = 0;
-    if (n > 1)
-    {
-        res.pb(arr[0]);
-        if (arr[0] > arr[1])
-        {
-            k = 1;
-        }
-    }
-    else
-    {
-        cout << arr[0] << ln;
-        return;
-    }
     for (int i = 0; i < n; i++)
     {
-        if (arr[i] < arr[i + 1] && k == 0)
-        {
-        }
-        else if (k == 0)
+        if (i == 0 || i == n - 1)
         {
             res.pb(arr[i]);
-            // cout << arr[i] << " ";
-            k = 1;
         }
-        else if (arr[i] > arr[i + 1] && k == 1)
-        {
-        }
-        else if (k == 1)
+        else if (arr[i] >= arr[i + 1] && arr[i] > arr[i - 1])
         {
             res.pb(arr[i]);
-            // cout << arr[i] << " ";
-            k = 0;
+        }
+        else if (arr[i] <= arr[i + 1] && arr[i] < arr[i - 1])
+        {
+            res.pb(arr[i]);
         }
     }
-    res.pb(arr[n - 1]);
-    cout<<res.size()<<ln;
-    for (int i = 0; i < res.size(); i++)
+    cout << res.size() << ln;
+    for (auto t : res)
     {
-        cout << res[i] << " ";
+        cout << t << " ";
     }
-    cout<<ln;
+    cout << ln;
 }
-
 int main()
 {
     fast_cin();

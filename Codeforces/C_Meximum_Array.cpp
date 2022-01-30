@@ -133,13 +133,13 @@ ll fastexpo(ll a, ll b)
     }
 }
 
-ll popcount(ll n)
-{
-    ll c = 0;
-    for (; n; ++c)
-        n &= n - 1;
-    return c;
-}
+// ll popcount(ll n)
+//{
+// ll c = 0;
+// for (; n; ++c)
+// n &= n - 1;
+// return c;
+// }
 
 ll ce(ll x, ll y)
 {
@@ -161,29 +161,69 @@ bool pow2(ll x)
     return false;
 }
 
+ll mex(set<ll> s)
+{
+    ll result = 0;
+    map<ll, ll> m;
+    for (auto t : s)
+    {
+        m[t]++;
+    }
+    for (ll i = 0; i < 1e6; i++)
+    {
+        if (m[i] == 0)
+        {
+            result = i;
+            break;
+        }
+    }
+    return result;
+}
+
 void solve()
 {
     ll n;
     cin >> n;
-    ll arr[n], res[3];
-    fill(al(res, 3), 0);
+    ll arr[n];
+    map<ll, ll> pm;
+    set<ll> par, curr;
+    v64 res;
     forn(i, n)
     {
         cin >> arr[i];
-        arr[i] = arr[i] % 3;
-        res[arr[i]]++;
+        pm[arr[i]]++;
+        par.insert(arr[i]);
     }
-    for (ll i = 0; i < 3; i++)
+    for (ll i = 0; i < n; i++)
     {
-        cout << res[i] << "  ";
+        curr.insert(arr[i]);
+        pm[arr[i]]--;
+        if (curr.size() == par.size())
+        {
+            res.pb(mex(par));
+            // cout << mex(par) << " ";
+            for (auto t : pm)
+            {
+                if (t.second == 0)
+                {
+                    auto it = par.find(t.first);
+                    if (it != par.end())
+                    {
+                        par.erase(it);
+                    }
+                }
+            }
+            curr.clear();
+        }
     }
-    cout << ln;
-    for (ll i = 0; i < 3; i++)
+    cout << res.size() << ln;
+    for (auto t : res)
     {
-        cout << res[i] - n / 3 << " ";
+        cout << t << " ";
     }
     cout << ln;
 }
+
 int main()
 {
     fast_cin();

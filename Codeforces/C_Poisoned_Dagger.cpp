@@ -161,28 +161,57 @@ bool pow2(ll x)
     return false;
 }
 
+bool isvalid(ll k, ll n, ll arr[], ll health)
+{
+    ll time = 0;
+    for (ll i = 0; i < n; i++)
+    {
+        if (i == n - 1)
+        {
+            time += k;
+            continue;
+        }
+        if (k >= arr[i + 1] - arr[i])
+        {
+            time += arr[i + 1] - arr[i];
+        }
+        else
+        {
+            time += k;
+        }
+    }
+    if (time >= health)
+    {
+        return true;
+    }
+    return false;
+}
+
 void solve()
 {
-    ll n;
-    cin >> n;
-    ll arr[n], res[3];
-    fill(al(res, 3), 0);
+    ll n, health;
+    cin >> n >> health;
+    ll arr[n];
     forn(i, n)
     {
         cin >> arr[i];
-        arr[i] = arr[i] % 3;
-        res[arr[i]]++;
     }
-    for (ll i = 0; i < 3; i++)
+    sort(al(arr, n));
+    ll i = 1, j = MOD * MOD, ans;
+    while (i <= j)
     {
-        cout << res[i] << "  ";
+        ll mid = (i) + ((j-i) / 2);
+        if (isvalid(mid, n, arr, health))
+        {
+            ans = mid;
+            j = mid - 1;
+        }
+        else
+        {
+            i = mid + 1;
+        }
     }
-    cout << ln;
-    for (ll i = 0; i < 3; i++)
-    {
-        cout << res[i] - n / 3 << " ";
-    }
-    cout << ln;
+    cout << ans << ln;
 }
 int main()
 {

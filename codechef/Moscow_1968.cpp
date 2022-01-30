@@ -54,34 +54,48 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
+#define maxi 1001
+int arr[maxi][maxi];
+int vis[maxi][maxi];
+int dist[maxi][maxi];
+int n, m;
+int dx[] = {1, 2};
+int dy[] = {2, 1};
+
+bool isvalid(int x, int y)
+{
+    if (x < 1 || x > n || y < 1 || y > m || vis[x][y] == 1)
+    {
+        return false;
+    }
+    return true;
+}
+
+void dfson2d(int x, int y)
+{
+    vis[x][y] = 1;
+    for (int i = 0; i < 2; i++)
+    {
+        if (isvalid(x + dx[i], y + dy[i]))
+        {
+            dfson2d(x + dx[i], y + dy[i]);
+        }
+    }
+}
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    ll arr[n], res = 0, sum = 0;
-    forn(i, n)
-    {
-        cin >> arr[i];
-        sum += arr[i];
-        res = res ^ arr[i];
-    }
-    if (sum == 2 * res)
-    {
-        cout << 0 << ln;
-        cout << ln;
-    }
-    else
-    {
-        cout << 2 << ln;
-        cout << res << " " << sum + res << ln;
-    }
+    cin >> n >> m;
+    n++, m++;
+    dfson2d(1, 1);
+    cout << vis[n][m] << ln;
+    
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    //  cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

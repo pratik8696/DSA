@@ -133,57 +133,63 @@ ll fastexpo(ll a, ll b)
     }
 }
 
-ll popcount(ll n)
-{
-    ll c = 0;
-    for (; n; ++c)
-        n &= n - 1;
-    return c;
-}
+// ll popcount(ll n)
+//{
+// ll c = 0;
+// for (; n; ++c)
+// n &= n - 1;
+// return c;
+// }
+#define maxi 100010
+vector<int> arr[maxi];
+int vis[maxi];
 
-ll ce(ll x, ll y)
+ll cc;
+void dfs(int v)
 {
-    ll res = x / y;
-    if (x % y != 0)
+    cc++;
+    vis[v] = 1;
+    for (auto child : arr[v])
     {
-        res++;
+        if (vis[child] == 0)
+        {
+            dfs(child);
+        }
     }
-    return res;
-}
-
-bool pow2(ll x)
-{
-    ll res = x & (x - 1);
-    if (res == 0)
-    {
-        return true;
-    }
-    return false;
 }
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    ll arr[n], res[3];
-    fill(al(res, 3), 0);
-    forn(i, n)
+    ll n, m, a, b;
+    cin >> n >> m >> a >> b;
+    forn(i, m)
     {
-        cin >> arr[i];
-        arr[i] = arr[i] % 3;
-        res[arr[i]]++;
+        ll x, y;
+        cin >> x >> y;
+        arr[x].pb(y);
+        arr[y].pb(x);
     }
-    for (ll i = 0; i < 3; i++)
+    if (a <= b)
     {
-        cout << res[i] << "  ";
+        ll node = n * a;
+        cout << node << ln;
     }
-    cout << ln;
-    for (ll i = 0; i < 3; i++)
+    else
     {
-        cout << res[i] - n / 3 << " ";
+        ll res = 0;
+        for (ll i = 1; i <= n; i++)
+        {
+            if (vis[i] == 0)
+            {
+                dfs(i);
+                res += (cc - 1) * b + a;
+                cc = 0;
+            }
+        }
+        cout << res << ln;
     }
-    cout << ln;
 }
+
 int main()
 {
     fast_cin();
@@ -191,6 +197,12 @@ int main()
     cin >> t;
     for (int it = 1; it <= t; it++)
     {
+        for (ll i = 0; i < maxi; i++)
+        {
+            arr[i].clear();
+            vis[i] = 0;
+            cc = 0;
+        }
         solve();
     }
     return 0;

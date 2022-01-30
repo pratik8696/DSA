@@ -54,34 +54,45 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
+#define maxi 3001
+char arr[maxi][maxi];
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    ll arr[n], res = 0, sum = 0;
-    forn(i, n)
+    ll n, m, k;
+    cin >> n >> m >> k;
+    for (ll i = 1; i <= n; i++)
     {
-        cin >> arr[i];
-        sum += arr[i];
-        res = res ^ arr[i];
+        for (ll j = 1; j <= m; j++)
+        {
+            cin >> arr[i][j];
+        }
     }
-    if (sum == 2 * res)
+
+    for (ll i = 1; i <= n; i++)
     {
-        cout << 0 << ln;
+        for (ll j = 1; j <= m; j++)
+        {
+            cout << arr[i][j];
+        }
         cout << ln;
     }
-    else
+    cout << ln;
+    for (ll j = 1; j <= m; j++)
     {
-        cout << 2 << ln;
-        cout << res << " " << sum + res << ln;
+        for (ll i = 1; i <= n; i++)
+        {
+            cout << arr[i][j];
+        }
+        cout << ln;
     }
 }
+
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    //  cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

@@ -58,25 +58,13 @@ double eps = 1e-12;
 void solve()
 {
     ll n;
-    cin >> n;
-    ll arr[n], res = 0, sum = 0;
-    forn(i, n)
-    {
-        cin >> arr[i];
-        sum += arr[i];
-        res = res ^ arr[i];
-    }
-    if (sum == 2 * res)
-    {
-        cout << 0 << ln;
-        cout << ln;
-    }
-    else
-    {
-        cout << 2 << ln;
-        cout << res << " " << sum + res << ln;
-    }
+    string p, q;
+    cin >> p >> q;
+    reverse(all(p));
+    reverse(all(q));
+    
 }
+
 int main()
 {
     fast_cin();

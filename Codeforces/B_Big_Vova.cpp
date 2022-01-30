@@ -55,27 +55,145 @@ double eps = 1e-12;
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
 
+// function for prime factorization
+vector<pair<ll, ll>> pf(ll n)
+{
+    vector<pair<ll, ll>> prime;
+    for (int i = 2; i <= sqrt(n); i++)
+    {
+        if (n % i == 0)
+        {
+            int count = 0;
+            while (n % i == 0)
+            {
+                count++;
+                n = n / i;
+            }
+            prime.pb(mp(i, count));
+        }
+    }
+    if (n > 1)
+    {
+        prime.pb(mp(n, 1));
+    }
+    return prime;
+}
+
+// sum of digits of a number
+ll sumofno(ll n)
+{
+    ll sum = 0;
+    while (n != 0)
+    {
+        sum += n % 10;
+        n = n / 10;
+    }
+    return sum;
+}
+
+// function for modularexpo
+ll modexpo(long long a, long long n, long long p)
+{
+    ll res = 1;
+    while (n)
+    {
+        if (n % 2)
+        {
+            res = (res * a) % p;
+            n--;
+        }
+        else
+        {
+            a = (a * a) % p;
+            n /= 2;
+        }
+    }
+    return res;
+}
+
+// function for fast expo
+ll fastexpo(ll a, ll b)
+{
+    if (b == 0)
+    {
+        return 1;
+    }
+    if (a == 0)
+    {
+        return 0;
+    }
+    ll y = fastexpo(a, b / 2);
+    if (b % 2 == 0)
+    {
+        return y * y;
+    }
+    else
+    {
+        return a * y * y;
+    }
+}
+
+ll popcount(ll n)
+{
+    ll c = 0;
+    for (; n; ++c)
+        n &= n - 1;
+    return c;
+}
+
+ll ce(ll x, ll y)
+{
+    ll res = x / y;
+    if (x % y != 0)
+    {
+        res++;
+    }
+    return res;
+}
+
+bool pow2(ll x)
+{
+    ll res = x & (x - 1);
+    if (res == 0)
+    {
+        return true;
+    }
+    return false;
+}
+
 void solve()
 {
     ll n;
     cin >> n;
-    ll arr[n], res = 0, sum = 0;
+    v64 arr;
     forn(i, n)
     {
-        cin >> arr[i];
-        sum += arr[i];
-        res = res ^ arr[i];
+        ll x;
+        cin >> x;
+        arr.pb(x);
     }
-    if (sum == 2 * res)
+    sort(all(arr), greater<ll>());
+    ll temp = arr[0];
+    cout<<temp<<" ";
+    arr.erase(arr.begin());
+    while (arr.size() > 0)
     {
-        cout << 0 << ln;
-        cout << ln;
+        ll it = -1;
+        ll maxx = 0;
+        for (ll i = 0; i < arr.size(); i++)
+        {
+            ll x = __gcd(temp, arr[i]);
+            if (x > maxx)
+            {
+                maxx = x;
+                it = i;
+            }
+        }
+        cout << arr[it] << " ";
+        temp = __gcd(temp, arr[it]);
+        arr.erase(arr.begin() + it);
     }
-    else
-    {
-        cout << 2 << ln;
-        cout << res << " " << sum + res << ln;
-    }
+    cout<<ln;
 }
 int main()
 {

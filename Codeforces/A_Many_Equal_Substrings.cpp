@@ -163,32 +163,80 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    ll arr[n], res[3];
-    fill(al(res, 3), 0);
-    forn(i, n)
+    ll n, k;
+    cin >> n >> k;
+    string s;
+    cin >> s;
+    map<char, ll> m;
+    forn(i, s.length())
     {
-        cin >> arr[i];
-        arr[i] = arr[i] % 3;
-        res[arr[i]]++;
+        m[s[i]]++;
     }
-    for (ll i = 0; i < 3; i++)
+    if (m.size() == 1)
     {
-        cout << res[i] << "  ";
+        forn(i, k - 1)
+        {
+            s.pb(s[s.length() - 1]);
+        }
+        cout << s << ln;
+        return;
     }
-    cout << ln;
-    for (ll i = 0; i < 3; i++)
+    string r = s;
+    reverse(all(r));
+    if (r.compare(s) == 0)
     {
-        cout << res[i] - n / 3 << " ";
+        string temp = s.substr(1, s.length());
+        cout << s;
+        forn(i, k - 1)
+        {
+            cout << temp;
+        }
+        cout << ln;
+        return;
+    }
+    ll i = 0, j = 1, firsttime = 0, size = 0, orgsize = 1;
+    string p, q, res = s;
+    for (; j < n; j++)
+    {
+        int z = i, l = j, size = j - i;
+        p = s.substr(z, size);
+        q = s.substr(l, size);
+        if (p.compare(q) == 0)
+        {
+            if (firsttime == 0)
+            {
+                res = p;
+                orgsize = p.length();
+            }
+            firsttime++;
+            if (firsttime == 2 || 2 * orgsize == s.length())
+            {
+                ll rep = s.length() / orgsize;
+                // cout << "HEHE" << ln;
+                cout << s;
+                for (ll y = 0; y < k - 1; y++)
+                {
+                    cout << res;
+                }
+                return;
+            }
+            if (s.length() % p.length() != 0)
+            {
+                break;
+            }
+        }
+    }
+    forn(i, k)
+    {
+        cout << s;
     }
     cout << ln;
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

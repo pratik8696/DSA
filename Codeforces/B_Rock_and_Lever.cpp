@@ -59,23 +59,22 @@ void solve()
 {
     ll n;
     cin >> n;
-    ll arr[n], res = 0, sum = 0;
+    ll arr[n];
+    map<ll, ll> m;
     forn(i, n)
     {
         cin >> arr[i];
-        sum += arr[i];
-        res = res ^ arr[i];
+        m[log2(arr[i])]++;
     }
-    if (sum == 2 * res)
+    ll res = 0;
+    for (auto t : m)
     {
-        cout << 0 << ln;
-        cout << ln;
+        if (t.second > 1)
+        {
+            res+=((t.second)*(t.second-1))/2;
+        }
     }
-    else
-    {
-        cout << 2 << ln;
-        cout << res << " " << sum + res << ln;
-    }
+    cout<<res<<ln;
 }
 int main()
 {

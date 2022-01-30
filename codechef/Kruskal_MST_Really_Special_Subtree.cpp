@@ -161,34 +161,65 @@ bool pow2(ll x)
     return false;
 }
 
+#define maxi 1000010
+struct edge
+{
+    ll a, b, w;
+};
+
+edge arr[maxi];
+ll par[maxi];
+
+void merge(ll a, ll b)
+{
+    par[a] = b;
+}
+
+ll find(ll a)
+{
+    if (par[a] < 0)
+    {
+        return a;
+    }
+    return par[a] = find(par[a]);
+}
+
+bool compare(edge n, edge m)
+{
+    return n.w < m.w;
+}
+
 void solve()
 {
-    ll n;
-    cin >> n;
-    ll arr[n], res[3];
-    fill(al(res, 3), 0);
-    forn(i, n)
+    ll n, m;
+    cin >> n >> m;
+    fill(al(par, maxi), -1);
+    forn(i, m)
     {
-        cin >> arr[i];
-        arr[i] = arr[i] % 3;
-        res[arr[i]]++;
+        cin >> arr[i].a >> arr[i].b >> arr[i].w;
     }
-    for (ll i = 0; i < 3; i++)
+    sort(al(arr, m), compare);
+    ll sum = 0;
+    for (ll i = 0; i < m; i++)
     {
-        cout << res[i] << "  ";
+        // cout << arr[i].a << " " << arr[i].b << " " << arr[i].w << ln;
+        ll para = find(arr[i].a);
+        ll parb = find(arr[i].b);
+        // cout << para << " " << parb << ln;
+        if (para != parb)
+        {
+            sum += arr[i].w;
+            merge(para, parb);
+        }
     }
-    cout << ln;
-    for (ll i = 0; i < 3; i++)
-    {
-        cout << res[i] - n / 3 << " ";
-    }
-    cout << ln;
+    cout << sum << ln;
 }
+
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

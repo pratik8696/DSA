@@ -160,35 +160,54 @@ bool pow2(ll x)
     }
     return false;
 }
+#define maxi 100010
+vector<int> arr[maxi];
+int vis[maxi], subtree[maxi];
+
+ll dfs(int v)
+{
+    vis[v] = 1;
+    ll children = 1;
+    for (auto child : arr[v])
+    {
+        if (vis[child] == 0)
+        {
+            children += dfs(child);
+        }
+        subtree[v] = children;
+    }
+    return children;
+}
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    ll arr[n], res[3];
-    fill(al(res, 3), 0);
-    forn(i, n)
+    ll n, m;
+    cin >> n >> m;
+    forn(i, m)
     {
-        cin >> arr[i];
-        arr[i] = arr[i] % 3;
-        res[arr[i]]++;
+        ll a, b;
+        cin >> a >> b;
+        arr[a].pb(b);
+        arr[b].pb(a);
     }
-    for (ll i = 0; i < 3; i++)
+    dfs(1);
+    ll count = 0;
+    for (ll i = 1; i <= n; i++)
     {
-        cout << res[i] << "  ";
+        // cout << subtree[i] << " ";
+        if (subtree[i] % 2 == 0)
+        {
+            count++;
+        }
     }
-    cout << ln;
-    for (ll i = 0; i < 3; i++)
-    {
-        cout << res[i] - n / 3 << " ";
-    }
-    cout << ln;
+    // cout<<ln;
+    cout << count - 1 << ln;
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    //  cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

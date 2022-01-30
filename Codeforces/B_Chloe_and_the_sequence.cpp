@@ -55,37 +55,21 @@ double eps = 1e-12;
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
 
+ll popcount(ll n)
+{
+    ll c = 0;
+    for (; n; ++c)
+        n &= n - 1;
+    return c;
+}
+
 void solve()
 {
     ll n, k;
     cin >> n >> k;
-    map<ll, ll> m;
-    for (ll i = 0; i < 52; i++)
-    {
-        m[powl(2, i) - 1] = i ;
-    }
-    ll i = 1, j = powl(2, n + 1) - 1;
-
-    while (i <= j)
-    {
-        ll mid = (i + j) / 2;
-        if (mid == k)
-        {
-            ll val = j - i + 1;
-            cout << m[val] << ln;
-            break;
-        }
-        else if (mid < k)
-        {
-            i = mid + 1;
-        }
-        else if (mid > k)
-        {
-            j = mid - 1;
-        }
-    }
+    ll res = k ^ (k - 1);
+    cout << popcount(res) << ln;
 }
-
 int main()
 {
     fast_cin();

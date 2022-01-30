@@ -57,25 +57,36 @@ double eps = 1e-12;
 
 void solve()
 {
-    ll n;
+    int n;
     cin >> n;
-    ll arr[n], res = 0, sum = 0;
+    ll arr[n];
     forn(i, n)
     {
         cin >> arr[i];
-        sum += arr[i];
-        res = res ^ arr[i];
     }
-    if (sum == 2 * res)
+    for (ll i = 1; i < 1025; i++)
     {
-        cout << 0 << ln;
-        cout << ln;
+        set<ll> s;
+        bool flag = 1;
+        for (ll j = 0; j < n; j++)
+        {
+            s.insert(arr[j] ^ i);
+        }
+
+        for (ll j = 0; j < n; j++)
+        {
+            if (s.count(arr[j]) == 0)
+            {
+                flag = 0;
+            }
+        }
+        if (flag == 1)
+        {
+            cout << i << ln;
+            return;
+        }
     }
-    else
-    {
-        cout << 2 << ln;
-        cout << res << " " << sum + res << ln;
-    }
+    cout << -1 << ln;
 }
 int main()
 {

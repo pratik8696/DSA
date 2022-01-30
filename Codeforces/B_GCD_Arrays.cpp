@@ -133,13 +133,13 @@ ll fastexpo(ll a, ll b)
     }
 }
 
-ll popcount(ll n)
-{
-    ll c = 0;
-    for (; n; ++c)
-        n &= n - 1;
-    return c;
-}
+// ll popcount(ll n)
+//{
+// ll c = 0;
+// for (; n; ++c)
+// n &= n - 1;
+// return c;
+// }
 
 ll ce(ll x, ll y)
 {
@@ -151,39 +151,69 @@ ll ce(ll x, ll y)
     return res;
 }
 
-bool pow2(ll x)
-{
-    ll res = x & (x - 1);
-    if (res == 0)
-    {
-        return true;
-    }
-    return false;
-}
-
 void solve()
 {
-    ll n;
-    cin >> n;
-    ll arr[n], res[3];
-    fill(al(res, 3), 0);
-    forn(i, n)
+    ll n, m, k;
+    cin >> n >> m >> k;
+    if (n == m && n == 1)
     {
-        cin >> arr[i];
-        arr[i] = arr[i] % 3;
-        res[arr[i]]++;
+        cout << "NO" << ln;
+        return;
     }
-    for (ll i = 0; i < 3; i++)
+    if (n == m && n != 1)
     {
-        cout << res[i] << "  ";
+        cout << "YES" << ln;
+        return;
     }
-    cout << ln;
-    for (ll i = 0; i < 3; i++)
+    if (n % 2 == 0 && m % 2 != 0)
     {
-        cout << res[i] - n / 3 << " ";
+        ll r = m - n + 1;
+        ll even = r / 2, odd = r / 2;
+        ll steps = odd;
+        if (steps <= k)
+        {
+            cout << "YES" << ln;
+            return;
+        }
     }
-    cout << ln;
+    if (n % 2 != 0 && m % 2 == 0)
+    {
+        ll r = m - n + 1;
+        ll even = r / 2, odd = r / 2;
+        ll steps = odd;
+        if (steps <= k)
+        {
+            cout << "YES" << ln;
+            return;
+        }
+    }
+    if (n % 2 != 0 && m % 2 != 0)
+    {
+        ll r = m - n + 1;
+        ll even = r / 2;
+        ll odd = r - even;
+        ll steps = odd;
+        if (steps <= k)
+        {
+            cout << "YES" << ln;
+            return;
+        }
+    }
+    if (n % 2 == 0 && m % 2 == 0)
+    {
+        ll r = m - n;
+        ll odd = r / 2;
+        ll even = r - odd;
+        ll steps = odd;
+        if (steps <= k)
+        {
+            cout << "YES" << ln;
+            return;
+        }
+    }
+    cout << "NO" << ln;
 }
+
 int main()
 {
     fast_cin();

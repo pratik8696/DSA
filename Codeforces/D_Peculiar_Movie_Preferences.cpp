@@ -165,24 +165,44 @@ void solve()
 {
     ll n;
     cin >> n;
-    ll arr[n], res[3];
-    fill(al(res, 3), 0);
+    multiset<string> k;
+    vector<string> s;
     forn(i, n)
     {
-        cin >> arr[i];
-        arr[i] = arr[i] % 3;
-        res[arr[i]]++;
+        string t;
+        cin >> t;
+        s.pb(t);
     }
-    for (ll i = 0; i < 3; i++)
+    for (auto it : s)
     {
-        cout << res[i] << "  ";
+        // cout << it << " ";
+        string tt = it;
+        k.insert(tt);
+        if (it.length() == 1)
+        {
+            cout << "YES" << ln;
+            return;
+        }
+        else if (it.length() == 3)
+        {
+            string temp = "";
+            temp.pb(it[1]);
+            temp.pb(it[2]);
+            k.insert(temp);
+        }
+        reverse(all(tt));
     }
-    cout << ln;
-    for (ll i = 0; i < 3; i++)
+    for (auto it :k)
     {
-        cout << res[i] - n / 3 << " ";
+        string temp = it;
+        reverse(all(temp));
+        if (k.count(temp))
+        {
+            cout << "YES" << ln;
+            return;
+        }
     }
-    cout << ln;
+    cout << "NO" << ln;
 }
 int main()
 {

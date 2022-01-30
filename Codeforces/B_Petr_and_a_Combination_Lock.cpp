@@ -55,33 +55,70 @@ double eps = 1e-12;
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
 
+// a
+// b
+// 120 120 120
+// 000--0
+// 001--1
+// 010--2
+// 011--3
+// 100--4
+// 101--5
+// 110--6
+// 111--7
+
 void solve()
 {
     ll n;
     cin >> n;
-    ll arr[n], res = 0, sum = 0;
+    ll arr[n], sum = 0;
     forn(i, n)
     {
         cin >> arr[i];
         sum += arr[i];
-        res = res ^ arr[i];
     }
-    if (sum == 2 * res)
+    if (sum % 360 == 0)
     {
-        cout << 0 << ln;
-        cout << ln;
+        cout << "YES" << ln;
+        return;
     }
-    else
+    if (sum % 2 != 0)
     {
-        cout << 2 << ln;
-        cout << res << " " << sum + res << ln;
+        cout << "NO" << ln;
+        return;
     }
+    sum = sum / 2;
+    ll end = powl(2ll, 15);
+    for (ll i = 1; i < end; i++)
+    {
+        ll res = 0, pro = 0;
+        string s = bitset<16>(i).to_string();
+        reverse(all(s));
+        // cout << s << ln;
+        forn(j, n)
+        {
+            if (s[j] == '1')
+            {
+                res += arr[j];
+            }
+            else
+            {
+                pro += arr[j];
+            }
+        }
+        if (abs(res - pro) % 360 == 0)
+        {
+            cout << "YES" << ln;
+            return;
+        }
+    }
+    cout << "NO" << ln;
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    //  cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

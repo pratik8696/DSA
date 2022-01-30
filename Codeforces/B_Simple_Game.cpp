@@ -163,32 +163,55 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    ll arr[n], res[3];
-    fill(al(res, 3), 0);
-    forn(i, n)
+    ll n, m;
+    cin >> n >> m;
+    if (n == 1)
     {
-        cin >> arr[i];
-        arr[i] = arr[i] % 3;
-        res[arr[i]]++;
+        cout << 1 << ln;
+        return;
     }
-    for (ll i = 0; i < 3; i++)
+    if (n % 2 == 0)
     {
-        cout << res[i] << "  ";
+        ll mid1 = n / 2, mid2 = n / 2 + 1;
+        if (m < mid1)
+        {
+            cout << m + 1 << ln;
+        }
+        else if (m > mid2)
+        {
+            cout << m - 1 << ln;
+        }
+        else if (m == mid1)
+        {
+            cout << m + 1 << ln;
+        }
+        else if (m == mid2)
+        {
+            cout << m - 1 << ln;
+        }
     }
-    cout << ln;
-    for (ll i = 0; i < 3; i++)
+    else
     {
-        cout << res[i] - n / 3 << " ";
+        ll mid = (n + 1) / 2;
+        if (m > mid)
+        {
+            cout << m - 1 << ln;
+        }
+        else if (m < mid)
+        {
+            cout << m + 1 << ln;
+        }
+        else if (m == mid)
+        {
+            cout << m - 1 << ln;
+        }
     }
-    cout << ln;
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    //  cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

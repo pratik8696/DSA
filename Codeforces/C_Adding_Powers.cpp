@@ -19,10 +19,9 @@
 #include <stack>
 #include <iomanip>
 #include <fstream>
-
 using namespace std;
-typedef unsigned long long ull;
 typedef long long ll;
+typedef unsigned long long int ull;
 typedef long double ld;
 typedef pair<int, int> p32;
 typedef pair<ll, ll> p64;
@@ -35,70 +34,90 @@ typedef vector<vector<p64>> vvp64;
 typedef vector<p64> vp64;
 typedef vector<p32> vp32;
 ll MOD = 1000000007;
-double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
-#define forsn(i, s, e) for (ll i = s; i < e; i++)
-#define rforn(i, s) for (ll i = s; i >= 0; i--)
-#define rforsn(i, s, e) for (ll i = s; i >= e; i--)
 #define ln "\n"
-#define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
 #define pb push_back
-#define fi first
-#define se second
-#define INF 2e18
 #define fast_cin()                    \
     ios_base::sync_with_stdio(false); \
     cin.tie(NULL);                    \
     cout.tie(NULL)
 #define all(x) (x).begin(), (x).end()
-#define al(arr, n) arr, arr + n
+#define alll(arr, n) (arr), (arr) + (n)
 #define sz(x) ((ll)(x).size())
 
+// function for fast expo
+ll fastexpo(ll a, ll b)
+{
+    if (b == 0)
+    {
+        return 1;
+    }
+    if (a == 0)
+    {
+        return 0;
+    }
+    ll y = fastexpo(a, b / 2);
+    if (b % 2 == 0)
+    {
+        return y * y;
+    }
+    else
+    {
+        return a * y * y;
+    }
+}
 void solve()
 {
     ll n, k;
     cin >> n >> k;
-    vector<ull> pp;
-    pp.pb(1);
-    ull res = 1;
-    for (ull i = 0; i < 53; i++)
+    ll arr[n];
+    forn(i, n)
     {
-        res = res * k;
-        if (res > 1e16)
+        cin >> arr[i];
+    }
+    v64 powers;
+    map<ll, ll> m;
+    for (ll i = 0; i < 60; i++)
+    {
+        ll result = fastexpo(k, i);
+        if (result > 1e17)
         {
             break;
         }
-        pp.pb(res);
+        powers.pb(result);
     }
-    ull arr[n];
-    vector<ull> pw[n];
-    map<ll, ll> msi;
     for (ll i = 0; i < n; i++)
     {
-        cin >> arr[i];
-        ull num = arr[i];
-        if (num == 0)
-            continue;
-        while (num)
+        ll res = arr[i];
+        if (res == 0)
         {
-            ll idx = upper_bound(all(pp), num) - pp.begin() - 1;
-            if (msi[idx] != 0)
+            continue;
+        }
+        else
+        {
+            while (res)
+            {
+                ll idx = upper_bound(all(powers), res) - powers.begin() - 1;
+                res = res - powers[idx];
+                m[idx + 1]++;
+            }
+        }
+    }
+    if (m.size() >= 1)
+    {
+        for (auto t : m)
+        {
+            // cout << t.first << " " << t.second << ln;
+            if (t.first != 0 && t.second > 1)
             {
                 cout << "NO" << ln;
                 return;
             }
-            else
-            {
-                msi[idx]++;
-            }
-            num = num - pp[idx];
         }
     }
     cout << "YES" << ln;
-    return;
 }
-
 int main()
 {
     fast_cin();

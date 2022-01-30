@@ -161,28 +161,52 @@ bool pow2(ll x)
     return false;
 }
 
+ll n, m;
+ll total;
+
+ll isvalid(ll mid)
+{
+    if (mid <= n)
+    {
+        return (mid * (mid + 1)) / 2;
+    }
+    ll k1 = total - mid;
+    ll halfsum = (n * (n + 1)) / 2 + (n * (n - 1)) / 2;
+    ll diffsum = (k1 * (k1 + 1)) / 2;
+    return halfsum - diffsum;
+}
+
 void solve()
 {
-    ll n;
-    cin >> n;
-    ll arr[n], res[3];
-    fill(al(res, 3), 0);
-    forn(i, n)
+    cin >> n >> m;
+    total = 2 * n - 1;
+    if (m >= n * n)
     {
-        cin >> arr[i];
-        arr[i] = arr[i] % 3;
-        res[arr[i]]++;
+        cout << total << ln;
+        return;
     }
-    for (ll i = 0; i < 3; i++)
+    ll i = 0, j = total, ans, tt = 50;
+    // cout << isvalid(4) << ln;
+    ll mid = (i) + (j - i) / 2;
+    while (i <= j && tt--)
     {
-        cout << res[i] << "  ";
+        mid = i + (j - i) / 2;
+        if (isvalid(mid) == m)
+        {
+            ans = mid;
+        }
+        else if (isvalid(mid) > m)
+        {
+            j = mid - 1;
+            ans = mid;
+        }
+        else if (isvalid(mid) < m)
+        {
+            i = mid + 1;
+        }
     }
-    cout << ln;
-    for (ll i = 0; i < 3; i++)
-    {
-        cout << res[i] - n / 3 << " ";
-    }
-    cout << ln;
+    // cout << mid << endl;
+    cout << ans << endl;
 }
 int main()
 {

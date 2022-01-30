@@ -57,24 +57,77 @@ double eps = 1e-12;
 
 void solve()
 {
-    ll n;
+    int n;
     cin >> n;
-    ll arr[n], res = 0, sum = 0;
-    forn(i, n)
+    v64 res;
+    if (n == 2)
     {
-        cin >> arr[i];
-        sum += arr[i];
-        res = res ^ arr[i];
+        cout << "NO" << ln;
+        return;
     }
-    if (sum == 2 * res)
+    if (n == 4)
     {
-        cout << 0 << ln;
+        cout << "YES" << ln;
+        cout << "3 4 1 2" << ln;
+        return;
+    }
+    else if (n % 2 == 0)
+    {
+        n--;
+        ll a = n / 2 + 1, b = (n / 2) + 2;
+        ll k = 0;
+        forn(i, n)
+        {
+            if (k == 0)
+            {
+                res.pb(a);
+                a--;
+                k = 1;
+            }
+            else
+            {
+                res.pb(b);
+                b++;
+                k = 0;
+            }
+        }
+        // res.pb(n + 1);
+        cout << "YES" << ln;
+        for (int i = 0; i < n; i++)
+        {
+            cout << res[i] << " ";
+            if (i + 1 == n / 2)
+            {
+                cout << n + 1 << " ";
+            }
+        }
         cout << ln;
     }
     else
     {
-        cout << 2 << ln;
-        cout << res << " " << sum + res << ln;
+        ll a = n / 2 + 1, b = (n / 2) + 2;
+        ll k = 0;
+        forn(i, n)
+        {
+            if (k == 0)
+            {
+                res.pb(a);
+                a--;
+                k = 1;
+            }
+            else
+            {
+                res.pb(b);
+                b++;
+                k = 0;
+            }
+        }
+        cout << "YES" << ln;
+        for (auto t : res)
+        {
+            cout << t << " ";
+        }
+        cout << ln;
     }
 }
 int main()

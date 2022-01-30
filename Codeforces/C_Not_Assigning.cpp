@@ -161,29 +161,63 @@ bool pow2(ll x)
     return false;
 }
 
+#define maxi 100010
+vector<int> arr[maxi];
+int vis[maxi];
+bool col[maxi];
+
+void dfs(int v, bool colour)
+{
+    vis[v] = 1;
+    col[v] = colour;
+    for (auto child : arr[v])
+    {
+        if (vis[child] == 0)
+        {
+            dfs(child, !colour);
+        }
+    }
+}
+
 void solve()
 {
     ll n;
     cin >> n;
-    ll arr[n], res[3];
-    fill(al(res, 3), 0);
-    forn(i, n)
+    forn(i, n - 1)
     {
-        cin >> arr[i];
-        arr[i] = arr[i] % 3;
-        res[arr[i]]++;
+        ll a, b;
+        cin >> a >> b;
+        arr[a].pb(b);
+        arr[b].pb(a);
     }
-    for (ll i = 0; i < 3; i++)
+    for (ll i = 1; i <= n; i++)
     {
-        cout << res[i] << "  ";
+        set<ll> s;
+        for (auto t : arr[i])
+        {
+            s.insert(t);
+        }
+        if (s.size() > 2)
+        {
+            cout << -1 << ln;
+            return;
+        }
     }
-    cout << ln;
-    for (ll i = 0; i < 3; i++)
+    dfs(1, 0);
+    for (ll i = 1; i < n; i++)
     {
-        cout << res[i] - n / 3 << " ";
+        if (col[i] == 0)
+        {
+            cout << "2 ";
+        }
+        else
+        {
+            cout << "5 ";
+        }
     }
     cout << ln;
 }
+
 int main()
 {
     fast_cin();

@@ -163,26 +163,44 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    ll arr[n], res[3];
-    fill(al(res, 3), 0);
+    ll n, k;
+    cin >> n >> k;
+    vp64 arr;
     forn(i, n)
     {
-        cin >> arr[i];
-        arr[i] = arr[i] % 3;
-        res[arr[i]]++;
+        ll x;
+        cin >> x;
+        arr.pb({x, 0});
     }
-    for (ll i = 0; i < 3; i++)
+    for (ll i = 1; i < n - 1; i++)
     {
-        cout << res[i] << "  ";
+        if (arr[i].fi > arr[i + 1].fi && arr[i].fi > arr[i - 1].fi)
+        {
+            arr[i].second += 1;
+        }
     }
-    cout << ln;
-    for (ll i = 0; i < 3; i++)
+    ll sum = 0, j = k - 1, i = 0, currmax = INT_MIN;
+    for (ll i = 0; i < k; i++)
     {
-        cout << res[i] - n / 3 << " ";
+        sum += arr[i].second;
     }
-    cout << ln;
+    ll idx = -1;
+    while (j < n)
+    {
+        if (j - i + 1 == k)
+        {
+            ll curr = sum - arr[i].second - arr[j].second;
+            if (curr > currmax)
+            {
+                currmax = curr;
+                idx = i+1;
+            }
+        }
+        j++;
+        sum += arr[j].second - arr[i].second;
+        i++;
+    }
+    cout << currmax + 1 << " " << idx << ln;
 }
 int main()
 {

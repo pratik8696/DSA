@@ -57,26 +57,26 @@ double eps = 1e-12;
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    ll arr[n], res = 0, sum = 0;
-    forn(i, n)
+    ll k;
+    cin >> k;
+    if (k % 2 != 0)
     {
-        cin >> arr[i];
-        sum += arr[i];
-        res = res ^ arr[i];
+        cout << "0" << endl;
+        return;
     }
-    if (sum == 2 * res)
+    ll c = 1;
+    ll ans = 0;
+    for (ll i = 1;; i++)
     {
-        cout << 0 << ln;
-        cout << ln;
+        if (k % (1 << i) || k < (1 << i))
+        {
+            ans = i;
+            break;
+        }
     }
-    else
-    {
-        cout << 2 << ln;
-        cout << res << " " << sum + res << ln;
-    }
+    cout << ans - 1 << endl;
 }
+
 int main()
 {
     fast_cin();

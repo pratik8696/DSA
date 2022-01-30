@@ -91,24 +91,38 @@ ll sumofno(ll n)
     return sum;
 }
 
-// function for modularexpo
-ll modexpo(long long a, long long n, long long p)
+// modular exponentiation
+long long modpow(long long val, long long deg, long long mod)
 {
-    ll res = 1;
-    while (n)
+    if (!deg)
+        return 1 % mod;
+    if (deg & 1)
+        return modpow(val, deg - 1, mod) * val % mod;
+    long long res = modpow(val, deg >> 1, mod);
+    return (res * res) % mod;
+}
+
+const int N = 1e6 + 100;
+long long fact[N];
+// initialise the factorial
+void initfact()
+{
+    fact[0] = 1;
+    for (int i = 1; i < N; i++)
     {
-        if (n % 2)
-        {
-            res = (res * a) % p;
-            n--;
-        }
-        else
-        {
-            a = (a * a) % p;
-            n /= 2;
-        }
+        fact[i] = (fact[i - 1] * i);
+        fact[i] %= MOD;
     }
-    return res;
+}
+
+// formula for c
+ll C(ll n, ll i)
+{
+    ll res = fact[n];
+    ll div = fact[n - i] * fact[i];
+    div %= MOD;
+    div = modpow(div, MOD - 2, MOD);
+    return (res * div) % MOD;
 }
 
 // function for fast expo
@@ -161,28 +175,88 @@ bool pow2(ll x)
     return false;
 }
 
+bool ispalindrome(string s)
+{
+    string q = s;
+    reverse(all(s));
+    if (q.compare(s) == 0)
+    {
+        return true;
+    }
+    return false;
+}
+
 void solve()
 {
     ll n;
     cin >> n;
-    ll arr[n], res[3];
-    fill(al(res, 3), 0);
-    forn(i, n)
+    string s;
+    cin >> s;
+    if (ispalindrome(s))
     {
-        cin >> arr[i];
-        arr[i] = arr[i] % 3;
-        res[arr[i]]++;
+        cout << 0 << ln;
+        return;
     }
-    for (ll i = 0; i < 3; i++)
+    set<char> chrs;
+    forn(i, s.length())
     {
-        cout << res[i] << "  ";
+        chrs.insert(s[i]);
     }
-    cout << ln;
-    for (ll i = 0; i < 3; i++)
+    ll mini = INT_MAX;
+    for (auto t : chrs)
     {
-        cout << res[i] - n / 3 << " ";
+        string te = "", temp = s;
+        ll rem = 0;
+        forn(j, s.length())
+        {
+            if (s[j] != t)
+            {
+                te.pb(s[j]);
+            }
+        }
+        // cout << te << " " << s << " " << t << ln;
+        if (ispalindrome(te))
+        {
+            string temp = s;
+            int i = 0, j = s.length() - 1;
+            while (i <= j)
+            {
+                if (temp[i] != temp[j])
+                {
+                    if (temp[i] == t)
+                    {
+                        // temp.erase(temp.begin() + i);
+                        temp[i] = '0';
+                        rem++;
+                        i++;
+                    }
+                    else
+                    {
+                        // temp.erase(temp.begin() + j);
+                        temp[j] = '0';
+                        rem++;
+                        j--;
+                    }
+                }
+                else
+                {
+                    i++;
+                    j--;
+                }
+                // cout << temp << " " << t << ln;
+            }
+            // cout << temp << " " << t << ln;
+            mini = min(mini, rem);
+        }
     }
-    cout << ln;
+    if (mini == INT_MAX)
+    {
+        cout << -1 << ln;
+    }
+    else
+    {
+        cout << mini << ln;
+    }
 }
 int main()
 {

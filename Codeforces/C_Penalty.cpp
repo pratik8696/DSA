@@ -57,26 +57,98 @@ double eps = 1e-12;
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    ll arr[n], res = 0, sum = 0;
-    forn(i, n)
+    string s;
+    cin >> s;
+    string p(s), q(s);
+    for (int i = 0; i < s.length(); i++)
     {
-        cin >> arr[i];
-        sum += arr[i];
-        res = res ^ arr[i];
+        if (q[i] == '?')
+        {
+            if (i & 1)
+            {
+                q[i] = '1';
+            }
+            else
+            {
+                q[i] = '0';
+            }
+        }
+        if (p[i] == '?')
+        {
+            if (i & 1)
+            {
+                p[i] = '0';
+            }
+            else
+            {
+                p[i] = '1';
+            }
+        }
     }
-    if (sum == 2 * res)
+    // first a wins
+    ll resa = 0, resb = 0;
+    ll awina = 0, arema = s.length() / 2, awinb = 0, aremb = s.length() / 2;
+    ll bwina = 0, brema = s.length() / 2, bwinb = 0, bremb = s.length() / 2;
+    for (ll i = 0; i < s.length(); i++)
     {
-        cout << 0 << ln;
-        cout << ln;
+        if (i & 1)
+        {
+            if (p[i] == '1')
+                awinb++;
+
+            aremb--;
+        }
+        else
+        {
+            if (p[i] == '1')
+                awina++;
+
+            arema--;
+        }
+        if (awina > aremb + awinb)
+        {
+            resa = i + 1;
+            break;
+        }
+    }
+
+    for (ll i = 0; i < s.length(); i++)
+    {
+        if (i & 1)
+        {
+            if (q[i] == '1')
+                bwinb++;
+
+            bremb--;
+        }
+        else
+        {
+            if (q[i] == '1')
+                bwina++;
+
+            brema--;
+        }
+        if (bwinb > brema + bwina)
+        {
+            resb = i + 1;
+            break;
+        }
+    }
+    // cout << resa << " " << resb << ln;
+    if (resa != 0 && resb != 0)
+    {
+        cout << min(resa, resb) << ln;
+    }
+    else if (resa == 0 && resb != 0 || resa != 0 && resb == 0)
+    {
+        cout << max(resa, resb) << ln;
     }
     else
     {
-        cout << 2 << ln;
-        cout << res << " " << sum + res << ln;
+        cout << 10 << ln;
     }
 }
+
 int main()
 {
     fast_cin();

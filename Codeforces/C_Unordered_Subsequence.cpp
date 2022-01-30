@@ -59,29 +59,90 @@ void solve()
 {
     ll n;
     cin >> n;
-    ll arr[n], res = 0, sum = 0;
+    ll arr[n];
+    vp64 minL, minR, maxL, maxR;
     forn(i, n)
     {
         cin >> arr[i];
-        sum += arr[i];
-        res = res ^ arr[i];
     }
-    if (sum == 2 * res)
+    ll curr = arr[0], idx = 0;
+    ll currm = arr[0], idxm = 0;
+    minL.pb({curr, idx + 1});
+    maxL.pb({currm, idxm + 1});
+    for (ll i = 1; i < n; i++)
     {
-        cout << 0 << ln;
+        if (arr[i] < curr)
+        {
+            curr = arr[i];
+            idx = i;
+        }
+        if (arr[i] > currm)
+        {
+            currm = arr[i];
+            idxm = i;
+        }
+        minL.pb({curr, idx + 1});
+        maxL.pb({currm, idxm + 1});
+    }
+    curr = arr[n - 1], idx = n - 1;
+    currm = arr[n - 1], idxm = n - 1;
+    minR.pb({curr, idx + 1});
+    maxR.pb({currm, idxm + 1});
+    for (ll i = n - 2; i >= 0; i--)
+    {
+        if (arr[i] < curr)
+        {
+            curr = arr[i];
+            idx = i;
+        }
+        if (arr[i] > currm)
+        {
+            currm = arr[i];
+            idxm = i;
+        }
+        minR.pb({curr, idx + 1});
+        maxR.pb({currm, idxm + 1});
+    }
+    reverse(all(maxR));
+    reverse(all(minR));
+    v64 res;
+    for (ll i = 1; i < n - 1; i++)
+    {
+        if (arr[i] > minR[i].first && arr[i] > minL[i].first)
+        {
+            res.pb(minL[i].second);
+            res.pb(i + 1);
+            res.pb(minR[i].second);
+            break;
+        }
+        if (arr[i] < maxL[i].first && arr[i] < maxR[i].first)
+        {
+            res.pb(maxL[i].second);
+            res.pb(i + 1);
+            res.pb(maxR[i].second);
+            break;
+        }
+    }
+    if (res.size() > 1)
+    {
+        cout << res.size() << endl;
+        for (auto t : res)
+        {
+            cout << t << " ";
+        }
         cout << ln;
     }
     else
     {
-        cout << 2 << ln;
-        cout << res << " " << sum + res << ln;
+        cout << 0 << ln;
     }
+    
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    //  cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

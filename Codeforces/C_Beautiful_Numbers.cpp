@@ -91,24 +91,38 @@ ll sumofno(ll n)
     return sum;
 }
 
-// function for modularexpo
-ll modexpo(long long a, long long n, long long p)
+// modular exponentiation
+long long modpow(long long val, long long deg, long long mod)
 {
-    ll res = 1;
-    while (n)
+    if (!deg)
+        return 1 % mod;
+    if (deg & 1)
+        return modpow(val, deg - 1, mod) * val % mod;
+    long long res = modpow(val, deg >> 1, mod);
+    return (res * res) % mod;
+}
+
+const int N = 1e6 + 100;
+long long fact[N];
+//  initialise the factorial
+void initfact()
+{
+    fact[0] = 1;
+    for (int i = 1; i < N; i++)
     {
-        if (n % 2)
-        {
-            res = (res * a) % p;
-            n--;
-        }
-        else
-        {
-            a = (a * a) % p;
-            n /= 2;
-        }
+        fact[i] = (fact[i - 1] * i);
+        fact[i] %= MOD;
     }
-    return res;
+}
+
+// formula for c
+ll C(ll n, ll i)
+{
+    ll res = fact[n];
+    ll div = fact[n - i] * fact[i];
+    div %= MOD;
+    div = modpow(div, MOD - 2, MOD);
+    return (res * div) % MOD;
 }
 
 // function for fast expo
@@ -163,32 +177,47 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    ll arr[n], res[3];
-    fill(al(res, 3), 0);
-    forn(i, n)
+    ll n, m, length;
+    cin >> n >> m >> length;
+    n = min(n, m), m = max(n, m);
+    ll first = length * n;
+    ll second = length * m;
+    v64 v;
+    for (ll i = first; i <= second; i++)
     {
-        cin >> arr[i];
-        arr[i] = arr[i] % 3;
-        res[arr[i]]++;
+        string temp = to_string(i);
+        bool flag = 1;
+        forn(j, temp.length())
+        {
+            if (temp[j] - '0' != n && temp[j] - '0' != m)
+            {
+                flag = 0;
+            }
+        }
+        if (flag == 1)
+        {
+            v.pb(i);
+        }
     }
-    for (ll i = 0; i < 3; i++)
+    ll sum = 0;
+    for (auto t : v)
     {
-        cout << res[i] << "  ";
+        ll res = (m * length - t) / abs(m - n);
+        if ((m * length - t) % abs(m - n) == 0)
+        {
+            sum += C(length, res);
+            sum = sum % MOD;
+        }
     }
-    cout << ln;
-    for (ll i = 0; i < 3; i++)
-    {
-        cout << res[i] - n / 3 << " ";
-    }
-    cout << ln;
+    cout << sum << ln;
 }
+
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    initfact();
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

@@ -91,24 +91,38 @@ ll sumofno(ll n)
     return sum;
 }
 
-// function for modularexpo
-ll modexpo(long long a, long long n, long long p)
+// modular exponentiation
+long long modpow(long long val, long long deg, long long mod)
 {
-    ll res = 1;
-    while (n)
+    if (!deg)
+        return 1 % mod;
+    if (deg & 1)
+        return modpow(val, deg - 1, mod) * val % mod;
+    long long res = modpow(val, deg >> 1, mod);
+    return (res * res) % mod;
+}
+
+const int N = 1e6 + 100;
+long long fact[N];
+// initialise the factorial
+void initfact()
+{
+    fact[0] = 1;
+    for (int i = 1; i < N; i++)
     {
-        if (n % 2)
-        {
-            res = (res * a) % p;
-            n--;
-        }
-        else
-        {
-            a = (a * a) % p;
-            n /= 2;
-        }
+        fact[i] = (fact[i - 1] * i);
+        fact[i] %= MOD;
     }
-    return res;
+}
+
+// formula for c
+ll C(ll n, ll i)
+{
+    ll res = fact[n];
+    ll div = fact[n - i] * fact[i];
+    div %= MOD;
+    div = modpow(div, MOD - 2, MOD);
+    return (res * div) % MOD;
 }
 
 // function for fast expo
@@ -163,32 +177,27 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    ll arr[n], res[3];
-    fill(al(res, 3), 0);
+    ll n, m;
+    cin >> n >> m;
+    ll arr[n], brr[m];
     forn(i, n)
     {
         cin >> arr[i];
-        arr[i] = arr[i] % 3;
-        res[arr[i]]++;
     }
-    for (ll i = 0; i < 3; i++)
+    sort(al(arr, n));
+    forn(i, m)
     {
-        cout << res[i] << "  ";
-    }
-    cout << ln;
-    for (ll i = 0; i < 3; i++)
-    {
-        cout << res[i] - n / 3 << " ";
+        cin >> brr[i];
+        ll idx = upper_bound(al(arr, n), brr[i]) - arr - 1;
+        cout << idx + 1 << " ";
     }
     cout << ln;
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    //  cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();
