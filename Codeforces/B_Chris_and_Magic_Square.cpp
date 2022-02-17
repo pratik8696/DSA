@@ -199,9 +199,8 @@ bool pow2(ll x)
     }
     return false;
 }
-
 #define maxi 1000
-int arr[maxi][maxi];
+ll arr[maxi][maxi];
 
 void solve()
 {
@@ -212,10 +211,9 @@ void solve()
         cout << 1 << ln;
         return;
     }
-    multiset<ll> row, col;
-    for (ll i = 0; i < n; i++)
+    forn(i, n)
     {
-        for (ll j = 0; j < n; j++)
+        forn(j, n)
         {
             cin >> arr[i][j];
             if (arr[i][j] == 0)
@@ -224,52 +222,72 @@ void solve()
             }
         }
     }
-    for (ll i = 0; i < n; i++)
+    // calculate the sum
+    ll sum = 0;
+    if (y != 0)
     {
-        ll sum = 0;
-        for (ll j = 0; j < n; j++)
-        {
-            sum += arr[i][j];
-        }
-        row.insert(sum);
-    }
-    for (ll j = 0; j < n; j++)
-    {
-        ll sum = 0;
         for (ll i = 0; i < n; i++)
         {
-            sum += arr[i][j];
+            sum += arr[i][0];
         }
-        col.insert(sum);
     }
-    ll diag = 0, secondiag = 0;
-    for (ll i = 0; i < n; i++)
+    else
     {
-        diag += arr[i][i];
-        if (arr[i][i] == 0)
+        for (ll i = 0; i < n; i++)
         {
-            diag = -1;
+            sum += arr[i][1];
+        }
+    }
+    ll rem = 0;
+    forn(i, n)
+    {
+        if (i == x)
+        {
+            forn(j, n)
+            {
+                rem += arr[i][j];
+            }
             break;
         }
     }
-    for (ll i = n - 1; i >= 0; i--)
+    arr[x][y] = sum - rem;
+    // checking the values of rows and columns are equal
+    set<ll> s;
+    forn(i, n)
     {
-        secondiag += arr[i][n - 1 - i];
-        if (arr[i][n - 1 - i] == 0)
+        ll val = 0;
+        forn(j, n)
         {
-            secondiag = -1;
-            break;
+            val += arr[i][j];
         }
+        s.insert(val);
     }
-
-    ll startval = *row.begin();
-    ll endval = *row.rbegin();
-    ll startvalc = *col.begin();
-    ll endvalc = *col.rbegin();
-    if (row.count(startval) == 1 && row.count(startval) + row.count(endval) == row.size() && col.count(startvalc) == 1 && col.count(startvalc) + col.count(endvalc) == col.size() && endvalc == endval)
+    // columns ka count kro
+    forn(j, n)
     {
-        cout << endval - startval << ln;
-        return;
+        ll val = 0;
+        forn(i, n)
+        {
+            val += arr[i][j];
+        }
+        s.insert(val);
+    }
+    // now check for diagonal
+    ll val = 0;
+    forn(i, n)
+    {
+        val += arr[i][i];
+    }
+    s.insert(val);
+    val = 0;
+    forn(i, n)
+    {
+        val += arr[n - 1 - i][i];
+    }
+    s.insert(val);
+    if (s.size() == 1 && arr[x][y] > 0)
+    {
+        cout << arr[x][y] << ln;
     }
     else
     {

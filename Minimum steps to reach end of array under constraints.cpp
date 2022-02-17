@@ -199,93 +199,69 @@ bool pow2(ll x)
     }
     return false;
 }
+#define maxi 10000
+vector<int> arr[maxi];
+int vis[maxi], dist[maxi];
+
+void bfs(int v)
+{
+    queue<ll> q;
+    vis[v] = 1;
+    q.push(v);
+    dist[v] = 0;
+    while (!q.empty())
+    {
+        ll curr = q.front();
+        q.pop();
+        for (auto t : arr[curr])
+        {
+            if (vis[t] == 0)
+            {
+                q.push(t);
+                vis[t] = 1;
+                dist[t] = dist[curr] + 1;
+            }
+        }
+    }
+}
 
 void solve()
 {
-    ll n, u, r, d, l;
-    cin >> n >> u >> r >> d >> l;
-    ll u1 = u, r1 = r, d1 = d, l1 = l;
-    // for n
-    if (u == n)
+    ll n;
+    cin >> n;
+    ll a[n + 1];
+    map<ll, v64> m;
+    forsn(i, 1, n)
     {
-        r1--;
-        l1--;
+        cin >> a[i];
+        m[a[i]].pb(i + 1);
     }
-    if (r == n)
+    forsn(i, 1, n - 1)
     {
-        u1--;
-        d1--;
+        arr[i].pb(i + 1);
+        arr[i + 1].pb(i);
     }
-    if (d == n)
+    for (auto t : m)
     {
-        r1--;
-        l1--;
-    }
-    if (l == n)
-    {
-        u1--;
-        d1--;
-    }
-    // for n-1
-    if (u == n - 1)
-    {
-        if (r1 > l1)
+        auto v = t.second;
+        if (v.size() > 1)
         {
-            r1--;
-        }
-        else
-        {
-            l1--;
+            forn(i, v.size() - 1)
+            {
+                ll a = v[i], b = v[i + 1];
+                arr[a].pb(b);
+                arr[b].pb(a);
+            }
         }
     }
-    if (r == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    if (d == n - 1)
-    {
-        if (r1 > l1)
-        {
-            r1--;
-        }
-        else
-        {
-            l1--;
-        }
-    }
-    if (l == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    // checking the validity
-    if (u1 >= 0 && r1 >= 0 && d1 >= 0 && l1 >= 0)
-    {
-        cout << "YES" << ln;
-    }
-    else
-    {
-        cout << "NO" << ln;
-    }
+    bfs(1);
+    cout<<dist[n]<<ln;
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

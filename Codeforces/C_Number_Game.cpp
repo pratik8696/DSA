@@ -202,84 +202,44 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, u, r, d, l;
-    cin >> n >> u >> r >> d >> l;
-    ll u1 = u, r1 = r, d1 = d, l1 = l;
-    // for n
-    if (u == n)
+    ll n;
+    cin >> n;
+    bool flag = 0;
+    if (n == 1)
     {
-        r1--;
-        l1--;
+        cout << "FastestFinger" << ln;
+        return;
     }
-    if (r == n)
+    ll res = n & (n - 1);
+    if (res == 0 && n != 2)
     {
-        u1--;
-        d1--;
+        cout << "FastestFinger" << ln;
+        return;
     }
-    if (d == n)
+    if (n % 2 != 0)
     {
-        r1--;
-        l1--;
+        cout << "Ashishgup" << ln;
+        return;
     }
-    if (l == n)
+    vp64 v = pf(n);
+    ll oddcount = 0, evencount = 0;
+    for (ll i = 0; i < v.size(); i++)
     {
-        u1--;
-        d1--;
-    }
-    // for n-1
-    if (u == n - 1)
-    {
-        if (r1 > l1)
+        if (v[i].fi % 2 == 0)
         {
-            r1--;
+            evencount += v[i].se;
         }
         else
         {
-            l1--;
+            oddcount += v[i].se;
         }
     }
-    if (r == n - 1)
+    if (evencount == 1 && oddcount == 1)
     {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
+        cout << "FastestFinger" << ln;
+        return;
     }
-    if (d == n - 1)
-    {
-        if (r1 > l1)
-        {
-            r1--;
-        }
-        else
-        {
-            l1--;
-        }
-    }
-    if (l == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    // checking the validity
-    if (u1 >= 0 && r1 >= 0 && d1 >= 0 && l1 >= 0)
-    {
-        cout << "YES" << ln;
-    }
-    else
-    {
-        cout << "NO" << ln;
-    }
+    cout << "Ashishgup" << ln;
 }
 int main()
 {

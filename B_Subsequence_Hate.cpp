@@ -202,85 +202,25 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, u, r, d, l;
-    cin >> n >> u >> r >> d >> l;
-    ll u1 = u, r1 = r, d1 = d, l1 = l;
-    // for n
-    if (u == n)
+    string s;
+    cin >> s;
+    ll total_zero = 0, total_one = 0, curr_zero = 0, curr_one = 0, ans = INT_MAX;
+    forn(i, s.length())
     {
-        r1--;
-        l1--;
+        total_zero += (s[i] == '0');
+        total_one += (s[i] == '1');
     }
-    if (r == n)
+    forn(i, s.length())
     {
-        u1--;
-        d1--;
+        // curr-zero and curr-one
+        curr_zero += (s[i] == '0');
+        curr_one += (s[i] == '1');
+        // now evaluating the answer
+        ans = min({ans, curr_zero + total_one - curr_one, curr_one + total_zero - curr_zero});
     }
-    if (d == n)
-    {
-        r1--;
-        l1--;
-    }
-    if (l == n)
-    {
-        u1--;
-        d1--;
-    }
-    // for n-1
-    if (u == n - 1)
-    {
-        if (r1 > l1)
-        {
-            r1--;
-        }
-        else
-        {
-            l1--;
-        }
-    }
-    if (r == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    if (d == n - 1)
-    {
-        if (r1 > l1)
-        {
-            r1--;
-        }
-        else
-        {
-            l1--;
-        }
-    }
-    if (l == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    // checking the validity
-    if (u1 >= 0 && r1 >= 0 && d1 >= 0 && l1 >= 0)
-    {
-        cout << "YES" << ln;
-    }
-    else
-    {
-        cout << "NO" << ln;
-    }
+    cout << ans << ln;
 }
+
 int main()
 {
     fast_cin();

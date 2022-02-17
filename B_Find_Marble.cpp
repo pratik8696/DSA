@@ -202,90 +202,46 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, u, r, d, l;
-    cin >> n >> u >> r >> d >> l;
-    ll u1 = u, r1 = r, d1 = d, l1 = l;
-    // for n
-    if (u == n)
+    ll n, start, end;
+    cin >> n >> start >> end;
+    ll arr[n], curr = start;
+    forn(i, n)
     {
-        r1--;
-        l1--;
+        cin >> arr[i];
     }
-    if (r == n)
+    if (start == end)
     {
-        u1--;
-        d1--;
+        cout << 0 << ln;
+        return;
     }
-    if (d == n)
+    ll count = 0;
+    forn(i, n - 1)
     {
-        r1--;
-        l1--;
-    }
-    if (l == n)
-    {
-        u1--;
-        d1--;
-    }
-    // for n-1
-    if (u == n - 1)
-    {
-        if (r1 > l1)
+        // arr[i] and arr[i+1]
+        // calculating current position of the ball as we procced with operations
+        if (arr[i] == curr)
         {
-            r1--;
+            curr = arr[i + 1];
         }
-        else
+        else if (arr[i + 1] == curr)
         {
-            l1--;
+            curr = arr[i];
+        }
+        count++;
+        cout<<curr<<" ";
+        if (curr == end)
+        {
+            cout << count << ln;
+            return;
         }
     }
-    if (r == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    if (d == n - 1)
-    {
-        if (r1 > l1)
-        {
-            r1--;
-        }
-        else
-        {
-            l1--;
-        }
-    }
-    if (l == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    // checking the validity
-    if (u1 >= 0 && r1 >= 0 && d1 >= 0 && l1 >= 0)
-    {
-        cout << "YES" << ln;
-    }
-    else
-    {
-        cout << "NO" << ln;
-    }
+    cout << -1 << ln;
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

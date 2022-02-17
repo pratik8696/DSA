@@ -202,85 +202,66 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, u, r, d, l;
-    cin >> n >> u >> r >> d >> l;
-    ll u1 = u, r1 = r, d1 = d, l1 = l;
-    // for n
-    if (u == n)
+    ll n;
+    cin >> n;
+    ll arr[n];
+    set<ll> s;
+    forn(i, n)
     {
-        r1--;
-        l1--;
+        cin >> arr[i];
+        s.insert(i + 1);
     }
-    if (r == n)
+    ll start = 0, end = 0;
+    forn(i, n)
     {
-        u1--;
-        d1--;
-    }
-    if (d == n)
-    {
-        r1--;
-        l1--;
-    }
-    if (l == n)
-    {
-        u1--;
-        d1--;
-    }
-    // for n-1
-    if (u == n - 1)
-    {
-        if (r1 > l1)
+        if (arr[i] != i + 1)
         {
-            r1--;
+            start = i;
+            for (ll j = i; j < n; j++)
+            {
+                if (arr[j] == *s.begin())
+                {
+                    end = j;
+                    break;
+                }
+            }
+            break;
         }
-        else
+        else if (arr[i] == i + 1)
         {
-            l1--;
+            s.erase(s.begin());
         }
     }
-    if (r == n - 1)
+    // cout << start << " " << end << ln;
+    v64 first, mid, last;
+    forn(i, start)
     {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
+        first.pb(arr[i]);
     }
-    if (d == n - 1)
+    for (ll i = start; i <= end; i++)
     {
-        if (r1 > l1)
-        {
-            r1--;
-        }
-        else
-        {
-            l1--;
-        }
+        mid.pb(arr[i]);
     }
-    if (l == n - 1)
+    reverse(all(mid));
+    forsn(i, end + 1, n)
     {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
+        last.pb(arr[i]);
     }
-    // checking the validity
-    if (u1 >= 0 && r1 >= 0 && d1 >= 0 && l1 >= 0)
+    for (auto t : first)
     {
-        cout << "YES" << ln;
+        cout << t << " ";
     }
-    else
+    for (auto t : mid)
     {
-        cout << "NO" << ln;
+        cout << t << " ";
     }
+    for (auto t : last)
+    {
+        cout << t << " ";
+    }
+    cout << ln;
 }
+
 int main()
 {
     fast_cin();

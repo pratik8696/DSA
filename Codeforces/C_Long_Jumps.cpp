@@ -202,84 +202,26 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, u, r, d, l;
-    cin >> n >> u >> r >> d >> l;
-    ll u1 = u, r1 = r, d1 = d, l1 = l;
-    // for n
-    if (u == n)
+    ll n;
+    cin >> n;
+    ll arr[n], maxi = INT_MIN;
+    map<ll, ll> m;
+    forn(i, n)
     {
-        r1--;
-        l1--;
+        cin >> arr[i];
+        m[i] = arr[i];
     }
-    if (r == n)
+    v64 v;
+    for (ll i = n - 1; i >= 0; i--)
     {
-        u1--;
-        d1--;
+        v.pb(arr[i] + m[arr[i] + i]);
+        m[i] = arr[i] + m[arr[i] + i];
     }
-    if (d == n)
+    for (auto t : v)
     {
-        r1--;
-        l1--;
+        maxi = max(maxi, t);
     }
-    if (l == n)
-    {
-        u1--;
-        d1--;
-    }
-    // for n-1
-    if (u == n - 1)
-    {
-        if (r1 > l1)
-        {
-            r1--;
-        }
-        else
-        {
-            l1--;
-        }
-    }
-    if (r == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    if (d == n - 1)
-    {
-        if (r1 > l1)
-        {
-            r1--;
-        }
-        else
-        {
-            l1--;
-        }
-    }
-    if (l == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    // checking the validity
-    if (u1 >= 0 && r1 >= 0 && d1 >= 0 && l1 >= 0)
-    {
-        cout << "YES" << ln;
-    }
-    else
-    {
-        cout << "NO" << ln;
-    }
+    cout << maxi << ln;
 }
 int main()
 {

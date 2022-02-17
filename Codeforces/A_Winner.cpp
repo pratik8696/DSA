@@ -55,60 +55,198 @@ double eps = 1e-12;
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
 
+// function for prime factorization
+vector<pair<ll, ll>> pf(ll n)
+{
+    vector<pair<ll, ll>> prime;
+    for (int i = 2; i <= sqrt(n); i++)
+    {
+        if (n % i == 0)
+        {
+            int count = 0;
+            while (n % i == 0)
+            {
+                count++;
+                n = n / i;
+            }
+            prime.pb(mp(i, count));
+        }
+    }
+    if (n > 1)
+    {
+        prime.pb(mp(n, 1));
+    }
+    return prime;
+}
+
+// sum of digits of a number
+ll sumofno(ll n)
+{
+    ll sum = 0;
+    while (n != 0)
+    {
+        sum += n % 10;
+        n = n / 10;
+    }
+    return sum;
+}
+
+// modular exponentiation
+long long modpow(long long x, long long n, long long p)
+{
+
+    if (n == 0)
+        return 1 % p;
+
+    ll ans = 1, base = x;
+    while (n > 0)
+    {
+        if (n % 2 == 1)
+        {
+            ans = (ans * base) % p;
+            n--;
+        }
+        else
+        {
+            base = (base * base) % p;
+            n /= 2;
+        }
+    }
+    if (ans < 0)
+        ans = (ans + p) % p;
+    return ans;
+}
+
+// const int N = 1e6 + 100;
+// long long fact[N];
+//  initialise the factorial
+// void initfact(){
+// fact[0] = 1;
+// for (int i = 1; i < N; i++)
+//{
+// fact[i] = (fact[i - 1] * i);
+// fact[i] %= MOD;
+// }}
+
+// formula for c
+// ll C(ll n, ll i)
+//{
+// ll res = fact[n];
+// ll div = fact[n - i] * fact[i];
+// div %= MOD;
+// div = modpow(div, MOD - 2, MOD);
+// return (res * div) % MOD;
+// }
+
+long long CW(ll n, ll m)
+{
+    if (m > n - m)
+        m = n - m;
+    long long ans = 1;
+    for (int i = 0; i < m; i++)
+    {
+        ans = ans * (n - i) / (i + 1);
+    }
+    return ans;
+}
+
+// function for fast expo
+ll fastexpo(ll a, ll b)
+{
+    if (b == 0)
+    {
+        return 1;
+    }
+    if (a == 0)
+    {
+        return 0;
+    }
+    ll y = fastexpo(a, b / 2);
+    if (b % 2 == 0)
+    {
+        return y * y;
+    }
+    else
+    {
+        return a * y * y;
+    }
+}
+
+ll popcount(ll n)
+{
+    ll c = 0;
+    for (; n; ++c)
+        n &= n - 1;
+    return c;
+}
+
+ll ce(ll x, ll y)
+{
+    ll res = x / y;
+    if (x % y != 0)
+    {
+        res++;
+    }
+    return res;
+}
+
+bool pow2(ll x)
+{
+    ll res = x & (x - 1);
+    if (res == 0)
+    {
+        return true;
+    }
+    return false;
+}
+
 void solve()
 {
-    ll n;
-    cin >> n;
-    vector<pair<string, ll>> v;
     map<string, ll> m;
-    ll winscore = 0;
+    ll n, val;
+    string s;
+    cin >> n;
+    vector<pair<string, ll>> io;
     forn(i, n)
     {
-        string a;
-        ll b;
-        cin >> a >> b;
-        m[a] += b;
-        v.pb({a, b});
+        cin >> s >> val;
+        io.pb({s, val});
+        m[s] += val;
     }
-    ll maxi = 0;
+    ll maxi = INT_MIN;
     for (auto t : m)
     {
-        maxi = max(t.second, maxi);
+        maxi = max(maxi, t.second);
     }
-    int maxcount = 0;
-    string res;
+    set<string> v;
     for (auto t : m)
     {
         if (t.second == maxi)
         {
-            // res = t.first;
-            maxcount++;
+            v.insert(t.first);
         }
     }
-    if (maxcount > 1)
+    if (v.size() == 1)
     {
-        map<string, ll> temp;
-        forn(i, n)
+        cout << *v.begin() << ln;
+        return;
+    }
+    // now checking for the checklisted values
+    map<string, ll> check;
+    forn(i, n)
+    {
+        string p = io[i].first;
+        ll val = io[i].second;
+        if (v.count(p))
         {
-            string tt = v[i].first;
-            ll gg = v[i].second;
-            temp[tt] += gg;
-            if (temp[tt] >= maxi)
+            check[p] += val;
+        }
+        for (auto t : check)
+        {
+            if (t.second >= maxi)
             {
-                cout << tt << ln;
+                cout << t.first << ln;
                 return;
-            }
-        }
-    }
-    else
-    {
-        for (auto t : m)
-        {
-            if (t.second == maxi)
-            {
-                res = t.first;
-                cout << res << ln;
-                break;
             }
         }
     }
@@ -117,10 +255,20 @@ int main()
 {
     fast_cin();
     ll t = 1;
-    // cin >> t;
+    //  cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();
     }
     return 0;
 }
+
+/*
+1. Check borderline constraints. Can a variable you are dividing by be 0?
+2. Use ll while using bitshifts
+3. Do not erase from set while iterating it
+4. Initialise everything
+5. Read the task carefully, is something unique, sorted, adjacent, guaranteed??
+6. DO NOT use if(!mp[x]) if you want to iterate the map later
+7. Are you using i in all loops? Are the i's conflicting?
+*/

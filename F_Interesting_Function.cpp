@@ -200,86 +200,35 @@ bool pow2(ll x)
     return false;
 }
 
+ll difference(ll prev, ll next)
+{
+    ll count = 0;
+    string p = to_string(prev), q = to_string(next);
+    for (ll i = 0; i < p.length(); i++)
+    {
+        if (p[i] != q[i])
+        {
+            count++;
+        }
+    }
+    if (p.length() != q.length())
+    {
+        return q.length();
+    }
+    return count;
+}
+
 void solve()
 {
-    ll n, u, r, d, l;
-    cin >> n >> u >> r >> d >> l;
-    ll u1 = u, r1 = r, d1 = d, l1 = l;
-    // for n
-    if (u == n)
+    ll n, m, sum = 0;
+    cin >> n >> m;
+    ll start = 0, end = 0;
+    for (ll i = 1; i <= MOD; i *= 10)
     {
-        r1--;
-        l1--;
+        start += n / i;
+        end += m / i;
     }
-    if (r == n)
-    {
-        u1--;
-        d1--;
-    }
-    if (d == n)
-    {
-        r1--;
-        l1--;
-    }
-    if (l == n)
-    {
-        u1--;
-        d1--;
-    }
-    // for n-1
-    if (u == n - 1)
-    {
-        if (r1 > l1)
-        {
-            r1--;
-        }
-        else
-        {
-            l1--;
-        }
-    }
-    if (r == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    if (d == n - 1)
-    {
-        if (r1 > l1)
-        {
-            r1--;
-        }
-        else
-        {
-            l1--;
-        }
-    }
-    if (l == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    // checking the validity
-    if (u1 >= 0 && r1 >= 0 && d1 >= 0 && l1 >= 0)
-    {
-        cout << "YES" << ln;
-    }
-    else
-    {
-        cout << "NO" << ln;
-    }
+    cout << end - start << ln;
 }
 int main()
 {

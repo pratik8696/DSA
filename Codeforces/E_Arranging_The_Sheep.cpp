@@ -202,84 +202,53 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, u, r, d, l;
-    cin >> n >> u >> r >> d >> l;
-    ll u1 = u, r1 = r, d1 = d, l1 = l;
-    // for n
-    if (u == n)
+    ll n;
+    cin >> n;
+    string s;
+    cin >> s;
+    ll total = 0, sheep = 0, pos = 0;
+    forn(i, s.length())
     {
-        r1--;
-        l1--;
+        if (s[i] == '*')
+            total++;
     }
-    if (r == n)
+    forn(i, s.length())
     {
-        u1--;
-        d1--;
-    }
-    if (d == n)
-    {
-        r1--;
-        l1--;
-    }
-    if (l == n)
-    {
-        u1--;
-        d1--;
-    }
-    // for n-1
-    if (u == n - 1)
-    {
-        if (r1 > l1)
+        if (s[i] == '*')
         {
-            r1--;
-        }
-        else
-        {
-            l1--;
+            sheep++;
+
+            if (sheep == ce(total, 2))
+            {
+                pos = i;
+            }
         }
     }
-    if (r == n - 1)
+    // cout << pos << ln;
+    // now moving to the right;
+    ll steps = 0, count = 0;
+    for (ll i = pos; i < n; i++)
     {
-        if (u1 > d1)
+        if (s[i] == '*')
         {
-            u1--;
-        }
-        else
-        {
-            d1--;
+            steps += abs(pos - i + count);
+            // cout << steps << " ";
+            count++;
         }
     }
-    if (d == n - 1)
+    // cout << ln;
+    count = 0;
+    for (ll i = pos; i >= 0; i--)
     {
-        if (r1 > l1)
+        if (s[i] == '*')
         {
-            r1--;
-        }
-        else
-        {
-            l1--;
-        }
-    }
-    if (l == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
+            steps += abs(pos - i - count);
+            count++;
+            // cout << steps << " ";
         }
     }
-    // checking the validity
-    if (u1 >= 0 && r1 >= 0 && d1 >= 0 && l1 >= 0)
-    {
-        cout << "YES" << ln;
-    }
-    else
-    {
-        cout << "NO" << ln;
-    }
+    // cout << ln;
+    cout << steps << ln;
 }
 int main()
 {

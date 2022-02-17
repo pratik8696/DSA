@@ -55,42 +55,6 @@ double eps = 1e-12;
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
 
-// function for prime factorization
-vector<pair<ll, ll>> pf(ll n)
-{
-    vector<pair<ll, ll>> prime;
-    for (int i = 2; i <= sqrt(n); i++)
-    {
-        if (n % i == 0)
-        {
-            int count = 0;
-            while (n % i == 0)
-            {
-                count++;
-                n = n / i;
-            }
-            prime.pb(mp(i, count));
-        }
-    }
-    if (n > 1)
-    {
-        prime.pb(mp(n, 1));
-    }
-    return prime;
-}
-
-// sum of digits of a number
-ll sumofno(ll n)
-{
-    ll sum = 0;
-    while (n != 0)
-    {
-        sum += n % 10;
-        n = n / 10;
-    }
-    return sum;
-}
-
 // modular exponentiation
 long long modpow(long long x, long long n, long long p)
 {
@@ -117,134 +81,51 @@ long long modpow(long long x, long long n, long long p)
     return ans;
 }
 
-// const int N = 1e6 + 100;
-// long long fact[N];
-//  initialise the factorial
-// void initfact(){
-// fact[0] = 1;
-// for (int i = 1; i < N; i++)
-//{
-// fact[i] = (fact[i - 1] * i);
-// fact[i] %= MOD;
-// }}
-
-// formula for c
-// ll C(ll n, ll i)
-//{
-// ll res = fact[n];
-// ll div = fact[n - i] * fact[i];
-// div %= MOD;
-// div = modpow(div, MOD - 2, MOD);
-// return (res * div) % MOD;
-// }
-
-long long CW(ll n, ll m)
+ll fun(v64 v)
 {
-    if (m > n - m)
-        m = n - m;
-    long long ans = 1;
-    for (int i = 0; i < m; i++)
+    ll pos = 0, neg = 0, zero = 0;
+    for (ll i = 0; i < v.size(); i++)
     {
-        ans = ans * (n - i) / (i + 1);
+        if (v[i] > 0)
+        {
+            pos++;
+        }
+        else if (v[i] < 0)
+        {
+            neg++;
+        }
+        else
+        {
+            zero++;
+        }
     }
-    return ans;
-}
 
-// function for fast expo
-ll fastexpo(ll a, ll b)
-{
-    if (b == 0)
-    {
-        return 1;
-    }
-    if (a == 0)
-    {
-        return 0;
-    }
-    ll y = fastexpo(a, b / 2);
-    if (b % 2 == 0)
-    {
-        return y * y;
-    }
-    else
-    {
-        return a * y * y;
-    }
-}
-
-ll popcount(ll n)
-{
-    ll c = 0;
-    for (; n; ++c)
-        n &= n - 1;
-    return c;
-}
-
-ll ce(ll x, ll y)
-{
-    ll res = x / y;
-    if (x % y != 0)
-    {
-        res++;
-    }
-    return res;
-}
-
-bool pow2(ll x)
-{
-    ll res = x & (x - 1);
-    if (res == 0)
-    {
-        return true;
-    }
-    return false;
+    ll res1 = modpow(2, pos, MOD) - 1;
+    ll res2 = modpow(2, neg, MOD) - 1;
+    ll res3 = modpow(2, zero, MOD) - 1;
+    ll res = (res1 + res2 + res3) % MOD;
+    return res%MOD;
 }
 
 void solve()
 {
     ll n;
     cin >> n;
-    ll arr[n];
-    map<ll, ll> m;
+    v64 v;
     forn(i, n)
     {
-        cin >> arr[i];
-        m[arr[i]]++;
+        ll x;
+        cin >> x;
+        v.pb(x);
     }
-    priority_queue<ll> pq;
-    for (auto t : m)
-    {
-        pq.push(t.second);
-    }
-    while (pq.size() >= 2)
-    {
-        ll first = pq.top();
-        pq.pop();
-        ll second = pq.top();
-        pq.pop();
-        first--, second--;
-        if (first)
-        {
-            pq.push(first);
-        }
-        if (second)
-        {
-            pq.push(second);
-        }
-    }
-    ll remsize = 0;
-    while (!pq.empty())
-    {
-        remsize += pq.top();
-        pq.pop();
-    }
-    cout << remsize << ln;
+    cout << fun(v) << ln;
 }
+
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t=1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

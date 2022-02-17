@@ -202,90 +202,41 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, u, r, d, l;
-    cin >> n >> u >> r >> d >> l;
-    ll u1 = u, r1 = r, d1 = d, l1 = l;
-    // for n
-    if (u == n)
+    string s, res = "", curr = "";
+    cin >> s;
+    forn(i, s.length())
     {
-        r1--;
-        l1--;
-    }
-    if (r == n)
-    {
-        u1--;
-        d1--;
-    }
-    if (d == n)
-    {
-        r1--;
-        l1--;
-    }
-    if (l == n)
-    {
-        u1--;
-        d1--;
-    }
-    // for n-1
-    if (u == n - 1)
-    {
-        if (r1 > l1)
+        if (s[i] == '2')
         {
-            r1--;
+            // yaha pr bs 2 and zero jayega andr
+            forsn(j, i, s.length())
+            {
+                if (s[j] == '2')
+                {
+                    curr.pb(s[j]);
+                }
+                else if (s[j] == '0')
+                {
+                    curr.pb(s[j]);
+                }
+                else if (s[j] == '1')
+                {
+                    res.pb(s[j]);
+                }
+            }
+            break;
         }
-        else
-        {
-            l1--;
-        }
+        res.pb(s[i]);
     }
-    if (r == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    if (d == n - 1)
-    {
-        if (r1 > l1)
-        {
-            r1--;
-        }
-        else
-        {
-            l1--;
-        }
-    }
-    if (l == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    // checking the validity
-    if (u1 >= 0 && r1 >= 0 && d1 >= 0 && l1 >= 0)
-    {
-        cout << "YES" << ln;
-    }
-    else
-    {
-        cout << "NO" << ln;
-    }
+    sort(all(res));
+    res += curr;
+    cout << res << ln;
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

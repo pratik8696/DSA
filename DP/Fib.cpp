@@ -199,87 +199,41 @@ bool pow2(ll x)
     }
     return false;
 }
+ll n;
+map<ll, ll> m;
+ll fib(ll x)
+{
+    if (x == 0 || x == 1)
+    {
+        return 1;
+    }
+    if (m[x - 1] == 0)
+    {
+        m[x - 1] = fib(x - 1);
+    }
+    if (m[x - 2] == 0)
+    {
+        m[x - 2] = fib(x - 2);
+    }
+    return m[x - 1] + m[x - 2];
+}
+v64 res;
+void fibi(ll x)
+{
+    res.pb(1);
+    res.pb(1);
+    for (ll i = 2; i < n + 1; i++)
+    {
+        res.pb(res[i - 1] + res[i - 2]);
+    }
+}
 
 void solve()
 {
-    ll n, u, r, d, l;
-    cin >> n >> u >> r >> d >> l;
-    ll u1 = u, r1 = r, d1 = d, l1 = l;
-    // for n
-    if (u == n)
-    {
-        r1--;
-        l1--;
-    }
-    if (r == n)
-    {
-        u1--;
-        d1--;
-    }
-    if (d == n)
-    {
-        r1--;
-        l1--;
-    }
-    if (l == n)
-    {
-        u1--;
-        d1--;
-    }
-    // for n-1
-    if (u == n - 1)
-    {
-        if (r1 > l1)
-        {
-            r1--;
-        }
-        else
-        {
-            l1--;
-        }
-    }
-    if (r == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    if (d == n - 1)
-    {
-        if (r1 > l1)
-        {
-            r1--;
-        }
-        else
-        {
-            l1--;
-        }
-    }
-    if (l == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    // checking the validity
-    if (u1 >= 0 && r1 >= 0 && d1 >= 0 && l1 >= 0)
-    {
-        cout << "YES" << ln;
-    }
-    else
-    {
-        cout << "NO" << ln;
-    }
+    cin >> n;
+    cout << fib(n) << ln;
+    fibi(0);
+    cout << res[res.size() - 1] << ln;
 }
 int main()
 {

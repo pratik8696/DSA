@@ -200,92 +200,52 @@ bool pow2(ll x)
     return false;
 }
 
+map<ll, ll> m;
+ll alphacodes(v64 v, ll size)
+{
+    if (size == 1)
+    {
+        return 1;
+    }
+    if (size == 0)
+    {
+        return 1;
+    }
+    ll res = 0;
+    if (m[size - 1] == 0)
+    {
+        m[size - 1] = alphacodes(v, size - 1);
+    }
+    if (v[size - 2] * 10 + v[size - 1] <= 26)
+    {
+        if (m[size - 2] == 0)
+        {
+            m[size - 2] = alphacodes(v, size - 2);
+        }
+    }
+    res += m[size - 1] + m[size - 2];
+    return res;
+}
+
 void solve()
 {
-    ll n, u, r, d, l;
-    cin >> n >> u >> r >> d >> l;
-    ll u1 = u, r1 = r, d1 = d, l1 = l;
-    // for n
-    if (u == n)
+    ll n;
+    cin >> n;
+    v64 v;
+    forn(i, n)
     {
-        r1--;
-        l1--;
+        ll x;
+        cin >> x;
+        v.pb(x);
     }
-    if (r == n)
-    {
-        u1--;
-        d1--;
-    }
-    if (d == n)
-    {
-        r1--;
-        l1--;
-    }
-    if (l == n)
-    {
-        u1--;
-        d1--;
-    }
-    // for n-1
-    if (u == n - 1)
-    {
-        if (r1 > l1)
-        {
-            r1--;
-        }
-        else
-        {
-            l1--;
-        }
-    }
-    if (r == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    if (d == n - 1)
-    {
-        if (r1 > l1)
-        {
-            r1--;
-        }
-        else
-        {
-            l1--;
-        }
-    }
-    if (l == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    // checking the validity
-    if (u1 >= 0 && r1 >= 0 && d1 >= 0 && l1 >= 0)
-    {
-        cout << "YES" << ln;
-    }
-    else
-    {
-        cout << "NO" << ln;
-    }
+    cout << alphacodes(v, v.size()) << ln;
 }
+
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

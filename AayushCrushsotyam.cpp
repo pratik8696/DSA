@@ -200,87 +200,53 @@ bool pow2(ll x)
     return false;
 }
 
+vector<ll> res;
+set<ll> check, vis;
+map<ll, ll> m;
+ll sum = 0;
+void path(ll x, ll arr[])
+{
+    if (check.count(x) == 1)
+    {
+        for (auto t : res)
+        {
+            sum += res.size() - 1;
+            m[t] = res.size() - 1;
+        }
+        check.clear();
+        res.clear();
+        return;
+    }
+    check.insert(x);
+    vis.insert(x);
+    res.push_back(x);
+    path(arr[x - 1], arr);
+}
+
 void solve()
 {
-    ll n, u, r, d, l;
-    cin >> n >> u >> r >> d >> l;
-    ll u1 = u, r1 = r, d1 = d, l1 = l;
-    // for n
-    if (u == n)
+    ll n;
+    cin >> n;
+    ll arr[n];
+    for (ll i = 0; i < n; i++)
     {
-        r1--;
-        l1--;
+        cin >> arr[i];
     }
-    if (r == n)
+    for (ll i = 0; i < n; i++)
     {
-        u1--;
-        d1--;
-    }
-    if (d == n)
-    {
-        r1--;
-        l1--;
-    }
-    if (l == n)
-    {
-        u1--;
-        d1--;
-    }
-    // for n-1
-    if (u == n - 1)
-    {
-        if (r1 > l1)
+        if (vis.count(arr[i]) == 0)
         {
-            r1--;
-        }
-        else
-        {
-            l1--;
+            path(arr[i], arr);
         }
     }
-    if (r == n - 1)
+    cout << sum << endl;
+    for (auto t : m)
     {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
+        cout << t.second << " ";
     }
-    if (d == n - 1)
-    {
-        if (r1 > l1)
-        {
-            r1--;
-        }
-        else
-        {
-            l1--;
-        }
-    }
-    if (l == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    // checking the validity
-    if (u1 >= 0 && r1 >= 0 && d1 >= 0 && l1 >= 0)
-    {
-        cout << "YES" << ln;
-    }
-    else
-    {
-        cout << "NO" << ln;
-    }
+    cout << endl;
 }
+
 int main()
 {
     fast_cin();

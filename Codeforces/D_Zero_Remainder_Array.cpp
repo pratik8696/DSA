@@ -200,93 +200,70 @@ bool pow2(ll x)
     return false;
 }
 
+ll it;
 void solve()
 {
-    ll n, u, r, d, l;
-    cin >> n >> u >> r >> d >> l;
-    ll u1 = u, r1 = r, d1 = d, l1 = l;
-    // for n
-    if (u == n)
+    ll n, k;
+    cin >> n >> k;
+    ll arr[n];
+    multiset<ll> res;
+    forn(i, n)
     {
-        r1--;
-        l1--;
-    }
-    if (r == n)
-    {
-        u1--;
-        d1--;
-    }
-    if (d == n)
-    {
-        r1--;
-        l1--;
-    }
-    if (l == n)
-    {
-        u1--;
-        d1--;
-    }
-    // for n-1
-    if (u == n - 1)
-    {
-        if (r1 > l1)
+        cin >> arr[i];
+        ll val = (k - (arr[i] % k)) % k;
+        if (val)
         {
-            r1--;
-        }
-        else
-        {
-            l1--;
+            res.insert(val);
         }
     }
-    if (r == n - 1)
+
+    for (auto t : res)
     {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
+        cout << t << " ";
     }
-    if (d == n - 1)
+    cout << ln;
+
+    ll curr = 0, steps = 0;
+    while (res.size() > 0)
     {
-        if (r1 > l1)
+        auto it = res.upper_bound(curr);
+        it--;
+        ll req = *it;
+        if (req == curr)
         {
-            r1--;
+            steps++;
+            curr++;
+            res.erase(it);
         }
-        else
+        else if (curr == 0)
         {
-            l1--;
+            steps += req;
+            curr = req;
         }
-    }
-    if (l == n - 1)
-    {
-        if (u1 > d1)
+        else if (req > curr)
         {
-            u1--;
+            steps += req - curr;
+            curr = req;
         }
-        else
+        else if (req < curr)
         {
-            d1--;
+            ll diff = curr - req;
+            ll valjoayega = k - diff;
+            steps += valjoayega;
+            curr = req;
         }
+        // curr = curr % k;
+        cout << steps << " ";
     }
-    // checking the validity
-    if (u1 >= 0 && r1 >= 0 && d1 >= 0 && l1 >= 0)
-    {
-        cout << "YES" << ln;
-    }
-    else
-    {
-        cout << "NO" << ln;
-    }
+    cout << steps << " ";
 }
+
 int main()
 {
     fast_cin();
     ll t;
     cin >> t;
-    for (int it = 1; it <= t; it++)
+    for (it = 1; it <= t; it++)
     {
         solve();
     }

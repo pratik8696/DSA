@@ -202,84 +202,42 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, u, r, d, l;
-    cin >> n >> u >> r >> d >> l;
-    ll u1 = u, r1 = r, d1 = d, l1 = l;
-    // for n
-    if (u == n)
+    ll n, a, b;
+    cin >> n >> a >> b;
+    if (b == 1)
     {
-        r1--;
-        l1--;
+        cout << "Yes" << ln;
+        return;
     }
-    if (r == n)
+    if (n % b == 1)
     {
-        u1--;
-        d1--;
+        cout << "Yes" << ln;
+        return;
     }
-    if (d == n)
+    ll res = 1;
+    if (a == 1)
     {
-        r1--;
-        l1--;
-    }
-    if (l == n)
-    {
-        u1--;
-        d1--;
-    }
-    // for n-1
-    if (u == n - 1)
-    {
-        if (r1 > l1)
+        if ((n - a) % b == 0)
         {
-            r1--;
+            cout << "Yes" << ln;
+            return;
         }
         else
         {
-            l1--;
+            cout << "No" << ln;
+            return;
         }
     }
-    if (r == n - 1)
+    while (res <= n)
     {
-        if (u1 > d1)
+        if ((n - res) % b == 0)
         {
-            u1--;
+            cout << "Yes" << ln;
+            return;
         }
-        else
-        {
-            d1--;
-        }
+        res *= a;
     }
-    if (d == n - 1)
-    {
-        if (r1 > l1)
-        {
-            r1--;
-        }
-        else
-        {
-            l1--;
-        }
-    }
-    if (l == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    // checking the validity
-    if (u1 >= 0 && r1 >= 0 && d1 >= 0 && l1 >= 0)
-    {
-        cout << "YES" << ln;
-    }
-    else
-    {
-        cout << "NO" << ln;
-    }
+    cout << "No" << ln;
 }
 int main()
 {

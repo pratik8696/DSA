@@ -34,7 +34,7 @@ typedef vector<vector<ll>> vv64;
 typedef vector<vector<p64>> vvp64;
 typedef vector<p64> vp64;
 typedef vector<p32> vp32;
-ll MOD = 1000000007;
+ll MOD = 998244353;
 double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
@@ -200,92 +200,39 @@ bool pow2(ll x)
     return false;
 }
 
+unordered_map<ll, ll> m;
+ll create(ll x)
+{
+    ll one = x / 2;
+    ll two = ce(x, 2);
+    if (one * two < x)
+    {
+        return x;
+    }
+    if (m[one] == 0)
+    {
+        m[one] = create(one) % MOD;
+    }
+    if (m[two] == 0)
+    {
+        m[two] = create(two) % MOD;
+    }
+    ll res = ((m[one] % MOD) * (m[two] % MOD)) % MOD;
+    return (res) % MOD;
+}
+
 void solve()
 {
-    ll n, u, r, d, l;
-    cin >> n >> u >> r >> d >> l;
-    ll u1 = u, r1 = r, d1 = d, l1 = l;
-    // for n
-    if (u == n)
-    {
-        r1--;
-        l1--;
-    }
-    if (r == n)
-    {
-        u1--;
-        d1--;
-    }
-    if (d == n)
-    {
-        r1--;
-        l1--;
-    }
-    if (l == n)
-    {
-        u1--;
-        d1--;
-    }
-    // for n-1
-    if (u == n - 1)
-    {
-        if (r1 > l1)
-        {
-            r1--;
-        }
-        else
-        {
-            l1--;
-        }
-    }
-    if (r == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    if (d == n - 1)
-    {
-        if (r1 > l1)
-        {
-            r1--;
-        }
-        else
-        {
-            l1--;
-        }
-    }
-    if (l == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    // checking the validity
-    if (u1 >= 0 && r1 >= 0 && d1 >= 0 && l1 >= 0)
-    {
-        cout << "YES" << ln;
-    }
-    else
-    {
-        cout << "NO" << ln;
-    }
+    ll n;
+    cin >> n;
+    cout << create(n) % MOD << ln;
 }
+
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

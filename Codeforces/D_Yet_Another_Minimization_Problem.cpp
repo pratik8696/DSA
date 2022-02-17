@@ -200,86 +200,76 @@ bool pow2(ll x)
     return false;
 }
 
+map<v64, ll> memo;
+ll ans = INT_MAX;
+void swaps(v64 a, v64 b, ll idx)
+{
+    if (idx >= a.size())
+    {
+        return;
+    }
+    v64 temp1(all(a)), temp2(all(b));
+    // swaps the terms
+    ll temp = temp1[idx];
+    temp1[idx] = temp2[idx];
+    temp2[idx] = temp;
+    ll res1 = 0, res2 = 0;
+    // a and b
+
+    for (ll i = 0; i < a.size() - 1; i++)
+    {
+        for (ll j = i + 1; j < a.size(); j++)
+        {
+            res1 += fastexpo((a[i] + a[j]), 2);
+            res1 += fastexpo((b[i] + b[j]), 2);
+        }
+    }
+
+    for (ll i = 0; i < a.size() - 1; i++)
+    {
+        for (ll j = i + 1; j < a.size(); j++)
+        {
+            res2 += fastexpo((temp2[i] + temp2[j]), 2);
+            res2 += fastexpo((temp1[i] + temp1[j]), 2);
+        }
+    }
+
+    // cout << res1 << " " << res2 << ln;
+    ans = min({res1, res2, ans});
+    if (idx + 1 < a.size())
+    {
+        if (temp1[idx + 1] != temp2[idx + 1])
+        {
+            swaps(temp1, temp2, idx + 1);
+        }
+    }
+    if (idx + 1 < a.size())
+    {
+        if (a[idx + 1] != b[idx + 1])
+        {
+            swaps(a, b, idx + 1);
+        }
+    }
+}
+
 void solve()
 {
-    ll n, u, r, d, l;
-    cin >> n >> u >> r >> d >> l;
-    ll u1 = u, r1 = r, d1 = d, l1 = l;
-    // for n
-    if (u == n)
+    ll n;
+    cin >> n;
+    v64 a, b;
+    ll x;
+    forn(i, n)
     {
-        r1--;
-        l1--;
+        cin >> x;
+        a.pb(x);
     }
-    if (r == n)
+    forn(i, n)
     {
-        u1--;
-        d1--;
+        cin >> x;
+        b.pb(x);
     }
-    if (d == n)
-    {
-        r1--;
-        l1--;
-    }
-    if (l == n)
-    {
-        u1--;
-        d1--;
-    }
-    // for n-1
-    if (u == n - 1)
-    {
-        if (r1 > l1)
-        {
-            r1--;
-        }
-        else
-        {
-            l1--;
-        }
-    }
-    if (r == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    if (d == n - 1)
-    {
-        if (r1 > l1)
-        {
-            r1--;
-        }
-        else
-        {
-            l1--;
-        }
-    }
-    if (l == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    // checking the validity
-    if (u1 >= 0 && r1 >= 0 && d1 >= 0 && l1 >= 0)
-    {
-        cout << "YES" << ln;
-    }
-    else
-    {
-        cout << "NO" << ln;
-    }
+    swaps(a, b, 0);
+    cout << ans << ln;
 }
 int main()
 {
@@ -289,6 +279,7 @@ int main()
     for (int it = 1; it <= t; it++)
     {
         solve();
+        ans = INT_MAX;
     }
     return 0;
 }

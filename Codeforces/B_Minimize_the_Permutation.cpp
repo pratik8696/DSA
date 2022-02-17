@@ -202,84 +202,54 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, u, r, d, l;
-    cin >> n >> u >> r >> d >> l;
-    ll u1 = u, r1 = r, d1 = d, l1 = l;
-    // for n
-    if (u == n)
+    ll n;
+    cin >> n;
+    ll arr[n], sorted[n];
+    set<ll> s, del;
+    v64 res(n, 0);
+    forn(i, n)
     {
-        r1--;
-        l1--;
+        cin >> arr[i];
+        sorted[i] = arr[i];
+        s.insert(i + 1);
     }
-    if (r == n)
+    sort(al(sorted, n));
+    ll idx = 0;
+
+    for (ll i = 0; i < n; i++)
     {
-        u1--;
-        d1--;
-    }
-    if (d == n)
-    {
-        r1--;
-        l1--;
-    }
-    if (l == n)
-    {
-        u1--;
-        d1--;
-    }
-    // for n-1
-    if (u == n - 1)
-    {
-        if (r1 > l1)
+        // jo counted ho rha
+        if (arr[i] == sorted[i])
         {
-            r1--;
+            // element is same as sorted wla array
+            s.erase(s.begin());
+            idx++;
+            continue;
         }
-        else
+        if (arr[i] != sorted[i] && arr[i] == *s.begin())
         {
-            l1--;
+            // idx same nai rhega
+            if (del.count(*s.begin() + 1))
+            {
+                res[idx] = *s.begin();
+                idx = i + 1;
+            }
+            else
+            {
+                res[idx] = *s.begin();
+                idx = i;
+            }
+            s.erase(s.begin());
+            arr[i] = -1;
         }
+        del.insert(arr[i]);
     }
-    if (r == n - 1)
+
+    for (auto t : res)
     {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
+        cout << t << " ";
     }
-    if (d == n - 1)
-    {
-        if (r1 > l1)
-        {
-            r1--;
-        }
-        else
-        {
-            l1--;
-        }
-    }
-    if (l == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    // checking the validity
-    if (u1 >= 0 && r1 >= 0 && d1 >= 0 && l1 >= 0)
-    {
-        cout << "YES" << ln;
-    }
-    else
-    {
-        cout << "NO" << ln;
-    }
+    cout << ln;
 }
 int main()
 {

@@ -200,87 +200,51 @@ bool pow2(ll x)
     return false;
 }
 
+bool comp(p64 a, p64 b)
+{
+    ll diff1 = abs(a.first - a.second), diff2 = abs(b.first - b.second);
+    if (diff1 < diff2)
+        return true;
+    if (diff2 < diff1)
+        return false;
+    if (a.first < b.first)
+        return true;
+    if (a.first > b.first)
+        return false;
+    if (a.second > b.second)
+        return true;
+    return false;
+}
+
 void solve()
 {
-    ll n, u, r, d, l;
-    cin >> n >> u >> r >> d >> l;
-    ll u1 = u, r1 = r, d1 = d, l1 = l;
-    // for n
-    if (u == n)
+    unordered_map<ll, ll> freq;
+    ll n;
+    cin >> n;
+    vp64 a(n);
+    ll j, k;
+    for (j = 0; j < n; j++)
     {
-        r1--;
-        l1--;
+        cin >> a[j].se >> a[j].fi;
     }
-    if (r == n)
+    sort(all(a), comp);
+    ll cnt = 0;
+    for (j = 0; j < n; j++)
     {
-        u1--;
-        d1--;
-    }
-    if (d == n)
-    {
-        r1--;
-        l1--;
-    }
-    if (l == n)
-    {
-        u1--;
-        d1--;
-    }
-    // for n-1
-    if (u == n - 1)
-    {
-        if (r1 > l1)
+        ll l = a[j].se, r = a[j].fi;
+        while (freq.count(r) != 0 && r > l)
         {
-            r1--;
+            r--;
         }
-        else
+        if (freq.count(r) == 0 && r >= l)
         {
-            l1--;
+            freq[r] = 1;
+            cnt++;
         }
     }
-    if (r == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    if (d == n - 1)
-    {
-        if (r1 > l1)
-        {
-            r1--;
-        }
-        else
-        {
-            l1--;
-        }
-    }
-    if (l == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    // checking the validity
-    if (u1 >= 0 && r1 >= 0 && d1 >= 0 && l1 >= 0)
-    {
-        cout << "YES" << ln;
-    }
-    else
-    {
-        cout << "NO" << ln;
-    }
+    cout << cnt << ln;
 }
+
 int main()
 {
     fast_cin();

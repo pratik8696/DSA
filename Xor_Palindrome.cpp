@@ -202,85 +202,53 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, u, r, d, l;
-    cin >> n >> u >> r >> d >> l;
-    ll u1 = u, r1 = r, d1 = d, l1 = l;
-    // for n
-    if (u == n)
+    ll n;
+    cin >> n;
+    string s;
+    cin >> s;
+    ll zero = 0, one = 0;
+    forn(i, n)
     {
-        r1--;
-        l1--;
-    }
-    if (r == n)
-    {
-        u1--;
-        d1--;
-    }
-    if (d == n)
-    {
-        r1--;
-        l1--;
-    }
-    if (l == n)
-    {
-        u1--;
-        d1--;
-    }
-    // for n-1
-    if (u == n - 1)
-    {
-        if (r1 > l1)
+        if (s[i] == '0')
         {
-            r1--;
+            zero++;
         }
         else
         {
-            l1--;
+            one++;
         }
     }
-    if (r == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    if (d == n - 1)
-    {
-        if (r1 > l1)
-        {
-            r1--;
-        }
-        else
-        {
-            l1--;
-        }
-    }
-    if (l == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    // checking the validity
-    if (u1 >= 0 && r1 >= 0 && d1 >= 0 && l1 >= 0)
+    // cout << one << " " << zero << ln;
+    if (one == 0 || zero == 0)
     {
         cout << "YES" << ln;
+        return;
+    }
+    if (n % 2 == 0)
+    {
+        if (one % 2 == zero % 2 && one % 2 == 0)
+        {
+            cout << "YES" << ln;
+            return;
+        }
+        if (one == zero)
+        {
+            cout << "YES" << ln;
+            return;
+        }
     }
     else
     {
-        cout << "NO" << ln;
+        if (one % 2 != zero % 2)
+        {
+            cout << "YES" << ln;
+            return;
+        }
     }
+    cout << "NO" << ln;
+    return;
 }
+
 int main()
 {
     fast_cin();

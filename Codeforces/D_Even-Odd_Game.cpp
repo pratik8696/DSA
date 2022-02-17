@@ -202,83 +202,47 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, u, r, d, l;
-    cin >> n >> u >> r >> d >> l;
-    ll u1 = u, r1 = r, d1 = d, l1 = l;
-    // for n
-    if (u == n)
+    ll n;
+    cin >> n;
+    ll arr[n];
+    multiset<ll> s;
+    forn(i, n)
     {
-        r1--;
-        l1--;
+        cin >> arr[i];
+        s.insert(-1 * arr[i]);
     }
-    if (r == n)
+    ll i = 0, alice = 0, bob = 0;
+    while (!s.empty())
     {
-        u1--;
-        d1--;
-    }
-    if (d == n)
-    {
-        r1--;
-        l1--;
-    }
-    if (l == n)
-    {
-        u1--;
-        d1--;
-    }
-    // for n-1
-    if (u == n - 1)
-    {
-        if (r1 > l1)
+        if (i % 2 == 0)
         {
-            r1--;
+            if (abs(*s.begin()) % 2 == 0)
+            {
+                alice += abs(*s.begin());
+            }
+            s.erase(s.begin());
         }
         else
         {
-            l1--;
+            if (abs(*s.begin()) % 2 != 0)
+            {
+                bob += abs(*s.begin());
+            }
+            s.erase(s.begin());
         }
+        i++;
     }
-    if (r == n - 1)
+    if (alice > bob)
     {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
+        cout << "Alice" << ln;
     }
-    if (d == n - 1)
+    else if (alice < bob)
     {
-        if (r1 > l1)
-        {
-            r1--;
-        }
-        else
-        {
-            l1--;
-        }
-    }
-    if (l == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    // checking the validity
-    if (u1 >= 0 && r1 >= 0 && d1 >= 0 && l1 >= 0)
-    {
-        cout << "YES" << ln;
+        cout << "Bob" << ln;
     }
     else
     {
-        cout << "NO" << ln;
+        cout << "Tie" << ln;
     }
 }
 int main()

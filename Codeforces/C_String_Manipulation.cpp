@@ -202,90 +202,42 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, u, r, d, l;
-    cin >> n >> u >> r >> d >> l;
-    ll u1 = u, r1 = r, d1 = d, l1 = l;
-    // for n
-    if (u == n)
+    ll rep;
+    cin >> rep;
+    string t, s = "";
+    cin >> t;
+    while (rep--)
     {
-        r1--;
-        l1--;
+        s += t;
     }
-    if (r == n)
+    map<char, v64> m;
+    forn(i, s.length())
     {
-        u1--;
-        d1--;
+        m[s[i]].pb(i);
     }
-    if (d == n)
+    ll n;
+    cin >> n;
+    forn(i, n)
     {
-        r1--;
-        l1--;
+        ll occ;
+        char x;
+        cin >> occ >> x;
+        auto v = m[x];
+        ll index = v[occ - 1];
+        m[x].erase(m[x].begin() + occ - 1);
+        s[index] = '?';
     }
-    if (l == n)
+    vector<pair<ll, char>> v;
+    for(auto t:m)
     {
-        u1--;
-        d1--;
-    }
-    // for n-1
-    if (u == n - 1)
-    {
-        if (r1 > l1)
-        {
-            r1--;
-        }
-        else
-        {
-            l1--;
-        }
-    }
-    if (r == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    if (d == n - 1)
-    {
-        if (r1 > l1)
-        {
-            r1--;
-        }
-        else
-        {
-            l1--;
-        }
-    }
-    if (l == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    // checking the validity
-    if (u1 >= 0 && r1 >= 0 && d1 >= 0 && l1 >= 0)
-    {
-        cout << "YES" << ln;
-    }
-    else
-    {
-        cout << "NO" << ln;
+        char alpha
     }
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

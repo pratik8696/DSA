@@ -200,86 +200,77 @@ bool pow2(ll x)
     return false;
 }
 
-void solve()
+bool check(ll one, ll zero)
 {
-    ll n, u, r, d, l;
-    cin >> n >> u >> r >> d >> l;
-    ll u1 = u, r1 = r, d1 = d, l1 = l;
-    // for n
-    if (u == n)
+    ll length = one + zero;
+    if (one == 0 || zero == 0)
     {
-        r1--;
-        l1--;
+        return true;
     }
-    if (r == n)
+    if (length % 2 == 0)
     {
-        u1--;
-        d1--;
-    }
-    if (d == n)
-    {
-        r1--;
-        l1--;
-    }
-    if (l == n)
-    {
-        u1--;
-        d1--;
-    }
-    // for n-1
-    if (u == n - 1)
-    {
-        if (r1 > l1)
+        if (one % 2 == 0 && zero % 2 == 0)
         {
-            r1--;
+            return true;
         }
-        else
-        {
-            l1--;
-        }
-    }
-    if (r == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    if (d == n - 1)
-    {
-        if (r1 > l1)
-        {
-            r1--;
-        }
-        else
-        {
-            l1--;
-        }
-    }
-    if (l == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    // checking the validity
-    if (u1 >= 0 && r1 >= 0 && d1 >= 0 && l1 >= 0)
-    {
-        cout << "YES" << ln;
     }
     else
     {
-        cout << "NO" << ln;
+        if (one % 2 != zero % 2)
+        {
+            return true;
+        }
     }
+    return false;
+}
+
+void solve()
+{
+    ll n;
+    cin >> n;
+    vp64 v;
+    forn(i, n)
+    {
+        string s;
+        cin >> s;
+        ll one = 0, zero = 0;
+        forn(i, s.length())
+        {
+            if (s[i] == '0')
+                zero++;
+            else
+                one++;
+        }
+        v.pb({one, zero});
+    }
+    for (ll i = 0; i < n; i++)
+    {
+        for (ll j = 0; j < n; j++)
+        {
+            if (i != j)
+            {
+                // palindrome bn rha hai ki nai
+                ll one = v[i].fi + v[j].fi;
+                ll zero = v[i].se + v[j].se;
+                if (check(one, zero))
+                {
+                    ll ii = v[i].fi + v[i].se;
+                    ll jj = v[j].fi + v[j].se;
+                    
+                }
+            }
+        }
+    }
+    ll ans = 0;
+    for (auto t : v)
+    {
+        if(check(t.fi,t.se))
+        {
+            ans++;
+        }
+        // cout << t.fi << " " << t.se << ln;
+    }
+    cout << ans << ln;
 }
 int main()
 {

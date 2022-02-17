@@ -200,92 +200,55 @@ bool pow2(ll x)
     return false;
 }
 
-void solve()
+set<v64> check;
+
+void create(v64 x, ll n)
 {
-    ll n, u, r, d, l;
-    cin >> n >> u >> r >> d >> l;
-    ll u1 = u, r1 = r, d1 = d, l1 = l;
-    // for n
-    if (u == n)
+    sort(all(x));
+    ll currsum = 0;
+    for (auto t : x)
     {
-        r1--;
-        l1--;
+        currsum += t;
     }
-    if (r == n)
+    if (currsum >= n && check.count(x) == 0)
     {
-        u1--;
-        d1--;
-    }
-    if (d == n)
-    {
-        r1--;
-        l1--;
-    }
-    if (l == n)
-    {
-        u1--;
-        d1--;
-    }
-    // for n-1
-    if (u == n - 1)
-    {
-        if (r1 > l1)
+        for (ll i = 0; i < x.size(); i++)
         {
-            r1--;
+            if (i != x.size() - 1)
+            {
+                cout << x[i] << " + ";
+            }
+            else
+            {
+                cout << x[i];
+            }
         }
-        else
-        {
-            l1--;
-        }
+        cout << ln;
+        check.insert(x);
+        return;
     }
-    if (r == n - 1)
+    for (ll i = 1; i <= n - currsum; i++)
     {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    if (d == n - 1)
-    {
-        if (r1 > l1)
-        {
-            r1--;
-        }
-        else
-        {
-            l1--;
-        }
-    }
-    if (l == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    // checking the validity
-    if (u1 >= 0 && r1 >= 0 && d1 >= 0 && l1 >= 0)
-    {
-        cout << "YES" << ln;
-    }
-    else
-    {
-        cout << "NO" << ln;
+        v64 temp(all(x));
+        temp.pb(i);
+        create(temp, n);
     }
 }
+
+void solve()
+{
+    ll n;
+    cin >> n;
+    v64 v;
+    create(v, n);
+}
+
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

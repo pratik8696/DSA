@@ -200,92 +200,73 @@ bool pow2(ll x)
     return false;
 }
 
+bool compare(p64 a, p64 b)
+{
+    return a.se < b.se;
+}
+
 void solve()
 {
-    ll n, u, r, d, l;
-    cin >> n >> u >> r >> d >> l;
-    ll u1 = u, r1 = r, d1 = d, l1 = l;
-    // for n
-    if (u == n)
+    ll n, m;
+    cin >> n >> m;
+    ll arr[n], brr[n];
+    forn(i, n)
     {
-        r1--;
-        l1--;
+        cin >> arr[i];
     }
-    if (r == n)
+    forn(i, n)
     {
-        u1--;
-        d1--;
+        cin >> brr[i];
     }
-    if (d == n)
+    // making vector pairs;
+    vp64 res1, res2;
+    forn(i, n)
     {
-        r1--;
-        l1--;
+        res1.pb(mp(arr[i], brr[i]));
+        res2.pb(mp(arr[i], brr[i]));
     }
-    if (l == n)
+    sort(al(arr, n)), sort(al(brr, n));
+    sort(all(res1));
+    sort(all(res2), compare);
+    ll res = 0;
+    forn(i, m)
     {
-        u1--;
-        d1--;
-    }
-    // for n-1
-    if (u == n - 1)
-    {
-        if (r1 > l1)
+        ll a, b, ans = INF;
+        cin >> a >> b;
+        ll idx1 = lower_bound(al(arr, n), a) - arr;
+        ll idx2 = lower_bound(al(brr, n), b) - brr;
+        if (idx1 <= n - 1 && idx2 <= n - 1)
         {
-            r1--;
-        }
-        else
-        {
-            l1--;
-        }
-    }
-    if (r == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    if (d == n - 1)
-    {
-        if (r1 > l1)
-        {
-            r1--;
-        }
-        else
-        {
-            l1--;
+            for (ll i = (idx1); i < n; i++)
+            {
+                ll aa = res1[i].fi, bb = res1[i].se;
+                if (aa >= a && bb >= b)
+                {
+                    ans = min(ans, aa + bb);
+                }
+            }
+            for (ll i = (idx2); i < n; i++)
+            {
+                ll aa = res2[i].fi, bb = res2[i].se;
+                if (aa >= a && bb >= b)
+                {
+                    ans = min(ans, aa + bb);
+                }
+            }
+            if (ans == INF)
+            {
+                ans = 0;
+            }
+            res += ans;
         }
     }
-    if (l == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    // checking the validity
-    if (u1 >= 0 && r1 >= 0 && d1 >= 0 && l1 >= 0)
-    {
-        cout << "YES" << ln;
-    }
-    else
-    {
-        cout << "NO" << ln;
-    }
+    cout << res << ln;
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

@@ -202,85 +202,60 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, u, r, d, l;
-    cin >> n >> u >> r >> d >> l;
-    ll u1 = u, r1 = r, d1 = d, l1 = l;
-    // for n
-    if (u == n)
+    ll n, k;
+    cin >> n >> k;
+    deque<ll> arr;
+    ll val[k];
+    forn(i, n)
     {
-        r1--;
-        l1--;
+        ll x;
+        cin >> x;
+        arr.pb(x);
     }
-    if (r == n)
+    v64 valless, valmore;
+    forn(i, k)
     {
-        u1--;
-        d1--;
-    }
-    if (d == n)
-    {
-        r1--;
-        l1--;
-    }
-    if (l == n)
-    {
-        u1--;
-        d1--;
-    }
-    // for n-1
-    if (u == n - 1)
-    {
-        if (r1 > l1)
+        cin >> val[i];
+        if (val[i] <= 2)
         {
-            r1--;
+            valless.pb(val[i]);
         }
         else
         {
-            l1--;
+            valmore.pb(val[i]);
         }
     }
-    if (r == n - 1)
+    sort(all(arr), greater<ll>());
+    sort(all(valless)), sort(all(valmore));
+    ll total_sum = 0;
+    // solving for 1 and 2
+    for (ll i = 0; i < valless.size(); i++)
     {
-        if (u1 > d1)
+        if (valless[i] == 1)
         {
-            u1--;
+            total_sum += 2 * arr[0];
+            arr.pop_front();
         }
-        else
+        else if (valless[i] == 2)
         {
-            d1--;
+            total_sum += arr[0] + arr[1];
+            arr.pop_front();
+            arr.pop_front();
         }
     }
-    if (d == n - 1)
+    // now marking the remaining indexes for values greater than 2
+    ll rem = 0;
+    for (ll i = 0; i < valmore.size(); i++)
     {
-        if (r1 > l1)
-        {
-            r1--;
-        }
-        else
-        {
-            l1--;
-        }
+        rem += valmore[i] - 1;
+        ll idx1 = i;
+        ll idx2 = i + rem + valmore.size() - (i + 1);
+        // cout << arr[idx1] << " " << arr[idx2] << ln;
+        total_sum += arr[idx1] + arr[idx2];
     }
-    if (l == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    // checking the validity
-    if (u1 >= 0 && r1 >= 0 && d1 >= 0 && l1 >= 0)
-    {
-        cout << "YES" << ln;
-    }
-    else
-    {
-        cout << "NO" << ln;
-    }
+    cout << total_sum << ln;
 }
+
 int main()
 {
     fast_cin();

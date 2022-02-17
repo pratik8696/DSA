@@ -200,86 +200,94 @@ bool pow2(ll x)
     return false;
 }
 
+#define maxi 300010
+map<ll, v64> arr;
+int vis[maxi];
+
+v64 idx;
+void dfs(int v, ll a[])
+{
+    vis[v] = 1;
+    idx.pb(v);
+    for (auto child : arr[v])
+    {
+        if (vis[child] == 0)
+        {
+            dfs(child, a);
+        }
+    }
+}
+
 void solve()
 {
-    ll n, u, r, d, l;
-    cin >> n >> u >> r >> d >> l;
-    ll u1 = u, r1 = r, d1 = d, l1 = l;
-    // for n
-    if (u == n)
+    ll n;
+    cin >> n;
+    ll a[n];
+    map<ll, v64> m;
+    forn(i, n)
     {
-        r1--;
-        l1--;
-    }
-    if (r == n)
-    {
-        u1--;
-        d1--;
-    }
-    if (d == n)
-    {
-        r1--;
-        l1--;
-    }
-    if (l == n)
-    {
-        u1--;
-        d1--;
-    }
-    // for n-1
-    if (u == n - 1)
-    {
-        if (r1 > l1)
+        cin >> a[i];
+        for (ll j = 0; j < 32; j++)
         {
-            r1--;
-        }
-        else
-        {
-            l1--;
+            ll res = fastexpo(2, j);
+            if (res & a[i])
+            {
+                m[j].pb(i);
+            }
         }
     }
-    if (r == n - 1)
+    for (auto t : m)
     {
-        if (u1 > d1)
+        auto v = t.se;
+        for (ll i = 0; i < v.size() - 1; i++)
         {
-            u1--;
-        }
-        else
-        {
-            d1--;
+            arr[v[i]].pb(v[i + 1]);
+            arr[v[i + 1]].pb(v[i]);
         }
     }
-    if (d == n - 1)
+    map<ll, ll> res;
+    // now do dfs
+    for (ll i = 0; i < n; i++)
     {
-        if (r1 > l1)
+        if (vis[i] == 0)
         {
-            r1--;
-        }
-        else
-        {
-            l1--;
+            dfs(i, a);
+            v64 s;
+            for (auto t : idx)
+            {
+                s.pb(a[t]);
+            }
+            sort(all(s));
+            sort(all(idx));
+            for (ll i = 0; i < s.size(); i++)
+            {
+                res[idx[i]] = s[i];
+            }
+            idx.clear();
         }
     }
-    if (l == n - 1)
+    sort(al(a, n));
+    bool flag = 1;
+    for (ll i = 0; i < n; i++)
     {
-        if (u1 > d1)
+        if (res[i] != a[i])
         {
-            u1--;
-        }
-        else
-        {
-            d1--;
+            flag = 0;
         }
     }
-    // checking the validity
-    if (u1 >= 0 && r1 >= 0 && d1 >= 0 && l1 >= 0)
+    if (flag)
     {
-        cout << "YES" << ln;
+        cout << "Yes" << ln;
     }
     else
     {
-        cout << "NO" << ln;
+        cout << "No" << ln;
     }
+    forn(i, n)
+    {
+        vis[i] = 0;
+    }
+    arr.clear();
 }
 int main()
 {

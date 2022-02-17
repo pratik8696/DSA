@@ -202,90 +202,68 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, u, r, d, l;
-    cin >> n >> u >> r >> d >> l;
-    ll u1 = u, r1 = r, d1 = d, l1 = l;
-    // for n
-    if (u == n)
+    ll n, m;
+    cin >> n >> m;
+    map<ll, v64> adj;
+    map<ll, ll> weaker;
+    forn(i, m)
     {
-        r1--;
-        l1--;
+        ll a, b;
+        cin >> a >> b;
+        adj[a].pb(b);
+        adj[b].pb(a);
+        weaker[max(a, b)]++;
     }
-    if (r == n)
+    set<ll> del;
+    for (ll i = 1; i <= n; i++)
     {
-        u1--;
-        d1--;
-    }
-    if (d == n)
-    {
-        r1--;
-        l1--;
-    }
-    if (l == n)
-    {
-        u1--;
-        d1--;
-    }
-    // for n-1
-    if (u == n - 1)
-    {
-        if (r1 > l1)
+        if (weaker[i] == adj[i].size())
         {
-            r1--;
-        }
-        else
-        {
-            l1--;
+            del.insert(i);
         }
     }
-    if (r == n - 1)
+    ll q;
+    cin >> q;
+    while (q--)
     {
-        if (u1 > d1)
+        ll opt;
+        cin >> opt;
+        if (opt == 1)
         {
-            u1--;
+            ll a, b;
+            cin >> a >> b;
+            adj[a].pb(b);
+            adj[b].pb(a);
+            weaker[max(a, b)]++;
+            if (del.count(min(a, b)))
+            {
+                del.erase(del.lower_bound(min(a, b)));
+            }
         }
-        else
+        if (opt == 2)
         {
-            d1--;
+            ll a, b;
+            cin >> a >> b;
+            adj[a].pop_back();
+            adj[b].pop_back();
+            weaker[max(a, b)]--;
+            if (weaker[min(a,b)] == adj[min(a,b)].size())
+            {
+                del.insert(min(a,b));
+            }
         }
-    }
-    if (d == n - 1)
-    {
-        if (r1 > l1)
+        if (opt == 3)
         {
-            r1--;
+            cout << del.size() << ln;
         }
-        else
-        {
-            l1--;
-        }
-    }
-    if (l == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    // checking the validity
-    if (u1 >= 0 && r1 >= 0 && d1 >= 0 && l1 >= 0)
-    {
-        cout << "YES" << ln;
-    }
-    else
-    {
-        cout << "NO" << ln;
     }
 }
+
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

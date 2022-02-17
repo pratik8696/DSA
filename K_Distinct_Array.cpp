@@ -200,85 +200,67 @@ bool pow2(ll x)
     return false;
 }
 
+string create(ll n, ll x)
+{
+    char c = '1';
+
+    string s;
+    for (int i = 0; i < n; i++)
+    {
+        s.pb(c);
+        if (c == x + '0')
+            c = '1';
+        else
+            c++;
+    }
+    return s;
+}
+
 void solve()
 {
-    ll n, u, r, d, l;
-    cin >> n >> u >> r >> d >> l;
-    ll u1 = u, r1 = r, d1 = d, l1 = l;
-    // for n
-    if (u == n)
+    ll n, x;
+    cin >> n >> x;
+    v64 res;
+    ll org = n, sum = 0;
+    while (org--)
     {
-        r1--;
-        l1--;
+        sum += org + 1;
+        res.pb(sum);
     }
-    if (r == n)
+    ll idx1 = lower_bound(all(res), x) - res.begin();
+    if (res[idx1] == x)
     {
-        u1--;
-        d1--;
-    }
-    if (d == n)
-    {
-        r1--;
-        l1--;
-    }
-    if (l == n)
-    {
-        u1--;
-        d1--;
-    }
-    // for n-1
-    if (u == n - 1)
-    {
-        if (r1 > l1)
+        ll res = idx1 + 1;
+        string result = create(n, res);
+        // n=7 and x=4
+        forn(i, n)
         {
-            r1--;
+            cout << result[i] << " ";
         }
-        else
-        {
-            l1--;
-        }
-    }
-    if (r == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    if (d == n - 1)
-    {
-        if (r1 > l1)
-        {
-            r1--;
-        }
-        else
-        {
-            l1--;
-        }
-    }
-    if (l == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    // checking the validity
-    if (u1 >= 0 && r1 >= 0 && d1 >= 0 && l1 >= 0)
-    {
-        cout << "YES" << ln;
+        cout << ln;
     }
     else
     {
-        cout << "NO" << ln;
+        ll lowerval = idx1 - 1;
+        ll upperval = idx1;
+        // string lenge yha pr
+        string a = create(n, lowerval + 1), b = create(n, upperval + 1);
+        if (a.length() % 2 == 0)
+        {
+            idx1++;
+            char t = (idx1) + '0';
+            reverse(all(b));
+            b.pop_back();
+            b.pb(t);
+            reverse(all(b));
+        }
+        string q = a + b;
+        ll rem = x - res[lowerval];
+        for (ll i = rem; i < (b.length() + rem); i++)
+        {
+            cout << q[i] << " ";
+        }
+        cout << ln;
     }
 }
 int main()

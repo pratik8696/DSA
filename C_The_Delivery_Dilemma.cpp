@@ -202,85 +202,41 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, u, r, d, l;
-    cin >> n >> u >> r >> d >> l;
-    ll u1 = u, r1 = r, d1 = d, l1 = l;
-    // for n
-    if (u == n)
+    ll n;
+    cin >> n;
+    ll arr[n], brr[n];
+    forn(i, n)
     {
-        r1--;
-        l1--;
+        cin >> arr[i];
     }
-    if (r == n)
+
+    forn(i, n)
     {
-        u1--;
-        d1--;
+        cin >> brr[i];
     }
-    if (d == n)
+    // now putting the data in a vector pair
+    vp64 v;
+    forn(i, n) { v.pb({arr[i], brr[i]}); }
+    sort(all(v));
+    reverse(all(v));
+    // now we will start iteration
+    ll time_by_petya = 0;
+    ll maxi = INT_MIN;
+    forn(i, n)
     {
-        r1--;
-        l1--;
-    }
-    if (l == n)
-    {
-        u1--;
-        d1--;
-    }
-    // for n-1
-    if (u == n - 1)
-    {
-        if (r1 > l1)
+        if (v[i].first > v[i].second + time_by_petya)
         {
-            r1--;
+            time_by_petya = v[i].second + time_by_petya;
+            maxi = max(maxi, time_by_petya);
         }
         else
         {
-            l1--;
+            maxi = max(maxi, v[i].first);
         }
     }
-    if (r == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    if (d == n - 1)
-    {
-        if (r1 > l1)
-        {
-            r1--;
-        }
-        else
-        {
-            l1--;
-        }
-    }
-    if (l == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    // checking the validity
-    if (u1 >= 0 && r1 >= 0 && d1 >= 0 && l1 >= 0)
-    {
-        cout << "YES" << ln;
-    }
-    else
-    {
-        cout << "NO" << ln;
-    }
+    cout << maxi << ln;
 }
+
 int main()
 {
     fast_cin();

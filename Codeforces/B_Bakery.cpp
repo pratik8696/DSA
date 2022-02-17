@@ -200,92 +200,54 @@ bool pow2(ll x)
     return false;
 }
 
+map<ll, vp64> arr;
+
 void solve()
 {
-    ll n, u, r, d, l;
-    cin >> n >> u >> r >> d >> l;
-    ll u1 = u, r1 = r, d1 = d, l1 = l;
-    // for n
-    if (u == n)
+    ll n, m, k;
+    cin >> n >> m >> k;
+    map<ll, ll> location;
+    forn(i, m)
     {
-        r1--;
-        l1--;
+        ll a, b, w;
+        cin >> a >> b >> w;
+        arr[a].pb({b, w});
+        arr[b].pb({a, w});
     }
-    if (r == n)
+    v64 loc;
+    forn(i, k)
     {
-        u1--;
-        d1--;
+        ll x;
+        cin >> x;
+        loc.pb(x);
+        location[x]++;
     }
-    if (d == n)
+    ll ans = INT_MAX;
+    forn(j, k)
     {
-        r1--;
-        l1--;
-    }
-    if (l == n)
-    {
-        u1--;
-        d1--;
-    }
-    // for n-1
-    if (u == n - 1)
-    {
-        if (r1 > l1)
+        ll curr_bakery = loc[j];
+        auto v = arr[curr_bakery];
+        for (ll i = 0; i < v.size(); i++)
         {
-            r1--;
-        }
-        else
-        {
-            l1--;
+            ll secondcity = v[i].first;
+            if (location[secondcity] == 0)
+            {
+                ans = min(ans, v[i].second);
+                // cout << v[i].second << ln;
+            }
         }
     }
-    if (r == n - 1)
+    if (ans == INT_MAX)
     {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
+        ans = -1;
     }
-    if (d == n - 1)
-    {
-        if (r1 > l1)
-        {
-            r1--;
-        }
-        else
-        {
-            l1--;
-        }
-    }
-    if (l == n - 1)
-    {
-        if (u1 > d1)
-        {
-            u1--;
-        }
-        else
-        {
-            d1--;
-        }
-    }
-    // checking the validity
-    if (u1 >= 0 && r1 >= 0 && d1 >= 0 && l1 >= 0)
-    {
-        cout << "YES" << ln;
-    }
-    else
-    {
-        cout << "NO" << ln;
-    }
+    cout << ans << ln;
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();
