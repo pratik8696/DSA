@@ -43,7 +43,6 @@ double eps = 1e-12;
 #define ln "\n"
 #define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
-#define ie insert
 #define pb push_back
 #define fi first
 #define se second
@@ -201,67 +200,53 @@ bool pow2(ll x)
     return false;
 }
 
+#define maxi 510
+char arr[maxi][maxi];
+ll val[maxi][maxi];
+
 void solve()
 {
     ll n, m;
     cin >> n >> m;
-    string s;
-    cin >> s;
-    ll count = 0, act = 0, size = s.length();
-    s.pb('4');
-    s.pb('5');
-    v64 gap;
-    ll start = 0, end = 0, one = 0;
-    forn(i, size)
+    for (ll i = 1; i < n + 1; i++)
     {
-        if (s[i] == '1')
+        for (ll j = 1; j < m + 1; j++)
         {
-            start = i;
-            for (ll j = i; j < size; j++)
+            cin >> arr[i][j];
+        }
+    }
+    for (ll i = n; i >= 0; i--)
+    {
+        for (ll j = 1; j < m + 1; j++)
+        {
+            if (arr[i][j] == '*')
             {
-                if (s[j] == '0')
+                if (val[i + 1][j] == 0)
                 {
-                    end = j;
-                    i = j;
-                    break;
+                    val[i][j] = 1;
+                }
+                else
+                {
+                    ll first = val[i + 1][j - 1];
+                    ll second = val[i + 1][j + 1];
+                    val[i][j] = min(first, second) + 1;
                 }
             }
-            gap.pb(end - start);
-        }
-        if (s[i] == '1')
-        {
-            one++;
         }
     }
-    
-    if (gap.size() == 0)
+    ll ans = 0;
+    for (ll i = 1; i < n + 1; i++)
     {
-        if (one != 0)
+        for (ll j = 1; j < m + 1; j++)
         {
-            cout << n << ln;
-            return;
+            // cout << val[i][j] << " ";
+            ans += val[i][j];
         }
-        else if (one == 0)
-        {
-            cout << 0 << ln;
-            return;
-        }
+        // cout << ln;
     }
-    ll res = gap.size() + 1, cost = 0;
-    sort(all(gap));
-    cout << gap.size() << ln;
-    for (auto t : gap)
-    {
-        cout << t << " ";
-        if (t * m <= n)
-        {
-            cost += t * m;
-            res--;
-        }
-    }
-    cout << ln;
-    cout << res * n + cost << ln;
+    cout << ans << ln;
 }
+
 int main()
 {
     fast_cin();
@@ -270,6 +255,8 @@ int main()
     for (int it = 1; it <= t; it++)
     {
         solve();
+        memset(val, 0, sizeof(val));
+        memset(arr, '.', sizeof(arr));
     }
     return 0;
 }

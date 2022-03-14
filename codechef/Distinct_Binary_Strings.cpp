@@ -204,26 +204,32 @@ void solve()
 {
     ll n;
     cin >> n;
-    map<ll, ll> c;
-    forn(i, n)
+    string s;
+    cin >> s;
+    char prev = s[0];
+    v64 res;
+    ll count = 0;
+    s.pb('z');
+    for (ll i = 0; i < s.length(); i++)
     {
-        ll x;
-        cin >> x;
-        c[x]++;
+        if (s[i] == prev)
+        {
+            count++;
+        }
+        else
+        {
+            res.pb(count);
+            count = 1;
+            prev=s[i];
+        }
     }
-    set<p64> pq;
-    for (auto t : c)
-    {
-        pq.insert({t.second, t.first});
-    }
-    const auto entry = s.lower_bound({43, std::numeric_limits<int>::min()});
+    cout << res.size() << ln;
 }
-
 int main()
 {
     fast_cin();
-    ll t = 1;
-    // cin >> t;
+    ll t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

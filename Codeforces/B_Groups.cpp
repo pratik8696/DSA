@@ -43,7 +43,6 @@ double eps = 1e-12;
 #define ln "\n"
 #define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
-#define ie insert
 #define pb push_back
 #define fi first
 #define se second
@@ -203,64 +202,60 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    string s;
-    cin >> s;
-    ll count = 0, act = 0, size = s.length();
-    s.pb('4');
-    s.pb('5');
-    v64 gap;
-    ll start = 0, end = 0, one = 0;
-    forn(i, size)
+    ll n;
+    cin >> n;
+    map<ll, ll> m;
+    forn(i, n)
     {
-        if (s[i] == '1')
+        ll arr[5];
+        forn(i, 5)
         {
-            start = i;
-            for (ll j = i; j < size; j++)
+            cin >> arr[i];
+            if (arr[i])
             {
-                if (s[j] == '0')
+                m[i]++;
+            }
+        }
+    }
+    ll sum = 0;
+    if (n & 1)
+    {
+        for (auto t : m)
+        {
+            if (t.second > n / 2)
+            {
+                sum++;
+            }
+        }
+        if (sum == 1)
+        {
+            for (auto t : m)
+            {
+                if (t.second == n / 2)
                 {
-                    end = j;
-                    i = j;
-                    break;
+                    sum++;
                 }
             }
-            gap.pb(end - start);
-        }
-        if (s[i] == '1')
-        {
-            one++;
         }
     }
-    
-    if (gap.size() == 0)
+    else
     {
-        if (one != 0)
+        for (auto t : m)
         {
-            cout << n << ln;
-            return;
-        }
-        else if (one == 0)
-        {
-            cout << 0 << ln;
-            return;
+            if (t.second >= n / 2)
+            {
+                sum++;
+            }
         }
     }
-    ll res = gap.size() + 1, cost = 0;
-    sort(all(gap));
-    cout << gap.size() << ln;
-    for (auto t : gap)
+    if (sum >= 2)
     {
-        cout << t << " ";
-        if (t * m <= n)
-        {
-            cost += t * m;
-            res--;
-        }
+        cout << "YES" << ln;
     }
-    cout << ln;
-    cout << res * n + cost << ln;
+    else
+    {
+        cout << "NO" << ln;
+    }
 }
 int main()
 {

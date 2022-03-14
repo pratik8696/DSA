@@ -202,48 +202,21 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, a, b;
-    cin >> n >> a >> b;
-    if (b == 1)
+    ll n,m;
+    cin >> n>>m;
+    if(abs(n-m)==1||abs(n-m)==9)
     {
-        cout << "Yes" << ln;
-        return;
+        cout<<"Yes"<<ln;
+    }else{
+        cout<<"No"<<ln;
     }
-    if (n % b == 1)
-    {
-        cout << "Yes" << ln;
-        return;
-    }
-    ll res = 1;
-    if (a == 1)
-    {
-        if ((n - a) % b == 0)
-        {
-            cout << "Yes" << ln;
-            return;
-        }
-        else
-        {
-            cout << "No" << ln;
-            return;
-        }
-    }
-    while (res <= n)
-    {
-        if ((n - res) % b == 0)
-        {
-            cout << "Yes" << ln;
-            return;
-        }
-        res *= a;
-    }
-    cout << "No" << ln;
+    
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    //  cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

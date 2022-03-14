@@ -203,65 +203,54 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    string s;
-    cin >> s;
-    ll count = 0, act = 0, size = s.length();
-    s.pb('4');
-    s.pb('5');
-    v64 gap;
-    ll start = 0, end = 0, one = 0;
-    forn(i, size)
+    ll n;
+    cin >> n;
+    ll arr[n];
+    map<ll, ll> m;
+    set<tuple<ll, ll, ll>> s;
+    forn(i, n)
     {
-        if (s[i] == '1')
+        cin >> arr[i];
+        m[arr[i]]++;
+    }
+    for (ll i = 0; i < n; i++)
+    {
+        for (ll j = 0; j < n; j++)
         {
-            start = i;
-            for (ll j = i; j < size; j++)
+            if (i != j)
             {
-                if (s[j] == '0')
+                ll sum = arr[i] + arr[j];
+                if (m[-1 * sum] != 0 && (abs(arr[i] + arr[j]) != min(abs(arr[i]), abs(arr[j]))))
                 {
-                    end = j;
-                    i = j;
-                    break;
+                    v64 res;
+                    res.pb(arr[i]), res.pb(arr[j]), res.pb(-1 * sum);
+                    sort(all(res));
+                    auto pr = make_tuple(res[0], res[1], res[2]);
+                    if (s.count(pr) == 0)
+                    {
+                        s.ie(pr);
+                    }
+                }
+                else if (m[-1 * sum] > 1 && abs(arr[i] + arr[j]) == min(abs(arr[i]), abs(arr[j])))
+                {
+                    v64 res;
+                    res.pb(arr[i]), res.pb(arr[j]), res.pb(-1 * sum);
+                    sort(all(res));
+                    auto pr = make_tuple(res[0], res[1], res[2]);
+                    if (s.count(pr) == 0)
+                    {
+                        s.ie(pr);
+                    }
                 }
             }
-            gap.pb(end - start);
-        }
-        if (s[i] == '1')
-        {
-            one++;
         }
     }
-    
-    if (gap.size() == 0)
+    for (auto t : s)
     {
-        if (one != 0)
-        {
-            cout << n << ln;
-            return;
-        }
-        else if (one == 0)
-        {
-            cout << 0 << ln;
-            return;
-        }
+        cout << get<0>(t) << " " << get<1>(t) << " " << get<2>(t) << ln;
     }
-    ll res = gap.size() + 1, cost = 0;
-    sort(all(gap));
-    cout << gap.size() << ln;
-    for (auto t : gap)
-    {
-        cout << t << " ";
-        if (t * m <= n)
-        {
-            cost += t * m;
-            res--;
-        }
-    }
-    cout << ln;
-    cout << res * n + cost << ln;
 }
+
 int main()
 {
     fast_cin();

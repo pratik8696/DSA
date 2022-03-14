@@ -43,7 +43,6 @@ double eps = 1e-12;
 #define ln "\n"
 #define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
-#define ie insert
 #define pb push_back
 #define fi first
 #define se second
@@ -203,64 +202,42 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
     string s;
     cin >> s;
-    ll count = 0, act = 0, size = s.length();
-    s.pb('4');
-    s.pb('5');
-    v64 gap;
-    ll start = 0, end = 0, one = 0;
-    forn(i, size)
+    ll x = 0, y = 0, time = 0;
+    set<pair<p64, p64>> t;
+    t.insert({{0, 0}, {0, 0}});
+    forn(i, s.length())
     {
-        if (s[i] == '1')
+        ll x1 = x, y1 = y;
+        if (s[i] == 'N')
         {
-            start = i;
-            for (ll j = i; j < size; j++)
-            {
-                if (s[j] == '0')
-                {
-                    end = j;
-                    i = j;
-                    break;
-                }
-            }
-            gap.pb(end - start);
+            y++;
         }
-        if (s[i] == '1')
+        else if (s[i] == 'S')
         {
-            one++;
+            y--;
         }
+        else if (s[i] == 'E')
+        {
+            x++;
+        }
+        else if (s[i] == 'W')
+        {
+            x--;
+        }
+        if (t.count({{x1, y1}, {x, y}}))
+        {
+            time++;
+        }
+        else
+        {
+            time += 5;
+        }
+        t.insert({{x1, y1}, {x, y}});
+        t.insert({{x, y}, {x1, y1}});
     }
-    
-    if (gap.size() == 0)
-    {
-        if (one != 0)
-        {
-            cout << n << ln;
-            return;
-        }
-        else if (one == 0)
-        {
-            cout << 0 << ln;
-            return;
-        }
-    }
-    ll res = gap.size() + 1, cost = 0;
-    sort(all(gap));
-    cout << gap.size() << ln;
-    for (auto t : gap)
-    {
-        cout << t << " ";
-        if (t * m <= n)
-        {
-            cost += t * m;
-            res--;
-        }
-    }
-    cout << ln;
-    cout << res * n + cost << ln;
+    cout << time << ln;
 }
 int main()
 {

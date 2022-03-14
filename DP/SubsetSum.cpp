@@ -200,47 +200,52 @@ bool pow2(ll x)
     return false;
 }
 
-ll potions(ll arr[], ll n, ll sum)
+bool k(ll arr[], ll n, ll sum, ll target)
 {
     if (n == 0)
     {
-        if (sum + arr[n - 1] >= 0)
+        if (sum == target)
         {
-            return 1;
+            return true;
         }
         else
         {
-            return 0;
+            return false;
         }
     }
-    if (arr[n - 1] < 0)
+    if (arr[n - 1] + sum <= target)
     {
-        if (sum + arr[n - 1] >= 0)
+        if (k(arr, n - 1, sum + arr[n - 1], target))
         {
-            // ek baar include kro ek baar nai and return the max between them
-            return max(potions(arr, n - 1, sum + arr[n - 1]) + 1, potions(arr, n - 1, sum));
+            return true;
         }
-        else
+        if (k(arr, n - 1, sum, target))
         {
-            // bina include kiye age kr do
-            return potions(arr, n - 1, sum);
+            return true;
         }
     }
-    return potions(arr, n - 1, sum + arr[n - 1]) + 1;
+    else
+    {
+        if (k(arr, n - 1, sum, target))
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 void solve()
 {
-    ll n;
-    cin >> n;
+    ll n, target;
+    cin >> n >> target;
     ll arr[n];
     forn(i, n)
     {
         cin >> arr[i];
     }
-    reverse(al(arr,n));
-    cout << potions(arr, n, 0) << ln;
+    cout << k(arr, n, 0, target) << ln;
 }
+
 int main()
 {
     fast_cin();

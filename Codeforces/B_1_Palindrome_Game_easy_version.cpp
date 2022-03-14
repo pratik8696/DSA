@@ -201,70 +201,92 @@ bool pow2(ll x)
     return false;
 }
 
+v64 res, ans;
+
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
+    ll n;
+    cin >> n;
     string s;
     cin >> s;
-    ll count = 0, act = 0, size = s.length();
-    s.pb('4');
-    s.pb('5');
-    v64 gap;
-    ll start = 0, end = 0, one = 0;
-    forn(i, size)
+    ll count = 0;
+    forn(i, s.length())
     {
-        if (s[i] == '1')
+        if (s[i] == '0')
         {
-            start = i;
-            for (ll j = i; j < size; j++)
+            count++;
+        }
+    }
+    ll even = 0, odd = 0, sum = 0;
+    if (s.length() % 2 == 0)
+    {
+        forn(i, res.size())
+        {
+            sum += res[i];
+            if (i % 2 == 0)
             {
-                if (s[j] == '0')
-                {
-                    end = j;
-                    i = j;
-                    break;
-                }
+                even += res[i];
             }
-            gap.pb(end - start);
-        }
-        if (s[i] == '1')
-        {
-            one++;
+            else
+            {
+                odd += res[i];
+            }
+            if (sum == count)
+            {
+                break;
+            }
         }
     }
-    
-    if (gap.size() == 0)
+    else
     {
-        if (one != 0)
+        forn(i, ans.size())
         {
-            cout << n << ln;
-            return;
-        }
-        else if (one == 0)
-        {
-            cout << 0 << ln;
-            return;
+            sum += ans[i];
+            if (i % 2 == 0)
+            {
+                even += ans[i];
+            }
+            else
+            {
+                odd += ans[i];
+            }
+            if (sum == count)
+            {
+                break;
+            }
         }
     }
-    ll res = gap.size() + 1, cost = 0;
-    sort(all(gap));
-    cout << gap.size() << ln;
-    for (auto t : gap)
+
+    // cout << even << " " << odd << ln;
+
+    if (even > odd)
     {
-        cout << t << " ";
-        if (t * m <= n)
-        {
-            cost += t * m;
-            res--;
-        }
+        cout << "BOB" << ln;
     }
-    cout << ln;
-    cout << res * n + cost << ln;
+    else if (even < odd)
+    {
+        cout << "ALICE" << ln;
+    }
+    else
+    {
+        cout << "DRAW" << ln;
+    }
 }
+
 int main()
 {
     fast_cin();
+    ll k = 1000;
+    while (k--)
+    {
+        res.pb(1);
+        res.pb(0);
+        res.pb(1);
+        ans.pb(1);
+        ans.pb(1);
+        ans.pb(0);
+        ans.pb(1);
+    }
     ll t;
     cin >> t;
     for (int it = 1; it <= t; it++)

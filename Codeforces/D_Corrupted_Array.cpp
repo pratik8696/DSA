@@ -203,64 +203,51 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    string s;
-    cin >> s;
-    ll count = 0, act = 0, size = s.length();
-    s.pb('4');
-    s.pb('5');
-    v64 gap;
-    ll start = 0, end = 0, one = 0;
-    forn(i, size)
+    ll n;
+    cin >> n;
+    ll arr[n + 2];
+    forn(i, n + 2)
     {
-        if (s[i] == '1')
-        {
-            start = i;
-            for (ll j = i; j < size; j++)
-            {
-                if (s[j] == '0')
-                {
-                    end = j;
-                    i = j;
-                    break;
-                }
-            }
-            gap.pb(end - start);
-        }
-        if (s[i] == '1')
-        {
-            one++;
-        }
+        cin >> arr[i];
     }
-    
-    if (gap.size() == 0)
+    // now form the set
+    sort(al(arr, n + 2));
+    multiset<ll> s;
+    ll sum = 0;
+    forn(i, n + 1)
     {
-        if (one != 0)
-        {
-            cout << n << ln;
-            return;
-        }
-        else if (one == 0)
-        {
-            cout << 0 << ln;
-            return;
-        }
+        s.ie(arr[i]);
+        sum += arr[i];
     }
-    ll res = gap.size() + 1, cost = 0;
-    sort(all(gap));
-    cout << gap.size() << ln;
-    for (auto t : gap)
+    ll diff = sum - arr[n + 1];
+    if (s.count(diff))
     {
-        cout << t << " ";
-        if (t * m <= n)
+        s.erase(s.find(diff));
+        // output;
+        for (auto t : s)
         {
-            cost += t * m;
-            res--;
+            cout << t << " ";
         }
+        cout << ln;
+        return;
     }
-    cout << ln;
-    cout << res * n + cost << ln;
+    // x is arr[n+1]
+    // and sum is arr[n];
+    sum = 0;
+    forn(i, n)
+    {
+        sum += arr[i];
+    }
+    if (sum == arr[n])
+    {
+        forn(i, n)
+        {
+            cout << arr[i] << " ";
+        }
+        cout << ln;
+        return;
+    }
+    cout << -1 << ln;
 }
 int main()
 {

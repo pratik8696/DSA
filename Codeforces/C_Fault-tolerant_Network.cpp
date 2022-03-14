@@ -203,64 +203,110 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    string s;
-    cin >> s;
-    ll count = 0, act = 0, size = s.length();
-    s.pb('4');
-    s.pb('5');
-    v64 gap;
-    ll start = 0, end = 0, one = 0;
-    forn(i, size)
+    ll n;
+    cin >> n;
+    v64 f(n), s(n);
+    forn(i, n)
     {
-        if (s[i] == '1')
+        cin >> f[i];
+    }
+    forn(i, n)
+    {
+        cin >> s[i];
+    }
+    ll one = -1, two = -1, three = -1, four = -1, val = 0;
+    ll val2 = abs(f[0] - s.back()) + abs(s[0] - f.back());
+    // cout << one << two << three << four << " " << val << ln;
+    if (one == -1)
+    {
+        // cout << "ONE" << ln;
+        ll diff = INT_MAX;
+        forn(i, n)
         {
-            start = i;
-            for (ll j = i; j < size; j++)
+            diff = min(diff, abs(f[0] - s[i]));
+        }
+        forn(i, n)
+        {
+            if (diff == abs(f[0] - s[i]))
             {
-                if (s[j] == '0')
+                val += abs(f[0] - s[i]);
+                if (i == 0)
                 {
-                    end = j;
-                    i = j;
-                    break;
+                    two = 1;
                 }
+                if (i == n - 1)
+                {
+                    four = 1;
+                }
+                break;
             }
-            gap.pb(end - start);
-        }
-        if (s[i] == '1')
-        {
-            one++;
         }
     }
-    
-    if (gap.size() == 0)
+    // cout << one << two << three << four << " " << val << ln;
+    if (two == -1)
     {
-        if (one != 0)
+        // cout << "TWO" << ln;
+        ll diff = INT_MAX;
+        forn(i, n)
         {
-            cout << n << ln;
-            return;
+            diff = min(diff, abs(s[0] - f[i]));
         }
-        else if (one == 0)
+        forn(i, n)
         {
-            cout << 0 << ln;
-            return;
+            if (diff == abs(s[0] - f[i]))
+            {
+                val += abs(s[0] - f[i]);
+                if (i == n - 1)
+                {
+                    three = 1;
+                }
+                break;
+            }
         }
     }
-    ll res = gap.size() + 1, cost = 0;
-    sort(all(gap));
-    cout << gap.size() << ln;
-    for (auto t : gap)
+    // cout << one << two << three << four << " " << val << ln;
+    if (three == -1)
     {
-        cout << t << " ";
-        if (t * m <= n)
+        // cout << "THREE" << ln;
+        ll diff = INT_MAX;
+        forn(i, n)
         {
-            cost += t * m;
-            res--;
+            diff = min(diff, abs(f[n - 1] - s[i]));
+        }
+        forn(i, n)
+        {
+            if (diff == abs(f[n - 1] - s[i]))
+            {
+                val += abs(f[n - 1] - s[i]);
+                // cout << f[n - 1] - s[i] << ln;
+                if (i == n - 1)
+                {
+                    four = 1;
+                }
+                break;
+            }
         }
     }
-    cout << ln;
-    cout << res * n + cost << ln;
+    // cout << one << two << three << four << " " << val << ln;
+    if (four == -1)
+    {
+        // cout << "FOUR" << ln;
+        ll diff = INT_MAX;
+        forn(i, n)
+        {
+            diff = min(diff, abs(s[n - 1] - f[i]));
+        }
+        forn(i, n)
+        {
+            if (diff == abs(s[n - 1] - f[i]))
+            {
+                val += abs(s[n - 1] - f[i]);
+                break;
+            }
+        }
+    }
+    // cout << one << two << three << four << " " << val << ln;
+    cout << min(val2, val) << ln;
 }
 int main()
 {

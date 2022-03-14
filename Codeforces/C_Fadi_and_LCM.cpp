@@ -43,7 +43,6 @@ double eps = 1e-12;
 #define ln "\n"
 #define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
-#define ie insert
 #define pb push_back
 #define fi first
 #define se second
@@ -201,72 +200,44 @@ bool pow2(ll x)
     return false;
 }
 
+ll total = 1, ans = INF;
+v64 arr;
+
+void prod(ll x, ll n)
+{
+    if (n == 0)
+    {
+        return;
+    }
+    ans = min(ans, max(x, total / x));
+    prod(x * arr[n - 1], n - 1);
+    prod(x, n - 1);
+}
+
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    string s;
-    cin >> s;
-    ll count = 0, act = 0, size = s.length();
-    s.pb('4');
-    s.pb('5');
-    v64 gap;
-    ll start = 0, end = 0, one = 0;
-    forn(i, size)
+    ll n;
+    cin >> n;
+    if (n == 1)
     {
-        if (s[i] == '1')
-        {
-            start = i;
-            for (ll j = i; j < size; j++)
-            {
-                if (s[j] == '0')
-                {
-                    end = j;
-                    i = j;
-                    break;
-                }
-            }
-            gap.pb(end - start);
-        }
-        if (s[i] == '1')
-        {
-            one++;
-        }
+        cout << "1 1" << ln;
+        return;
     }
-    
-    if (gap.size() == 0)
+    vp64 v = pf(n);
+    for (auto t : v)
     {
-        if (one != 0)
-        {
-            cout << n << ln;
-            return;
-        }
-        else if (one == 0)
-        {
-            cout << 0 << ln;
-            return;
-        }
+        arr.pb(fastexpo(t.first, t.second));
     }
-    ll res = gap.size() + 1, cost = 0;
-    sort(all(gap));
-    cout << gap.size() << ln;
-    for (auto t : gap)
-    {
-        cout << t << " ";
-        if (t * m <= n)
-        {
-            cost += t * m;
-            res--;
-        }
-    }
-    cout << ln;
-    cout << res * n + cost << ln;
+    total = n;
+    prod(1, arr.size());
+    cout << total / ans << " " << ans << ln;
 }
+
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

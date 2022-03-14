@@ -43,7 +43,6 @@ double eps = 1e-12;
 #define ln "\n"
 #define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
-#define ie insert
 #define pb push_back
 #define fi first
 #define se second
@@ -201,72 +200,69 @@ bool pow2(ll x)
     return false;
 }
 
+// first recursive
+ll knapsack(ll arr[], ll wt[], ll n, ll w)
+{
+    if (n == 0 || w == 0)
+    {
+        return 0;
+    }
+    if (wt[n - 1] <= w)
+    {
+        // dalo ni dalo
+        return max(knapsack(arr, wt, n - 1, w - wt[n - 1]) + arr[n - 1], knapsack(arr, wt, n - 1, w));
+    }
+    else
+    {
+        // mt dalo
+        return knapsack(arr, wt, n - 1, w);
+    }
+}
+
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    string s;
-    cin >> s;
-    ll count = 0, act = 0, size = s.length();
-    s.pb('4');
-    s.pb('5');
-    v64 gap;
-    ll start = 0, end = 0, one = 0;
-    forn(i, size)
+    ll n, w;
+    cin >> n >> w;
+    ll arr[n], wt[n];
+    forn(i, n)
     {
-        if (s[i] == '1')
+        cin >> arr[i];
+    }
+    forn(i, n)
+    {
+        cin >> wt[i];
+    }
+    // now writing the code for dp
+    cout << knapsack(arr, wt, n, w) << ln;
+    // now writing the dp style code
+    ll maxi = 10000;
+    ll dp[n + 1][maxi];
+    // now going with initialization
+    memset(dp, 0, sizeof(dp));
+    // now solving the dp
+    forsn(i, 1, n + 1)
+    {
+        forsn(j, 1, maxi)
         {
-            start = i;
-            for (ll j = i; j < size; j++)
+            // if wt of the current array index is less than w then dalo and not dalo
+            if (wt[i - 1] <= j)
             {
-                if (s[j] == '0')
-                {
-                    end = j;
-                    i = j;
-                    break;
-                }
+                dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - wt[i - 1]] + arr[i - 1]);
             }
-            gap.pb(end - start);
-        }
-        if (s[i] == '1')
-        {
-            one++;
-        }
-    }
-    
-    if (gap.size() == 0)
-    {
-        if (one != 0)
-        {
-            cout << n << ln;
-            return;
-        }
-        else if (one == 0)
-        {
-            cout << 0 << ln;
-            return;
+            else
+            {
+                dp[i][j] = dp[i - 1][j];
+            }
         }
     }
-    ll res = gap.size() + 1, cost = 0;
-    sort(all(gap));
-    cout << gap.size() << ln;
-    for (auto t : gap)
-    {
-        cout << t << " ";
-        if (t * m <= n)
-        {
-            cost += t * m;
-            res--;
-        }
-    }
-    cout << ln;
-    cout << res * n + cost << ln;
+    cout << dp[n][w] << ln;
 }
+
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

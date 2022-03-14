@@ -202,62 +202,42 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, k;
-    cin >> n >> k;
-    ll arr[n];
-    multiset<ll> s;
+    ll n;
+    cin >> n;
+    v64 arr(n);
+    map<ll, ll> m;
     forn(i, n)
     {
         cin >> arr[i];
-        ll v = (k - arr[i] % k) % k;
-        if (v)
-        {
-            s.insert(v);
-        }
+        m[arr[i]]++;
     }
-    ll curr = 0, steps = 0;
-    ll size = s.size();
-    forn(i, size)
+    v64 res;
+    ll ans = 0, largest = INT_MAX;
+    for (auto t : m)
     {
-        auto it = s.lower_bound(curr);
-        if (it == s.end())
-        {
-            it--;
-        }
-        ll req = *it;
-        if (curr != req)
-        {
-            if (curr == 0)
-            {
-                steps += req;
-                curr = req;
-            }
-            else if (curr < req)
-            {
-                steps += req - curr;
-                curr = req;
-            }
-            else if (curr > req)
-            {
-                ll diff = curr - req;
-                ll val = k - diff;
-                steps += val;
-                curr = req;
-            }
-        }
-        if (curr == req)
-        {
-            steps++;
-            curr++;
-            if (it != s.end())
-            {
-                s.erase(it);
-            }
-        }
-        curr %= k;
+        res.pb(t.second);
     }
-    cout << steps << ln;
+    sort(all(res), greater<ll>());
+    for (auto t : res)
+    {
+        if (t >= largest)
+        {
+            ans += largest;
+            largest--;
+        }
+        else if (t < largest)
+        {
+            ans += t;
+            largest = t - 1;
+        }
+        if (largest <= 0)
+        {
+            break;
+        }
+    }
+    cout << ans << ln;
 }
+
 int main()
 {
     fast_cin();

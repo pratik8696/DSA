@@ -43,7 +43,6 @@ double eps = 1e-12;
 #define ln "\n"
 #define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
-#define ie insert
 #define pb push_back
 #define fi first
 #define se second
@@ -203,70 +202,81 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    string s;
-    cin >> s;
-    ll count = 0, act = 0, size = s.length();
-    s.pb('4');
-    s.pb('5');
-    v64 gap;
-    ll start = 0, end = 0, one = 0;
-    forn(i, size)
+    ll n, x;
+    char opt;
+    cin >> n;
+    map<ll, ll> c;
+    forn(i, n)
     {
-        if (s[i] == '1')
+        ll x;
+        cin >> x;
+        c[x]++;
+    }
+    // making a set of pairs
+    set<p64> s;
+    // inserting 3 elements so that set mai hmesha 3 size maintained rhe
+    s.insert({0, -1}), s.insert({0, -2}), s.insert({0, -3});
+    for (auto t : c)
+    {
+        s.insert({t.second, t.first});
+    }
+    ll q;
+    cin >> q;
+    while (q--)
+    {
+        cin >> opt >> x;
+        // now delete the pair from the set
+        s.erase({c[x], x});
+        if (opt == '+')
         {
-            start = i;
-            for (ll j = i; j < size; j++)
+            c[x]++;
+        }
+        else
+        {
+            c[x]--;
+        }
+        s.insert({c[x], x});
+        // now interating from back
+        auto it = s.rbegin();
+        v64 res;
+        for (ll i = 0; i < 3; i++)
+        {
+            auto val = *it;
+            res.pb(val.first);
+            it++;
+            if (it == s.rend())
             {
-                if (s[j] == '0')
-                {
-                    end = j;
-                    i = j;
-                    break;
-                }
+                break;
             }
-            gap.pb(end - start);
         }
-        if (s[i] == '1')
+        if (res[0] >= 8)
         {
-            one++;
+            cout << "YES" << ln;
+        }
+        else if (res[0] >= 6 && res[1] >= 2)
+        {
+            cout << "YES" << ln;
+        }
+        else if (res[0] >= 4 && res[1] >= 4)
+        {
+            cout << "YES" << ln;
+        }
+        else if (res[0] >= 4 && res[1] >= 2 && res[2] >= 2)
+        {
+            cout << "YES" << ln;
+        }
+        else
+        {
+            cout << "NO" << ln;
         }
     }
-    
-    if (gap.size() == 0)
-    {
-        if (one != 0)
-        {
-            cout << n << ln;
-            return;
-        }
-        else if (one == 0)
-        {
-            cout << 0 << ln;
-            return;
-        }
-    }
-    ll res = gap.size() + 1, cost = 0;
-    sort(all(gap));
-    cout << gap.size() << ln;
-    for (auto t : gap)
-    {
-        cout << t << " ";
-        if (t * m <= n)
-        {
-            cost += t * m;
-            res--;
-        }
-    }
-    cout << ln;
-    cout << res * n + cost << ln;
 }
+
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

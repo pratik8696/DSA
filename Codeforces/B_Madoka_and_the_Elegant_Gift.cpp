@@ -205,62 +205,43 @@ void solve()
 {
     ll n, m;
     cin >> n >> m;
-    string s;
-    cin >> s;
-    ll count = 0, act = 0, size = s.length();
-    s.pb('4');
-    s.pb('5');
-    v64 gap;
-    ll start = 0, end = 0, one = 0;
-    forn(i, size)
+    char arr[n + 1][m + 1];
+    for (ll i = 1; i <= n; i++)
     {
-        if (s[i] == '1')
+        for (ll j = 1; j <= m; j++)
         {
-            start = i;
-            for (ll j = i; j < size; j++)
+            cin >> arr[i][j];
+        }
+    }
+    for (ll i = 1; i < n; i++)
+    {
+        for (ll j = 1; j < m; j++)
+        {
+            ll count = 0;
+            if (arr[i][j] == '1')
             {
-                if (s[j] == '0')
-                {
-                    end = j;
-                    i = j;
-                    break;
-                }
+                count++;
             }
-            gap.pb(end - start);
-        }
-        if (s[i] == '1')
-        {
-            one++;
-        }
-    }
-    
-    if (gap.size() == 0)
-    {
-        if (one != 0)
-        {
-            cout << n << ln;
-            return;
-        }
-        else if (one == 0)
-        {
-            cout << 0 << ln;
-            return;
+            if (arr[i + 1][j] == '1')
+            {
+                count++;
+            }
+            if (arr[i][j + 1] == '1')
+            {
+                count++;
+            }
+            if (arr[i + 1][j + 1] == '1')
+            {
+                count++;
+            }
+            if (count == 3)
+            {
+                cout << "NO" << ln;
+                return;
+            }
         }
     }
-    ll res = gap.size() + 1, cost = 0;
-    sort(all(gap));
-    cout << gap.size() << ln;
-    for (auto t : gap)
-    {
-        cout << t << " ";
-        if (t * m <= n)
-        {
-            cost += t * m;
-            res--;
-        }
-    }
-    cout << ln;
-    cout << res * n + cost << ln;
+    cout << "YES" << ln;
 }
 int main()
 {

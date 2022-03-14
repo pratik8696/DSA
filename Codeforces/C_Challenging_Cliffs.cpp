@@ -43,7 +43,6 @@ double eps = 1e-12;
 #define ln "\n"
 #define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
-#define ie insert
 #define pb push_back
 #define fi first
 #define se second
@@ -203,65 +202,41 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    string s;
-    cin >> s;
-    ll count = 0, act = 0, size = s.length();
-    s.pb('4');
-    s.pb('5');
-    v64 gap;
-    ll start = 0, end = 0, one = 0;
-    forn(i, size)
+    ll n, x, f, s;
+    cin >> n;
+    deque<ll> arr;
+    ll diff = INT_MAX;
+    forn(i, n)
     {
-        if (s[i] == '1')
+        cin >> x;
+        arr.pb(x);
+    }
+    sort(all(arr));
+
+    for (ll i = 0; i < n - 1; i++)
+    {
+        diff = min(diff, (arr[i + 1] - arr[i]));
+    }
+
+    for (ll i = 0; i < n - 1; i++)
+    {
+        if (diff == arr[i + 1] - arr[i])
         {
-            start = i;
-            for (ll j = i; j < size; j++)
+            cout << arr[i] << " ";
+            for (ll j = i + 2; j < n; j++)
             {
-                if (s[j] == '0')
-                {
-                    end = j;
-                    i = j;
-                    break;
-                }
+                cout << arr[j] << " ";
             }
-            gap.pb(end - start);
-        }
-        if (s[i] == '1')
-        {
-            one++;
-        }
-    }
-    
-    if (gap.size() == 0)
-    {
-        if (one != 0)
-        {
-            cout << n << ln;
-            return;
-        }
-        else if (one == 0)
-        {
-            cout << 0 << ln;
+            for (ll j = 0; j < i; j++)
+            {
+                cout << arr[j] << " ";
+            }
+            cout << arr[i + 1] << ln;
             return;
         }
     }
-    ll res = gap.size() + 1, cost = 0;
-    sort(all(gap));
-    cout << gap.size() << ln;
-    for (auto t : gap)
-    {
-        cout << t << " ";
-        if (t * m <= n)
-        {
-            cost += t * m;
-            res--;
-        }
-    }
-    cout << ln;
-    cout << res * n + cost << ln;
 }
+
 int main()
 {
     fast_cin();

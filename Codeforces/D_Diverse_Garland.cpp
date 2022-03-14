@@ -43,7 +43,6 @@ double eps = 1e-12;
 #define ln "\n"
 #define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
-#define ie insert
 #define pb push_back
 #define fi first
 #define se second
@@ -203,70 +202,71 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
+    ll n;
+    cin >> n;
     string s;
     cin >> s;
-    ll count = 0, act = 0, size = s.length();
-    s.pb('4');
-    s.pb('5');
-    v64 gap;
-    ll start = 0, end = 0, one = 0;
-    forn(i, size)
+    map<char, ll> sti;
+    map<ll, char> its;
+    sti['R'] = 0, sti['B'] = 1, sti['G'] = 2;
+    its[0] = 'R', its[1] = 'B', its[2] = 'G';
+    v64 res;
+    forn(i, n)
     {
-        if (s[i] == '1')
+        res.pb(sti[s[i]]);
+    }
+    res.pb(INT_MAX);
+    res.pb(INT_MAX + 1ll);
+    forn(i, n)
+    {
+        if (res[i] == res[i + 1] && res[i] == res[i + 2] && res[i + 1] == res[i + 2])
         {
-            start = i;
-            for (ll j = i; j < size; j++)
+            res[i + 1] = (res[i + 1] + 1) % 3;
+        }
+        else if (res[i] == res[i + 1])
+        {
+            ll val = res[i + 1] + res[i + 2];
+            if (val >= INT_MAX)
             {
-                if (s[j] == '0')
-                {
-                    end = j;
-                    i = j;
-                    break;
-                }
+                res[i + 1] = (res[i + 1] + 1) % 3;
             }
-            gap.pb(end - start);
-        }
-        if (s[i] == '1')
-        {
-            one++;
-        }
-    }
-    
-    if (gap.size() == 0)
-    {
-        if (one != 0)
-        {
-            cout << n << ln;
-            return;
-        }
-        else if (one == 0)
-        {
-            cout << 0 << ln;
-            return;
+            else if (val == 1)
+            {
+                res[i + 1] = 1;
+            }
+            else if (val == 3)
+            {
+                res[i + 1] = 0;
+            }
+            else if (val == 2)
+            {
+                res[i + 1] = 1;
+            }
         }
     }
-    ll res = gap.size() + 1, cost = 0;
-    sort(all(gap));
-    cout << gap.size() << ln;
-    for (auto t : gap)
+    ll ans = 0;
+    forn(i, n)
     {
-        cout << t << " ";
-        if (t * m <= n)
+        cout << res[i];
+        if (its[res[i]] != res[i])
         {
-            cost += t * m;
-            res--;
+            ans++;
         }
     }
     cout << ln;
-    cout << res * n + cost << ln;
+    cout << ans << ln;
+    forn(i, n)
+    {
+        cout << its[res[i]];
+    }
+    cout << ln;
 }
+
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    //  cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

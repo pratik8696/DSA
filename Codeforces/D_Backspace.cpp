@@ -203,65 +203,38 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    string s;
-    cin >> s;
-    ll count = 0, act = 0, size = s.length();
-    s.pb('4');
-    s.pb('5');
-    v64 gap;
-    ll start = 0, end = 0, one = 0;
-    forn(i, size)
+    ll res = 0;
+    string p, q;
+    cin >> p >> q;
+    unordered_map<char, set<ll>> m;
+    forn(i, p.length())
     {
-        if (s[i] == '1')
+        m[p[i]].ie(i);
+    }
+    auto v = m[q[0]];
+    res = *v.begin();
+    cout << res << ln;
+    forsn(i, 1, q.length())
+    {
+        auto s = m[q[i]];
+        for (ll i = 0; i < p.length(); i++)
         {
-            start = i;
-            for (ll j = i; j < size; j++)
+            ll val = max(1ll, 3 * i);
+            if (s.count(val + res))
             {
-                if (s[j] == '0')
-                {
-                    end = j;
-                    i = j;
-                    break;
-                }
+                res = val + res;
+                break;
             }
-            gap.pb(end - start);
-        }
-        if (s[i] == '1')
-        {
-            one++;
-        }
-    }
-    
-    if (gap.size() == 0)
-    {
-        if (one != 0)
-        {
-            cout << n << ln;
-            return;
-        }
-        else if (one == 0)
-        {
-            cout << 0 << ln;
-            return;
+            if (i == p.length() - 1)
+            {
+                cout << "NO" << ln;
+                return;
+            }
         }
     }
-    ll res = gap.size() + 1, cost = 0;
-    sort(all(gap));
-    cout << gap.size() << ln;
-    for (auto t : gap)
-    {
-        cout << t << " ";
-        if (t * m <= n)
-        {
-            cost += t * m;
-            res--;
-        }
-    }
-    cout << ln;
-    cout << res * n + cost << ln;
+    cout << "YES" << ln;
 }
+
 int main()
 {
     fast_cin();

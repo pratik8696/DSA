@@ -43,7 +43,6 @@ double eps = 1e-12;
 #define ln "\n"
 #define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
-#define ie insert
 #define pb push_back
 #define fi first
 #define se second
@@ -203,64 +202,45 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    string s;
-    cin >> s;
-    ll count = 0, act = 0, size = s.length();
-    s.pb('4');
-    s.pb('5');
-    v64 gap;
-    ll start = 0, end = 0, one = 0;
-    forn(i, size)
+    ll n;
+    cin >> n;
+    ll arr[n];
+    v64 l, r;
+    ll sum = 0;
+    forn(i, n)
     {
-        if (s[i] == '1')
+        cin >> arr[i];
+        arr[i] = abs(arr[i]);
+        if ((i + 1) % 2 != 0)
         {
-            start = i;
-            for (ll j = i; j < size; j++)
-            {
-                if (s[j] == '0')
-                {
-                    end = j;
-                    i = j;
-                    break;
-                }
-            }
-            gap.pb(end - start);
+            l.pb((arr[i]));
+            sum += arr[i];
         }
-        if (s[i] == '1')
+        else
         {
-            one++;
+            r.pb(arr[i]);
+            sum -= arr[i];
         }
     }
-    
-    if (gap.size() == 0)
+    sort(all(l));
+    sort(all(r), greater<ll>());
+    // cout << sum << ln;
+    ll sum2 = 0;
+    for (auto t : l)
     {
-        if (one != 0)
-        {
-            cout << n << ln;
-            return;
-        }
-        else if (one == 0)
-        {
-            cout << 0 << ln;
-            return;
-        }
+        // cout << t << " ";
+        sum2 += t;
     }
-    ll res = gap.size() + 1, cost = 0;
-    sort(all(gap));
-    cout << gap.size() << ln;
-    for (auto t : gap)
+    // cout << ln;
+    for (auto t : r)
     {
-        cout << t << " ";
-        if (t * m <= n)
-        {
-            cost += t * m;
-            res--;
-        }
+        // cout << t << " ";
+        sum2 -= t;
     }
-    cout << ln;
-    cout << res * n + cost << ln;
+    // cout << ln;
+    sum2 = sum2 + 2 * (r[0]-l[0]);
+    // cout << sum2 << " " << sum << ln;
+    cout << max(sum, sum2) << ln;
 }
 int main()
 {

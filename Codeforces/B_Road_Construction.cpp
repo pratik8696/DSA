@@ -43,7 +43,6 @@ double eps = 1e-12;
 #define ln "\n"
 #define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
-#define ie insert
 #define pb push_back
 #define fi first
 #define se second
@@ -203,70 +202,46 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    string s;
-    cin >> s;
-    ll count = 0, act = 0, size = s.length();
-    s.pb('4');
-    s.pb('5');
-    v64 gap;
-    ll start = 0, end = 0, one = 0;
-    forn(i, size)
+    ll a, b;
+    ll n, pairs;
+    set<ll> s;
+    cin >> n >> pairs;
+    map<ll, v64> m;
+    forn(i, pairs)
     {
-        if (s[i] == '1')
+        cin >> a >> b;
+        m[a].pb(b);
+        m[b].pb(a);
+    }
+    ll smallest = -1, maxi = INT_MAX;
+    for (ll i = 1; i <= n; i++)
+    {
+        // jiska size sbse kam vo lenge
+        ll val = m[i].size();
+        if (maxi > val)
         {
-            start = i;
-            for (ll j = i; j < size; j++)
-            {
-                if (s[j] == '0')
-                {
-                    end = j;
-                    i = j;
-                    break;
-                }
-            }
-            gap.pb(end - start);
-        }
-        if (s[i] == '1')
-        {
-            one++;
+            smallest = i;
+            maxi = val;
         }
     }
-    
-    if (gap.size() == 0)
+    cout << smallest << ln;
+    // nodes jo usme present hai vo le lenge
+    v64 nodestobevisited;
+    auto v = m[smallest];
+    for (auto t : v)
     {
-        if (one != 0)
-        {
-            cout << n << ln;
-            return;
-        }
-        else if (one == 0)
-        {
-            cout << 0 << ln;
-            return;
-        }
+        nodestobevisited.pb(t);
     }
-    ll res = gap.size() + 1, cost = 0;
-    sort(all(gap));
-    cout << gap.size() << ln;
-    for (auto t : gap)
-    {
-        cout << t << " ";
-        if (t * m <= n)
-        {
-            cost += t * m;
-            res--;
-        }
-    }
-    cout << ln;
-    cout << res * n + cost << ln;
+    forn(i, n) { s.insert(i + 1); }
+    vp64 res;
+    // now 
 }
+
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

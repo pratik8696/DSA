@@ -203,70 +203,39 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    string s;
-    cin >> s;
-    ll count = 0, act = 0, size = s.length();
-    s.pb('4');
-    s.pb('5');
-    v64 gap;
-    ll start = 0, end = 0, one = 0;
-    forn(i, size)
+    ll n;
+    cin >> n;
+    ll arr[n];
+    forn(i, n)
     {
-        if (s[i] == '1')
-        {
-            start = i;
-            for (ll j = i; j < size; j++)
-            {
-                if (s[j] == '0')
-                {
-                    end = j;
-                    i = j;
-                    break;
-                }
-            }
-            gap.pb(end - start);
-        }
-        if (s[i] == '1')
-        {
-            one++;
-        }
+        cin >> arr[i];
     }
-    
-    if (gap.size() == 0)
+    ll j = 0, res = 1, maxres = INT_MIN;
+    while (j < n)
     {
-        if (one != 0)
+        ll val = arr[j];
+        ll idx = upper_bound(al(arr, n), 2 * val) - arr;
+        idx--;
+        if (arr[idx] == val)
         {
-            cout << n << ln;
-            return;
+            maxres = max(maxres, res);
+            res = 1, j = idx + 1;
         }
-        else if (one == 0)
+        else
         {
-            cout << 0 << ln;
-            return;
+            res += (idx - j);
+            j = idx;
         }
+        // cout << maxres << " " << j << " " << idx << " " << res << ln;
     }
-    ll res = gap.size() + 1, cost = 0;
-    sort(all(gap));
-    cout << gap.size() << ln;
-    for (auto t : gap)
-    {
-        cout << t << " ";
-        if (t * m <= n)
-        {
-            cost += t * m;
-            res--;
-        }
-    }
-    cout << ln;
-    cout << res * n + cost << ln;
+    cout << maxres << ln;
 }
+
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

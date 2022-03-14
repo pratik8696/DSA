@@ -201,67 +201,119 @@ bool pow2(ll x)
     return false;
 }
 
+bool comp(pair<ll, p64> a, pair<ll, p64> b)
+{
+    return a.fi > b.fi;
+}
+
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    string s;
-    cin >> s;
-    ll count = 0, act = 0, size = s.length();
-    s.pb('4');
-    s.pb('5');
-    v64 gap;
-    ll start = 0, end = 0, one = 0;
-    forn(i, size)
+    ll n;
+    cin >> n;
+    vector<pair<ll, p64>> a, b, c, d, e;
+    while (n--)
     {
-        if (s[i] == '1')
+        string s;
+        cin >> s;
+        ll ca = 0, cb = 0, cc = 0, cd = 0, ce = 0;
+        forn(i, s.length())
         {
-            start = i;
-            for (ll j = i; j < size; j++)
+            if (s[i] == 'a')
             {
-                if (s[j] == '0')
-                {
-                    end = j;
-                    i = j;
-                    break;
-                }
+                ca++;
             }
-            gap.pb(end - start);
+            else if (s[i] == 'b')
+            {
+                cb++;
+            }
+            else if (s[i] == 'c')
+            {
+                cc++;
+            }
+            else if (s[i] == 'd')
+            {
+                cd++;
+            }
+            else if (s[i] == 'e')
+            {
+                ce++;
+            }
         }
-        if (s[i] == '1')
-        {
-            one++;
-        }
+        a.pb({2 * ca - s.length(), {ca, s.length() - ca}});
+        b.pb({2 * cb - s.length(), {cb, s.length() - cb}});
+        c.pb({2 * cc - s.length(), {cc, s.length() - cc}});
+        d.pb({2 * cd - s.length(), {cd, s.length() - cd}});
+        e.pb({2 * ce - s.length(), {ce, s.length() - ce}});
     }
-    
-    if (gap.size() == 0)
+    sort(all(a), comp);
+    sort(all(b), comp);
+    sort(all(c), comp);
+    sort(all(d), comp);
+    sort(all(e), comp);
+    // now checking for a
+    ll counta = 0, suma = 0, totala = 0;
+    forn(i, a.size())
     {
-        if (one != 0)
+        ll av = a[i].se.fi;
+        ll rem = a[i].se.se;
+        if (suma + av > totala + rem)
         {
-            cout << n << ln;
-            return;
-        }
-        else if (one == 0)
-        {
-            cout << 0 << ln;
-            return;
+            suma += av;
+            totala += rem;
+            counta++;
         }
     }
-    ll res = gap.size() + 1, cost = 0;
-    sort(all(gap));
-    cout << gap.size() << ln;
-    for (auto t : gap)
+    ll countb = 0, sumb = 0, totalb = 0;
+    forn(i, b.size())
     {
-        cout << t << " ";
-        if (t * m <= n)
+        ll ab = b[i].se.fi;
+        ll rem = b[i].se.se;
+        if (sumb + ab > totalb + rem)
         {
-            cost += t * m;
-            res--;
+            sumb += ab;
+            totalb += rem;
+            countb++;
         }
     }
-    cout << ln;
-    cout << res * n + cost << ln;
+    ll countc = 0, sumc = 0, totalc = 0;
+    forn(i, c.size())
+    {
+        ll ac = c[i].se.fi;
+        ll rem = c[i].se.se;
+        if (sumc + ac > totalc + rem)
+        {
+            sumc += ac;
+            totalc += rem;
+            countc++;
+        }
+    }
+    ll countd = 0, sumd = 0, totald = 0;
+    forn(i, d.size())
+    {
+        ll ad = d[i].se.fi;
+        ll rem = d[i].se.se;
+        if (sumd + ad > totald + rem)
+        {
+            countd++;
+            sumd += ad;
+            totald += rem;
+        }
+    }
+    ll counte = 0, sume = 0, totale = 0;
+    forn(i, e.size())
+    {
+        ll ae = e[i].se.fi;
+        ll rem = e[i].se.se;
+        if (sume + ae > totale + rem)
+        {
+            counte++;
+            sume += ae;
+            totale += rem;
+        }
+    }
+    cout << max({counta, countb, countc, countd, counte}) << ln;
 }
+
 int main()
 {
     fast_cin();

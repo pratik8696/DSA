@@ -201,67 +201,66 @@ bool pow2(ll x)
     return false;
 }
 
-void solve()
+vector<ll> factors(ll x)
 {
-    ll n, m;
-    cin >> n >> m;
-    string s;
-    cin >> s;
-    ll count = 0, act = 0, size = s.length();
-    s.pb('4');
-    s.pb('5');
-    v64 gap;
-    ll start = 0, end = 0, one = 0;
-    forn(i, size)
+    v64 f;
+    for (ll i = 1; i <= sqrt(x); i++)
     {
-        if (s[i] == '1')
+        if (x % i == 0)
         {
-            start = i;
-            for (ll j = i; j < size; j++)
+            if (x / i == i)
             {
-                if (s[j] == '0')
+                f.pb(i);
+            }
+            else
+            {
+                ll one = i;
+                ll two = x / i;
+                if (one == x)
                 {
-                    end = j;
-                    i = j;
-                    break;
+                    f.pb(two);
+                }
+                else if (two == x)
+                {
+                    f.pb(one);
+                }
+                else
+                {
+                    f.pb(one);
+                    f.pb(two);
                 }
             }
-            gap.pb(end - start);
-        }
-        if (s[i] == '1')
-        {
-            one++;
         }
     }
-    
-    if (gap.size() == 0)
-    {
-        if (one != 0)
-        {
-            cout << n << ln;
-            return;
-        }
-        else if (one == 0)
-        {
-            cout << 0 << ln;
-            return;
-        }
-    }
-    ll res = gap.size() + 1, cost = 0;
-    sort(all(gap));
-    cout << gap.size() << ln;
-    for (auto t : gap)
-    {
-        cout << t << " ";
-        if (t * m <= n)
-        {
-            cost += t * m;
-            res--;
-        }
-    }
-    cout << ln;
-    cout << res * n + cost << ln;
+    sort(all(f));
+    return f;
 }
+
+void solve()
+{
+    ll n;
+    cin >> n;
+    ll arr[n];
+    forn(i, n)
+    {
+        cin >> arr[i];
+    }
+    v64 res;
+    map<ll, ll> m;
+    for (ll i = 0; i < n; i++)
+    {
+        ll count = 0;
+        for (auto t : factors(arr[i]))
+        {
+            count = max(count, m[t]);
+        }
+        m[arr[i]] = count + 1;
+        res.pb(count + 1);
+    }
+    ll maxx = *max_element(all(res));
+    cout << maxx << ln;
+}
+
 int main()
 {
     fast_cin();

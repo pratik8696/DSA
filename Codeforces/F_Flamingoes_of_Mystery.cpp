@@ -43,7 +43,6 @@ double eps = 1e-12;
 #define ln "\n"
 #define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
-#define ie insert
 #define pb push_back
 #define fi first
 #define se second
@@ -203,70 +202,39 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    string s;
-    cin >> s;
-    ll count = 0, act = 0, size = s.length();
-    s.pb('4');
-    s.pb('5');
-    v64 gap;
-    ll start = 0, end = 0, one = 0;
-    forn(i, size)
+    ll n;
+    cin >> n;
+    ll arr[n + 1];
+    for (ll i = n; i > 1; i--)
     {
-        if (s[i] == '1')
-        {
-            start = i;
-            for (ll j = i; j < size; j++)
-            {
-                if (s[j] == '0')
-                {
-                    end = j;
-                    i = j;
-                    break;
-                }
-            }
-            gap.pb(end - start);
-        }
-        if (s[i] == '1')
-        {
-            one++;
-        }
+        cout << "? " << 1 << " " << i << endl;
+        // now taking in input
+        cin >> arr[i];
     }
-    
-    if (gap.size() == 0)
+    for (ll i = n; i > 2; i--)
     {
-        if (one != 0)
-        {
-            cout << n << ln;
-            return;
-        }
-        else if (one == 0)
-        {
-            cout << 0 << ln;
-            return;
-        }
+        arr[i] = arr[i] - arr[i - 1];
     }
-    ll res = gap.size() + 1, cost = 0;
-    sort(all(gap));
-    cout << gap.size() << ln;
-    for (auto t : gap)
+    // now resolving the values of 1 and 2
+    cout << "? 2 3" << endl;
+    ll x, y = arr[2];
+    cin >> x;
+    // now resolving the values
+    arr[2] = x - arr[3];
+    // now finding the value of arr[1]
+    arr[1] = y - arr[2];
+    cout << "! ";
+    forsn(i, 1, n+1)
     {
-        cout << t << " ";
-        if (t * m <= n)
-        {
-            cost += t * m;
-            res--;
-        }
+        cout << arr[i] << " ";
     }
-    cout << ln;
-    cout << res * n + cost << ln;
+    cout << endl;
 }
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    //  cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

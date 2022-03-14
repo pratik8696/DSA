@@ -43,7 +43,6 @@ double eps = 1e-12;
 #define ln "\n"
 #define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
-#define ie insert
 #define pb push_back
 #define fi first
 #define se second
@@ -201,67 +200,62 @@ bool pow2(ll x)
     return false;
 }
 
+ll nearestprime(ll x)
+{
+    for (ll i = 2; i <= x; i++)
+    {
+        if (x % i == 0)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    string s;
-    cin >> s;
-    ll count = 0, act = 0, size = s.length();
-    s.pb('4');
-    s.pb('5');
-    v64 gap;
-    ll start = 0, end = 0, one = 0;
-    forn(i, size)
+    ll n;
+    cin >> n;
+    ll arr[n];
+    map<ll, v64> m;
+    map<ll, ll> idx;
+    forn(i, n)
     {
-        if (s[i] == '1')
+        cin >> arr[i];
+        m[nearestprime(arr[i])].pb(arr[i]);
+    }
+    if (n <= 11)
+    {
+        cout << n << ln;
+        forn(i, n)
         {
-            start = i;
-            for (ll j = i; j < size; j++)
+            cout << i + 1 << " ";
+        }
+        cout << ln;
+        return;
+    }
+    else
+    {
+        ll cc = 0;
+        // ab indexes pr set krna hoga
+        for (auto t : m)
+        {
+            // now indexes pr coloring kro
+            cc++;
+            for (auto x : t.second)
             {
-                if (s[j] == '0')
-                {
-                    end = j;
-                    i = j;
-                    break;
-                }
+                idx[x] = cc;
             }
-            gap.pb(end - start);
-        }
-        if (s[i] == '1')
-        {
-            one++;
         }
     }
-    
-    if (gap.size() == 0)
+    cout << m.size() << ln;
+    forn(i, n)
     {
-        if (one != 0)
-        {
-            cout << n << ln;
-            return;
-        }
-        else if (one == 0)
-        {
-            cout << 0 << ln;
-            return;
-        }
-    }
-    ll res = gap.size() + 1, cost = 0;
-    sort(all(gap));
-    cout << gap.size() << ln;
-    for (auto t : gap)
-    {
-        cout << t << " ";
-        if (t * m <= n)
-        {
-            cost += t * m;
-            res--;
-        }
+        cout << idx[arr[i]] << " ";
     }
     cout << ln;
-    cout << res * n + cost << ln;
 }
+
 int main()
 {
     fast_cin();

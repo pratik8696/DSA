@@ -200,43 +200,30 @@ bool pow2(ll x)
     return false;
 }
 
+v64 res;
+void create()
+{
+    for (ll i = 3; i < 1e5; i += 2)
+    {
+        ll f = i;
+        ll s = (i * i - 1) / 2;
+        res.pb(sqrt(f * f + s * s));
+    }
+}
+
 void solve()
 {
     ll n;
     cin >> n;
-    ll arr[n], sum = 0, maxx = 0;
-    forn(i, n)
-    {
-        cin >> arr[i];
-        sum += arr[i];
-        maxx = max(maxx, arr[i]);
-    }
-
-    // (n-1)*x-sum>=0
-    // and i need to find only the x
-    // so just use bin search
-
-    ll i = maxx, j = 1e14, ans = INF;
-    while (i <= j)
-    {
-        ll mid = i + (j - i) / 2;
-        ll res = ((n - 1) * mid) - sum;
-        if (res >= 0)
-        {
-            j = mid - 1;
-            ans = mid;
-        }
-        else
-        {
-            i = mid + 1;
-        }
-        // cout<<mid<<ln;
-    }
-    cout << (n - 1) * ans - sum << ln;
+    ll ans = 0;
+    ll idx = upper_bound(all(res), n) - res.begin();
+    cout << idx << ln;
 }
+
 int main()
 {
     fast_cin();
+    create();
     ll t;
     cin >> t;
     for (int it = 1; it <= t; it++)

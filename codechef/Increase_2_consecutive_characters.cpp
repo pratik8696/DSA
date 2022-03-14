@@ -43,7 +43,6 @@ double eps = 1e-12;
 #define ln "\n"
 #define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
-#define ie insert
 #define pb push_back
 #define fi first
 #define se second
@@ -203,64 +202,89 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    string s;
-    cin >> s;
-    ll count = 0, act = 0, size = s.length();
-    s.pb('4');
-    s.pb('5');
-    v64 gap;
-    ll start = 0, end = 0, one = 0;
-    forn(i, size)
+    ll n, k;
+    cin >> n >> k;
+    string p, q;
+    cin >> p >> q;
+    string pp(all(p)), qq(all(q));
+    ll j = 1;
+    map<char, ll> m;
+    for (char i = 'a'; j <= 26; i++, j++)
     {
-        if (s[i] == '1')
+        m[i] = j;
+    }
+    while (k--)
+    {
+        ll l, r;
+        cin >> l >> r;
+        l--, r--;
+        bool flag = 1;
+        for (ll i = l; i <= r; i++)
         {
-            start = i;
-            for (ll j = i; j < size; j++)
+            if (i == r)
             {
-                if (s[j] == '0')
+                if (p[i] == q[i])
                 {
-                    end = j;
-                    i = j;
-                    break;
+                    flag = 1;
+                }
+                else
+                {
+                    flag = 0;
                 }
             }
-            gap.pb(end - start);
+            else if (p[i] == q[i])
+            {
+                continue;
+            }
+            else if (p[i] > q[i])
+            {
+                ll diff = 26 - m[p[i]] + m[q[i]];
+                ll val1 = (m[p[i]] + diff) % 26;
+                ll val2 = (m[p[i + 1]] + diff) % 26;
+                for (auto t : m)
+                {
+                    if (t.second == val1)
+                    {
+                        p[i] = t.fi;
+                    }
+                    if (t.second == val2)
+                    {
+                        p[i + 1] = t.fi;
+                    }
+                }
+            }
+            else if (p[i] < q[i])
+            {
+                ll diff = m[q[i]] - m[p[i]];
+                ll val1 = (m[p[i]] + diff) % 26;
+                ll val2 = (m[p[i + 1]] + diff) % 26;
+                for (auto t : m)
+                {
+                    if (t.second == val1)
+                    {
+                        p[i] = t.fi;
+                    }
+                    if (t.second == val2)
+                    {
+                        p[i + 1] = t.fi;
+                    }
+                }
+            }
+            // cout << p << ln;
         }
-        if (s[i] == '1')
+        for (ll i = l; i <= r; i++)
         {
-            one++;
+            p[i] = pp[i];
+        }
+        if (flag)
+        {
+            cout << "Yes" << ln;
+        }
+        else
+        {
+            cout << "No" << ln;
         }
     }
-    
-    if (gap.size() == 0)
-    {
-        if (one != 0)
-        {
-            cout << n << ln;
-            return;
-        }
-        else if (one == 0)
-        {
-            cout << 0 << ln;
-            return;
-        }
-    }
-    ll res = gap.size() + 1, cost = 0;
-    sort(all(gap));
-    cout << gap.size() << ln;
-    for (auto t : gap)
-    {
-        cout << t << " ";
-        if (t * m <= n)
-        {
-            cost += t * m;
-            res--;
-        }
-    }
-    cout << ln;
-    cout << res * n + cost << ln;
 }
 int main()
 {

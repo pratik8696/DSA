@@ -43,7 +43,6 @@ double eps = 1e-12;
 #define ln "\n"
 #define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
-#define ie insert
 #define pb push_back
 #define fi first
 #define se second
@@ -201,67 +200,49 @@ bool pow2(ll x)
     return false;
 }
 
+
+
+void dfs(ll n, ll viss[], vector<ll> *adj)
+{
+    viss[n] = 1;
+    for (auto i : adj[n])
+        if (viss[i] == 0)
+            dfs(i, viss, adj);
+}
+
 void solve()
 {
     ll n, m;
     cin >> n >> m;
-    string s;
-    cin >> s;
-    ll count = 0, act = 0, size = s.length();
-    s.pb('4');
-    s.pb('5');
-    v64 gap;
-    ll start = 0, end = 0, one = 0;
-    forn(i, size)
+    vector<ll> adj[n];
+    for (ll i = 0; i < m; i++)
     {
-        if (s[i] == '1')
-        {
-            start = i;
-            for (ll j = i; j < size; j++)
+        ll x, y;
+        cin >> x >> y;
+        adj[x - 1].push_back(y - 1);
+        adj[y - 1].push_back(x - 1);
+    }
+    ll vis[n] = {0};
+    dfs(0, vis, adj);
+    ll ans = 0;
+    while (vis[n - 1] == 0)
+    {
+        ll vis2[n] = {0};
+        for (ll i = 0; i < n; i++)
+            if (vis[i])
             {
-                if (s[j] == '0')
-                {
-                    end = j;
-                    i = j;
-                    break;
-                }
+                if (i + 1 < n)
+                    dfs(i + 1, vis2, adj);
+                if (i - 1 >= 0)
+                    dfs(i - 1, vis2, adj);
             }
-            gap.pb(end - start);
-        }
-        if (s[i] == '1')
-        {
-            one++;
-        }
+        for (ll i = 0; i < n; i++)
+            vis[i] = (vis[i] | vis2[i]);
+        ans++;
     }
-    
-    if (gap.size() == 0)
-    {
-        if (one != 0)
-        {
-            cout << n << ln;
-            return;
-        }
-        else if (one == 0)
-        {
-            cout << 0 << ln;
-            return;
-        }
-    }
-    ll res = gap.size() + 1, cost = 0;
-    sort(all(gap));
-    cout << gap.size() << ln;
-    for (auto t : gap)
-    {
-        cout << t << " ";
-        if (t * m <= n)
-        {
-            cost += t * m;
-            res--;
-        }
-    }
-    cout << ln;
-    cout << res * n + cost << ln;
+    cout << ans << endl;
 }
+
 int main()
 {
     fast_cin();

@@ -43,10 +43,10 @@ double eps = 1e-12;
 #define ln "\n"
 #define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
-#define ie insert
 #define pb push_back
 #define fi first
 #define se second
+#define ie insert
 #define INF 2e18
 #define fast_cin()                    \
     ios_base::sync_with_stdio(false); \
@@ -203,64 +203,74 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    string s;
-    cin >> s;
-    ll count = 0, act = 0, size = s.length();
-    s.pb('4');
-    s.pb('5');
-    v64 gap;
-    ll start = 0, end = 0, one = 0;
-    forn(i, size)
+    ll n;
+    cin >> n;
+    ll arr[n];
+    ll first = -1, second = -1;
+    map<ll, ll> m;
+    forn(i, n)
     {
-        if (s[i] == '1')
+        cin >> arr[i];
+        if (arr[i] == 1)
         {
-            start = i;
-            for (ll j = i; j < size; j++)
+            if (first == -1)
             {
-                if (s[j] == '0')
-                {
-                    end = j;
-                    i = j;
-                    break;
-                }
+                first = i;
             }
-            gap.pb(end - start);
+            else
+            {
+                second = i;
+            }
         }
-        if (s[i] == '1')
-        {
-            one++;
-        }
-    }
-    
-    if (gap.size() == 0)
-    {
-        if (one != 0)
-        {
-            cout << n << ln;
-            return;
-        }
-        else if (one == 0)
+        m[arr[i]]++;
+        if (m[arr[i]] > 2)
         {
             cout << 0 << ln;
             return;
         }
     }
-    ll res = gap.size() + 1, cost = 0;
-    sort(all(gap));
-    cout << gap.size() << ln;
-    for (auto t : gap)
+    set<ll> l, r;
+    for (ll i = first; i >= 0; i--)
     {
-        cout << t << " ";
-        if (t * m <= n)
+        l.ie(arr[i]);
+    }
+    vp64 ans;
+    // now storing the count in a map
+    map<ll, ll> res;
+    for (ll i = first + 1; i < n; i++)
+    {
+        r.ie(arr[i]);
+        res[arr[i]]++;
+    }
+    // initial condition
+    if (l.size() == first + 1 && *l.begin() == 1 && *l.rbegin() == first + 1 && r.size() == n - first - 1 && *r.begin() == 1 && *r.rbegin() == n - first - 1)
+    {
+        ans.pb({first + 1, n - 1 - first});
+    }
+    // now traversing
+    for (ll i = first + 1; i < second; i++)
+    {
+        // now adding and deleting the values in the set
+        l.ie(arr[i]);
+        if (res[arr[i]] == 2)
         {
-            cost += t * m;
-            res--;
+            // do nothing
+        }
+        else if (res[arr[i]] == 1)
+        {
+            r.erase(arr[i]);
+        }
+        res[arr[i]]--;
+        if (l.size() == i + 1 && *l.begin() == 1 && *l.rbegin() == i + 1 && r.size() == n - i - 1 && *r.begin() == 1 && *r.rbegin() == n - i - 1)
+        {
+            ans.pb({i + 1, n - 1 - i});
         }
     }
-    cout << ln;
-    cout << res * n + cost << ln;
+    cout << ans.size() << ln;
+    for (auto t : ans)
+    {
+        cout << t.fi << " " << t.se << ln;
+    }
 }
 int main()
 {

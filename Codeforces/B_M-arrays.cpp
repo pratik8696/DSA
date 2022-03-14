@@ -203,64 +203,62 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    string s;
-    cin >> s;
-    ll count = 0, act = 0, size = s.length();
-    s.pb('4');
-    s.pb('5');
-    v64 gap;
-    ll start = 0, end = 0, one = 0;
-    forn(i, size)
+    ll n, k;
+    cin >> n >> k;
+    ll arr[n];
+    map<ll, ll> m;
+    forn(i, n)
     {
-        if (s[i] == '1')
+        cin >> arr[i];
+        m[arr[i] % k]++;
+    }
+    // now we will iterate from 0 to n-1
+    for (auto t : m)
+    {
+        // cout << t.fi << " " << t.se << ln;
+    }
+    ll count = 0;
+    for (ll i = 0; i < n; i++)
+    {
+        if (m[i] > 0)
         {
-            start = i;
-            for (ll j = i; j < size; j++)
+            ll con = k - i;
+            ll first = m[i];
+            ll second = m[con];
+            if (i == 0)
             {
-                if (s[j] == '0')
+                count++;
+            }
+            else
+            {
+                if (con == i)
                 {
-                    end = j;
-                    i = j;
-                    break;
+                    count++;
+                }
+                else if (first > 0 && second > 0)
+                {
+                    if (abs(first - second) <= 1)
+                    {
+                        count++;
+                    }
+                    else
+                    {
+                        ll rem = abs(first - second);
+                        count += rem;
+                    }
+                }
+                else if (first > 0 && second == 0)
+                {
+                    count += first;
                 }
             }
-            gap.pb(end - start);
-        }
-        if (s[i] == '1')
-        {
-            one++;
+            m[i] = 0;
+            m[con] = 0;
+            // cout << count << " " << con << " " << i << ln;
         }
     }
-    
-    if (gap.size() == 0)
-    {
-        if (one != 0)
-        {
-            cout << n << ln;
-            return;
-        }
-        else if (one == 0)
-        {
-            cout << 0 << ln;
-            return;
-        }
-    }
-    ll res = gap.size() + 1, cost = 0;
-    sort(all(gap));
-    cout << gap.size() << ln;
-    for (auto t : gap)
-    {
-        cout << t << " ";
-        if (t * m <= n)
-        {
-            cost += t * m;
-            res--;
-        }
-    }
-    cout << ln;
-    cout << res * n + cost << ln;
+    // cout << ln;
+    cout << count << ln;
 }
 int main()
 {

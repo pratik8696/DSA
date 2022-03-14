@@ -200,70 +200,38 @@ bool pow2(ll x)
     return false;
 }
 
-ll it;
 void solve()
 {
     ll n, k;
     cin >> n >> k;
     ll arr[n];
-    multiset<ll> res;
+    map<ll, ll> m;
     forn(i, n)
     {
         cin >> arr[i];
-        ll val = (k - (arr[i] % k)) % k;
+        ll val = (k - arr[i] % k) % k;
         if (val)
         {
-            res.insert(val);
+            m[val]++;
         }
     }
-
-    for (auto t : res)
+    ll values = -1, maxx = INT_MIN;
+    for (auto t : m)
     {
-        cout << t << " ";
+        if (maxx <= t.second)
+        {
+            maxx = t.second;
+            values = t.first;
+        }
     }
-    cout << ln;
-
-    ll curr = 0, steps = 0;
-    while (res.size() > 0)
-    {
-        auto it = res.upper_bound(curr);
-        it--;
-        ll req = *it;
-        if (req == curr)
-        {
-            steps++;
-            curr++;
-            res.erase(it);
-        }
-        else if (curr == 0)
-        {
-            steps += req;
-            curr = req;
-        }
-        else if (req > curr)
-        {
-            steps += req - curr;
-            curr = req;
-        }
-        else if (req < curr)
-        {
-            ll diff = curr - req;
-            ll valjoayega = k - diff;
-            steps += valjoayega;
-            curr = req;
-        }
-        // curr = curr % k;
-        cout << steps << " ";
-    }
-    cout << steps << " ";
+    cout << max(k * maxx - (k - (values + 1)), 0ll) << ln;
 }
-
 int main()
 {
     fast_cin();
     ll t;
     cin >> t;
-    for (it = 1; it <= t; it++)
+    for (int it = 1; it <= t; it++)
     {
         solve();
     }

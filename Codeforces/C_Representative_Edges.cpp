@@ -43,7 +43,6 @@ double eps = 1e-12;
 #define ln "\n"
 #define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
-#define ie insert
 #define pb push_back
 #define fi first
 #define se second
@@ -203,65 +202,59 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    string s;
-    cin >> s;
-    ll count = 0, act = 0, size = s.length();
-    s.pb('4');
-    s.pb('5');
-    v64 gap;
-    ll start = 0, end = 0, one = 0;
-    forn(i, size)
+    ll n;
+    cin >> n;
+    v64 arr(n);
+    map<ll, ll> m;
+    forn(i, n)
     {
-        if (s[i] == '1')
+        cin >> arr[i];
+        m[arr[i]]++;
+    }
+    ll maxx = INT_MIN;
+    auto pr = *m.rbegin();
+    // cout << pr.second << ln;
+
+    // starting from cf 0 to 200
+    for (ll i = 1; i <= n; i++)
+    {
+        // starting point
+        for (ll j = 0; j < i; j++)
         {
-            start = i;
-            for (ll j = i; j < size; j++)
+            // now iterating
+            v64 res;
+            for (ll k = j; k < n; k += i)
             {
-                if (s[j] == '0')
+                // cout << arr[k] << " ";
+                res.pb(arr[k]);
+            }
+            // cout << ln;
+            ll maxcount = 0, prev;
+            if (res.size() > 1)
+            {
+                prev = res[0] - res[1];
+            }
+            forn(z, res.size() - 1)
+            {
+                // cout << res[z] << " ";
+                if (res[z] - res[z + 1] == prev)
                 {
-                    end = j;
-                    i = j;
-                    break;
+                    maxcount++;
+                }
+                else
+                {
+                    prev = res[z] - res[z + 1];
+                    maxx = max(maxx, maxcount);
+                    maxcount = 1;
                 }
             }
-            gap.pb(end - start);
-        }
-        if (s[i] == '1')
-        {
-            one++;
+            maxx = max(maxx, maxcount);
+            // cout << maxx << ln;
         }
     }
-    
-    if (gap.size() == 0)
-    {
-        if (one != 0)
-        {
-            cout << n << ln;
-            return;
-        }
-        else if (one == 0)
-        {
-            cout << 0 << ln;
-            return;
-        }
-    }
-    ll res = gap.size() + 1, cost = 0;
-    sort(all(gap));
-    cout << gap.size() << ln;
-    for (auto t : gap)
-    {
-        cout << t << " ";
-        if (t * m <= n)
-        {
-            cost += t * m;
-            res--;
-        }
-    }
-    cout << ln;
-    cout << res * n + cost << ln;
+    cout << min(n - maxx - 1, n - pr.second) << ln;
 }
+
 int main()
 {
     fast_cin();

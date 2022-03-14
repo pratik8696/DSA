@@ -205,63 +205,33 @@ void solve()
 {
     ll n, m;
     cin >> n >> m;
-    string s;
-    cin >> s;
-    ll count = 0, act = 0, size = s.length();
-    s.pb('4');
-    s.pb('5');
-    v64 gap;
-    ll start = 0, end = 0, one = 0;
-    forn(i, size)
+    vector<pair<ll, p64>> v;
+    forn(i, m)
     {
-        if (s[i] == '1')
-        {
-            start = i;
-            for (ll j = i; j < size; j++)
-            {
-                if (s[j] == '0')
-                {
-                    end = j;
-                    i = j;
-                    break;
-                }
-            }
-            gap.pb(end - start);
-        }
-        if (s[i] == '1')
-        {
-            one++;
-        }
+        ll x, wt;
+        cin >> x >> wt;
+        v.pb({wt, {x, i + 1}});
     }
-    
-    if (gap.size() == 0)
+    sort(all(v));
+    vp64 res;
+    ll ans = 0;
+    for (ll i = 0; i < 2 * n; i++)
     {
-        if (one != 0)
-        {
-            cout << n << ln;
-            return;
-        }
-        else if (one == 0)
-        {
-            cout << 0 << ln;
-            return;
-        }
+        ll idx = v[i].se.se;
+        ll cor = v[i].se.fi;
+        res.pb({cor, idx});
+        ans += v[i].fi;
     }
-    ll res = gap.size() + 1, cost = 0;
-    sort(all(gap));
-    cout << gap.size() << ln;
-    for (auto t : gap)
+    sort(all(res));
+    cout << ans << ln;
+    ll i = 0, j = res.size() - 1;
+    while (i < j)
     {
-        cout << t << " ";
-        if (t * m <= n)
-        {
-            cost += t * m;
-            res--;
-        }
+        cout << res[i].se << " " << res[j].se << ln;
+        i++, j--;
     }
-    cout << ln;
-    cout << res * n + cost << ln;
 }
+
 int main()
 {
     fast_cin();

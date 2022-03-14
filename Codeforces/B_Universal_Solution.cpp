@@ -201,67 +201,80 @@ bool pow2(ll x)
     return false;
 }
 
+ll score(char a, char b)
+{
+    // Rock aur Scissor
+    if (a == 'R' && b == 'S')
+    {
+        return 1;
+    }
+    // Paper aur Rock
+    if (a == 'P' && b == 'R')
+    {
+        return 1;
+    }
+    // Scissor aur Paper
+    if (a == 'S' && b == 'P')
+    {
+        return 1;
+    }
+
+    return 0;
+}
+
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    string s;
+    string s, p = "";
     cin >> s;
-    ll count = 0, act = 0, size = s.length();
-    s.pb('4');
-    s.pb('5');
-    v64 gap;
-    ll start = 0, end = 0, one = 0;
-    forn(i, size)
+    ll n = s.length();
+    p.append(s);
+    p.append(s);
+    // R
+    ll rock = 0, paper = 0, scissor = 0;
+    for (ll i = 0; i < p.length(); i++)
     {
-        if (s[i] == '1')
-        {
-            start = i;
-            for (ll j = i; j < size; j++)
-            {
-                if (s[j] == '0')
-                {
-                    end = j;
-                    i = j;
-                    break;
-                }
-            }
-            gap.pb(end - start);
-        }
-        if (s[i] == '1')
-        {
-            one++;
-        }
+        rock += score('R', p[i]);
     }
-    
-    if (gap.size() == 0)
+    // P
+    for (ll i = 0; i < p.length(); i++)
     {
-        if (one != 0)
-        {
-            cout << n << ln;
-            return;
-        }
-        else if (one == 0)
-        {
-            cout << 0 << ln;
-            return;
-        }
+        paper += score('P', p[i]);
     }
-    ll res = gap.size() + 1, cost = 0;
-    sort(all(gap));
-    cout << gap.size() << ln;
-    for (auto t : gap)
+    // S
+    for (ll i = 0; i < p.length(); i++)
     {
-        cout << t << " ";
-        if (t * m <= n)
-        {
-            cost += t * m;
-            res--;
-        }
+        scissor += score('S', p[i]);
     }
-    cout << ln;
-    cout << res * n + cost << ln;
+    ll maxx = max({rock, paper, scissor});
+    // cout << rock << " " << paper << " " << scissor << ln;
+    if (maxx == rock)
+    {
+        while (n--)
+        {
+            cout<<"R";
+        }
+        cout<<ln;
+    }
+    else if (maxx == paper)
+    {
+
+        while (n--)
+        {
+            cout << "P";
+        }
+        cout << ln;
+    }
+    else
+    {
+
+        while (n--)
+        {
+            cout << "S";
+        }
+        cout << ln;
+    }
 }
+
 int main()
 {
     fast_cin();

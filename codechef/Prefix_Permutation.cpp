@@ -43,7 +43,6 @@ double eps = 1e-12;
 #define ln "\n"
 #define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
-#define ie insert
 #define pb push_back
 #define fi first
 #define se second
@@ -203,64 +202,23 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    string s;
-    cin >> s;
-    ll count = 0, act = 0, size = s.length();
-    s.pb('4');
-    s.pb('5');
-    v64 gap;
-    ll start = 0, end = 0, one = 0;
-    forn(i, size)
+    ll prevterm = 0;
+    ll n, k;
+    cin >> n >> k;
+    ll arr[k];
+    forn(i, k)
     {
-        if (s[i] == '1')
-        {
-            start = i;
-            for (ll j = i; j < size; j++)
-            {
-                if (s[j] == '0')
-                {
-                    end = j;
-                    i = j;
-                    break;
-                }
-            }
-            gap.pb(end - start);
-        }
-        if (s[i] == '1')
-        {
-            one++;
-        }
+        cin >> arr[i];
     }
-    
-    if (gap.size() == 0)
+    for (ll i = 0; i < k; i++)
     {
-        if (one != 0)
+        for (ll j = arr[i]; j > prevterm; j--)
         {
-            cout << n << ln;
-            return;
+            cout << j << " ";
         }
-        else if (one == 0)
-        {
-            cout << 0 << ln;
-            return;
-        }
+        prevterm = arr[i];
     }
-    ll res = gap.size() + 1, cost = 0;
-    sort(all(gap));
-    cout << gap.size() << ln;
-    for (auto t : gap)
-    {
-        cout << t << " ";
-        if (t * m <= n)
-        {
-            cost += t * m;
-            res--;
-        }
-    }
-    cout << ln;
-    cout << res * n + cost << ln;
+    cout << endl;
 }
 int main()
 {

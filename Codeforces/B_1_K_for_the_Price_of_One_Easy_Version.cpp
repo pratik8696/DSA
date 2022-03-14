@@ -203,64 +203,39 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    string s;
-    cin >> s;
-    ll count = 0, act = 0, size = s.length();
-    s.pb('4');
-    s.pb('5');
-    v64 gap;
-    ll start = 0, end = 0, one = 0;
-    forn(i, size)
+    ll n, p, k;
+    cin >> n >> p >> k;
+    ll arr[n];
+    forn(i, n)
     {
-        if (s[i] == '1')
+        cin >> arr[i];
+    }
+    sort(al(arr,n));
+    ll count1 = 0, count2 = 0, p1 = p, p2 = p;
+    if (arr[0] <= p)
+    {
+        count1++;
+        p1 -= arr[0];
+    }
+    // select first
+    for (ll i = 2; i < n; i += 2)
+    {
+        if (arr[i] <= p1)
         {
-            start = i;
-            for (ll j = i; j < size; j++)
-            {
-                if (s[j] == '0')
-                {
-                    end = j;
-                    i = j;
-                    break;
-                }
-            }
-            gap.pb(end - start);
-        }
-        if (s[i] == '1')
-        {
-            one++;
+            count1 += 2;
+            p1 -= arr[i];
         }
     }
-    
-    if (gap.size() == 0)
+    // pair wise
+    for (ll i = 1; i < n; i += 2)
     {
-        if (one != 0)
+        if (arr[i] <= p2)
         {
-            cout << n << ln;
-            return;
-        }
-        else if (one == 0)
-        {
-            cout << 0 << ln;
-            return;
+            count2 += 2;
+            p2 -= arr[i];
         }
     }
-    ll res = gap.size() + 1, cost = 0;
-    sort(all(gap));
-    cout << gap.size() << ln;
-    for (auto t : gap)
-    {
-        cout << t << " ";
-        if (t * m <= n)
-        {
-            cost += t * m;
-            res--;
-        }
-    }
-    cout << ln;
-    cout << res * n + cost << ln;
+    cout << max(count1, count2) << ln;
 }
 int main()
 {

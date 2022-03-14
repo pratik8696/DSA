@@ -201,70 +201,36 @@ bool pow2(ll x)
     return false;
 }
 
+set<ll> s;
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    string s;
-    cin >> s;
-    ll count = 0, act = 0, size = s.length();
-    s.pb('4');
-    s.pb('5');
-    v64 gap;
-    ll start = 0, end = 0, one = 0;
-    forn(i, size)
+    ll n;
+    cin >> n;
+    ll count = 0;
+    while (n > 0)
     {
-        if (s[i] == '1')
-        {
-            start = i;
-            for (ll j = i; j < size; j++)
-            {
-                if (s[j] == '0')
-                {
-                    end = j;
-                    i = j;
-                    break;
-                }
-            }
-            gap.pb(end - start);
-        }
-        if (s[i] == '1')
-        {
-            one++;
-        }
+        auto it = s.upper_bound(n);
+        it--;
+        n = n - *it;
+        count++;
     }
-    
-    if (gap.size() == 0)
-    {
-        if (one != 0)
-        {
-            cout << n << ln;
-            return;
-        }
-        else if (one == 0)
-        {
-            cout << 0 << ln;
-            return;
-        }
-    }
-    ll res = gap.size() + 1, cost = 0;
-    sort(all(gap));
-    cout << gap.size() << ln;
-    for (auto t : gap)
-    {
-        cout << t << " ";
-        if (t * m <= n)
-        {
-            cost += t * m;
-            res--;
-        }
-    }
-    cout << ln;
-    cout << res * n + cost << ln;
+    cout << count << ln;
 }
+
 int main()
 {
     fast_cin();
+    ll prod = 1;
+    for (ll i = 1; i < 20; i++)
+    {
+        prod *= i;
+        s.ie(prod);
+    }
+    for (ll i = 1; i < 50; i++)
+    {
+        s.ie(fastexpo(2, i));
+    }
+
     ll t;
     cin >> t;
     for (int it = 1; it <= t; it++)

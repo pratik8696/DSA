@@ -43,7 +43,6 @@ double eps = 1e-12;
 #define ln "\n"
 #define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
-#define ie insert
 #define pb push_back
 #define fi first
 #define se second
@@ -203,65 +202,68 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
+    ll n, k;
+    cin >> n >> k;
     string s;
     cin >> s;
-    ll count = 0, act = 0, size = s.length();
-    s.pb('4');
-    s.pb('5');
-    v64 gap;
-    ll start = 0, end = 0, one = 0;
-    forn(i, size)
+    v64 losing_streak;
+    ll streaks = 0, wins = 0, losses = 0;
+    for (ll i = 0; i < n; i++)
     {
-        if (s[i] == '1')
+        if (s[i] == 'W')
         {
-            start = i;
-            for (ll j = i; j < size; j++)
+            wins++;
+            if (i == 0 || s[i - 1] == 'L')
             {
-                if (s[j] == '0')
-                {
-                    end = j;
-                    i = j;
-                    break;
-                }
+                streaks++;
             }
-            gap.pb(end - start);
         }
-        if (s[i] == '1')
+        else if (s[i] == 'L')
         {
-            one++;
+            losses++;
+            if (i == 0 || s[i - 1] == 'W')
+            {
+                losing_streak.pb(0);
+            }
+            losing_streak.back()++;
         }
     }
-    
-    if (gap.size() == 0)
+    if (k >= losses)
     {
-        if (one != 0)
-        {
-            cout << n << ln;
-            return;
-        }
-        else if (one == 0)
+        cout << 2 * n - 1 << ln;
+        return;
+    }
+    if (wins == 0)
+    {
+        if (k == 0)
         {
             cout << 0 << ln;
             return;
         }
+        cout << 2 * k - 1 << ln;
+        return;
     }
-    ll res = gap.size() + 1, cost = 0;
-    sort(all(gap));
-    cout << gap.size() << ln;
-    for (auto t : gap)
+    if (s[0] == 'L')
     {
-        cout << t << " ";
-        if (t * m <= n)
-        {
-            cost += t * m;
-            res--;
-        }
+        losing_streak[0] += MOD;
     }
-    cout << ln;
-    cout << res * n + cost << ln;
+    if (s[n - 1] == 'L')
+    {
+        losing_streak.back() += MOD;
+    }
+    sort(all(losing_streak)), wins += k;
+    for (auto t : losing_streak)
+    {
+        if (t > k)
+        {
+            break;
+        }
+        k -= t;
+        streaks--;
+    }
+    cout << 2 * wins - streaks << ln;
 }
+
 int main()
 {
     fast_cin();

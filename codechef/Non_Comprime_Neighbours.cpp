@@ -43,7 +43,6 @@ double eps = 1e-12;
 #define ln "\n"
 #define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
-#define ie insert
 #define pb push_back
 #define fi first
 #define se second
@@ -201,67 +200,60 @@ bool pow2(ll x)
     return false;
 }
 
+ll primality(ll x)
+{
+    ll val = x;
+    for (ll i = 2; i <= sqrt(x); i++)
+    {
+        if (x % i == 0)
+        {
+            val = i;
+            break;
+        }
+    }
+    return val;
+}
+
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    string s;
-    cin >> s;
-    ll count = 0, act = 0, size = s.length();
-    s.pb('4');
-    s.pb('5');
-    v64 gap;
-    ll start = 0, end = 0, one = 0;
-    forn(i, size)
+    ll x = 0, n;
+    cin >> n;
+    ll arr[n];
+    forn(i, n)
     {
-        if (s[i] == '1')
+        cin >> arr[i];
+    }
+    for (ll i = 100 / 100 - 1, k = 0; i < (5 * n + 5) / 5 - 1; i++, k++)
+    {
+        if (i == n - 1)
         {
-            start = i;
-            for (ll j = i; j < size; j++)
+            if (__gcd(arr[i], arr[i - 1]) == 1)
             {
-                if (s[j] == '0')
-                {
-                    end = j;
-                    i = j;
-                    break;
-                }
+                arr[i] = arr[i - 1] * 2;
+                continue;
             }
-            gap.pb(end - start);
+            else
+            {
+                continue;
+            }
         }
-        if (s[i] == '1')
+        if (k % 2 == 0)
         {
-            one++;
+            arr[i] = arr[i + 1] * 2;
+            i++;
+        }
+        else
+        {
+            arr[i] = arr[i - 1] * 2;
         }
     }
-    
-    if (gap.size() == 0)
+    forn(i, n)
     {
-        if (one != 0)
-        {
-            cout << n << ln;
-            return;
-        }
-        else if (one == 0)
-        {
-            cout << 0 << ln;
-            return;
-        }
-    }
-    ll res = gap.size() + 1, cost = 0;
-    sort(all(gap));
-    cout << gap.size() << ln;
-    for (auto t : gap)
-    {
-        cout << t << " ";
-        if (t * m <= n)
-        {
-            cost += t * m;
-            res--;
-        }
+        cout << arr[i] << " ";
     }
     cout << ln;
-    cout << res * n + cost << ln;
 }
+
 int main()
 {
     fast_cin();

@@ -43,7 +43,6 @@ double eps = 1e-12;
 #define ln "\n"
 #define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
-#define ie insert
 #define pb push_back
 #define fi first
 #define se second
@@ -203,70 +202,54 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    string s;
-    cin >> s;
-    ll count = 0, act = 0, size = s.length();
-    s.pb('4');
-    s.pb('5');
-    v64 gap;
-    ll start = 0, end = 0, one = 0;
-    forn(i, size)
+    ll n, target;
+    cin >> n >> target;
+    bool dp[10][40];
+    memset(dp, 0, sizeof(dp));
+    ll arr[n], sum = 0;
+    forn(i, n)
     {
-        if (s[i] == '1')
+        cin >> arr[i];
+        sum += arr[i];
+    }
+    // rows-indexes and j-sum
+    for (ll i = 0; i < 10; i++)
+    {
+        for (ll j = 0; j < 40; j++)
         {
-            start = i;
-            for (ll j = i; j < size; j++)
+            if (i == 0)
             {
-                if (s[j] == '0')
-                {
-                    end = j;
-                    i = j;
-                    break;
-                }
+                dp[i][j] = false;
             }
-            gap.pb(end - start);
-        }
-        if (s[i] == '1')
-        {
-            one++;
+            if (j == 0)
+            {
+                dp[i][j] = true;
+            }
         }
     }
-    
-    if (gap.size() == 0)
+
+    for (ll i = 1; i <= n; i++)
     {
-        if (one != 0)
+        for (ll j = 1; j <= sum; j++)
         {
-            cout << n << ln;
-            return;
-        }
-        else if (one == 0)
-        {
-            cout << 0 << ln;
-            return;
-        }
-    }
-    ll res = gap.size() + 1, cost = 0;
-    sort(all(gap));
-    cout << gap.size() << ln;
-    for (auto t : gap)
-    {
-        cout << t << " ";
-        if (t * m <= n)
-        {
-            cost += t * m;
-            res--;
+            if (arr[i - 1] <= j)
+            {
+                dp[i][j] = max(dp[i - 1][j + arr[i - 1]], dp[i - 1][j]);
+            }
+            else
+            {
+                dp[i][j] = dp[i - 1][j];
+            }
         }
     }
-    cout << ln;
-    cout << res * n + cost << ln;
+    cout << dp[n][sum] << ln;
 }
+
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

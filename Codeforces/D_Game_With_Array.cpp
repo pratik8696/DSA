@@ -43,7 +43,6 @@ double eps = 1e-12;
 #define ln "\n"
 #define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
-#define ie insert
 #define pb push_back
 #define fi first
 #define se second
@@ -203,70 +202,70 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    string s;
-    cin >> s;
-    ll count = 0, act = 0, size = s.length();
-    s.pb('4');
-    s.pb('5');
-    v64 gap;
-    ll start = 0, end = 0, one = 0;
-    forn(i, size)
+    ll n, t, org;
+    cin >> n >> t;
+    org = t;
+    // creating set
+    multiset<ll> s;
+    forn(i, t) { s.insert(i + 1); }
+    v64 res;
+    for (ll i = 1; i <= n; i++)
     {
-        if (s[i] == '1')
+        if (i == n)
         {
-            start = i;
-            for (ll j = i; j < size; j++)
+            res.pb(t);
+        }
+        else
+        {
+            res.pb(1);
+            t--;
+        }
+    }
+    // computing prefix sum from front
+    ll fsum = 0;
+    for (ll i = 0; i < n; i++)
+    {
+        fsum += res[i];
+        if (s.count(fsum))
+        {
+            // removing count of fsum
+            s.erase(s.find(fsum));
+        }
+    }
+    ll rsum = 0;
+    for (ll i = n - 1; i >= 0; i--)
+    {
+        rsum += res[i];
+        if (s.count(rsum))
+        {
+            // removing count of fsum
+            s.erase(s.find(rsum));
+        }
+    }
+    // checking the set
+    for (auto z : s)
+    {
+        ll fii = z;
+        ll secc = org - z;
+        if (s.count(fii) && s.count(secc))
+        {
+            cout << "YES" << ln;
+            for (auto x : res)
             {
-                if (s[j] == '0')
-                {
-                    end = j;
-                    i = j;
-                    break;
-                }
+                cout << x << " ";
             }
-            gap.pb(end - start);
-        }
-        if (s[i] == '1')
-        {
-            one++;
-        }
-    }
-    
-    if (gap.size() == 0)
-    {
-        if (one != 0)
-        {
-            cout << n << ln;
-            return;
-        }
-        else if (one == 0)
-        {
-            cout << 0 << ln;
+            cout << ln << z << ln;
             return;
         }
     }
-    ll res = gap.size() + 1, cost = 0;
-    sort(all(gap));
-    cout << gap.size() << ln;
-    for (auto t : gap)
-    {
-        cout << t << " ";
-        if (t * m <= n)
-        {
-            cost += t * m;
-            res--;
-        }
-    }
-    cout << ln;
-    cout << res * n + cost << ln;
+    cout << "NO" << ln;
 }
+
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

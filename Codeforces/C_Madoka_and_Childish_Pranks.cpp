@@ -205,62 +205,84 @@ void solve()
 {
     ll n, m;
     cin >> n >> m;
-    string s;
-    cin >> s;
-    ll count = 0, act = 0, size = s.length();
-    s.pb('4');
-    s.pb('5');
-    v64 gap;
-    ll start = 0, end = 0, one = 0;
-    forn(i, size)
+    char arr[n][m];
+    forn(i, n)
     {
-        if (s[i] == '1')
+        forn(j, m)
         {
-            start = i;
-            for (ll j = i; j < size; j++)
+            cin >> arr[i][j];
+        }
+    }
+    // now first black krenge pura except first column
+    vector<pair<p64, p64>> v;
+    for (ll i = 0; i < n - 1; i++)
+    {
+        for (ll j = 0; j < m - 1; j++)
+        {
+            v.pb({{i + 1, j + 1}, {i + 1, j + 2}});
+        }
+    }
+
+    reverse(all(v));
+    // now jha jha white hai wha white kr de
+    forn(i, n)
+    {
+        forn(j, m)
+        {
+            if (arr[i][j] == '0')
             {
-                if (s[j] == '0')
+                auto pr = {i + 1, j + 1};
+                v.pb({{i + 1, j + 1}, {i + 1, j + 1}});
+            }
+        }
+    }
+
+    // now first column mai black paint krenge
+    for (ll i = 0; i < n; i++)
+    {
+        if (arr[i][0] == '1' && arr[i][1] == '1')
+        {
+            cout << -1 << ln;
+            return;
+        }
+
+        if (i == 0)
+        {
+            if (arr[i][0] == '1')
+            {
+                cout << -1 << ln;
+                return;
+            }
+        }
+        else
+        {
+            if (i != n - 1)
+            {
+                if (arr[i][0] == arr[i + 1][0] && arr[i][0] == '1')
                 {
-                    end = j;
-                    i = j;
-                    break;
+                    cout << "-1" << ln;
+                    return;
                 }
             }
-            gap.pb(end - start);
-        }
-        if (s[i] == '1')
-        {
-            one++;
         }
     }
-    
-    if (gap.size() == 0)
+
+    // now colouring in black
+    for (ll i = 0; i < n; i++)
     {
-        if (one != 0)
+        if (arr[i][0] == '1')
         {
-            cout << n << ln;
-            return;
-        }
-        else if (one == 0)
-        {
-            cout << 0 << ln;
-            return;
+            v.pb({{i + 1, 1}, {i, 1}});
         }
     }
-    ll res = gap.size() + 1, cost = 0;
-    sort(all(gap));
-    cout << gap.size() << ln;
-    for (auto t : gap)
+
+    cout << v.size() << ln;
+    for (auto t : v)
     {
-        cout << t << " ";
-        if (t * m <= n)
-        {
-            cost += t * m;
-            res--;
-        }
+        auto f = t.fi;
+        auto s = t.se;
+        cout << f.fi << " " << f.se << " " << s.fi << " " << s.se << ln;
     }
-    cout << ln;
-    cout << res * n + cost << ln;
 }
 int main()
 {

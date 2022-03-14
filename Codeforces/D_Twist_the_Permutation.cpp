@@ -203,64 +203,36 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    string s;
-    cin >> s;
-    ll count = 0, act = 0, size = s.length();
-    s.pb('4');
-    s.pb('5');
-    v64 gap;
-    ll start = 0, end = 0, one = 0;
-    forn(i, size)
+    ll n;
+    cin >> n;
+    ll arr[n];
+    map<ll, ll> m;
+    forn(i, n)
     {
-        if (s[i] == '1')
-        {
-            start = i;
-            for (ll j = i; j < size; j++)
-            {
-                if (s[j] == '0')
-                {
-                    end = j;
-                    i = j;
-                    break;
-                }
-            }
-            gap.pb(end - start);
-        }
-        if (s[i] == '1')
-        {
-            one++;
-        }
+        cin >> arr[i];
+        m[arr[i]] = i + 1;
     }
-    
-    if (gap.size() == 0)
+    v64 ans;
+    ll rot = 0;
+    for (ll i = n; i >= 2; i--)
     {
-        if (one != 0)
+        // now looking for n ka index;
+        ll idx = m[i] - rot;
+        if (idx < 0)
         {
-            cout << n << ln;
-            return;
+            cout << "THE INDEX CHANGES FOR " << i <<" I/O-> "<< idx << " " << ce(abs(idx), (i + 1)) * (i + 1) << ln;
+            idx += ce(abs(idx), (i + 1)) * (i + 1);
         }
-        else if (one == 0)
-        {
-            cout << 0 << ln;
-            return;
-        }
+        cout << idx << " " << rot << ln;
+        rot += idx;
     }
-    ll res = gap.size() + 1, cost = 0;
-    sort(all(gap));
-    cout << gap.size() << ln;
-    for (auto t : gap)
-    {
-        cout << t << " ";
-        if (t * m <= n)
-        {
-            cost += t * m;
-            res--;
-        }
-    }
-    cout << ln;
-    cout << res * n + cost << ln;
+    ans.pb(0);
+    reverse(all(ans));
+    // for (auto t : ans)
+    // {
+    //     cout << t << " ";
+    // }
+    // cout << ln;
 }
 int main()
 {

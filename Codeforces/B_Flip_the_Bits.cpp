@@ -203,65 +203,60 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    string s;
-    cin >> s;
-    ll count = 0, act = 0, size = s.length();
-    s.pb('4');
-    s.pb('5');
-    v64 gap;
-    ll start = 0, end = 0, one = 0;
-    forn(i, size)
+    ll n;
+    cin >> n;
+    string p, q;
+    cin >> p >> q;
+    v64 onewla, zerowla;
+    ll one = 0, zero = 0;
+    forn(i, p.length())
     {
-        if (s[i] == '1')
+        if (p[i] == '0')
         {
-            start = i;
-            for (ll j = i; j < size; j++)
-            {
-                if (s[j] == '0')
-                {
-                    end = j;
-                    i = j;
-                    break;
-                }
-            }
-            gap.pb(end - start);
+            zero++;
         }
-        if (s[i] == '1')
+        if (p[i] == '1')
         {
             one++;
         }
+        onewla.pb(one);
+        zerowla.pb(zero);
     }
-    
-    if (gap.size() == 0)
+    string res = "";
+    forn(i, p.length())
     {
-        if (one != 0)
+        if (p[i] != q[i])
         {
-            cout << n << ln;
-            return;
+            res.pb('O');
         }
-        else if (one == 0)
+        else
         {
-            cout << 0 << ln;
-            return;
+            res.pb('E');
         }
     }
-    ll res = gap.size() + 1, cost = 0;
-    sort(all(gap));
-    cout << gap.size() << ln;
-    for (auto t : gap)
+    char prev = 'O';
+    for (ll i = n - 1; i >= 0; i--)
     {
-        cout << t << " ";
-        if (t * m <= n)
+        if (prev == res[i])
         {
-            cost += t * m;
-            res--;
+            if (onewla[i] != zerowla[i])
+            {
+                cout << "NO" << ln;
+                return;
+            }
+            if (prev == 'O')
+            {
+                prev = 'E';
+            }
+            else
+            {
+                prev = 'O';
+            }
         }
     }
-    cout << ln;
-    cout << res * n + cost << ln;
+    cout << "YES" << ln;
 }
+
 int main()
 {
     fast_cin();

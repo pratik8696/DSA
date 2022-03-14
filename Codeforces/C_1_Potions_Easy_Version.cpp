@@ -43,7 +43,6 @@ double eps = 1e-12;
 #define ln "\n"
 #define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
-#define ie insert
 #define pb push_back
 #define fi first
 #define se second
@@ -201,72 +200,51 @@ bool pow2(ll x)
     return false;
 }
 
+map<p64, ll> m;
+
+ll potions(ll arr[], ll n, ll sum)
+{
+    if (n == 0)
+    {
+        return 0;
+    }
+    if (m[{n, sum}] != 0)
+    {
+        return m[{n, sum}];
+    }
+    if (arr[n - 1] >= 0)
+    {
+         m[{n, sum}] = 1 + potions(arr, n - 1, sum + arr[n - 1]);
+    }
+    else if (arr[n - 1] + sum >= 0)
+    {
+         m[{n, sum}] = max(1 + potions(arr, n - 1, sum + arr[n - 1]), potions(arr, n - 1, sum));
+    }
+    else
+    {
+         m[{n, sum}] = potions(arr, n - 1, sum);
+    }
+    return m[{n,sum}];
+}
+
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    string s;
-    cin >> s;
-    ll count = 0, act = 0, size = s.length();
-    s.pb('4');
-    s.pb('5');
-    v64 gap;
-    ll start = 0, end = 0, one = 0;
-    forn(i, size)
+    ll n;
+    cin >> n;
+    ll arr[n];
+    forn(i, n)
     {
-        if (s[i] == '1')
-        {
-            start = i;
-            for (ll j = i; j < size; j++)
-            {
-                if (s[j] == '0')
-                {
-                    end = j;
-                    i = j;
-                    break;
-                }
-            }
-            gap.pb(end - start);
-        }
-        if (s[i] == '1')
-        {
-            one++;
-        }
+        cin >> arr[i];
     }
-    
-    if (gap.size() == 0)
-    {
-        if (one != 0)
-        {
-            cout << n << ln;
-            return;
-        }
-        else if (one == 0)
-        {
-            cout << 0 << ln;
-            return;
-        }
-    }
-    ll res = gap.size() + 1, cost = 0;
-    sort(all(gap));
-    cout << gap.size() << ln;
-    for (auto t : gap)
-    {
-        cout << t << " ";
-        if (t * m <= n)
-        {
-            cost += t * m;
-            res--;
-        }
-    }
-    cout << ln;
-    cout << res * n + cost << ln;
+    reverse(al(arr, n));
+    cout << potions(arr, n, 0) << ln;
 }
+
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();
