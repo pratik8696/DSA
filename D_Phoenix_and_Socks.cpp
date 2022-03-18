@@ -258,6 +258,7 @@ void solve()
         ll rempair = (rem - remdis) / 2;
         cout << totalleft + remdis + rempair << ln;
     }
+    
     else if (totalleft > totalright)
     {
         ll rem = totalleft - totalright;
