@@ -204,33 +204,42 @@ bool pow2(ll x)
 set<ll> s;
 void solve()
 {
+    v64 coin(all(s));
     ll n;
     cin >> n;
-    ll count = 0;
-    while (n > 0)
+    ll dp[coin.size() + 1][n + 1];
+    memset(dp, 0, sizeof(dp));
+    forn(i, n + 1)
     {
-        auto it = s.upper_bound(n);
-        it--;
-        n = n - *it;
-        count++;
+        dp[0][i] = INT_MAX;
     }
-    cout << count << ln;
+    forn(i, n + 1)
+    {
+        if (i % arr[0] == 0)
+        {
+            dp[1][i] = i / arr[0];
+        }
+        else
+        {
+            dp[1][i] = INT_MAX;
+        }
+    }
+    
 }
 
 int main()
 {
     fast_cin();
-    ll prod = 1;
-    for (ll i = 1; i < 20; i++)
+    ll sum = 1;
+    for (ll i = 1; i < 16; i++)
     {
-        prod *= i;
-        s.ie(prod);
+        sum *= i;
+        s.ie(sum);
     }
     for (ll i = 1; i < 50; i++)
     {
         s.ie(fastexpo(2, i));
     }
-
     ll t;
     cin >> t;
     for (int it = 1; it <= t; it++)

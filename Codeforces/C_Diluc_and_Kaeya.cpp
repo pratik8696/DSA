@@ -222,18 +222,15 @@ void solve()
         d.pb(dd);
         k.pb(kk);
     }
-    map<double, ll> check;
-    set<ll> m;
-    for (ll i = 0; i < d.size(); i++)
+    map<p64, ll> m;
+    forn(i, d.size())
     {
-        ll first = d[i];
-        ll second = k[i];
-        if (second == 0)
-            second = INT_MAX;
-        double val = first / second;
-        check[val]++;
-        m.ie(check[val]);
-        cout << *m.rbegin() << " ";
+        ll gc = __gcd(d[i], k[i]);
+        ll first = d[i] / gc;
+        ll second = k[i] / gc;
+        p64 pr = {first, second};
+        m[pr]++;
+        cout<<m[pr]<<" ";
     }
     cout << ln;
 }

@@ -211,36 +211,59 @@ bool isPrime(int x)
     return true;
 }
 
+// ll dp[200005][2];
+
+// ll steps(bool turn, ll arr[], ll n)
+// {
+//     if (n <= 0)
+//     {
+//         return 0;
+//     }
+//     else if (dp[n][turn] != -1)
+//     {
+//         return dp[n][turn];
+//     }
+//     else if (n == 1)
+//     {
+//         return (turn == 1 ? arr[n - 1] : 0);
+//     }
+//     else if (turn)
+//     {
+//         return dp[n][turn] = min(arr[n - 1] + steps(!turn, arr, n - 1), arr[n - 1] + arr[n - 2] + steps(!turn, arr, n - 2));
+//     }
+//     else
+//     {
+//         return dp[n][turn] = min(steps(!turn, arr, n - 1), steps(!turn, arr, n - 2));
+//     }
+// }
+
 void solve()
 {
-    string p, q;
-    cin >> p >> q;
-    ll i = p.length() - 1;
-    ll j = q.length() - 1;
-    string ans = "";
-    while (i >= 0 && j >= 0)
+    ll n;
+    cin >> n;
+    ll arr[n];
+    forn(i, n)
     {
-        if (p[i] == q[j])
-        {
-            ans.pb(p[i]);
-            i--, j--;
-        }
-        else if (p[i] != q[j])
-        {
-            i -= 2;
-        }
+        cin >> arr[i];
     }
-    reverse(all(ans));
-    // cout << ans << " " << q << ln;
-    if (ans.compare(q) == 0)
+    if (n == 1)
     {
-        cout << "YES" << ln;
+        cout << arr[0] << ln;
+        return;
     }
-    else
+    ll dp[n + 1][2];
+    memset(dp, 999999, sizeof(dp));
+    dp[0][0] = 0;
+    dp[0][1] = INF;
+
+    forsn(i, 1, n + 1)
     {
-        cout << "NO" << ln;
+        dp[i][0] = min(dp[i - 1][1], (i > 1 ? dp[i - 2][1] : INT_MAX));
+        dp[i][1] = min(dp[i - 1][0] + arr[i - 1], i > 1 ? dp[i - 2][0] + arr[i - 1] + arr[i - 2] : INT_MAX);
     }
+    cout << min(dp[n][0], dp[n][1]) << ln;
 }
+
 int main()
 {
     fast_cin();

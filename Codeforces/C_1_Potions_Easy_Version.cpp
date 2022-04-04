@@ -43,6 +43,7 @@ double eps = 1e-12;
 #define ln "\n"
 #define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
+#define ie insert
 #define pb push_back
 #define fi first
 #define se second
@@ -200,31 +201,14 @@ bool pow2(ll x)
     return false;
 }
 
-map<p64, ll> m;
-
-ll potions(ll arr[], ll n, ll sum)
+bool isPrime(int x)
 {
-    if (n == 0)
+    for (int d = 2; d * d <= x; d++)
     {
-        return 0;
+        if (x % d == 0)
+            return false;
     }
-    if (m[{n, sum}] != 0)
-    {
-        return m[{n, sum}];
-    }
-    if (arr[n - 1] >= 0)
-    {
-         m[{n, sum}] = 1 + potions(arr, n - 1, sum + arr[n - 1]);
-    }
-    else if (arr[n - 1] + sum >= 0)
-    {
-         m[{n, sum}] = max(1 + potions(arr, n - 1, sum + arr[n - 1]), potions(arr, n - 1, sum));
-    }
-    else
-    {
-         m[{n, sum}] = potions(arr, n - 1, sum);
-    }
-    return m[{n,sum}];
+    return true;
 }
 
 void solve()
@@ -236,10 +220,31 @@ void solve()
     {
         cin >> arr[i];
     }
-    reverse(al(arr, n));
-    cout << potions(arr, n, 0) << ln;
+    ll dp[n + 1][n + 1];
+    memset(dp, -1, sizeof(dp));
+    for (ll i = 1; i < n + 1; i++)
+    {
+        for (ll j = 1; j < n + 1; j++)
+        {
+            if (dp[i - 1][j - 1] + arr[i - 1] >= 0)
+            {
+                dp[i][j] = max(dp[i - 1][j] + arr[i - 1], dp[i - 1][j]);
+            }
+            else
+            {
+                dp[i][j] = dp[i - 1][j];
+            }
+        }
+    }
+    forsn(i, 1, n + 1)
+    {
+        forsn(j, 1, n + 1)
+        {
+            cout << dp[i][j] << " ";
+        }
+        cout << ln;
+    }
 }
-
 int main()
 {
     fast_cin();

@@ -201,24 +201,58 @@ bool pow2(ll x)
     return false;
 }
 
-void solve()
+bool isPrime(int x)
 {
-    ll n;
-    cin >> n;
-    ll arr[n];
-    forn(i, n)
+    for (int d = 2; d * d <= x; d++)
     {
-        cin >> arr[i];
+        if (x % d == 0)
+            return false;
     }
-    
+    return true;
 }
 
+void solve()
+{
+    ll n, m;
+    cin >> n >> m;
+    multiset<ll> s;
+    forn(i, n)
+    {
+        ll x;
+        cin >> x;
+        s.ie(x);
+    }
+    forn(i, m)
+    {
+        ll y;
+        cin >> y;
+        auto it = s.upper_bound(y);
+        if (it != s.begin())
+        {
+            it--;
+            ll val = *it;
+            if (val <= y)
+            {
+                cout << val << ln;
+                s.erase(it);
+            }
+            else
+            {
+                cout << -1 << ln;
+            }
+        }
+        else
+        {
+            cout << -1 << ln;
+        }
+    }
+}
 
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

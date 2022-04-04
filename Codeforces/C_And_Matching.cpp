@@ -213,32 +213,114 @@ bool isPrime(int x)
 
 void solve()
 {
-    string p, q;
-    cin >> p >> q;
-    ll i = p.length() - 1;
-    ll j = q.length() - 1;
-    string ans = "";
-    while (i >= 0 && j >= 0)
+    ll n, k;
+    cin >> n >> k;
+    ll a[n / 2], b[n / 2];
+    forn(i, n / 2)
     {
-        if (p[i] == q[j])
-        {
-            ans.pb(p[i]);
-            i--, j--;
-        }
-        else if (p[i] != q[j])
-        {
-            i -= 2;
-        }
+        a[i] = i;
     }
-    reverse(all(ans));
-    // cout << ans << " " << q << ln;
-    if (ans.compare(q) == 0)
+    ll org = n - 1;
+    forn(i, n / 2)
     {
-        cout << "YES" << ln;
+        b[i] = org--;
+    }
+    if (k > n - 1)
+    {
+        cout << -1 << ln;
+        return;
+    }
+    if (n == 4 && k == 3)
+    {
+        cout << -1 << ln;
+        return;
+    }
+    if (k == 0)
+    {
+        vp64 ans;
+        forn(i, n / 2)
+        {
+            cout << a[i] << " " << b[i] << ln;
+        }
+        return;
+    }
+    else if (k == n - 1)
+    {
+        vp64 ans;
+        // ab 2^n wla sab lena hai
+        v64 powers, compliment;
+        forn(i, n / 2)
+        {
+            ll val = a[i] & (a[i] - 1);
+            if (val == 0 && i != 0)
+            {
+                powers.pb(i);
+                compliment.pb(b[i]);
+                a[i] = INT_MAX;
+                b[i] = INT_MAX;
+            }
+        }
+        powers.pb(n / 2);
+        compliment.pb(n / 2 - 1);
+        a[n / 2 - 1] = INT_MAX;
+        b[n / 2 - 1] = INT_MAX;
+        rotate(powers.begin(), powers.begin() + 1, powers.end());
+        forn(i, powers.size())
+        {
+            ans.pb({powers[i], compliment[i]});
+        }
+        forn(i, n / 2)
+        {
+            if (a[i] != INT_MAX)
+            {
+                ans.pb({a[i], b[i]});
+            }
+        }
+        for (auto t : ans)
+        {
+            cout << t.fi << " " << t.se << ln;
+        }
+        return;
     }
     else
     {
-        cout << "NO" << ln;
+        vp64 ans;
+        // ek to n-1 hoga and dusra k
+        for (ll i = 0; i < n / 2; i++)
+        {
+            if (a[i] == k)
+            {
+                ans.pb({n - 1, k});
+                ans.pb({0, b[i]});
+                a[i] = INT_MAX;
+                b[i] = INT_MAX;
+                a[0] = INT_MAX;
+                b[0] = INT_MAX;
+                break;
+            }
+            else if (b[i] == k)
+            {
+                ans.pb({n - 1, k});
+                ans.pb({0, a[i]});
+                a[i] = INT_MAX;
+                b[i] = INT_MAX;
+                a[0] = INT_MAX;
+                b[0] = INT_MAX;
+                break;
+            }
+        }
+        forn(i, n / 2)
+        {
+            if (a[i] != INT_MAX)
+            {
+                ans.pb({a[i], b[i]});
+            }
+        }
+        for (auto t : ans)
+        {
+            cout << t.fi << " " << t.se << ln;
+        }
+        return;
     }
 }
 int main()

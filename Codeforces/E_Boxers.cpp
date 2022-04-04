@@ -201,51 +201,48 @@ bool pow2(ll x)
     return false;
 }
 
-bool isPrime(int x)
-{
-    for (int d = 2; d * d <= x; d++)
-    {
-        if (x % d == 0)
-            return false;
-    }
-    return true;
-}
-
 void solve()
 {
-    string p, q;
-    cin >> p >> q;
-    ll i = p.length() - 1;
-    ll j = q.length() - 1;
-    string ans = "";
-    while (i >= 0 && j >= 0)
+    ll n;
+    cin >> n;
+    ll arr[n];
+    map<ll, ll> m;
+    forn(i, n)
     {
-        if (p[i] == q[j])
+        cin >> arr[i];
+        m[arr[i]]++;
+    }
+    for (auto t : m)
+    {
+        if (t.se == 2)
         {
-            ans.pb(p[i]);
-            i--, j--;
+            // now increase and decrease only the possible case
+            if (m[t.fi + 1] == 0)
+            {
+                m[t.fi + 1]++;
+            }
+            else if (m[t.fi - 1] == 0 && t.fi - 1 > 0)
+            {
+                m[t.fi - 1]++;
+            }
         }
-        else if (p[i] != q[j])
+        else if (t.se > 2)
         {
-            i -= 2;
+            if (t.fi - 1 > 0)
+            {
+                m[t.fi - 1]++;
+            }
+            m[t.fi + 1]++;
         }
     }
-    reverse(all(ans));
-    // cout << ans << " " << q << ln;
-    if (ans.compare(q) == 0)
-    {
-        cout << "YES" << ln;
-    }
-    else
-    {
-        cout << "NO" << ln;
-    }
+    cout << m.size() << ln;
 }
+
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

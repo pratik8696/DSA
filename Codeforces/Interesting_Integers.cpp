@@ -92,6 +92,16 @@ ll sumofno(ll n)
     return sum;
 }
 
+ll prodofno(ll n)
+{
+    ll sum = 1;
+    while (n != 0)
+    {
+        sum *= n % 10;
+        n = n / 10;
+    }
+    return sum;
+}
 // modular exponentiation
 long long modpow(long long x, long long n, long long p)
 {
@@ -201,45 +211,19 @@ bool pow2(ll x)
     return false;
 }
 
-bool isPrime(int x)
-{
-    for (int d = 2; d * d <= x; d++)
-    {
-        if (x % d == 0)
-            return false;
-    }
-    return true;
-}
-
 void solve()
 {
-    string p, q;
-    cin >> p >> q;
-    ll i = p.length() - 1;
-    ll j = q.length() - 1;
-    string ans = "";
-    while (i >= 0 && j >= 0)
+    ll n, m;
+    cin >> n >> m;
+    ll count = 0;
+    for (ll i = n; i <= m; i++)
     {
-        if (p[i] == q[j])
+        if (prodofno(i) % sumofno(i) == 0)
         {
-            ans.pb(p[i]);
-            i--, j--;
-        }
-        else if (p[i] != q[j])
-        {
-            i -= 2;
+            count++;
         }
     }
-    reverse(all(ans));
-    // cout << ans << " " << q << ln;
-    if (ans.compare(q) == 0)
-    {
-        cout << "YES" << ln;
-    }
-    else
-    {
-        cout << "NO" << ln;
-    }
+    cout << count << ln;
 }
 int main()
 {
@@ -248,6 +232,7 @@ int main()
     cin >> t;
     for (int it = 1; it <= t; it++)
     {
+        cout << "Case #" << it << ": ";
         solve();
     }
     return 0;

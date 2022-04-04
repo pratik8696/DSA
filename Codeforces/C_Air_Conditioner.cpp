@@ -211,36 +211,56 @@ bool isPrime(int x)
     return true;
 }
 
+bool check(ll left, ll right, ll lb, ll up)
+{
+    if (left >= lb && left <= up)
+    {
+        return true;
+    }
+    if (right >= lb && right <= up)
+    {
+        return true;
+    }
+    if (left <= lb && right >= up)
+    {
+        return true;
+    }
+    return false;
+}
+
 void solve()
 {
-    string p, q;
-    cin >> p >> q;
-    ll i = p.length() - 1;
-    ll j = q.length() - 1;
-    string ans = "";
-    while (i >= 0 && j >= 0)
+    ll n, k;
+    cin >> n >> k;
+    ll tt[n], lb[n], up[n];
+    forn(i, n)
     {
-        if (p[i] == q[j])
+        cin >> tt[i] >> lb[i] >> up[i];
+    }
+    ll left_range = k, right_range = k, prev = 0;
+    forn(i, n)
+    {
+        ll time = abs(tt[i] - prev);
+        prev = tt[i];
+        // now we find the range
+        // ki temp should lie in this range
+        left_range -= time;
+        right_range += time;
+        if (check(left_range, right_range, lb[i], up[i]))
         {
-            ans.pb(p[i]);
-            i--, j--;
+            // now reset the range
+            left_range = max(lb[i], left_range);
+            right_range = min(up[i], right_range);
         }
-        else if (p[i] != q[j])
+        else
         {
-            i -= 2;
+            cout << "NO" << ln;
+            return;
         }
     }
-    reverse(all(ans));
-    // cout << ans << " " << q << ln;
-    if (ans.compare(q) == 0)
-    {
-        cout << "YES" << ln;
-    }
-    else
-    {
-        cout << "NO" << ln;
-    }
+    cout << "YES" << ln;
 }
+
 int main()
 {
     fast_cin();

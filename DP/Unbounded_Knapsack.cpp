@@ -208,11 +208,11 @@ void solve()
     ll wt[n], price[n];
     forn(i, n)
     {
-        cin >> price[i];
+        cin >> wt[i];
     }
     forn(i, n)
     {
-        cin >> wt[i];
+        cin >> price[i];
     }
     ll dp[n + 1][k + 1];
     memset(dp, 0, sizeof(dp));
@@ -236,7 +236,7 @@ void solve()
 int main()
 {
     fast_cin();
-    ll t=1;
+    ll t = 1;
     // cin >> t;
     for (int it = 1; it <= t; it++)
     {

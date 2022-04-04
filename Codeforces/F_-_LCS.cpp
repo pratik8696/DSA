@@ -215,37 +215,54 @@ void solve()
 {
     string p, q;
     cin >> p >> q;
-    ll i = p.length() - 1;
-    ll j = q.length() - 1;
-    string ans = "";
-    while (i >= 0 && j >= 0)
+    ll n = p.length(), m = q.length();
+    ll dp[n + 1][m + 1];
+    memset(dp, 0, sizeof(dp));
+
+    for (ll i = 1; i <= n; i++)
     {
-        if (p[i] == q[j])
+        for (ll j = 1; j <= m; j++)
         {
-            ans.pb(p[i]);
+            if (p[i - 1] == q[j - 1])
+            {
+                dp[i][j] = 1 + dp[i - 1][j - 1];
+            }
+            else
+            {
+                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
+            }
+        }
+    }
+    ll i = n, j = m;
+    string res = "";
+    while (i > 0 && j > 0)
+    {
+        if (p[i - 1] == q[j - 1])
+        {
+            res.pb(p[i - 1]);
             i--, j--;
         }
-        else if (p[i] != q[j])
+        else
         {
-            i -= 2;
+            if (dp[i][j - 1] > dp[i - 1][j])
+            {
+                j--;
+            }
+            else
+            {
+                i--;
+            }
         }
     }
-    reverse(all(ans));
-    // cout << ans << " " << q << ln;
-    if (ans.compare(q) == 0)
-    {
-        cout << "YES" << ln;
-    }
-    else
-    {
-        cout << "NO" << ln;
-    }
+    reverse(all(res));
+    cout << res << ln;
 }
+
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

@@ -213,39 +213,50 @@ bool isPrime(int x)
 
 void solve()
 {
-    string p, q;
-    cin >> p >> q;
-    ll i = p.length() - 1;
-    ll j = q.length() - 1;
-    string ans = "";
-    while (i >= 0 && j >= 0)
+    ll n;
+    cin >> n;
+    char arr[n][n];
+    forn(i, n)
     {
-        if (p[i] == q[j])
+        forn(j, n)
         {
-            ans.pb(p[i]);
-            i--, j--;
-        }
-        else if (p[i] != q[j])
-        {
-            i -= 2;
+            cin >> arr[i][j];
         }
     }
-    reverse(all(ans));
-    // cout << ans << " " << q << ln;
-    if (ans.compare(q) == 0)
+    if (arr[0][0] == '*' || arr[n - 1][n - 1] == '*')
     {
-        cout << "YES" << ln;
+        cout << 0 << ln;
+        return;
     }
-    else
+    ll dp[n + 1][n + 1];
+    memset(dp, 0, sizeof(dp));
+    for (ll i = 1; i <= n; i++)
     {
-        cout << "NO" << ln;
+        for (ll j = 1; j <= n; j++)
+        {
+            if (i == 1 && j == 1)
+            {
+                dp[1][1] = 1;
+            }
+            else if (arr[i - 1][j - 1] == '.')
+            {
+                dp[i][j] += dp[i][j - 1] + dp[i - 1][j];
+                dp[i][j] %= MOD;
+            }
+            else
+            {
+                dp[i][j] = 0;
+            }
+        }
     }
+    cout << dp[n][n] << ln;
 }
+
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

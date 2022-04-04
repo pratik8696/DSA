@@ -34,7 +34,7 @@ typedef vector<vector<ll>> vv64;
 typedef vector<vector<p64>> vvp64;
 typedef vector<p64> vp64;
 typedef vector<p32> vp32;
-ll MOD = 1000000007;
+int MOD = 1000000007;
 double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
@@ -211,41 +211,43 @@ bool isPrime(int x)
     return true;
 }
 
+v32 dp(1000010);
+int arr[1000010];
 void solve()
 {
-    string p, q;
-    cin >> p >> q;
-    ll i = p.length() - 1;
-    ll j = q.length() - 1;
-    string ans = "";
-    while (i >= 0 && j >= 0)
+    int n, k;
+    cin >> n >> k;
+    forn(i, n)
     {
-        if (p[i] == q[j])
+        cin >> arr[i];
+    }
+    sort(al(arr, n));
+    dp[0] = 1;
+    for (int i = 1; i <= k; i++)
+    {
+        for (int j = 0; j < n; j++)
         {
-            ans.pb(p[i]);
-            i--, j--;
+            int res = i - arr[j];
+            if (res >= 0)
+            {
+                dp[i] %= MOD;
+                dp[i] += (dp[i - arr[j]]) % MOD;
+                dp[i] %= MOD;
+            }
+            else
+            {
+                break;
+            }
         }
-        else if (p[i] != q[j])
-        {
-            i -= 2;
-        }
     }
-    reverse(all(ans));
-    // cout << ans << " " << q << ln;
-    if (ans.compare(q) == 0)
-    {
-        cout << "YES" << ln;
-    }
-    else
-    {
-        cout << "NO" << ln;
-    }
+    cout << dp[k] % MOD << ln;
 }
+
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

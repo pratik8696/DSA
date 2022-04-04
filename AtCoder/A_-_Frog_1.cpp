@@ -236,20 +236,11 @@ void solve()
     dp[0] = 0;
     for (ll i = 1; i < n; i++)
     {
-        // if (i - 2 >= 0)
-        // {
-        //     dp[i] = min(abs(arr[i - 1] - arr[i]) + dp[i - 1], abs(arr[i - 2] - arr[i]) + dp[i - 2]);
-        // }
-        // else
-        // {
-        //     dp[i] = abs(arr[i - 1] - arr[i]) + dp[i - 1];
-        // }
         for (ll j = 1; j <= i; j++)
         {
             dp[i] = min(abs(arr[i - j] - arr[i]) + dp[i - j], dp[i]);
         }
     }
-    // cout << dp.back() << ln;
     for (auto t : dp)
     {
         cout << t << " ";

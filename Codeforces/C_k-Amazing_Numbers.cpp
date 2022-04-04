@@ -213,34 +213,49 @@ bool isPrime(int x)
 
 void solve()
 {
-    string p, q;
-    cin >> p >> q;
-    ll i = p.length() - 1;
-    ll j = q.length() - 1;
-    string ans = "";
-    while (i >= 0 && j >= 0)
+    ll n;
+    cin >> n;
+    ll arr[n];
+    map<ll, deque<ll>> m;
+    forn(i, n)
+    { 
+        cin >> arr[i];
+        m[arr[i]].pb(i + 1);
+    }
+    map<ll, ll> ans;
+    forn(i, n + 1)
     {
-        if (p[i] == q[j])
+        ans[i] = INT_MAX;
+    }
+    for (auto t : m)
+    {
+        auto v = t.se;
+        ll diff = INT_MIN;
+        forn(i, v.size() - 1)
         {
-            ans.pb(p[i]);
-            i--, j--;
+            ll curr_diff = v[i + 1] - v[i];
+            diff = max(diff, curr_diff);
         }
-        else if (p[i] != q[j])
+        diff = max(diff, v.front());
+        diff = max(diff, n - v.back() + 1);
+        ans[diff] = min(ans[diff], t.fi);
+    }
+    ll result = INT_MAX;
+    for (ll i = 1; i <= n; i++)
+    {
+        if (result == INT_MAX && ans[i] == INT_MAX)
         {
-            i -= 2;
+            cout << -1 << " ";
+        }
+        else
+        {
+            result = min(result, ans[i]);
+            cout << result << " ";
         }
     }
-    reverse(all(ans));
-    // cout << ans << " " << q << ln;
-    if (ans.compare(q) == 0)
-    {
-        cout << "YES" << ln;
-    }
-    else
-    {
-        cout << "NO" << ln;
-    }
+    cout << ln;
 }
+
 int main()
 {
     fast_cin();

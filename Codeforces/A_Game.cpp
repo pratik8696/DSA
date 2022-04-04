@@ -201,46 +201,75 @@ bool pow2(ll x)
     return false;
 }
 
-bool isPrime(int x)
-{
-    for (int d = 2; d * d <= x; d++)
-    {
-        if (x % d == 0)
-            return false;
-    }
-    return true;
-}
-
 void solve()
 {
-    string p, q;
-    cin >> p >> q;
-    ll i = p.length() - 1;
-    ll j = q.length() - 1;
-    string ans = "";
-    while (i >= 0 && j >= 0)
+    ll n;
+    cin >> n;
+    ll arr[n];
+    forn(i, n)
     {
-        if (p[i] == q[j])
+        cin >> arr[i];
+    }
+    ll count = 0;
+    v64 res;
+    forn(i, n)
+    {
+        if (arr[i] == 0)
         {
-            ans.pb(p[i]);
-            i--, j--;
+            count++;
         }
-        else if (p[i] != q[j])
+        else
         {
-            i -= 2;
+            if (count != 0)
+            {
+                res.pb(count);
+            }
+            count = 0;
         }
     }
-    reverse(all(ans));
-    // cout << ans << " " << q << ln;
-    if (ans.compare(q) == 0)
+    if (res.size() == 0)
     {
-        cout << "YES" << ln;
+        cout << 0 << ln;
+        return;
+    }
+    if (res.size() == 1)
+    {
+        cout << res.back() + 1 << ln;
+        return;
     }
     else
     {
-        cout << "NO" << ln;
+        ll first = INT_MAX, second = INT_MAX;
+        forn(i, n)
+        {
+            if (arr[i] == 1)
+            {
+                continue;
+            }
+            else
+            {
+                first = n - i;
+                break;
+            }
+        }
+        reverse(al(arr, n));
+        forn(i, n)
+        {
+            if (arr[i] == 1)
+            {
+                continue;
+            }
+            else
+            {
+                second = n - i;
+                break;
+            }
+        }
+        cout << min(first, second) << ln;
+        return;
     }
 }
+
 int main()
 {
     fast_cin();

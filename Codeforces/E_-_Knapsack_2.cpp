@@ -201,45 +201,67 @@ bool pow2(ll x)
     return false;
 }
 
-void solve()
+bool isPrime(int x)
 {
-    ll n;
-    cin >> n;
-    string s;
-    cin >> s;
-    v64 d, k;
-    ll dd = 0, kk = 0;
-    forn(i, s.length())
+    for (int d = 2; d * d <= x; d++)
     {
-        if (s[i] == 'D')
-        {
-            dd++;
-        }
-        else if (s[i] == 'K')
-        {
-            kk++;
-        }
-        d.pb(dd);
-        k.pb(kk);
+        if (x % d == 0)
+            return false;
     }
-    map<p64, ll> m;
-    forn(i, d.size())
-    {
-        ll gc = __gcd(d[i], k[i]);
-        ll first = d[i] / gc;
-        ll second = k[i] / gc;
-        p64 pr = {first, second};
-        m[pr]++;
-        cout<<m[pr]<<" ";
-    }
-    cout << ln;
+    return true;
 }
 
+ll dp[101][100001];
+
+void solve()
+{
+    ll n, w;
+    cin >> n >> w;
+    ll wt[n], val[n];
+    forn(i, n)
+    {
+        cin >> wt[i] >> val[i];
+    }
+    forn(i, 101)
+    {
+        forn(j, 100001)
+        {
+            dp[i][j] = INF;
+        }
+    }
+    forn(i, 101)
+    {
+        dp[i][0] = 0;
+    }
+    for (ll i = 1; i <= n; i++)
+    {
+        for (ll j = 1; j <= 100000; j++)
+        {
+            if (val[i - 1] <= j)
+            {
+                dp[i][j] = min(dp[i - 1][j], dp[i - 1][j - val[i - 1]] + wt[i - 1]);
+            }
+            else
+            {
+                dp[i][j] = dp[i - 1][j];
+            }
+        }
+    }
+    ll ans = INT_MIN;
+    forn(i, 100001)
+    {
+        if (dp[n][i] <= w)
+        {
+            ans = max(ans, i);
+        }
+    }
+    cout << ans << ln;
+}
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

@@ -201,45 +201,28 @@ bool pow2(ll x)
     return false;
 }
 
-bool isPrime(int x)
-{
-    for (int d = 2; d * d <= x; d++)
-    {
-        if (x % d == 0)
-            return false;
-    }
-    return true;
-}
-
 void solve()
 {
-    string p, q;
-    cin >> p >> q;
-    ll i = p.length() - 1;
-    ll j = q.length() - 1;
-    string ans = "";
-    while (i >= 0 && j >= 0)
+    ll n;
+    cin >> n;
+    ll arr[n];
+    map<ll, ll> m;
+    forn(i, n)
     {
-        if (p[i] == q[j])
+        cin >> arr[i];
+        ll logg = log2(arr[i]);
+        m[logg]++;
+    }
+    ll res = 0;
+    for (auto t : m)
+    {
+        ll val = t.second;
+        if (val >= 2)
         {
-            ans.pb(p[i]);
-            i--, j--;
-        }
-        else if (p[i] != q[j])
-        {
-            i -= 2;
+            res += CW(val, 2);
         }
     }
-    reverse(all(ans));
-    // cout << ans << " " << q << ln;
-    if (ans.compare(q) == 0)
-    {
-        cout << "YES" << ln;
-    }
-    else
-    {
-        cout << "NO" << ln;
-    }
+    cout << res << ln;
 }
 int main()
 {

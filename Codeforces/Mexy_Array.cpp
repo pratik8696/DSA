@@ -201,45 +201,60 @@ bool pow2(ll x)
     return false;
 }
 
-set<ll> s;
 void solve()
 {
-    v64 coin(all(s));
     ll n;
     cin >> n;
-    ll dp[coin.size() + 1][n + 1];
-    memset(dp, 0, sizeof(dp));
-    forn(i, n + 1)
+    ll arr[n];
+    vp64 v;
+    set<ll> s;
+    forn(i, n)
     {
-        dp[0][i] = INT_MAX;
+        cin >> arr[i];
     }
-    forn(i, n + 1)
+    forn(i, 1e5 + 10) { s.ie(i); }
+    v.pb({0, 1});
+    forn(i, n)
     {
-        if (i % arr[0] == 0)
+        if (arr[i] != -1)
         {
-            dp[1][i] = i / arr[0];
-        }
-        else
-        {
-            dp[1][i] = INT_MAX;
+            v.pb({arr[i], i + 1});
+            if (arr[i] > i + 1)
+            {
+                cout << -1 << ln;
+                return;
+            }
         }
     }
-    
+
+    forsn(i, 1, v.size())
+    {
+        ll currval = v[i].fi;
+        ll diff = v[i].se - v[i - 1].se;
+        auto it = s.begin();
+        for (ll i = 0; i < diff; i++, it++)
+        {
+            cout << *it << " ";
+            if (*it >= currval)
+            {
+                // delete no greater than it
+                auto tt = s.upper_bound(currval);
+                cout << *tt << " ";
+                s.erase(tt);
+            }
+            else
+            {
+                auto add = it;
+                s.erase(add);
+            }
+        }
+    }
+    cout << ln;
 }
 
 int main()
 {
     fast_cin();
-    ll sum = 1;
-    for (ll i = 1; i < 16; i++)
-    {
-        sum *= i;
-        s.ie(sum);
-    }
-    for (ll i = 1; i < 50; i++)
-    {
-        s.ie(fastexpo(2, i));
-    }
     ll t;
     cin >> t;
     for (int it = 1; it <= t; it++)

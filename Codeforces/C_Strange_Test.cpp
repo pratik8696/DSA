@@ -43,6 +43,7 @@ double eps = 1e-12;
 #define ln "\n"
 #define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
+#define ie insert
 #define pb push_back
 #define fi first
 #define se second
@@ -92,8 +93,9 @@ ll sumofno(ll n)
 }
 
 // modular exponentiation
-ll modpow(ll x, ll n, ll p)
+long long modpow(long long x, long long n, long long p)
 {
+
     if (n == 0)
         return 1 % p;
 
@@ -116,28 +118,26 @@ ll modpow(ll x, ll n, ll p)
     return ans;
 }
 
-const int N = 1e6 + 100;
-long long fact[N];
-// initialise the factorial
-void initfact()
-{
-    fact[0] = 1;
-    for (int i = 1; i < N; i++)
-    {
-        fact[i] = (fact[i - 1] * i);
-        fact[i] %= MOD;
-    }
-}
+// const int N = 1e6 + 100;
+// long long fact[N];
+//  initialise the factorial
+// void initfact(){
+// fact[0] = 1;
+// for (int i = 1; i < N; i++)
+//{
+// fact[i] = (fact[i - 1] * i);
+// fact[i] %= MOD;
+// }}
 
 // formula for c
-ll C(ll n, ll i)
-{
-    ll res = fact[n];
-    ll div = fact[n - i] * fact[i];
-    div %= MOD;
-    div = modpow(div, MOD - 2, MOD);
-    return (res * div) % MOD;
-}
+// ll C(ll n, ll i)
+//{
+// ll res = fact[n];
+// ll div = fact[n - i] * fact[i];
+// div %= MOD;
+// div = modpow(div, MOD - 2, MOD);
+// return (res * div) % MOD;
+// }
 
 long long CW(ll n, ll m)
 {
@@ -203,43 +203,23 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    string p = bitset<64>(n).to_string();
-    string q = bitset<64>(m).to_string();
-    ll res1 = (n | m - m) + 1, res2 = m - n;
-    ll res = 1, ans = n | m;
-    reverse(all(p));
-    reverse(all(q));
-    if (ans == m)
+    ll a, b;
+    cin >> a >> b;
+    ll limit = a | b;
+    ll count = INT_MAX;
+    for (ll i = a; i <= 1e6; i++)
     {
-        cout << 1 << ln;
-        return;
+        ll curr_count = (i | b) - b + i - a;
+        count = min(count, curr_count);
     }
-    ll res4 = pow(2, log2(m)) - n + 1;
-    // cout << p << ln;
-    // cout << q << ln;
-    for (ll i = 0; i <= log2(n); i++)
+    for (ll i = b; i <= 1e6; i++)
     {
-        if (p[i] == '1' && q[i] == '0')
-        {
-            res += powl(2, i);
-            // cout << fastexpo(2, i) << " ";
-        }
-        else if (p[i] == '0' && q[i] == '1')
-        {
-            res -= powl(2, i);
-            // cout << fastexpo(2, i) << " ";
-        }
+        ll curr_count = (a | i) - b + i - b;
+        count = min(count, curr_count);
     }
-    // cout << ln;
-    if (res <= 0)
-    {
-        res = INT_MAX;
-    }
-    // cout << res1 << " " << res2 << " " << res << ln;
-    cout << min({res1, res2, res, res4}) << ln;
+    cout << max(1ll, count) << ln;
 }
+
 int main()
 {
     fast_cin();

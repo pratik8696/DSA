@@ -213,34 +213,87 @@ bool isPrime(int x)
 
 void solve()
 {
-    string p, q;
-    cin >> p >> q;
-    ll i = p.length() - 1;
-    ll j = q.length() - 1;
-    string ans = "";
-    while (i >= 0 && j >= 0)
+    ll n, k;
+    cin >> n >> k;
+    string s;
+    cin >> s;
+    vector<pair<char, ll>> v;
+    ll steps = k, idx = -1;
+    forn(i, n)
     {
-        if (p[i] == q[j])
+        v.pb({s[i], 0});
+    }
+    ll count = 0;
+    forn(i, n)
+    {
+        if (s[i] == '0')
         {
-            ans.pb(p[i]);
-            i--, j--;
+            if (steps > 0)
+            {
+                ll leftsteps = steps;
+                steps -= i;
+                if (steps < 0)
+                {
+                    idx = ((i + 1) - count) - leftsteps;
+                    v[i].se = 1;
+                    break;
+                }
+                else
+                {
+                    count++;
+                    v[i].se = 1;
+                }
+            }
         }
-        else if (p[i] != q[j])
+    }
+    if (idx == -1)
+    {
+        sort(all(s));
+        cout << s << ln;
+        return;
+    }
+    string res = "";
+    forn(i, count)
+    {
+        res.pb('0');
+    }
+    // cout << res << ln;
+    ll add = 0;
+    forn(i, n)
+    {
+        if (v[i].fi == '1')
         {
-            i -= 2;
+            res.pb('1');
+            add++;
+        }
+        else
+        {
+            if (v[i].se == 0)
+            {
+                res.pb(v[i].fi);
+                add++;
+            }
+        }
+        if (add + 1 == idx)
+        {
+            res.pb('0');
+            add++;
         }
     }
-    reverse(all(ans));
-    // cout << ans << " " << q << ln;
-    if (ans.compare(q) == 0)
-    {
-        cout << "YES" << ln;
-    }
-    else
-    {
-        cout << "NO" << ln;
-    }
+    // cout << count << " " << idx << ln;
+    cout << res << ln;
+    // for (auto t : v)
+    // {
+    //     cout << t.fi << " ";
+    // }
+    // cout << ln;
+    // for (auto t : v)
+    // {
+    //     cout << t.se << " ";
+    // }
+    // cout << ln;
 }
+
 int main()
 {
     fast_cin();

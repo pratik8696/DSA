@@ -201,46 +201,50 @@ bool pow2(ll x)
     return false;
 }
 
-bool isPrime(int x)
-{
-    for (int d = 2; d * d <= x; d++)
-    {
-        if (x % d == 0)
-            return false;
-    }
-    return true;
-}
-
 void solve()
 {
-    string p, q;
-    cin >> p >> q;
-    ll i = p.length() - 1;
-    ll j = q.length() - 1;
-    string ans = "";
-    while (i >= 0 && j >= 0)
+    ll n;
+    cin >> n;
+    ll arr[n];
+    map<ll, ll> m;
+    forn(i, n)
     {
-        if (p[i] == q[j])
-        {
-            ans.pb(p[i]);
-            i--, j--;
-        }
-        else if (p[i] != q[j])
-        {
-            i -= 2;
-        }
+        cin >> arr[i];
+        m[arr[i]]++;
     }
-    reverse(all(ans));
-    // cout << ans << " " << q << ln;
-    if (ans.compare(q) == 0)
+    // now we will make a sorted array and then we will perfomrm the operations
+    v64 count;
+    for (auto t : m)
     {
-        cout << "YES" << ln;
+        count.pb(t.se);
     }
-    else
+    sort(all(count));
+    deque<ll> f, b;
+    ll sum = 0;
+    forn(i, count.size())
     {
-        cout << "NO" << ln;
+        sum += count[i];
+        f.pb(sum);
     }
+    sum = 0;
+    for (ll i = count.size() - 1; i >= 0; i--)
+    {
+        sum += count[i];
+        b.pb(sum);
+    }
+    reverse(all(b));
+    f.pb(0), f.push_front(0);
+    b.pb(0), b.push_front(0);
+    ll mini = INT_MAX;
+    for (ll i = 1; i <= count.size(); i++)
+    {
+        ll ageseremove = b[i + 1] - (count.size() - i) * count[i - 1];
+        ll picheseremove = f[i - 1];
+        mini = min(mini, ageseremove + picheseremove);
+    }
+    cout << mini << ln;
 }
+
 int main()
 {
     fast_cin();

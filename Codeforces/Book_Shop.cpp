@@ -201,51 +201,59 @@ bool pow2(ll x)
     return false;
 }
 
-bool isPrime(int x)
+ll pg(ll n, ll p, ll price[], ll page[])
 {
-    for (int d = 2; d * d <= x; d++)
+    if (n == 0)
     {
-        if (x % d == 0)
-            return false;
+        return 0;
     }
-    return true;
+    else if (price[n - 1] <= p)
+    {
+        return max(pg(n - 1, p - price[n - 1], price, page) + page[n - 1], pg(n - 1, p, price, page));
+    }
+    else
+    {
+        return pg(n - 1, p, price, page);
+    }
 }
 
 void solve()
 {
-    string p, q;
-    cin >> p >> q;
-    ll i = p.length() - 1;
-    ll j = q.length() - 1;
-    string ans = "";
-    while (i >= 0 && j >= 0)
+    int n, k;
+    cin >> n >> k;
+    int price[n], page[n];
+    forn(i, n)
     {
-        if (p[i] == q[j])
+        cin >> price[i];
+    }
+    forn(i, n)
+    {
+        cin >> page[i];
+    }
+    int dp[n + 1][k + 1];
+    memset(dp, 0, sizeof(dp));
+    for (ll i = 1; i <= n; i++)
+    {
+        for (ll j = 1; j <= k; j++)
         {
-            ans.pb(p[i]);
-            i--, j--;
+            if (price[i - 1] <= j)
+            {
+                dp[i][j] = max(dp[i - 1][j - price[i - 1]] + page[i - 1], dp[i - 1][j]);
+            }
+            else
+            {
+                dp[i][j] = dp[i - 1][j];
+            }
         }
-        else if (p[i] != q[j])
-        {
-            i -= 2;
-        }
     }
-    reverse(all(ans));
-    // cout << ans << " " << q << ln;
-    if (ans.compare(q) == 0)
-    {
-        cout << "YES" << ln;
-    }
-    else
-    {
-        cout << "NO" << ln;
-    }
+    cout << dp[n][k] << ln;
 }
+
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

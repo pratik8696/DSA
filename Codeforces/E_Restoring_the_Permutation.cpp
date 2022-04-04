@@ -213,34 +213,87 @@ bool isPrime(int x)
 
 void solve()
 {
-    string p, q;
-    cin >> p >> q;
-    ll i = p.length() - 1;
-    ll j = q.length() - 1;
-    string ans = "";
-    while (i >= 0 && j >= 0)
+    ll n;
+    cin >> n;
+    ll arr[n];
+    set<ll> s, r;
+    forn(i, n)
     {
-        if (p[i] == q[j])
+        cin >> arr[i];
+        s.ie(i + 1);
+        r.ie(i + 1);
+    }
+    // 3 3 4 4 7 7 7
+    // 3 _ 4 _ 7 _ _
+    // now we will first iterate and jaise hi kuch diff milega pb that else pb 0
+    v64 res;
+    ll prev = 0;
+    forn(i, n)
+    {
+        if (s.count(arr[i]))
         {
-            ans.pb(p[i]);
-            i--, j--;
+            s.erase(s.find(arr[i]));
         }
-        else if (p[i] != q[j])
+        if (r.count(arr[i]))
         {
-            i -= 2;
+            r.erase(r.find(arr[i]));
+        }
+        if (arr[i] != prev)
+        {
+            res.pb(arr[i]);
+            prev = arr[i];
+        }
+        else
+        {
+            res.pb(0);
         }
     }
-    reverse(all(ans));
-    // cout << ans << " " << q << ln;
-    if (ans.compare(q) == 0)
+    // now constructing lexiographically min wla
+    v64 minwla;
+    forn(i, n)
     {
-        cout << "YES" << ln;
+        if (res[i] == 0)
+        {
+            minwla.pb(*s.begin());
+            s.erase(s.begin());
+        }
+        else
+        {
+            minwla.pb(res[i]);
+        }
     }
-    else
+    // now constructing max wla
+    v64 maxwla;
+    r.ie(INT_MAX);
+    ll prev_nonzero = -1;
+    forn(i, n)
     {
-        cout << "NO" << ln;
+        if (res[i] == 0)
+        {
+            auto it = r.lower_bound(prev_nonzero);
+            it--;
+            res[i] = *it;
+            r.erase(it);
+            maxwla.pb(res[i]);
+        }
+        else
+        {
+            maxwla.pb(res[i]);
+            prev_nonzero = res[i];
+        }
     }
+    for (auto t : minwla)
+    {
+        cout << t << " ";
+    }
+    cout << ln;
+    for (auto t : maxwla)
+    {
+        cout << t << " ";
+    }
+    cout << ln;
 }
+
 int main()
 {
     fast_cin();

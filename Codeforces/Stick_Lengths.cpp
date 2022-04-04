@@ -213,39 +213,43 @@ bool isPrime(int x)
 
 void solve()
 {
-    string p, q;
-    cin >> p >> q;
-    ll i = p.length() - 1;
-    ll j = q.length() - 1;
-    string ans = "";
-    while (i >= 0 && j >= 0)
+    ll n;
+    cin >> n;
+    ll arr[n];
+    forn(i, n)
     {
-        if (p[i] == q[j])
-        {
-            ans.pb(p[i]);
-            i--, j--;
-        }
-        else if (p[i] != q[j])
-        {
-            i -= 2;
-        }
+        cin >> arr[i];
     }
-    reverse(all(ans));
-    // cout << ans << " " << q << ln;
-    if (ans.compare(q) == 0)
+    sort(al(arr, n));
+    if (n % 2)
     {
-        cout << "YES" << ln;
+        ll res = arr[n / 2], sum = 0;
+        forn(i, n)
+        {
+            sum += abs(arr[i] - res);
+        }
+        cout << sum << ln;
+        return;
     }
     else
     {
-        cout << "NO" << ln;
+        ll one = arr[n / 2], sec = arr[n / 2 - 1];
+        ll a = 0, b = 0;
+        forn(i, n)
+        {
+            a += abs(arr[i] - one);
+            b += abs(arr[i] - sec);
+        }
+        cout << min({a, b}) << ln;
+        return;
     }
 }
+
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();
@@ -257,7 +261,8 @@ int main()
 1. Check borderline constraints. Can a variable you are dividing by be 0?
 2. Use ll while using bitshifts
 3. Do not erase from set while iterating it
-4. Initialise everything
+4. Initia
+lise everything
 5. Read the task carefully, is something unique, sorted, adjacent, guaranteed??
 6. DO NOT use if(!mp[x]) if you want to iterate the map later
 7. Are you using i in all loops? Are the i's conflicting?

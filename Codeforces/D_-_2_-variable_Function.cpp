@@ -201,53 +201,45 @@ bool pow2(ll x)
     return false;
 }
 
+bool isPrime(int x)
+{
+    for (int d = 2; d * d <= x; d++)
+    {
+        if (x % d == 0)
+            return false;
+    }
+    return true;
+}
+
 void solve()
 {
-    ll n, x;
-    cin >> n >> x;
-    ll arr[n];
-    ll pre = 0, suff = 0;
-    forn(i, n)
+    ll n, ans = 2e18;
+    cin >> n;
+    for (ll i = 0; i < 1e6 + 10; i++)
     {
-        cin >> arr[i];
-        pre += arr[i];
-        suff = pre;
-    }
-    if (pre % x != 0)
-    {
-        cout << n << ln;
-        return;
-    }
-    ll res = INT_MIN;
-    for (ll i = 0; i < n; i++)
-    {
-        pre -= arr[i];
-        if (pre % x != 0)
+        ll start = 0, end = 1e6, mid;
+        while (start <= end)
         {
-            res = max(res, n - i - 1);
+            mid = (start + end) / 2;
+            if (((i * i + mid * mid) * (i + mid)) >= n)
+            {
+                ans = min(ans, ((i * i + mid * mid) * (i + mid)));
+                end = mid - 1;
+            }
+            else
+            {
+                start = mid + 1;
+            }
         }
     }
-    reverse(al(arr, n));
-    for (ll i = 0; i < n; i++)
-    {
-        suff -= arr[i];
-        if (suff % x != 0)
-        {
-            res = max(res, n - i - 1);
-        }
-    }
-    if (res == INT_MIN)
-    {
-        cout << -1 << ln;
-        return;
-    }
-    cout << res << ln;
+    cout << ans << ln;
 }
+
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

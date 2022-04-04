@@ -213,34 +213,119 @@ bool isPrime(int x)
 
 void solve()
 {
-    string p, q;
-    cin >> p >> q;
-    ll i = p.length() - 1;
-    ll j = q.length() - 1;
-    string ans = "";
-    while (i >= 0 && j >= 0)
+    ll a, b, c, d;
+    cin >> a >> b >> c >> d;
+
+    // ab cd
+
+    if ((a + b) % 2 == 0)
     {
-        if (p[i] == q[j])
+        ll A = (a + b) / 2;
+        ll B = max(a, b) - A;
+        if (B != 0)
         {
-            ans.pb(p[i]);
-            i--, j--;
+            ll prod = A * B;
+            ll div = A / B;
+            if (prod == max(c, d) && div == min(c, d))
+            {
+                cout << A << " " << B << ln;
+                return;
+            }
         }
-        else if (p[i] != q[j])
+    }
+
+    // cd ab
+    if ((c + d) % 2 == 0)
+    {
+        ll A = (d + c) / 2;
+        ll B = max(d, c) - A;
+        if (B != 0)
         {
-            i -= 2;
+            ll prod = A * B;
+            ll div = A / B;
+            if (prod == max(a, b) && div == min(b, a))
+            {
+                cout << A << " " << B << ln;
+                return;
+            }
         }
     }
-    reverse(all(ans));
-    // cout << ans << " " << q << ln;
-    if (ans.compare(q) == 0)
+
+    // bc ad
+
+    if ((c + b) % 2 == 0)
     {
-        cout << "YES" << ln;
+        ll A = (c + b) / 2;
+        ll B = max(c, b) - A;
+        if (B != 0)
+        {
+            ll prod = A * B;
+            ll div = A / B;
+            if (prod == max(a, d) && div == min(a, d))
+            {
+                cout << A << " " << B << ln;
+                return;
+            }
+        }
     }
-    else
+
+    // ad bc
+
+    if ((a + d) % 2 == 0)
     {
-        cout << "NO" << ln;
+        ll A = (a + d) / 2;
+        ll B = max(a, d) - A;
+        if (B != 0)
+        {
+            ll prod = A * B;
+            ll div = A / B;
+            if (prod == max(c, b) && div == min(c, b))
+            {
+                cout << A << " " << B << ln;
+                return;
+            }
+        }
     }
+
+    // ac bd
+
+    if ((a + c) % 2 == 0)
+    {
+        ll A = (a + c) / 2;
+        ll B = max(a, c) - A;
+        if (B != 0)
+        {
+            ll prod = A * B;
+            ll div = A / B;
+            if (prod == max(b, d) && div == min(b, d))
+            {
+                cout << A << " " << B << ln;
+                return;
+            }
+        }
+    }
+
+    // bd ac
+
+    if ((d + b) % 2 == 0)
+    {
+        ll A = (d + b) / 2;
+        ll B = max(d, b) - A;
+        if (B != 0)
+        {
+            ll prod = A * B;
+            ll div = A / B;
+            if (prod == max(c, a) && div == min(c, a))
+            {
+                cout << A << " " << B << ln;
+                return;
+            }
+        }
+    }
+
+    cout << "-1 -1" << ln;
 }
+
 int main()
 {
     fast_cin();

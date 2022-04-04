@@ -211,36 +211,90 @@ bool isPrime(int x)
     return true;
 }
 
+bool compare(char a, char b)
+{
+    return a > b;
+}
+
 void solve()
 {
-    string p, q;
-    cin >> p >> q;
-    ll i = p.length() - 1;
-    ll j = q.length() - 1;
-    string ans = "";
-    while (i >= 0 && j >= 0)
+    ll n;
+    cin >> n;
+    string s;
+    cin >> s;
+    string e = "", o = "";
+    forn(i, n)
     {
-        if (p[i] == q[j])
+        if (i & 1)
         {
-            ans.pb(p[i]);
-            i--, j--;
+            e.pb(s[i]);
         }
-        else if (p[i] != q[j])
+        else
         {
-            i -= 2;
+            o.pb(s[i]);
         }
     }
-    reverse(all(ans));
-    // cout << ans << " " << q << ln;
-    if (ans.compare(q) == 0)
+    // o ko sort kar dena h increasing order mai
+    // e ko decreasing order mai
+    string res1 = "";
+    string o1(all(o));
+    string e1(all(e));
+    sort(all(o1), compare);
+    sort(all(e1));
+    reverse(all(e1));
+    reverse(all(o1));
+    forn(i, n)
     {
-        cout << "YES" << ln;
+        if (i & 1)
+        {
+            res1.pb(e1.back());
+            e1.pop_back();
+        }
+        else
+        {
+            res1.pb(o1.back());
+            o1.pop_back();
+        }
     }
-    else
+    // cout << res1 << ln;
+
+    string res2 = "";
+    string o2(all(o));
+    string e2(all(e));
+    sort(all(o2));
+    sort(all(e2), compare);
+    reverse(all(e2));
+    reverse(all(o2));
+
+    forn(i, n)
     {
-        cout << "NO" << ln;
+        if (i & 1)
+        {
+            res2.pb(e2.back());
+            e2.pop_back();
+        }
+        else
+        {
+            res2.pb(o2.back());
+            o2.pop_back();
+        }
     }
+    // cout << res2 << ln;
+    ll x = 0, y = 0;
+    forn(i, n - 1)
+    {
+        if (res1[i] == '0' && res1[i + 1] == '1')
+        {
+            x++;
+        }
+        if (res2[i] == '0' && res2[i + 1] == '1')
+        {
+            y++;
+        }
+    }
+    cout << max(x, y) << ln;
 }
+
 int main()
 {
     fast_cin();

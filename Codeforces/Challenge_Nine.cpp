@@ -201,46 +201,58 @@ bool pow2(ll x)
     return false;
 }
 
-bool isPrime(int x)
-{
-    for (int d = 2; d * d <= x; d++)
-    {
-        if (x % d == 0)
-            return false;
-    }
-    return true;
-}
-
 void solve()
 {
-    string p, q;
-    cin >> p >> q;
-    ll i = p.length() - 1;
-    ll j = q.length() - 1;
-    string ans = "";
-    while (i >= 0 && j >= 0)
+    ll c = 0;
+    ll ff = 1;
+    string s;
+    cin >> s;
+    for (ll i = 0; i < s.size(); i++)
     {
-        if (p[i] == q[j])
-        {
-            ans.pb(p[i]);
-            i--, j--;
-        }
-        else if (p[i] != q[j])
-        {
-            i -= 2;
-        }
+        c += int(s[i]) - '0';
     }
-    reverse(all(ans));
-    // cout << ans << " " << q << ln;
-    if (ans.compare(q) == 0)
+    for (ll j = 100 - 100; j <= 10 - 1; j++)
     {
-        cout << "YES" << ln;
-    }
-    else
-    {
-        cout << "NO" << ln;
+        if ((c % 9 + j % 9) % 9 == 0)
+        {
+            if ((int(s[0]) - '0') > j && j != 0 && ff == 1)
+            {
+                cout << j << s << endl;
+                ff = 0;
+                break;
+            }
+            else
+            {
+                ll i;
+                for (i = 1; i < s.size(); i++)
+                {
+                    if ((int(s[i]) - '0') > j && ff == 1)
+                    {
+                        for (ll k = 0; k < i; k++)
+                        {
+                            cout << s[k];
+                        }
+                        cout << j;
+                        for (ll k = i; k < s.size(); k++)
+                        {
+                            cout << s[k];
+                        }
+                        cout << ln;
+                        ff = 0;
+                        break;
+                    }
+                }
+                if (i == s.size() && ff == 1)
+                {
+                    cout << s << j << endl;
+                    ff == 0;
+                    break;
+                }
+            }
+        }
     }
 }
+
 int main()
 {
     fast_cin();
@@ -248,6 +260,7 @@ int main()
     cin >> t;
     for (int it = 1; it <= t; it++)
     {
+        cout << "Case #" << it << ": ";
         solve();
     }
     return 0;

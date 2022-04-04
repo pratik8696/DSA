@@ -213,34 +213,65 @@ bool isPrime(int x)
 
 void solve()
 {
-    string p, q;
-    cin >> p >> q;
-    ll i = p.length() - 1;
-    ll j = q.length() - 1;
-    string ans = "";
-    while (i >= 0 && j >= 0)
+    ll n;
+    cin >> n;
+    ll val[n], req[n];
+    forn(i, n)
     {
-        if (p[i] == q[j])
+        cin >> val[i];
+    }
+    map<ll, v64> m;
+    forn(i, n)
+    {
+        cin >> req[i];
+        m[req[i]].pb(val[i]);
+    }
+    for (auto t : m)
+    {
+        cout << t.fi << " -> ";
+        for (auto x : t.se)
         {
-            ans.pb(p[i]);
-            i--, j--;
+            cout << x << " ";
         }
-        else if (p[i] != q[j])
+        cout << ln;
+    }
+    cout << ln;
+    // store the all the elements in the pq
+    // after that remove the largest one
+    // put that in a set
+    // then go on iterating till all indexes are covered in the set
+    priority_queue<ll> pq;
+    v64 td;
+    for (auto t : m)
+    {
+        auto v = t.se;
+        for (auto x : v)
         {
-            i -= 2;
+            cout << x << " ";
+            pq.push(x);
         }
+        cout << ln;
+        // now we have added all the values in the pq
+        // now we will select the largest element of the pq
+        ll need = t.fi;
+        ll curr = td.size();
+        // so i need to remove need-curr
+        ll rem = need - curr;
+        cout << rem << " " << need << " " << curr << ln;
+        if (rem > 0)
+        {
+            forn(i, rem)
+            {
+                td.pb(pq.top());
+                cout << pq.top() << " ";
+                pq.pop();
+            }
+        }
+        cout << ln;
     }
-    reverse(all(ans));
-    // cout << ans << " " << q << ln;
-    if (ans.compare(q) == 0)
-    {
-        cout << "YES" << ln;
-    }
-    else
-    {
-        cout << "NO" << ln;
-    }
+    cout << ln;
 }
+
 int main()
 {
     fast_cin();

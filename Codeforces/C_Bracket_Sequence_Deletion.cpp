@@ -201,46 +201,66 @@ bool pow2(ll x)
     return false;
 }
 
-bool isPrime(int x)
-{
-    for (int d = 2; d * d <= x; d++)
-    {
-        if (x % d == 0)
-            return false;
-    }
-    return true;
-}
-
 void solve()
 {
-    string p, q;
-    cin >> p >> q;
-    ll i = p.length() - 1;
-    ll j = q.length() - 1;
-    string ans = "";
-    while (i >= 0 && j >= 0)
+    ll n;
+    cin >> n;
+    string s;
+    cin >> s;
+    // first check for regular function and palindrome jo hoga usse remove kr denge
+    vector<char> x;
+    v64 opr;
+    opr.pb(0);
+    bool fasgya = false;
+    char start = s[0];
+    ll size = 0;
+    if (n == 1)
     {
-        if (p[i] == q[j])
+        cout << 0 << " " << 1 << ln;
+        return;
+    }
+    s.pb('X'), s.pb('X'), s.pb('X');
+    for (ll i = 0; i < n; i++)
+    {
+        if (s[i] == '(')
         {
-            ans.pb(p[i]);
-            i--, j--;
+            x.pb(s[i]);
         }
-        else if (p[i] != q[j])
+        else if (s[i] == ')')
         {
-            i -= 2;
+            if (x.size())
+            {
+                x.pop_back();
+            }
+            else
+            {
+                // cout << "NO" << ln;
+                fasgya = true;
+                // return;
+            }
+        }
+        size++;
+        if (size >= 2 && start == s[i])
+        {
+            start = s[i + 1];
+            opr.pb(i + 1);
+            fasgya = false;
+            size = 0;
+            x.clear();
+        }
+        else if (x.size() == 0 && fasgya == false)
+        {
+            start = s[i + 1];
+            opr.pb(i + 1);
+            fasgya = false;
+            size = 0;
+            x.clear();
         }
     }
-    reverse(all(ans));
-    // cout << ans << " " << q << ln;
-    if (ans.compare(q) == 0)
-    {
-        cout << "YES" << ln;
-    }
-    else
-    {
-        cout << "NO" << ln;
-    }
+    // cout << ln;
+    cout << opr.size() - 1 << " " << n - opr.back() << ln;
 }
+
 int main()
 {
     fast_cin();
@@ -262,3 +282,114 @@ int main()
 6. DO NOT use if(!mp[x]) if you want to iterate the map later
 7. Are you using i in all loops? Are the i's conflicting?
 */
+
+// 1
+// (
+// 1
+// )
+// 2
+// ((
+// 2
+// )(
+// 2
+// ()
+// 2
+// ))
+// 3
+// (((
+// 3
+// )((
+// 3
+// ()(
+// 3
+// ))(
+// 3
+// (()
+// 3
+// )()
+// 3
+// ())
+// 3
+// )))
+// 4
+// ((((
+// 4
+// )(((
+// 4
+// ()((
+// 4
+// ))((
+// 4
+// (()(
+// 4
+// )()(
+// 4
+// ())(
+// 4
+// )))(
+// 4
+// ((()
+// 4
+// )(()
+// 4
+// ()()
+// 4
+// ))()
+// 4
+// (())
+// 4
+// )())
+// 4
+// ()))
+// 4
+// ))))
+// 5
+// (((((
+// 5
+// )((((
+// 5
+// ()(((
+// 5
+// ))(((
+// 5
+// (()((
+// 5
+// )()((
+// 5
+// ())((
+// 5
+// )))((
+// 5
+// ((()(
+// 5
+// )(()(
+// 5
+// ()()(
+// 5
+// ))()(
+// 5
+// (())(
+// 5
+// )())(
+// 5
+// ()))(
+// 5
+// ))))(
+// 5
+// (((()
+// 5
+// )((()
+// 5
+// ()(()
+// 5
+// ))(()
+// 5
+// (()()
+// 5
+// )()()
+// 5
+// ())()
+// 5
+// )))()
+// 5
+// ((())

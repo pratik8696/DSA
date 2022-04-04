@@ -213,34 +213,60 @@ bool isPrime(int x)
 
 void solve()
 {
-    string p, q;
-    cin >> p >> q;
-    ll i = p.length() - 1;
-    ll j = q.length() - 1;
-    string ans = "";
-    while (i >= 0 && j >= 0)
+    ll n;
+    cin >> n;
+    string up, down;
+    cin >> up >> down;
+
+    ll level = 1;
+    ll x = 1, y = 1;
+
+    for (ll i = 0; i < n; i++)
     {
-        if (p[i] == q[j])
+        if (level == 1)
         {
-            ans.pb(p[i]);
-            i--, j--;
+            if (up[i] == '1' || up[i] == '2')
+            {
+                cout << up[i] << " " << down[i] << ln;
+                x++;
+            }
+            else if (up[i] == '3' || up[i] == '4' || up[i] == '5' || up[i] == '6')
+            {
+                y++;
+                level = 2;
+                if (down[i] != '3' || down[i] != '4' || down[i] != '5' || down[i] != '6')
+                {
+                    cout << up[i] << " " << down[i] << ln;
+                    cout << "NO" << ln;
+                    return;
+                }
+                i--;
+            }
         }
-        else if (p[i] != q[j])
+        else if (level == 2)
         {
-            i -= 2;
+            if (down[i] == '1' || down[i] == '2')
+            {
+                x++;
+            }
+            else if (down[i] == '3' || down[i] == '4' || down[i] == '5' || down[i] == '6')
+            {
+                y--;
+                level = 1;
+                i--;
+                if (up[i] != '3' || up[i] != '4' || up[i] != '5' || up[i] != '6')
+                {
+                    cout << "NO" << ln;
+                    return;
+                }
+            }
         }
+        cout << x << " " << y << " " << up[i] << " " << down[i] << ln;
     }
-    reverse(all(ans));
-    // cout << ans << " " << q << ln;
-    if (ans.compare(q) == 0)
-    {
-        cout << "YES" << ln;
-    }
-    else
-    {
-        cout << "NO" << ln;
-    }
+    cout << ln;
+    cout << ln;
 }
+
 int main()
 {
     fast_cin();

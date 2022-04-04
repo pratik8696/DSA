@@ -211,41 +211,68 @@ bool isPrime(int x)
     return true;
 }
 
+char arr[1002][1002];
+ll mem[1002][1002];
+ll n, m;
+ll dp[1005][1005];
+
+ll paths(ll i, ll j)
+{
+    if (arr[i][j + 1] == '#' && arr[i + 1][j] == '#')
+    {
+        p64 a = {n, m}, b = {i, j};
+        return a == b;
+    }
+    if (mem[i][j] != -1)
+    {
+        return mem[i][j];
+    }
+    if (arr[i][j] == '#')
+    {
+        return 0;
+    }
+    return mem[i][j] = ((paths(i + 1, j) % MOD + paths(i, j + 1) % MOD) % MOD);
+}
+
 void solve()
 {
-    string p, q;
-    cin >> p >> q;
-    ll i = p.length() - 1;
-    ll j = q.length() - 1;
-    string ans = "";
-    while (i >= 0 && j >= 0)
+    cin >> n >> m;
+    memset(arr, '#', sizeof(arr));
+    for (ll i = 1; i <= n; i++)
     {
-        if (p[i] == q[j])
+        for (ll j = 1; j <= m; j++)
         {
-            ans.pb(p[i]);
-            i--, j--;
-        }
-        else if (p[i] != q[j])
-        {
-            i -= 2;
+            cin >> arr[i][j];
         }
     }
-    reverse(all(ans));
-    // cout << ans << " " << q << ln;
-    if (ans.compare(q) == 0)
+    memset(mem, -1, sizeof(mem));
+    memset(dp, 0, sizeof(dp));
+    for (ll i = 1; i <= n; i++)
     {
-        cout << "YES" << ln;
+        for (ll j = 1; j <= m; j++)
+        {
+            if (i == 1 && j == 1)
+            {
+                dp[1][1] = 1;
+            }
+            else if (arr[i][j] == '#')
+            {
+                continue;
+            }
+            else
+            {
+                dp[i][j] = (dp[i - 1][j] + dp[i][j - 1]) % MOD;
+            }
+        }
     }
-    else
-    {
-        cout << "NO" << ln;
-    }
+    cout << dp[n][m] << ln;
 }
+
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

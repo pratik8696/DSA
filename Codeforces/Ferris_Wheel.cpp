@@ -213,39 +213,43 @@ bool isPrime(int x)
 
 void solve()
 {
-    string p, q;
-    cin >> p >> q;
-    ll i = p.length() - 1;
-    ll j = q.length() - 1;
-    string ans = "";
-    while (i >= 0 && j >= 0)
+    ll n, k;
+    cin >> n >> k;
+    ll arr[n];
+    forn(i, n)
     {
-        if (p[i] == q[j])
+        cin >> arr[i];
+    }
+    sort(al(arr, n));
+    ll i = 0, j = n - 1, count = 0;
+    while (i <= j)
+    {
+        if (i == j)
         {
-            ans.pb(p[i]);
-            i--, j--;
+            count++;
+            break;
         }
-        else if (p[i] != q[j])
+        if (arr[i] + arr[j] > k)
         {
-            i -= 2;
+            count++;
+            j--;
         }
+        else if (arr[i] + arr[j] <= k)
+        {
+            i++, j--;
+            count++;
+        }
+        // cout << i << " " << j << ln;
     }
-    reverse(all(ans));
-    // cout << ans << " " << q << ln;
-    if (ans.compare(q) == 0)
-    {
-        cout << "YES" << ln;
-    }
-    else
-    {
-        cout << "NO" << ln;
-    }
+
+    cout << count << ln;
 }
+
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

@@ -34,7 +34,7 @@ typedef vector<vector<ll>> vv64;
 typedef vector<vector<p64>> vvp64;
 typedef vector<p64> vp64;
 typedef vector<p32> vp32;
-ll MOD = 1000000007;
+ll MOD = 998244353;
 double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
@@ -118,16 +118,17 @@ long long modpow(long long x, long long n, long long p)
     return ans;
 }
 
-// const int N = 1e6 + 100;
-// long long fact[N];
-//  initialise the factorial
-// void initfact(){
-// fact[0] = 1;
-// for (int i = 1; i < N; i++)
-//{
-// fact[i] = (fact[i - 1] * i);
-// fact[i] %= MOD;
-// }}
+const int N = 1e6 + 100;
+long long fact[N];
+void initfact()
+{
+    fact[0] = 1;
+    for (int i = 1; i < N; i++)
+    {
+        fact[i] = (fact[i - 1] * i);
+        fact[i] %= MOD;
+    }
+}
 
 // formula for c
 // ll C(ll n, ll i)
@@ -213,37 +214,24 @@ bool isPrime(int x)
 
 void solve()
 {
-    string p, q;
-    cin >> p >> q;
-    ll i = p.length() - 1;
-    ll j = q.length() - 1;
-    string ans = "";
-    while (i >= 0 && j >= 0)
+    ll n;
+    cin >> n;
+    if (n % 2)
     {
-        if (p[i] == q[j])
-        {
-            ans.pb(p[i]);
-            i--, j--;
-        }
-        else if (p[i] != q[j])
-        {
-            i -= 2;
-        }
-    }
-    reverse(all(ans));
-    // cout << ans << " " << q << ln;
-    if (ans.compare(q) == 0)
-    {
-        cout << "YES" << ln;
+        cout << 0 << ln;
     }
     else
     {
-        cout << "NO" << ln;
+        ll a = fact[n / 2];
+        ll b = fact[n / 2 - 1];
+        ll c = n / 2;
+        cout << (((a * b) % MOD) * c) % MOD << ln;
     }
 }
 int main()
 {
     fast_cin();
+    initfact();
     ll t;
     cin >> t;
     for (int it = 1; it <= t; it++)

@@ -213,32 +213,60 @@ bool isPrime(int x)
 
 void solve()
 {
-    string p, q;
-    cin >> p >> q;
-    ll i = p.length() - 1;
-    ll j = q.length() - 1;
-    string ans = "";
-    while (i >= 0 && j >= 0)
+    ll arr[3][4];
+    forn(i, 3)
     {
-        if (p[i] == q[j])
+        forn(j, 4)
         {
-            ans.pb(p[i]);
-            i--, j--;
-        }
-        else if (p[i] != q[j])
-        {
-            i -= 2;
+            cin >> arr[i][j];
         }
     }
-    reverse(all(ans));
-    // cout << ans << " " << q << ln;
-    if (ans.compare(q) == 0)
+    ll mina = INT_MAX, minb = INT_MAX, minc = INT_MAX, mind = INT_MAX;
+    forn(i, 3)
     {
-        cout << "YES" << ln;
+        mina = min(mina, arr[i][0]);
+    }
+    forn(i, 3)
+    {
+        minb = min(minb, arr[i][1]);
+    }
+    forn(i, 3)
+    {
+        minc = min(minc, arr[i][2]);
+    }
+    forn(i, 3)
+    {
+        mind = min(mind, arr[i][3]);
+    }
+    ll sum = mina + minb + minc + mind;
+    int k = 1000000;
+    v64 v;
+    v.pb(mina);
+    v.pb(minb);
+    v.pb(minc);
+    v.pb(mind);
+    v64 ans;
+    forn(i, 4)
+    {
+        if (v[i] >= k)
+        {
+            ans.pb(k);
+            k = 0;
+        }
+        else
+            ans.pb(v[i]), k -= v[i];
+    }
+    if (k == 0)
+    {
+        forn(i, 4)
+        {
+            cout << ans[i] << " ";
+        }
+        cout << endl;
     }
     else
     {
-        cout << "NO" << ln;
+        cout << "IMPOSSIBLE" << ln;
     }
 }
 int main()
@@ -248,6 +276,7 @@ int main()
     cin >> t;
     for (int it = 1; it <= t; it++)
     {
+        cout << "Case #" << it << ": ";
         solve();
     }
     return 0;

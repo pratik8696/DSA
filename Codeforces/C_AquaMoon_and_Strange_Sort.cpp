@@ -201,46 +201,65 @@ bool pow2(ll x)
     return false;
 }
 
-bool isPrime(int x)
-{
-    for (int d = 2; d * d <= x; d++)
-    {
-        if (x % d == 0)
-            return false;
-    }
-    return true;
-}
-
 void solve()
 {
-    string p, q;
-    cin >> p >> q;
-    ll i = p.length() - 1;
-    ll j = q.length() - 1;
-    string ans = "";
-    while (i >= 0 && j >= 0)
+    ll n;
+    cin >> n;
+    ll arr[n], brr[n];
+    map<ll, p64> m;
+    forn(i, n)
     {
-        if (p[i] == q[j])
+        cin >> arr[i];
+        brr[i] = arr[i];
+    }
+    sort(al(brr, n));
+    forn(i, n)
+    {
+        if ((i + 1) % 2)
         {
-            ans.pb(p[i]);
-            i--, j--;
+            m[brr[i]].fi += 1;
         }
-        else if (p[i] != q[j])
+        else
         {
-            i -= 2;
+            m[brr[i]].se += 1;
         }
     }
-    reverse(all(ans));
-    // cout << ans << " " << q << ln;
-    if (ans.compare(q) == 0)
+    forn(i, n)
     {
-        cout << "YES" << ln;
+        if ((i + 1) % 2)
+        {
+            // now check whether there is something in the odd side
+            if (m[arr[i]].fi > 0)
+            {
+                m[arr[i]].fi--;
+            }
+            else
+            {
+                cout << "NO" << ln;
+                return;
+            }
+        }
+        else
+        {
+            if (m[arr[i]].se > 0)
+            {
+                m[arr[i]].se--;
+            }
+            else
+            {
+                cout << "NO" << ln;
+                return;
+            }
+        }
+        // for (auto t : m)
+        // {
+        //     cout << t.fi << " --> " << t.se.fi << " " << t.se.se << ln;
+        // }
+        // cout << ln;
     }
-    else
-    {
-        cout << "NO" << ln;
-    }
+    cout << "YES" << ln;
 }
+
 int main()
 {
     fast_cin();

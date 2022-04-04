@@ -43,6 +43,7 @@ double eps = 1e-12;
 #define ln "\n"
 #define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
+#define ie insert
 #define pb push_back
 #define fi first
 #define se second
@@ -91,24 +92,63 @@ ll sumofno(ll n)
     return sum;
 }
 
-// function for modularexpo
-ll modexpo(long long a, long long n, long long p)
+// modular exponentiation
+long long modpow(long long x, long long n, long long p)
 {
-    ll res = 1;
-    while (n)
+
+    if (n == 0)
+        return 1 % p;
+
+    ll ans = 1, base = x;
+    while (n > 0)
     {
-        if (n % 2)
+        if (n % 2 == 1)
         {
-            res = (res * a) % p;
+            ans = (ans * base) % p;
             n--;
         }
         else
         {
-            a = (a * a) % p;
+            base = (base * base) % p;
             n /= 2;
         }
     }
-    return res;
+    if (ans < 0)
+        ans = (ans + p) % p;
+    return ans;
+}
+
+// const int N = 1e6 + 100;
+// long long fact[N];
+//  initialise the factorial
+// void initfact(){
+// fact[0] = 1;
+// for (int i = 1; i < N; i++)
+//{
+// fact[i] = (fact[i - 1] * i);
+// fact[i] %= MOD;
+// }}
+
+// formula for c
+// ll C(ll n, ll i)
+//{
+// ll res = fact[n];
+// ll div = fact[n - i] * fact[i];
+// div %= MOD;
+// div = modpow(div, MOD - 2, MOD);
+// return (res * div) % MOD;
+// }
+
+long long CW(ll n, ll m)
+{
+    if (m > n - m)
+        m = n - m;
+    long long ans = 1;
+    for (int i = 0; i < m; i++)
+    {
+        ans = ans * (n - i) / (i + 1);
+    }
+    return ans;
 }
 
 // function for fast expo
@@ -163,23 +203,45 @@ bool pow2(ll x)
 
 void solve()
 {
-    ll n;
-    cin >> n;
+    ll n, x;
+    cin >> n >> x;
     ll arr[n];
-    v64 r, l;
-    ll sum = 0;
+    ll pre = 0, suff = 0;
     forn(i, n)
     {
         cin >> arr[i];
-        sum += arr[i];
-        r.pb(sum);
+        pre += arr[i];
+        suff = pre;
     }
-    sum=0;
-    for (ll i = n-1; i >=0; i--)
+    if (pre % x != 0)
     {
-        
+        cout << n << ln;
+        return;
     }
-    
+    ll res = INT_MIN;
+    for (ll i = 0; i < n; i++)
+    {
+        pre -= arr[i];
+        if (pre % x != 0)
+        {
+            res = max(res, n - i - 1);
+        }
+    }
+    reverse(al(arr, n));
+    for (ll i = 0; i < n; i++)
+    {
+        suff -= arr[i];
+        if (suff % x != 0)
+        {
+            res = max(res, n - i - 1);
+        }
+    }
+    if (res == INT_MIN)
+    {
+        cout << -1 << ln;
+        return;
+    }
+    cout << res << ln;
 }
 int main()
 {

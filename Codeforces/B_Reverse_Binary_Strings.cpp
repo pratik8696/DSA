@@ -213,33 +213,99 @@ bool isPrime(int x)
 
 void solve()
 {
-    string p, q;
-    cin >> p >> q;
-    ll i = p.length() - 1;
-    ll j = q.length() - 1;
-    string ans = "";
-    while (i >= 0 && j >= 0)
+    ll n;
+    cin >> n;
+    string s;
+    cin >> s;
+    ll count1 = 0, count2 = 0;
+    string res1 = "", res2 = "";
+    forn(i, n)
     {
-        if (p[i] == q[j])
+        if (i & 1)
         {
-            ans.pb(p[i]);
-            i--, j--;
+            if (s[i] != '1')
+            {
+                res1.pb('1');
+            }
+            else
+            {
+                res1.pb('0');
+            }
         }
-        else if (p[i] != q[j])
+        else
         {
-            i -= 2;
+            if (s[i] != '0')
+            {
+                res1.pb('1');
+            }
+            else
+            {
+                res1.pb('0');
+            }
         }
     }
-    reverse(all(ans));
-    // cout << ans << " " << q << ln;
-    if (ans.compare(q) == 0)
+    forn(i, n)
     {
-        cout << "YES" << ln;
+        if (i & 1)
+        {
+            if (s[i] != '0')
+            {
+                res2.pb('1');
+            }
+            else
+            {
+                res2.pb('0');
+            }
+        }
+        else
+        {
+            if (s[i] != '1')
+            {
+                res2.pb('1');
+            }
+            else
+            {
+                res2.pb('0');
+            }
+        }
     }
-    else
+    // cout << res1 << " " << res2 << ln;
+    char prev1 = res1[0];
+    char prev2 = res2[0];
+    forn(i, res1.length())
     {
-        cout << "NO" << ln;
+        if (res1[i] == '1')
+        {
+            count1++;
+            for (ll j = i + 1; j < n; j++)
+            {
+                if (res1[j] == '0')
+                {
+                    i = j;
+                    break;
+                }
+            }
+        }
     }
+    forn(i, res1.length())
+    {
+        if (res2[i] == '1')
+        {
+            count2++;
+            for (ll j = i + 1; j < n; j++)
+            {
+                if (res2[j] == '0')
+                {
+                    i = j;
+                    break;
+                }
+            }
+        }
+    }
+    // cout << ln;
+
+    // cout << count1 << " " << count2 << ln;
+    cout << min(count1, count2) << ln;
 }
 int main()
 {

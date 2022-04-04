@@ -213,34 +213,72 @@ bool isPrime(int x)
 
 void solve()
 {
-    string p, q;
-    cin >> p >> q;
-    ll i = p.length() - 1;
-    ll j = q.length() - 1;
-    string ans = "";
-    while (i >= 0 && j >= 0)
+    ll n;
+    cin >> n;
+    ll arr[n];
+    map<ll, ll> m;
+    forn(i, n)
     {
-        if (p[i] == q[j])
+        cin >> arr[i];
+        m[arr[i]]++;
+    }
+    // store all indexes of least occuring element
+    ll mini = INT_MAX, val = arr[0];
+    for (auto t : m)
+    {
+        mini = min(mini, t.se);
+    }
+    for (auto t : m)
+    {
+        if (t.se == mini)
         {
-            ans.pb(p[i]);
-            i--, j--;
-        }
-        else if (p[i] != q[j])
-        {
-            i -= 2;
+            val = t.fi;
+            break;
         }
     }
-    reverse(all(ans));
-    // cout << ans << " " << q << ln;
-    if (ans.compare(q) == 0)
+    // storing the indexes
+    v64 res;
+    forn(i, n)
     {
-        cout << "YES" << ln;
+        if (arr[i] == val)
+        {
+            res.pb(i + 1);
+        }
     }
-    else
+    if (m.size() == 1)
     {
         cout << "NO" << ln;
+        return;
+    }
+    vp64 ans;
+    for (ll i = 0; i < n; i++)
+    {
+        if (arr[i] != val)
+        {
+            ans.pb({res.back(), i + 1});
+        }
+    }
+    // now adding the remaining values to other indexes
+    res.pop_back();
+    for (ll i = 0; i < n; i++)
+    {
+        if (arr[i] != val)
+        {
+            for (ll j = 0; j < res.size(); j++)
+            {
+                ans.pb({res[j], i + 1});
+            }
+            break;
+        }
+    }
+    cout << "YES" << ln;
+    for (auto t : ans)
+    {
+        cout << t.fi << " " << t.se << ln;
     }
 }
+
+
 int main()
 {
     fast_cin();

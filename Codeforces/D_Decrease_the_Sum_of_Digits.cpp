@@ -81,13 +81,12 @@ vector<pair<ll, ll>> pf(ll n)
 }
 
 // sum of digits of a number
-ll sumofno(ll n)
+ll sumofno(string s)
 {
     ll sum = 0;
-    while (n != 0)
+    forn(i, s.length())
     {
-        sum += n % 10;
-        n = n / 10;
+        sum += s[i] - '0';
     }
     return sum;
 }
@@ -213,33 +212,40 @@ bool isPrime(int x)
 
 void solve()
 {
-    string p, q;
-    cin >> p >> q;
-    ll i = p.length() - 1;
-    ll j = q.length() - 1;
-    string ans = "";
-    while (i >= 0 && j >= 0)
+    ll n, sum;
+    cin >> n >> sum;
+    string res = "0";
+    string p = to_string(n);
+    res.append(p);
+    ll i = res.length() - 1;
+    if (sumofno(res) <= sum)
     {
-        if (p[i] == q[j])
+        cout << 0 << ln;
+        return;
+    }
+    while (sumofno(res) >= sum)
+    {
+        res[i] = '0';
+        i--;
+    }
+    // cout << res << ln;
+    res[i]++;
+    ll ans = 0;
+    // constructing the number
+    forn(i, res.length())
+    {
+        if (i == 0 && res[i] == '0')
         {
-            ans.pb(p[i]);
-            i--, j--;
+            continue;
         }
-        else if (p[i] != q[j])
+        else
         {
-            i -= 2;
+            ans = ans * 10 + res[i] - '0';
         }
     }
-    reverse(all(ans));
-    // cout << ans << " " << q << ln;
-    if (ans.compare(q) == 0)
-    {
-        cout << "YES" << ln;
-    }
-    else
-    {
-        cout << "NO" << ln;
-    }
+
+    // cout << ans << " " << res << ln;
+    cout << ans - n << ln;
 }
 int main()
 {
