@@ -213,66 +213,38 @@ bool isPrime(int x)
 
 void solve()
 {
-    ll n, count = 0;
+    ll n;
     cin >> n;
-    string s;
-    map<ll, ll> m;
-    cin >> s;
-    v64 one, zero;
-    forn(i, s.length())
+    ll arr[n];
+    forn(i, n)
     {
-        // now if zero then check for one
-        // if count of one is zero then count++ and then pb that into zero wla mai
-        if (s[i] == '0')
+        cin >> arr[i];
+    }
+    multiset<ll> s;
+    forn(i, n)
+    {
+        auto it = s.upper_bound(arr[i]);
+        if (it == s.end())
         {
-            if (one.size() == 0)
-            {
-                count++;
-                m[i] = count;
-                zero.pb(count);
-            }
-            else
-            {
-                // and then if there is something in 1
-                // then uska count ka no dekh and then
-                // add that into the map and then pb
-                // that into the vector
-                ll idx = one.back();
-                one.pop_back();
-                m[i] = idx;
-                zero.pb(idx);
-            }
+            // insert that into the set
+            s.ie(arr[i]);
         }
         else
         {
-            if (zero.size() == 0)
-            {
-                count++;
-                m[i] = count;
-                one.pb(count);
-            }
-            else
-            {
-                ll idx = zero.back();
-                zero.pop_back();
-                m[i] = idx;
-                one.pb(idx);
-            }
+            // agr vo mil gya then take that out
+            // and then update the value
+            s.erase(it);
+            s.ie(arr[i]);
         }
     }
-    cout << count << ln;
-    for (auto t : m)
-    {
-        cout << t.se << " ";
-    }
-    cout << ln;
+    cout << s.size() << ln;
 }
 
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

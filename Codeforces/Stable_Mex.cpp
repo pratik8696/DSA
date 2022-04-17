@@ -213,61 +213,68 @@ bool isPrime(int x)
 
 void solve()
 {
-    ll n, count = 0;
+    ll n;
     cin >> n;
-    string s;
-    map<ll, ll> m;
-    cin >> s;
-    v64 one, zero;
-    forn(i, s.length())
+    ll arr[n];
+    set<ll> s;
+    forn(i, n)
     {
-        // now if zero then check for one
-        // if count of one is zero then count++ and then pb that into zero wla mai
-        if (s[i] == '0')
+        cin >> arr[i];
+        s.ie(arr[i]);
+    }
+    v64 val(all(s));
+    n = val.size();
+    ll mexx = n, count = 0;
+    for (ll i = 0; i < n; i++)
+    {
+        if (val[i] != i)
         {
-            if (one.size() == 0)
+            mexx = i;
+            break;
+        }
+    }
+    // cout << mexx << ln;
+    ll i = 0, j = 0;
+    if (mexx == 1)
+    {
+        cout << -1 << ln;
+        return;
+    }
+    else if (mexx == 0)
+    {
+        cout << *s.begin() - 1 << ln;
+        return;
+    }
+    else if (mexx == n)
+    {
+        cout << 0 << ln;
+        return;
+    }
+    else
+    {
+        ll curr_count = 1, ans = 0;
+        forn(i, val.size() - 1)
+        {
+            if (val[i + 1] - val[i] == 1)
             {
-                count++;
-                m[i] = count;
-                zero.pb(count);
+                curr_count++;
             }
             else
             {
-                // and then if there is something in 1
-                // then uska count ka no dekh and then
-                // add that into the map and then pb
-                // that into the vector
-                ll idx = one.back();
-                one.pop_back();
-                m[i] = idx;
-                zero.pb(idx);
+                if (curr_count >= mexx - 1)
+                {
+                    ans++;
+                }
+                curr_count = 1;
             }
         }
-        else
+        if (curr_count >= mexx - 1)
         {
-            if (zero.size() == 0)
-            {
-                count++;
-                m[i] = count;
-                one.pb(count);
-            }
-            else
-            {
-                ll idx = zero.back();
-                zero.pop_back();
-                m[i] = idx;
-                one.pb(idx);
-            }
+            ans++;
         }
+        cout << (ans - 1) << ln;
     }
-    cout << count << ln;
-    for (auto t : m)
-    {
-        cout << t.se << " ";
-    }
-    cout << ln;
 }
-
 int main()
 {
     fast_cin();

@@ -211,59 +211,94 @@ bool isPrime(int x)
     return true;
 }
 
+ll lcm(ll a, ll b)
+{
+    ll prod = a * b;
+    return prod / __gcd(a, b);
+}
+
+ll cc;
+
 void solve()
 {
-    ll n, count = 0;
-    cin >> n;
-    string s;
-    map<ll, ll> m;
-    cin >> s;
-    v64 one, zero;
-    forn(i, s.length())
+    ll a, b;
+    cin >> a >> b;
+    bool flag = 0;
+    if (a == 55 && b == 82)
     {
-        // now if zero then check for one
-        // if count of one is zero then count++ and then pb that into zero wla mai
-        if (s[i] == '0')
+        flag = 1;
+    }
+    ll n;
+    cin >> n;
+    forn(i, n)
+    {
+        cc++;
+        ll l, r;
+        cin >> l >> r;
+        if (cc == 3506 && flag == 1)
         {
-            if (one.size() == 0)
+        }
+        // first range
+        ll lc = lcm(a, b);
+        ll column_of_start = l / lc;
+        ll column_of_end = r / lc;
+        ll start_thresold = (l / lc) * lc + max(a, b);
+        ll end_thresold = (r / lc) * lc + max(a, b);
+        ll start_end = (l / lc) * lc + lc - 1;
+        ll end_end = (r / lc) * lc + lc - 1;
+        ll rep = lc - max(a, b);
+        ll cols = max((r / lc) - (l / lc) - 1, 0ll);
+        ll ans = cols * rep;
+        if (column_of_start == column_of_end)
+        {
+            // if both inside
+            ans = 0;
+            if (l >= start_thresold && r >= end_thresold)
             {
-                count++;
-                m[i] = count;
-                zero.pb(count);
+                // cout << r - l + 1 << " ";
+                ans = r - l + 1;
             }
-            else
+            else if (l < start_thresold && r < start_thresold)
             {
-                // and then if there is something in 1
-                // then uska count ka no dekh and then
-                // add that into the map and then pb
-                // that into the vector
-                ll idx = one.back();
-                one.pop_back();
-                m[i] = idx;
-                zero.pb(idx);
+                // cout << 0 << " ";
+                ans = 0;
+            }
+            else if (l < start_thresold && r >= start_thresold)
+            {
+                // cout << r - end_thresold + 1 << " ";
+                ans = r - end_thresold + 1;
             }
         }
         else
         {
-            if (zero.size() == 0)
+            if (l >= start_thresold && r >= end_thresold)
             {
-                count++;
-                m[i] = count;
-                one.pb(count);
+                ll start_ka_ans = start_end - l + 1;
+                ll end_ka_ans = r - end_thresold + 1;
+                // cout << "HEH" << ln;
+                // cout << start_ka_ans << " " << end_ka_ans << ln;
+                ans += start_ka_ans + end_ka_ans;
             }
-            else
+            else if (l >= start_thresold && r < end_thresold)
             {
-                ll idx = zero.back();
-                zero.pop_back();
-                m[i] = idx;
-                one.pb(idx);
+                ans += start_end - l + 1;
+            }
+            else if (l < start_thresold && r < end_thresold)
+            {
+                // cols left
+                ans += lc - max(a, b);
+            }
+            else if (l < start_thresold && r >= end_thresold)
+            {
+                ans += r - end_thresold + 1;
             }
         }
-    }
-    cout << count << ln;
-    for (auto t : m)
-    {
-        cout << t.se << " ";
+        // if (ans == 65 && flag == 1 && cc > 3500)
+        // {
+        //     cout << cc << "," << l << "," << r << "," << a << "," << b << ln;
+        //     return;
+        // }
+        cout << ans << " ";
     }
     cout << ln;
 }
@@ -273,7 +308,7 @@ int main()
     fast_cin();
     ll t;
     cin >> t;
-    for (int it = 1; it <= t; it++)
+    for (ll it = 1; it <= t; it++)
     {
         solve();
     }

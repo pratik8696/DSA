@@ -2,6 +2,8 @@
 #pragma GCC target("sse,sse2,sse3,ssse3,sse4,popcnt,abm,mmx,avx,avx2,fma")
 #pragma GCC optimize("unroll-loops")
 #include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
 #include <complex>
 #include <queue>
 #include <set>
@@ -21,6 +23,8 @@
 #include <fstream>
 
 using namespace std;
+using namespace __gnu_pbds;
+typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> pbds;
 typedef unsigned long long ull;
 typedef long long ll;
 typedef long double ld;
@@ -34,6 +38,7 @@ typedef vector<vector<ll>> vv64;
 typedef vector<vector<p64>> vvp64;
 typedef vector<p64> vp64;
 typedef vector<p32> vp32;
+typedef vector<pair<p64, ll>> vpp64;
 ll MOD = 1000000007;
 double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
@@ -211,68 +216,69 @@ bool isPrime(int x)
     return true;
 }
 
+bool compare(pair<p64, ll> x, pair<p64, ll> y)
+{
+    p64 a = x.fi, b = y.fi;
+    if (a.se == b.se)
+    {
+        return a.fi < b.fi;
+    }
+    return a.se < b.se;
+}
+
 void solve()
 {
     ll n, count = 0;
     cin >> n;
-    string s;
-    map<ll, ll> m;
-    cin >> s;
-    v64 one, zero;
-    forn(i, s.length())
+    vector<pair<p64, ll>> v;
+    multiset<p64> s;
+    forn(i, n)
     {
-        // now if zero then check for one
-        // if count of one is zero then count++ and then pb that into zero wla mai
-        if (s[i] == '0')
+        ll a, b;
+        cin >> a >> b;
+        v.pb({{a, b}, i});
+    }
+    sort(all(v), compare);
+    map<ll, ll> ans;
+    for (auto t : v)
+    {
+        auto it = s.lower_bound({t.fi.fi, 0});
+        if (it == s.end() && s.size() == 0)
         {
-            if (one.size() == 0)
-            {
-                count++;
-                m[i] = count;
-                zero.pb(count);
-            }
-            else
-            {
-                // and then if there is something in 1
-                // then uska count ka no dekh and then
-                // add that into the map and then pb
-                // that into the vector
-                ll idx = one.back();
-                one.pop_back();
-                m[i] = idx;
-                zero.pb(idx);
-            }
+            count++;
+            s.ie({t.fi.se, count});
+            ans[t.se] = count;
+        }
+        else if (it == s.begin())
+        {
+            count++;
+            s.ie({t.fi.se, count});
+            ans[t.se] = count;
         }
         else
         {
-            if (zero.size() == 0)
-            {
-                count++;
-                m[i] = count;
-                one.pb(count);
-            }
-            else
-            {
-                ll idx = zero.back();
-                zero.pop_back();
-                m[i] = idx;
-                one.pb(idx);
-            }
+            it--;
+            auto val = *it;
+            ll col = val.second;
+            s.erase(it);
+            s.ie({t.fi.se, col});
+            ans[t.se] = col;
         }
     }
-    cout << count << ln;
-    for (auto t : m)
+    cout << s.size() << ln;
+    forn(i, n)
     {
-        cout << t.se << " ";
+        cout << ans[i] << " ";
     }
     cout << ln;
 }
 
+
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

@@ -2,6 +2,8 @@
 #pragma GCC target("sse,sse2,sse3,ssse3,sse4,popcnt,abm,mmx,avx,avx2,fma")
 #pragma GCC optimize("unroll-loops")
 #include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
 #include <complex>
 #include <queue>
 #include <set>
@@ -21,6 +23,8 @@
 #include <fstream>
 
 using namespace std;
+using namespace __gnu_pbds;
+typedef tree<int, null_type, less_equal<int>, rb_tree_tag, tree_order_statistics_node_update> pbds;
 typedef unsigned long long ull;
 typedef long long ll;
 typedef long double ld;
@@ -211,59 +215,67 @@ bool isPrime(int x)
     return true;
 }
 
+bool compare(pair<p64, ll> x, pair<p64, ll> y)
+{
+    p64 a = x.fi, b = y.fi;
+    if (a.fi == b.fi)
+    {
+        return a.se > b.se;
+    }
+    return a.fi < b.fi;
+}
+
 void solve()
 {
-    ll n, count = 0;
+    ll n;
     cin >> n;
-    string s;
-    map<ll, ll> m;
-    cin >> s;
-    v64 one, zero;
-    forn(i, s.length())
+    vector<pair<p64, ll>> v;
+    forn(i, n)
     {
-        // now if zero then check for one
-        // if count of one is zero then count++ and then pb that into zero wla mai
-        if (s[i] == '0')
+        ll a, b;
+        cin >> a >> b;
+        v.pb({{a, b}, i});
+    }
+    sort(all(v), compare);
+    pbds s;
+    map<ll, ll> fres, sres;
+    for (ll i = n - 1; i >= 0; i--)
+    {
+        // keep an empty set and after checking pb that
+        ll val = s.order_of_key(v[i].fi.second + 1);
+        fres[v[i].se] = val;
+        s.ie(v[i].fi.se);
+    }
+    for (ll i = n - 1; i >= 0; i--)
+    {
+        // remove one element and then check
+        s.erase(s.upper_bound(v[i].fi.se));
+        ll val = s.size() - s.order_of_key(v[i].fi.second);
+        sres[v[i].se] = val;
+    }
+    forn(i, n)
+    {
+        if (fres[i])
         {
-            if (one.size() == 0)
-            {
-                count++;
-                m[i] = count;
-                zero.pb(count);
-            }
-            else
-            {
-                // and then if there is something in 1
-                // then uska count ka no dekh and then
-                // add that into the map and then pb
-                // that into the vector
-                ll idx = one.back();
-                one.pop_back();
-                m[i] = idx;
-                zero.pb(idx);
-            }
+            cout << 1 << " ";
         }
         else
         {
-            if (zero.size() == 0)
-            {
-                count++;
-                m[i] = count;
-                one.pb(count);
-            }
-            else
-            {
-                ll idx = zero.back();
-                zero.pop_back();
-                m[i] = idx;
-                one.pb(idx);
-            }
+            cout << 0 << " ";
         }
     }
-    cout << count << ln;
-    for (auto t : m)
+    cout << ln;
+    forn(i, n)
     {
-        cout << t.se << " ";
+
+        if (sres[i])
+        {
+            cout << 1 << " ";
+        }
+        else
+        {
+            cout << 0 << " ";
+        }
     }
     cout << ln;
 }
@@ -271,8 +283,8 @@ void solve()
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

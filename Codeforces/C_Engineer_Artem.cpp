@@ -2,6 +2,8 @@
 #pragma GCC target("sse,sse2,sse3,ssse3,sse4,popcnt,abm,mmx,avx,avx2,fma")
 #pragma GCC optimize("unroll-loops")
 #include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
 #include <complex>
 #include <queue>
 #include <set>
@@ -21,6 +23,8 @@
 #include <fstream>
 
 using namespace std;
+using namespace __gnu_pbds;
+typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> pbds;
 typedef unsigned long long ull;
 typedef long long ll;
 typedef long double ld;
@@ -213,59 +217,45 @@ bool isPrime(int x)
 
 void solve()
 {
-    ll n, count = 0;
-    cin >> n;
-    string s;
-    map<ll, ll> m;
-    cin >> s;
-    v64 one, zero;
-    forn(i, s.length())
+    ll n, m;
+    cin >> n >> m;
+    ll arr[n + 1][m + 1];
+    forsn(i, 1, n + 1)
     {
-        // now if zero then check for one
-        // if count of one is zero then count++ and then pb that into zero wla mai
-        if (s[i] == '0')
+        forsn(j, 1, m + 1)
         {
-            if (one.size() == 0)
+            cin >> arr[i][j];
+        }
+    }
+    forsn(i, 1, n + 1)
+    {
+        forsn(j, 1, m + 1)
+        {
+            ll res = i + j;
+            if (res % 2)
             {
-                count++;
-                m[i] = count;
-                zero.pb(count);
+                if (arr[i][j] % 2 == 0)
+                {
+                    arr[i][j]++;
+                }
             }
             else
             {
-                // and then if there is something in 1
-                // then uska count ka no dekh and then
-                // add that into the map and then pb
-                // that into the vector
-                ll idx = one.back();
-                one.pop_back();
-                m[i] = idx;
-                zero.pb(idx);
-            }
-        }
-        else
-        {
-            if (zero.size() == 0)
-            {
-                count++;
-                m[i] = count;
-                one.pb(count);
-            }
-            else
-            {
-                ll idx = zero.back();
-                zero.pop_back();
-                m[i] = idx;
-                one.pb(idx);
+                if (arr[i][j] % 2)
+                {
+                    arr[i][j]++;
+                }
             }
         }
     }
-    cout << count << ln;
-    for (auto t : m)
+    forsn(i, 1, n + 1)
     {
-        cout << t.se << " ";
+        forsn(j, 1, m + 1)
+        {
+            cout << arr[i][j] << " ";
+        }
+        cout << ln;
     }
-    cout << ln;
 }
 
 int main()

@@ -211,63 +211,55 @@ bool isPrime(int x)
     return true;
 }
 
-void solve()
+ll lcs(string a, string b)
 {
-    ll n, count = 0;
-    cin >> n;
-    string s;
-    map<ll, ll> m;
-    cin >> s;
-    v64 one, zero;
-    forn(i, s.length())
+    ll i = 0, j = 0, count = 0;
+    ll n = a.length(), m = b.length();
+    while (i < n && j < m)
     {
-        // now if zero then check for one
-        // if count of one is zero then count++ and then pb that into zero wla mai
-        if (s[i] == '0')
+        if (a[i] == b[j])
         {
-            if (one.size() == 0)
-            {
-                count++;
-                m[i] = count;
-                zero.pb(count);
-            }
-            else
-            {
-                // and then if there is something in 1
-                // then uska count ka no dekh and then
-                // add that into the map and then pb
-                // that into the vector
-                ll idx = one.back();
-                one.pop_back();
-                m[i] = idx;
-                zero.pb(idx);
-            }
+            i++, j++;
+            count++;
         }
         else
         {
-            if (zero.size() == 0)
-            {
-                count++;
-                m[i] = count;
-                one.pb(count);
-            }
-            else
-            {
-                ll idx = zero.back();
-                zero.pop_back();
-                m[i] = idx;
-                one.pb(idx);
-            }
+            i++;
         }
     }
-    cout << count << ln;
-    for (auto t : m)
-    {
-        cout << t.se << " ";
-    }
-    cout << ln;
+    return count;
 }
 
+void solve()
+{
+    ll n, m, i = 0, j = 0;
+    cin >> n >> m;
+    string p, q, val = "abcde";
+    cin >> p >> q;
+    ll length = lcs(p, q);
+    if (length == q.length())
+    {
+        cout << -1 << ln;
+        return;
+    }
+    while (i < n && j < m)
+    {
+        if (p[i] == '?')
+        {
+            p[i] = val[(q[j] - 'a' + 1) % val.size()];
+            i++;
+        }
+        else if (p[i] == q[j])
+        {
+            i++, j++;
+        }
+        else if (p[i] != q[j])
+        {
+            i++;
+        }
+    }
+    cout << p << ln;
+}
 int main()
 {
     fast_cin();

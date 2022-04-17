@@ -2,6 +2,8 @@
 #pragma GCC target("sse,sse2,sse3,ssse3,sse4,popcnt,abm,mmx,avx,avx2,fma")
 #pragma GCC optimize("unroll-loops")
 #include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
 #include <complex>
 #include <queue>
 #include <set>
@@ -21,6 +23,8 @@
 #include <fstream>
 
 using namespace std;
+using namespace __gnu_pbds;
+typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> pbds;
 typedef unsigned long long ull;
 typedef long long ll;
 typedef long double ld;
@@ -34,6 +38,13 @@ typedef vector<vector<ll>> vv64;
 typedef vector<vector<p64>> vvp64;
 typedef vector<p64> vp64;
 typedef vector<p32> vp32;
+typedef vector<pair<p64, ll>> vpp64;
+typedef set<ll> s64;
+typedef set<p64> sp64;
+typedef multiset<ll> ms64;
+typedef multiset<p64> msp64;
+typedef map<ll, ll> m64;
+typedef priority_queue<ll> pq64;
 ll MOD = 1000000007;
 double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
@@ -213,66 +224,45 @@ bool isPrime(int x)
 
 void solve()
 {
-    ll n, count = 0;
+    ll n;
     cin >> n;
-    string s;
-    map<ll, ll> m;
-    cin >> s;
-    v64 one, zero;
-    forn(i, s.length())
+    ll arr[n];
+    forn(i, n)
     {
-        // now if zero then check for one
-        // if count of one is zero then count++ and then pb that into zero wla mai
-        if (s[i] == '0')
+        cin >> arr[i];
+    }
+    // now we will iterate and keep all the values similar to the smaller one type and this time we will iterate from the right
+    stack<ll> st;
+    for (ll i = n - 1; i >= 0; i--)
+    {
+        ll curr_val = arr[i];
+        while (!st.empty())
         {
-            if (one.size() == 0)
+            if (st.top() > curr_val)
             {
-                count++;
-                m[i] = count;
-                zero.pb(count);
+                // print that
+                cout << st.top() << " ";
+                st.push(curr_val);
+                break;
             }
             else
             {
-                // and then if there is something in 1
-                // then uska count ka no dekh and then
-                // add that into the map and then pb
-                // that into the vector
-                ll idx = one.back();
-                one.pop_back();
-                m[i] = idx;
-                zero.pb(idx);
+                st.pop();
             }
         }
-        else
+        if (st.empty())
         {
-            if (zero.size() == 0)
-            {
-                count++;
-                m[i] = count;
-                one.pb(count);
-            }
-            else
-            {
-                ll idx = zero.back();
-                zero.pop_back();
-                m[i] = idx;
-                one.pb(idx);
-            }
+            st.push(curr_val);
+            cout << 0 << " ";
         }
     }
-    cout << count << ln;
-    for (auto t : m)
-    {
-        cout << t.se << " ";
-    }
-    cout << ln;
 }
 
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

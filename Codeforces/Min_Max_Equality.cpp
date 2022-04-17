@@ -213,59 +213,82 @@ bool isPrime(int x)
 
 void solve()
 {
-    ll n, count = 0;
-    cin >> n;
-    string s;
-    map<ll, ll> m;
-    cin >> s;
-    v64 one, zero;
-    forn(i, s.length())
+    ll n, k;
+    cin >> n >> k;
+    ll arr[n + 1];
+    forn(i, n)
     {
-        // now if zero then check for one
-        // if count of one is zero then count++ and then pb that into zero wla mai
-        if (s[i] == '0')
+        cin >> arr[i];
+    }
+    arr[n] = INF;
+    
+    if (k >= n)
+    {
+        cout << n << ln;
+        return;
+    }
+    // we need continuous counts of the elements
+    // so we will keep a previous and then count the numbers
+    ll prev = arr[0], count = 0;
+    v64 c;
+    forn(i, n + 1)
+    {
+        if (prev == arr[i])
         {
-            if (one.size() == 0)
-            {
-                count++;
-                m[i] = count;
-                zero.pb(count);
-            }
-            else
-            {
-                // and then if there is something in 1
-                // then uska count ka no dekh and then
-                // add that into the map and then pb
-                // that into the vector
-                ll idx = one.back();
-                one.pop_back();
-                m[i] = idx;
-                zero.pb(idx);
-            }
+            count++;
         }
         else
         {
-            if (zero.size() == 0)
-            {
-                count++;
-                m[i] = count;
-                one.pb(count);
-            }
-            else
-            {
-                ll idx = zero.back();
-                zero.pop_back();
-                m[i] = idx;
-                one.pb(idx);
-            }
+            c.pb(count);
+            count = 1;
+            prev = arr[i];
         }
     }
-    cout << count << ln;
-    for (auto t : m)
+    // now we will push all the numbers in a priority queue
+    priority_queue<ll> pq;
+    for (auto t : c)
     {
-        cout << t.se << " ";
+        // cout << t << " ";
+        pq.push(t);
     }
-    cout << ln;
+    // now we will eliminate all the elements
+    while (k)
+    {
+        k--;
+        ll val = pq.top();
+        if (val == 1)
+        {
+            break;
+        }
+        else
+        {
+            pq.pop();
+            ll first = val / 2;
+            ll second = val / 2;
+            if (val % 2 == 0)
+            {
+                second--;
+            }
+            if (first >= 1)
+            {
+                pq.push(first);
+            }
+            if (second >= 1)
+            {
+                pq.push(second);
+            }
+            pq.push(1);
+        }
+    }
+    ll ans = 0;
+    while (!pq.empty())
+    {
+        // cout << pq.top() << " ";
+        ans += (pq.top() * (pq.top() + 1)) / 2;
+        pq.pop();
+    }
+
+    cout << ans << ln;
 }
 
 int main()

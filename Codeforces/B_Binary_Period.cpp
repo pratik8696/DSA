@@ -213,61 +213,43 @@ bool isPrime(int x)
 
 void solve()
 {
-    ll n, count = 0;
-    cin >> n;
+    ll n;
     string s;
-    map<ll, ll> m;
     cin >> s;
-    v64 one, zero;
-    forn(i, s.length())
+    n = s.length();
+    ll one = 0, zero = 0;
+    forn(i, n)
     {
-        // now if zero then check for one
-        // if count of one is zero then count++ and then pb that into zero wla mai
-        if (s[i] == '0')
+        if (s[i] == '1')
         {
-            if (one.size() == 0)
-            {
-                count++;
-                m[i] = count;
-                zero.pb(count);
-            }
-            else
-            {
-                // and then if there is something in 1
-                // then uska count ka no dekh and then
-                // add that into the map and then pb
-                // that into the vector
-                ll idx = one.back();
-                one.pop_back();
-                m[i] = idx;
-                zero.pb(idx);
-            }
+            one++;
         }
         else
         {
-            if (zero.size() == 0)
-            {
-                count++;
-                m[i] = count;
-                one.pb(count);
-            }
-            else
-            {
-                ll idx = zero.back();
-                zero.pop_back();
-                m[i] = idx;
-                one.pb(idx);
-            }
+            zero++;
         }
     }
-    cout << count << ln;
-    for (auto t : m)
+    if (one == 0 || zero == 0)
     {
-        cout << t.se << " ";
+        cout << s << ln;
+        return;
     }
-    cout << ln;
+    string t = "";
+    if (s[0] == '1')
+    {
+        t.pb('1'), t.pb('0');
+    }
+    else
+    {
+        t.pb('0'), t.pb('1');
+    }
+    string res = "";
+    forn(i, n)
+    {
+        res += t;
+    }
+    cout << res << ln;
 }
-
 int main()
 {
     fast_cin();

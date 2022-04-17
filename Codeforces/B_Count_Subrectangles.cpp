@@ -2,6 +2,8 @@
 #pragma GCC target("sse,sse2,sse3,ssse3,sse4,popcnt,abm,mmx,avx,avx2,fma")
 #pragma GCC optimize("unroll-loops")
 #include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
 #include <complex>
 #include <queue>
 #include <set>
@@ -21,6 +23,8 @@
 #include <fstream>
 
 using namespace std;
+using namespace __gnu_pbds;
+typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> pbds;
 typedef unsigned long long ull;
 typedef long long ll;
 typedef long double ld;
@@ -34,6 +38,7 @@ typedef vector<vector<ll>> vv64;
 typedef vector<vector<p64>> vvp64;
 typedef vector<p64> vp64;
 typedef vector<p32> vp32;
+typedef vector<pair<p64, ll>> vpp64;
 ll MOD = 1000000007;
 double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
@@ -211,68 +216,111 @@ bool isPrime(int x)
     return true;
 }
 
-void solve()
+vp64 factors(ll x)
 {
-    ll n, count = 0;
-    cin >> n;
-    string s;
-    map<ll, ll> m;
-    cin >> s;
-    v64 one, zero;
-    forn(i, s.length())
+    vp64 v;
+    for (ll i = 1; i <= sqrt(x); i++)
     {
-        // now if zero then check for one
-        // if count of one is zero then count++ and then pb that into zero wla mai
-        if (s[i] == '0')
+        if (x % i == 0)
         {
-            if (one.size() == 0)
+            if (x / i == i)
             {
-                count++;
-                m[i] = count;
-                zero.pb(count);
+                // cout << i << " " << i << ln;
+                v.pb({i, i});
             }
             else
             {
-                // and then if there is something in 1
-                // then uska count ka no dekh and then
-                // add that into the map and then pb
-                // that into the vector
-                ll idx = one.back();
-                one.pop_back();
-                m[i] = idx;
-                zero.pb(idx);
+                // cout << x / i << " " << i << ln;
+                v.pb({x / i, i});
+                v.pb({i, x / i});
             }
+        }
+    }
+    return v;
+}
+
+void solve()
+{
+    ll n, m, k;
+    cin >> n >> m >> k;
+    ll arr[n + 1], brr[m + 1];
+    forn(i, n)
+    {
+        cin >> arr[i];
+    }
+    forn(i, m)
+    {
+        cin >> brr[i];
+    }
+    brr[m] = 0, arr[n] = 0;
+    // now counting the segments in brr
+    v64 seg;
+    ll curr = 0;
+    forn(i, m + 1)
+    {
+        if (brr[i] == 1)
+        {
+            curr++;
         }
         else
         {
-            if (zero.size() == 0)
-            {
-                count++;
-                m[i] = count;
-                one.pb(count);
-            }
-            else
-            {
-                ll idx = zero.back();
-                zero.pop_back();
-                m[i] = idx;
-                one.pb(idx);
-            }
+            seg.pb(curr);
+            curr = 0;
         }
     }
-    cout << count << ln;
-    for (auto t : m)
+    curr = 0;
+    vp64 rec;
+    forn(i, n + 1)
     {
-        cout << t.se << " ";
+        if (arr[i] == 1)
+        {
+            curr++;
+        }
+        else
+        {
+            // here we form the rectangles
+            // use only those whose area >=k
+            for (auto t : seg)
+            {
+                if (curr * t >= k)
+                {
+                    rec.pb({curr, t});
+                }
+            }
+            curr = 0;
+        }
     }
     cout << ln;
+    if (rec.size() == 0)
+    {
+        cout << 0 << ln;
+        return;
+    }
+    vp64 v = factors(k);
+    ll ans = 0;
+    for (ll i = 0; i < v.size(); i++)
+    {
+        ll x1 = rec[j].fi, y1 = rec[j].se;
+        for (ll j = 0; j < rec.size(); j++)
+        {
+            ll x = v[i].fi, y = v[i].se;
+            if (x1 >= x && y1 >= y)
+            {
+                // cout << "HEHE" << ln;
+                ans += ((x1 - (x - 1)) * (y1 - (y - 1)));
+            }
+            // cout << x << " " << y << " " << x1 << " " << y1 << " " << ans << ln;
+        }
+    }
+    cout << ans << ln;
+    // now loop through the arr and find countinous segments in it
 }
 
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

@@ -213,59 +213,69 @@ bool isPrime(int x)
 
 void solve()
 {
-    ll n, count = 0;
+    ll n;
     cin >> n;
-    string s;
-    map<ll, ll> m;
-    cin >> s;
-    v64 one, zero;
-    forn(i, s.length())
+    ll arr[n], one = 0;
+
+    forn(i, n)
     {
-        // now if zero then check for one
-        // if count of one is zero then count++ and then pb that into zero wla mai
-        if (s[i] == '0')
+        cin >> arr[i];
+        if (arr[i] == 1)
         {
-            if (one.size() == 0)
-            {
-                count++;
-                m[i] = count;
-                zero.pb(count);
-            }
-            else
-            {
-                // and then if there is something in 1
-                // then uska count ka no dekh and then
-                // add that into the map and then pb
-                // that into the vector
-                ll idx = one.back();
-                one.pop_back();
-                m[i] = idx;
-                zero.pb(idx);
-            }
+            one++;
+        }
+    }
+    // cout << one << ln;
+    // we need to find the total no of ones before starting of the usual no
+    // first case if all are ones
+    if (one == n)
+    {
+        if (n % 2)
+        {
+            cout << "First" << ln;
         }
         else
         {
-            if (zero.size() == 0)
+            cout << "Second" << ln;
+        }
+        return;
+    }
+
+    if (one == 0)
+    {
+        cout << "First" << ln;
+        return;
+    }
+
+    if (arr[0] == 1)
+    {
+        ll count = 0;
+        forn(i, n)
+        {
+            // we need to find the no of ones before start
+            if (arr[i] == 1)
             {
                 count++;
-                m[i] = count;
-                one.pb(count);
             }
             else
             {
-                ll idx = zero.back();
-                zero.pop_back();
-                m[i] = idx;
-                one.pb(idx);
+                // cout << "Count is " << count << ln;
+                if (count % 2)
+                {
+                    cout << "Second" << ln;
+                }
+                else
+                {
+                    cout << "First" << ln;
+                }
+                return;
             }
         }
     }
-    cout << count << ln;
-    for (auto t : m)
+    else
     {
-        cout << t.se << " ";
+        cout << "First" << ln;
     }
-    cout << ln;
 }
 
 int main()

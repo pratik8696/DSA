@@ -213,57 +213,68 @@ bool isPrime(int x)
 
 void solve()
 {
-    ll n, count = 0;
+    ll n;
     cin >> n;
-    string s;
-    map<ll, ll> m;
-    cin >> s;
-    v64 one, zero;
-    forn(i, s.length())
+    ll arr[n];
+    forn(i, n)
     {
-        // now if zero then check for one
-        // if count of one is zero then count++ and then pb that into zero wla mai
-        if (s[i] == '0')
+        cin >> arr[i];
+    }
+    sort(al(arr, n));
+    if (n <= 2)
+    {
+        cout << 0 << ln;
+        forn(i, n)
         {
-            if (one.size() == 0)
-            {
-                count++;
-                m[i] = count;
-                zero.pb(count);
-            }
-            else
-            {
-                // and then if there is something in 1
-                // then uska count ka no dekh and then
-                // add that into the map and then pb
-                // that into the vector
-                ll idx = one.back();
-                one.pop_back();
-                m[i] = idx;
-                zero.pb(idx);
-            }
+            cout << arr[i] << " ";
         }
-        else
+        cout << ln;
+        return;
+    }
+    ll val = n / 2;
+    v64 ans(n);
+    for (ll i = 1, j = 0; i < n; i += 2, j++)
+    {
+        ans[i] = arr[j];
+    }
+    // now inserting the values in the set
+    multiset<ll> v;
+    for (ll i = val; i < n; i++)
+    {
+        v.ie(arr[i]);
+    }
+    // now filling the remaining values using binary search
+    for (ll i = 0; i < n - 1; i += 2)
+    {
+        // age wla value ka upper bound le le set mai daal kr
+        ll val_req = ans[i + 1];
+        auto it = v.upper_bound(val_req);
+        if (it == v.end())
         {
-            if (zero.size() == 0)
-            {
-                count++;
-                m[i] = count;
-                one.pb(count);
-            }
-            else
-            {
-                ll idx = zero.back();
-                zero.pop_back();
-                m[i] = idx;
-                one.pb(idx);
-            }
+            it--;
+        }
+        ans[i] = *it;
+        if (it != v.end())
+        {
+            v.erase(it);
+        }
+    }
+    if (n % 2)
+    {
+        ans[n - 1] = *v.begin();
+    }
+    ll count = 0;
+    for (ll i = 1; i < n - 1; i += 2)
+    {
+        if (ans[i] < ans[i + 1] && ans[i] < ans[i - 1])
+        {
+            count++;
         }
     }
     cout << count << ln;
-    for (auto t : m)
+    forn(i, n)
     {
-        cout << t.se << " ";
+        cout << ans[i] << " ";
     }
     cout << ln;
 }
@@ -271,8 +282,8 @@ void solve()
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

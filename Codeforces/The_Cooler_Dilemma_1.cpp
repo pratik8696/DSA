@@ -213,61 +213,18 @@ bool isPrime(int x)
 
 void solve()
 {
-    ll n, count = 0;
-    cin >> n;
-    string s;
-    map<ll, ll> m;
-    cin >> s;
-    v64 one, zero;
-    forn(i, s.length())
+    ll n, m, t;
+    cin >> n >> m >> t;
+    ll sum = n * t;
+    if (sum < m)
     {
-        // now if zero then check for one
-        // if count of one is zero then count++ and then pb that into zero wla mai
-        if (s[i] == '0')
-        {
-            if (one.size() == 0)
-            {
-                count++;
-                m[i] = count;
-                zero.pb(count);
-            }
-            else
-            {
-                // and then if there is something in 1
-                // then uska count ka no dekh and then
-                // add that into the map and then pb
-                // that into the vector
-                ll idx = one.back();
-                one.pop_back();
-                m[i] = idx;
-                zero.pb(idx);
-            }
-        }
-        else
-        {
-            if (zero.size() == 0)
-            {
-                count++;
-                m[i] = count;
-                one.pb(count);
-            }
-            else
-            {
-                ll idx = zero.back();
-                zero.pop_back();
-                m[i] = idx;
-                one.pb(idx);
-            }
-        }
+        cout << "YES" << ln;
     }
-    cout << count << ln;
-    for (auto t : m)
+    else
     {
-        cout << t.se << " ";
+        cout << "NO" << ln;
     }
-    cout << ln;
 }
-
 int main()
 {
     fast_cin();

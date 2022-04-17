@@ -213,59 +213,38 @@ bool isPrime(int x)
 
 void solve()
 {
-    ll n, count = 0;
+    ll n;
     cin >> n;
-    string s;
+    ll arr[n];
     map<ll, ll> m;
-    cin >> s;
-    v64 one, zero;
-    forn(i, s.length())
+    forn(i, n - 1)
     {
-        // now if zero then check for one
-        // if count of one is zero then count++ and then pb that into zero wla mai
-        if (s[i] == '0')
-        {
-            if (one.size() == 0)
-            {
-                count++;
-                m[i] = count;
-                zero.pb(count);
-            }
-            else
-            {
-                // and then if there is something in 1
-                // then uska count ka no dekh and then
-                // add that into the map and then pb
-                // that into the vector
-                ll idx = one.back();
-                one.pop_back();
-                m[i] = idx;
-                zero.pb(idx);
-            }
-        }
-        else
-        {
-            if (zero.size() == 0)
-            {
-                count++;
-                m[i] = count;
-                one.pb(count);
-            }
-            else
-            {
-                ll idx = zero.back();
-                zero.pop_back();
-                m[i] = idx;
-                one.pb(idx);
-            }
-        }
+        cin >> arr[i];
+        m[arr[i]]++;
     }
-    cout << count << ln;
+    multiset<ll> s;
     for (auto t : m)
     {
-        cout << t.se << " ";
+        s.ie(t.se);
     }
-    cout << ln;
+    s.ie(1);
+    v64 time(all(s));
+    n = time.size();
+    ll ans = time.size();
+    while (time.size() != 1)
+    {
+        v64 c;
+        for (ll i = 0; i < n; i++)
+        {
+            time[i] -= i + 1;
+            if (time[i] > 0)
+            {
+                c.pb(time[i]);
+            }
+        }
+        time.clear();
+        time.assign(all(c));
+    }
 }
 
 int main()

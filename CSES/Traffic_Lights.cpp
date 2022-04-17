@@ -213,57 +213,49 @@ bool isPrime(int x)
 
 void solve()
 {
-    ll n, count = 0;
-    cin >> n;
-    string s;
-    map<ll, ll> m;
-    cin >> s;
-    v64 one, zero;
-    forn(i, s.length())
+    ll n, k;
+    cin >> n >> k;
+    ll arr[k];
+    forn(i, k)
     {
-        // now if zero then check for one
-        // if count of one is zero then count++ and then pb that into zero wla mai
-        if (s[i] == '0')
-        {
-            if (one.size() == 0)
-            {
-                count++;
-                m[i] = count;
-                zero.pb(count);
-            }
-            else
-            {
-                // and then if there is something in 1
-                // then uska count ka no dekh and then
-                // add that into the map and then pb
-                // that into the vector
-                ll idx = one.back();
-                one.pop_back();
-                m[i] = idx;
-                zero.pb(idx);
-            }
-        }
-        else
-        {
-            if (zero.size() == 0)
-            {
-                count++;
-                m[i] = count;
-                one.pb(count);
-            }
-            else
-            {
-                ll idx = zero.back();
-                zero.pop_back();
-                m[i] = idx;
-                one.pb(idx);
-            }
-        }
+        cin >> arr[i];
     }
-    cout << count << ln;
-    for (auto t : m)
+    set<ll> pos;
+    pos.ie(0), pos.ie(n);
+    set<pair<ll, p64>> idx;
+    idx.ie({n, {0, n}});
+    // now we are going to maintain a pair set
+    // and one set of positions
+    forn(i, k)
     {
-        cout << t.se << " ";
+        // first lowebound krna and find the left and right limits
+        // then add it to the pos
+        // then search for the pair in the idx set
+        // then delete that element and update 2 values
+        // print the new value
+        auto it = pos.upper_bound(arr[i]);
+        auto l = it;
+        l--;
+        ll left = *l, right = *it;
+        // cout << left << " " << right << ln;
+        // adding to pos
+        pos.ie(arr[i]);
+        // search in the idx set
+        auto tt = idx.find({right - left, {left, right}});
+        // then delete the element from the set
+        idx.erase(tt);
+        // now update the values
+        idx.ie({arr[i] - left, {left, arr[i]}});
+        idx.ie({right - arr[i], {arr[i], right}});
+        // for (auto t : idx)
+        // {
+        //     cout << t.fi << " " << t.se.fi << " " << t.se.se << ln;
+        // }
+        // cout << ln;
+        // cout << ln;
+        // now printing the values;
+        auto vv = *idx.rbegin();
+        cout << vv.first << " ";
     }
     cout << ln;
 }
@@ -271,8 +263,8 @@ void solve()
 int main()
 {
     fast_cin();
-    ll t;
-    cin >> t;
+    ll t = 1;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

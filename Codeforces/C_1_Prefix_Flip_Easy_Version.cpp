@@ -213,57 +213,60 @@ bool isPrime(int x)
 
 void solve()
 {
-    ll n, count = 0;
+    ll n;
     cin >> n;
-    string s;
-    map<ll, ll> m;
-    cin >> s;
-    v64 one, zero;
-    forn(i, s.length())
+    string p, q;
+    cin >> p >> q;
+    v64 arr, brr;
+    forn(i, n)
     {
-        // now if zero then check for one
-        // if count of one is zero then count++ and then pb that into zero wla mai
-        if (s[i] == '0')
+        arr.pb(p[i] - '0');
+    }
+    forn(i, n)
+    {
+        brr.pb(q[i] - '0');
+    }
+    ll opr = 0, count = 0;
+    ll last = arr[0];
+    v64 ans;
+    for (ll i = n - 1; i >= 1; i--)
+    {
+        ll curr = arr[i];
+        if (opr % 2)
         {
-            if (one.size() == 0)
-            {
-                count++;
-                m[i] = count;
-                zero.pb(count);
-            }
-            else
-            {
-                // and then if there is something in 1
-                // then uska count ka no dekh and then
-                // add that into the map and then pb
-                // that into the vector
-                ll idx = one.back();
-                one.pop_back();
-                m[i] = idx;
-                zero.pb(idx);
-            }
+            curr ^= 1;
         }
-        else
+        if (curr != brr[i])
         {
-            if (zero.size() == 0)
+            opr++;
+            if (last == curr)
             {
-                count++;
-                m[i] = count;
-                one.pb(count);
+                last ^= 1;
+                ans.pb(i + 1);
             }
             else
             {
-                ll idx = zero.back();
-                zero.pop_back();
-                m[i] = idx;
-                one.pb(idx);
+                ans.pb(1);
+                ans.pb(i + 1);
             }
+            forn(j, i + 1)
+            {
+                arr[i] ^= 1;
+            }
+            reverse(arr.begin(), arr.begin() + i + 1);
         }
     }
-    cout << count << ln;
-    for (auto t : m)
+    if (last != brr[0])
     {
-        cout << t.se << " ";
+        ans.pb(1);
+    }
+    cout << ans.size() << " ";
+    if (ans.size())
+    {
+        for (auto t : ans)
+        {
+            cout << t << " ";
+        }
     }
     cout << ln;
 }
