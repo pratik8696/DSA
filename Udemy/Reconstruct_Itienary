@@ -1,0 +1,47 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+
+#define maxi 1000
+map<string, multiset<string>> adj;
+vector<string> ans;
+
+void dfs(string v)
+{
+    // no use of the visited array as everything will get eliminated by its own
+    while (adj[v].size())
+    {
+        auto first = *adj[v].begin();
+        adj[v].erase(adj[v].begin());
+        dfs(first);
+    }
+    ans.push_back(v);
+}
+
+vector<string> findItinerary(vector<vector<string>> tickets)
+{
+    ans.clear();
+    adj.clear();
+    // adj list formed
+    for (auto &t : tickets)
+    {
+        auto &x = t;
+        adj[x[0]].insert(x[1]);
+    }
+
+    for (auto t : adj)
+    {
+        cout << t.first << "--> ";
+        for (auto x : t.second)
+        {
+            cout << x << " ";
+        }
+        cout << endl;
+    }
+
+    // dfs
+    dfs("JFK");
+    // now reversing the path
+    reverse(ans.begin(), ans.end());
+    return ans;
+}
