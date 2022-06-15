@@ -24,10 +24,10 @@
 
 using namespace std;
 using namespace __gnu_pbds;
-// use less_equal to make it multiset
-typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> pbds;
-typedef unsigned long long ull;
 typedef long long ll;
+// use less_equal to make it multiset
+typedef tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update> pbds;
+typedef unsigned long long ull;
 typedef long double ld;
 typedef pair<int, int> p32;
 typedef pair<ll, ll> p64;
@@ -74,15 +74,15 @@ double eps = 1e-12;
 //   parent[v] = v;
 //}
 
-// int find_set(int v) {
-//   if (v == parent[v])
+// int find_set(int v,v64 &parent) {
+//   if (-1 == parent[v])
 // return v;
 // return find_set(parent[v]);
 // }
 
-// void union_sets(int a, int b) {
-//   a = find_set(a);
-// b = find_set(b);
+// void union_sets(int a, int b,v64 &parent) {
+//   a = find_set(a,parent);
+// b = find_set(b,parent);
 // if (a != b)
 // parent[b] = a;
 // }
@@ -242,43 +242,26 @@ bool isPrime(int x)
     return true;
 }
 
-class Complex
-{
-    ll a, b;
-    static ll cons, des;
-
-public:
-    Complex(ll a, ll b) : a(a), b(b)
-    {
-        cout << "Constructer Called: " << ++cons << ln;
-    }
-    ~Complex()
-    {
-        cout << "Destructor Called: " << ++des << ln;
-    }
-    void getstatus()
-    {
-        cout << "Live objects : " << cons - des << ln;
-    }
-};
-
-ll Complex::cons = 0;
-ll Complex::des = 0;
-
 void solve()
 {
-    Complex c1(4, 5), c2(6, 7), c3(8, 9), c4(10, 11);
-    c1.getstatus();
-    c2.getstatus();
-    // c3.getstatus();
-    c4.getstatus();
+    ll n, m;
+    cin >> n >> m;
+    mv64 adj;
+    m64 vis;
+    forn(i, m)
+    {
+        cin >> arr[i];
+    }
 }
-
 int main()
 {
     fast_cin();
-    ll t = 1;
-    // cin >> t;
+    //#ifndef ONLINE_JUDGE
+    //  freopen("revegetate.in", "r", stdin);
+    // freopen("revegetate.out", "w", stdout);
+    //#endif
+    ll t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

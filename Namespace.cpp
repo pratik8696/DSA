@@ -24,10 +24,10 @@
 
 using namespace std;
 using namespace __gnu_pbds;
-// use less_equal to make it multiset
-typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> pbds;
-typedef unsigned long long ull;
 typedef long long ll;
+// use less_equal to make it multiset
+typedef tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update> pbds;
+typedef unsigned long long ull;
 typedef long double ld;
 typedef pair<int, int> p32;
 typedef pair<ll, ll> p64;
@@ -74,15 +74,15 @@ double eps = 1e-12;
 //   parent[v] = v;
 //}
 
-// int find_set(int v) {
-//   if (v == parent[v])
+// int find_set(int v,v64 &parent) {
+//   if (-1 == parent[v])
 // return v;
 // return find_set(parent[v]);
 // }
 
-// void union_sets(int a, int b) {
-//   a = find_set(a);
-// b = find_set(b);
+// void union_sets(int a, int b,v64 &parent) {
+//   a = find_set(a,parent);
+// b = find_set(b,parent);
 // if (a != b)
 // parent[b] = a;
 // }
@@ -242,103 +242,40 @@ bool isPrime(int x)
     return true;
 }
 
-class A
-{
-private:
-    int x;
+// Parent
+// 1 1 1 1 4
+// 1 2 3 4 5 (INDEX)
 
-protected:
-    int y;
-
-public:
-    int z;
-};
-
-class B : public A
-{
-private:
-    int u;
-
-protected:
-    int v;
-
-public:
-    int w;
-    void f() { x; }
-};
-
-class C : protected A
-{
-private:
-    int u;
-
-protected:
-    int v;
-
-public:
-    int w;
-    void f() { x; }
-};
-
-class D : private A
-{
-private:
-    int u;
-
-protected:
-    int v;
-
-public:
-    int w;
-    void f() { x; }
-};
-
-class E : public B
-{
-public:
-    void f()
-    {
-        x;
-        u;
-    }
-};
-
-class F : public C
-{
-public:
-    void f()
-    {
-        x;
-        u;
-    }
-};
-
-class G : public D
-{
-public:
-    void f()
-    {
-        x;
-        y;
-        z;
-        u;
-    }
-};
+// 1 1 2 3 4 5 6 7
+// 1 2 3 4 5 6 7 8 (IDX)
 
 void solve()
 {
     ll n;
     cin >> n;
-    ll arr[n];
-    forn(i, n)
+    ll parent[n + 1];
+    parent[0] = 0;
+    forsn(i, 1, n + 1)
     {
-        cin >> arr[i];
+        cin >> parent[i];
     }
+    ll prev = parent[5];
+    while (prev != 1)
+    {
+        cout << prev << " -> ";
+        prev = parent[prev];
+    }
+    cout << prev << ln;
 }
+
 
 int main()
 {
     fast_cin();
+    //#ifndef ONLINE_JUDGE
+    //  freopen("revegetate.in", "r", stdin);
+    // freopen("revegetate.out", "w", stdout);
+    //#endif
     ll t;
     cin >> t;
     for (int it = 1; it <= t; it++)

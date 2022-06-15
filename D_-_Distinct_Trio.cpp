@@ -151,24 +151,23 @@ long long modpow(long long x, long long n, long long p)
 
 // const int N = 1e6 + 100;
 // long long fact[N];
-// initialise the factorial void initfact()
-// {
-//     fact[0] = 1;
-//     for (int i = 1; i < N; i++)
-//     {
-//         fact[i] = (fact[i - 1] * i);
-//         fact[i] %= MOD;
-//     }
-// }
+//  initialise the factorial
+// void initfact(){
+// fact[0] = 1;
+// for (int i = 1; i < N; i++)
+//{
+// fact[i] = (fact[i - 1] * i);
+// fact[i] %= MOD;
+// }}
 
-// // formula for c
+// formula for c
 // ll C(ll n, ll i)
-// {
-//     ll res = fact[n];
-//     ll div = fact[n - i] * fact[i];
-//     div %= MOD;
-//     div = modpow(div, MOD - 2, MOD);
-//     return (res * div) % MOD;
+//{
+// ll res = fact[n];
+// ll div = fact[n - i] * fact[i];
+// div %= MOD;
+// div = modpow(div, MOD - 2, MOD);
+// return (res * div) % MOD;
 // }
 
 long long CW(ll n, ll m)
@@ -254,22 +253,17 @@ void solve()
         cin >> arr[i];
         m[arr[i]]++;
     }
-    ll val = m.size();
-    if (val < 3)
-    {
-        cout << 0 << ln;
-        return;
-    }
-    ll dis=0;
+    ll prev = 0, after = n, res = 0;
     for (auto t : m)
     {
-        if (t.se == 1)
-        {
-            cc += t.se;
-        }
+        // after se pehle hi minus hoga
+        after -= t.se;
+        // calculate res
+        res += after * t.se * prev;
+        // prev mai baad mai add hoga
+        prev += t.se;
     }
-    ll ans = res - fastexpo(cc, 2);
-    cout << ans << ln;
+    cout << res << ln;
 }
 
 int main()

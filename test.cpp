@@ -242,43 +242,62 @@ bool isPrime(int x)
     return true;
 }
 
+void dfs(int v, m64 &vis, mv64 &adj)
+{
+    vis[v] = 1;
+    ll size = 1;
+    for (auto child : adj[v])
+    {
+        if (vis[child] == 0)
+        {
+            size += dfs(child, vis, adj);
+        }
+    }
+    return size;
+}
+
 void solve()
 {
-    string s;
-    cin >> s;
-    deque<ll> res;
-    map<ll, char> m;
-    for (ll i = 0, k = 0; i < s.length(); i++, k++)
+    mv64 adj;
+    m64 vis;
+    ll n, m;
+    cin >> n >> m;
+    forn(i, m)
     {
-        if (k % 2 == 0)
+        ll a, b;
+        cin >> a >> b;
+        adj[a].pb(b);
+        adj[b].pb(a);
+    }
+    forsn(i, 1, n + 1)
+    {
+        cout << i << "-->";
+        for (auto t : adj[i])
         {
-            res.push_back(i);
+            cout << t << " ";
         }
-        else
+        cout << ln;
+    }
+    ll cc = 0;
+    forsn(i, 1, n + 1)
+    {
+        if (!vis[i])
         {
-            res.push_front(i);
+            size_cc = 0;
+            dfs(i, vis, adj);
+            cc++;
         }
     }
-    if (s.length() % 2)
-    {
-        reverse(all(res));
-    }
-    sort(all(s));
-    reverse(all(s));
-    forn(i, s.length())
-    {
-        m[res[i]] = s[i];
-    }
-    forn(i, s.length())
-    {
-        cout << m[i];
-    }
-    cout << ln;
+    cout << cc << ln;
 }
 
 int main()
 {
     fast_cin();
+    //#ifndef ONLINE_JUDGE
+    //  freopen("revegetate.in", "r", stdin);
+    // freopen("revegetate.out", "w", stdout);
+    //#endif
     ll t = 1;
     // cin >> t;
     for (int it = 1; it <= t; it++)

@@ -242,26 +242,45 @@ bool isPrime(int x)
     return true;
 }
 
-
 void solve()
 {
     ll n;
     cin >> n;
     ll arr[n];
+    map<ll, v64> m;
     forn(i, n)
     {
         cin >> arr[i];
+        m[arr[i]].pb(i + 1);
     }
     ll ans = 0;
-    forn(i, n)
+    for (auto &t : m)
     {
-        ll l = min(n - (i + 1), arr[i] - 1) + min(i, arr[i] - 1) + 1;
-        ll steps = l - (arr[i] - 1);
-        ans += steps;
+        auto &x = t.se;
+        ll len = t.fi;
+        // first for mid values
+        ll left = max(1ll, (x[0] - (len - 1)));
+        ll right = min(n, x[0] + (len - 1));
+        for (ll i = 1; i < x.size(); i++)
+        {
+            // now left and right side space
+            if (x[i] > right)
+            {
+                ans += (right - left - (len - 1) + 1);
+                left = max(1ll, x[i] - (len - 1));
+                right = min(n, x[i] + (len - 1));
+            }
+            else
+            {
+                right = min(n, x[i] + len - 1);
+            }
+        }
+        // first val
+        ans += (right - left - (len - 1) + 1);
+        // last val
     }
     cout << ans << ln;
 }
-
 
 int main()
 {

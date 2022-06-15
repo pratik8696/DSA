@@ -69,6 +69,24 @@ double eps = 1e-12;
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
 
+// dsu functions
+// void make_set(int v) {
+//   parent[v] = v;
+//}
+
+// int find_set(int v) {
+//   if (v == parent[v])
+// return v;
+// return find_set(parent[v]);
+// }
+
+// void union_sets(int a, int b) {
+//   a = find_set(a);
+// b = find_set(b);
+// if (a != b)
+// parent[b] = a;
+// }
+
 // function for prime factorization
 vector<pair<ll, ll>> pf(ll n)
 {
@@ -224,11 +242,6 @@ bool isPrime(int x)
     return true;
 }
 
-bool compare(p64 a, p64 b)
-{
-    return a.se < b.se;
-}
-
 void solve()
 {
     ll n, k;
@@ -240,47 +253,35 @@ void solve()
         cin >> a >> b;
         res.pb({a, b});
     }
-    sort(all(res), compare);
-    msp64 s;
-    // insert the first movie into the list
-    s.ie({res[0].se, 1});
-    for (ll i = 1; i < n; i++)
-    {
-        ll startval = res[i].fi;
-        ll endval = res[i].se;
-        auto val = *s.begin();
-        if (startval >= val.fi)
-        {
-            // then change the first val
-            s.erase(s.begin());
-            s.ie({endval, val.se + 1});
-        }
-        else
-        {
-            // insert this into the set
-            s.ie({endval, 1});
-        }
-    }
-    v64 ans;
-    for (auto t : s)
-    {
-        cout << t.fi << " " << t.se << ln;
-        ans.pb(t.se);
-    }
-    sort(all(ans), greater<ll>());
-    ll sum = 0;
+    sort(all(res), [&](p64 a, p64 b)
+         { return a.se < b.se; });
+
+    multiset<ll> endtime;
     forn(i, k)
     {
-        sum += ans[i];
+        endtime.ie(0);
     }
-    cout << sum << ln;
+    ll cc=0;
+    for (auto t : res)
+    {
+        auto it = endtime.upper_bound(t.fi);
+        if (it == begin(endtime))
+        {
+            continue;
+        }
+        // now erase the it
+        endtime.erase(--it);
+        endtime.ie(t.se);
+        cc++;
+    }
+    cout<<cc<<ln;
 }
 
 int main()
 {
     fast_cin();
     ll t = 1;
-    //  cin >> t;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

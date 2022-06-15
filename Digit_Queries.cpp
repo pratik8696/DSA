@@ -242,52 +242,60 @@ bool isPrime(int x)
     return true;
 }
 
+v64 res;
+
 void solve()
 {
     ll n;
     cin >> n;
-    if (n <= 9)
+    ll val = 0, curr = 0, i = 0, idx = 0;
+    for (i = 0; i < 16; i++)
     {
-        cout << n << ln;
-        return;
-    }
-    v64 res;
-    forn(i, 17)
-    {
-        ll val = (i + 1) * fastexpo(10, i + 1) - 1;
-        res.pb(val);
-    }
-    // now iterating
-    forn(i, res.size())
-    {
-        ll val = n;
-        ll start = fastexpo(10, i) - 1;
-        n -= res[i];
-        if (n <= 0)
+        if (n < res[i])
         {
-            ll div = i + 1;
-            ll extra = ce(val, div);
-            ll num = start + extra;
-            ll idx = div - val % div - 1;
-            string s = to_string(num);
-            // cout<<s[idx]<<ln;
-            cout << num << " " << idx << ln;
-            return;
+            curr = res[i];
+            idx = i + 1;
+            break;
         }
+        val = res[i];
     }
+    // now sub from n and make curr equal to standard val
+    n -= val;
+    curr -= val;
+    // cout << n << " " << curr << " " << idx << " " << val << ln;
+    ll digit_dist = ce(n, idx);
+    ll digit = fastexpo(10, idx - 1) - 1;
+    digit += digit_dist;
+    ll idx_to_look = n % idx;
+    if (idx_to_look == 0)
+    {
+        idx_to_look = idx;
+    }
+    idx_to_look--;
+    // cout << digit << " " << idx_to_look << ln;
+    string s = to_string(digit);
+    cout << s[idx_to_look] << ln;
 }
 
 int main()
 {
     fast_cin();
-    ll t = 1;
+    ll t;
     cin >> t;
+    ll sum = 0;
+    forn(i, 16)
+    {
+        sum += 9 * fastexpo(10, i) * (i + 1);
+        res.pb(sum);
+        // cout << res.back() << ln;
+    }
     for (int it = 1; it <= t; it++)
     {
         solve();
     }
     return 0;
 }
+
 /*
 1. Check borderline constraints. Can a variable you are dividing by be 0?
 2. Use ll while using bitshifts
