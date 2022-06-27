@@ -247,60 +247,71 @@ bool isPrime(int x)
     return true;
 }
 
-void solve()
+void dfs(int v, uv64 &adj, v64 &ans)
 {
-    ll n, m;
-    cin >> n >> m;
-    uv64 adj;
-    forn(i, m)
+    for (auto child : adj[v])
     {
-        ll a, b;
-        cin >> a >> b;
-        adj[a].pb(b);
-        adj[b].pb(a);
-    }
-    // now we need to do bfs
-    v64 dist(n + 1, -1), vis(n + 1, 0), parent(n + 1, 0);
-    queue<ll> q;
-    q.push(1);
-    dist[1] = 1;
-    vis[1] = 1;
-    parent[1] = 1;
-    while (!q.empty())
-    {
-        ll curr = q.front();
-        q.pop();
-        for (auto child : adj[curr])
+        if (ans[child] == -1)
         {
-            if (vis[child] == 0)
-            {
-                q.push(child);
-                vis[child] = 1;
-                dist[child] = dist[curr] + 1;
-                parent[child] = curr;
-            }
+            // cout << child << " " << ans[v] << ln;
+            ans[child] = ans[v];
+            dfs(child, adj, ans);
         }
     }
-    if (vis[n] == 0)
+}
+
+void floyd(ll x, u64 &adj, v64 &ans, uv64 &radj)
+{
+    ll y = x;
+    do
     {
-        cout << "IMPOSSIBLE" << ln;
-        return;
+        x = adj[x];
+        y = adj[adj[y]];
+    } while (x != y);
+    // cout << x << " " << y << ln;
+    // for the nodes which are in the loop
+    do
+    {
+        ans[x] = x;
+        x = adj[x];
+    } while (x != y);
+    // cout << x << " " << y << ln;
+    // which are not in the loop
+    do
+    {
+        dfs(x, radj, ans);
+        x = adj[x];
+    } while (x != y);
+    // cout << x << " " << y << ln;
+}
+
+void solve()
+{
+    ll n;
+    cin >> n;
+    u64 adj;
+    uv64 radj;
+    forsn(i, 1, n + 1)
+    {
+        ll x;
+        cin >> x;
+        adj[i] = x;
+        radj[x].pb(i);
     }
-    // ending pt is n
-    // start kha h then it is 1
-    ll prev = n;
-    v64 route;
-    while (prev != 1)
+
+    v64 ans(n + 1, -1);
+
+    forsn(i, 1, n + 1)
     {
-        route.pb(prev);
-        prev = parent[prev];
+        if (ans[i] == -1)
+        {
+            floyd(i, adj, ans, radj);
+        }
     }
-    route.pb(prev);
-    reverse(all(route));
-    cout << route.size() << ln;
-    for (auto t : route)
+
+    forsn(i, 1, n + 1)
     {
-        cout << t << " ";
+        cout << ans[i] << " ";
     }
     cout << ln;
 }

@@ -79,19 +79,6 @@ double eps = 1e-12;
 //   parent[v] = v;
 //}
 
-// int find_set(int v,v64 &parent) {
-//   if (-1 == parent[v])
-// return v;
-// return parent[v]=find_set(parent[v],parent);
-// }
-
-// void union_sets(int a, int b,v64 &parent) {
-//   a = find_set(a,parent);
-// b = find_set(b,parent);
-// if (a != b)
-// parent[b] = a;
-// }
-
 // function for prime factorization
 vector<pair<ll, ll>> pf(ll n)
 {
@@ -247,62 +234,123 @@ bool isPrime(int x)
     return true;
 }
 
-void solve()
+int find_set(int v, v64 &parent)
 {
-    ll n, m;
-    cin >> n >> m;
-    uv64 adj;
-    forn(i, m)
+    if (-1 == parent[v])
+        return v;
+    return parent[v] = find_set(parent[v], parent);
+}
+
+void union_sets(int a, int b, v64 &parent)
+{
+    a = find_set(a, parent);
+    b = find_set(b, parent);
+    if (a != b)
+        parent[b] = a;
+}
+
+v64 path;
+ll flag = 1;
+void dfs(int v, v64 &vis, uv64 &adj, ll par)
+{
+    vis[v] = 1;
+    path.pb(v);
+    for (auto child : adj[v])
     {
-        ll a, b;
-        cin >> a >> b;
-        adj[a].pb(b);
-        adj[b].pb(a);
-    }
-    // now we need to do bfs
-    v64 dist(n + 1, -1), vis(n + 1, 0), parent(n + 1, 0);
-    queue<ll> q;
-    q.push(1);
-    dist[1] = 1;
-    vis[1] = 1;
-    parent[1] = 1;
-    while (!q.empty())
-    {
-        ll curr = q.front();
-        q.pop();
-        for (auto child : adj[curr])
+        if (vis[child] == 0)
         {
-            if (vis[child] == 0)
+            if (adj[child].size() > 2)
             {
-                q.push(child);
-                vis[child] = 1;
-                dist[child] = dist[curr] + 1;
-                parent[child] = curr;
+                flag = 0;
             }
+            dfs(child, vis, adj, v);
+        }
+        else if (vis[child] == 1 && child != par)
+        {
+            flag = 0;
         }
     }
-    if (vis[n] == 0)
+    vis[v] == 2;
+}
+
+void solve()
+{
+    string s;
+    cin >> s;
+    v64 parent(260, -1);
+    map<pair<char, char>, ll> m;
+    map<ll, char> con;
+    u64 indegree;
+    uv64 adj;
+    ll zz = 0;
+    for (char a = 'a'; a <= 'z'; a++)
     {
-        cout << "IMPOSSIBLE" << ln;
+        con[zz++] = a;
+    }
+    forn(i, s.length() - 1)
+    {
+        if (m[{s[i], s[i + 1]}])
+        {
+            continue;
+        }
+        ll a = int(s[i]) - '0' - 49, b = int(s[i + 1]) - '0' - 49;
+        ll p1 = find_set(a, parent), p2 = find_set(b, parent);
+        if (p1 == p2)
+        {
+            cout << "NO" << ln;
+            return;
+        }
+        union_sets(a, b, parent);
+        adj[a].pb(b);
+        adj[b].pb(a);
+        indegree[a]++;
+        indegree[b]++;
+        m[{s[i], s[i + 1]}]++;
+        m[{s[i + 1], s[i]}]++;
+    }
+    set<char> hash;
+    string ans = "";
+    v64 vis(26 + 1, 0);
+    v64 res;
+    forn(i, 26)
+    {
+        if (indegree[i] == 1 && vis[i] == 0)
+        {
+            res.pb(i);
+        }
+    }
+    if (res.size() == 0)
+    {
+        cout << "NO" << ln;
         return;
     }
-    // ending pt is n
-    // start kha h then it is 1
-    ll prev = n;
-    v64 route;
-    while (prev != 1)
+    forn(i, res.size())
     {
-        route.pb(prev);
-        prev = parent[prev];
+        if (indegree[res[i]] == 1 && vis[res[i]] == 0)
+        {
+            dfs(res[i], vis, adj, -1);
+            for (auto t : path)
+            {
+                ans.pb(con[t]);
+                hash.ie(con[t]);
+            }
+            path.clear();
+        }
     }
-    route.pb(prev);
-    reverse(all(route));
-    cout << route.size() << ln;
-    for (auto t : route)
+    for (char a = 'a'; a <= 'z'; a++)
     {
-        cout << t << " ";
+        if (hash.count(a) == 0)
+        {
+            ans.pb(a);
+        }
     }
-    cout << ln;
+    if (!flag)
+    {
+        cout << "NO" << ln;
+        return;
+    }
+    cout << "YES" << ln;
+    cout << ans << ln;
 }
 
 int main()
@@ -312,10 +360,11 @@ int main()
     //  freopen("revegetate.in", "r", stdin);
     // freopen("revegetate.out", "w", stdout);
     //#endif
-    ll t = 1;
-    // cin >> t;
+    ll t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
+        flag = 1;
         solve();
     }
     return 0;

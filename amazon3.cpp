@@ -73,197 +73,154 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-
-// dsu functions
-// void make_set(int v) {
-//   parent[v] = v;
-//}
-
-// int find_set(int v,v64 &parent) {
-//   if (-1 == parent[v])
-// return v;
-// return parent[v]=find_set(parent[v],parent);
-// }
-
-// void union_sets(int a, int b,v64 &parent) {
-//   a = find_set(a,parent);
-// b = find_set(b,parent);
-// if (a != b)
-// parent[b] = a;
-// }
-
-// function for prime factorization
-vector<pair<ll, ll>> pf(ll n)
+const int RANDOM = chrono::high_resolution_clock::now().time_since_epoch().count();
+struct chash
 {
-    vector<pair<ll, ll>> prime;
-    for (int i = 2; i <= sqrt(n); i++)
+    const uint64_t C = ll(4e18 * acos(0)) | 71;
+    ll operator()(p64 x) const { return __builtin_bswap64((x.first ^ x.second ^ RANDOM) * C); }
+};
+
+struct node
+{
+    ll odd;
+    unordered_map<ll, ll> freq;
+};
+
+void build(ll arr[], node *tree, ll s, ll e, ll tn)
+{
+    if (s == e)
     {
-        if (n % i == 0)
+        tree[tn].freq[arr[s]]++;
+        tree[tn].odd = 1;
+        return;
+    }
+    ll mid = (s + e) / 2;
+    build(arr, tree, s, mid, 2 * tn);
+    build(arr, tree, mid + 1, e, (2 * tn) + 1);
+    ll od = 0;
+    for (auto t : tree[2 * tn].freq)
+    {
+        tree[tn].freq[t.fi] += t.se;
+    }
+    for (auto t : tree[(2 * tn) + 1].freq)
+    {
+        tree[tn].freq[t.fi] += t.se;
+    }
+    for (auto t : tree[tn].freq)
+    {
+        if (t.se % 2)
         {
-            int count = 0;
-            while (n % i == 0)
-            {
-                count++;
-                n = n / i;
-            }
-            prime.pb(mp(i, count));
+            od++;
         }
     }
-    if (n > 1)
-    {
-        prime.pb(mp(n, 1));
-    }
-    return prime;
+    tree[tn].odd = od;
 }
 
-// sum of digits of a number
-ll sumofno(ll n)
+ll query(ll arr[], node *tree, ll s, ll e, ll tn, ll l, ll r)
 {
-    ll sum = 0;
-    while (n != 0)
-    {
-        sum += n % 10;
-        n = n / 10;
-    }
-    return sum;
-}
-
-// modular exponentiation
-long long modpow(long long x, long long n, long long p)
-{
-
-    if (n == 0)
-        return 1 % p;
-
-    ll ans = 1, base = x;
-    while (n > 0)
-    {
-        if (n % 2 == 1)
-        {
-            ans = (ans * base) % p;
-            n--;
-        }
-        else
-        {
-            base = (base * base) % p;
-            n /= 2;
-        }
-    }
-    if (ans < 0)
-        ans = (ans + p) % p;
-    return ans;
-}
-
-// const int N = 1e6 + 100;
-// long long fact[N];
-//  initialise the factorial
-// void initfact(){
-// fact[0] = 1;
-// for (int i = 1; i < N; i++)
-//{
-// fact[i] = (fact[i - 1] * i);
-// fact[i] %= MOD;
-// }}
-
-// formula for c
-// ll C(ll n, ll i)
-//{
-// ll res = fact[n];
-// ll div = fact[n - i] * fact[i];
-// div %= MOD;
-// div = modpow(div, MOD - 2, MOD);
-// return (res * div) % MOD;
-// }
-
-long long CW(ll n, ll m)
-{
-    if (m > n - m)
-        m = n - m;
-    long long ans = 1;
-    for (int i = 0; i < m; i++)
-    {
-        ans = ans * (n - i) / (i + 1);
-    }
-    return ans;
-}
-
-// function for fast expo
-ll fastexpo(ll a, ll b)
-{
-    if (b == 0)
-    {
-        return 1;
-    }
-    if (a == 0)
+    ll mid = (s + e) / 2;
+    // out
+    if (s > r || l > e)
     {
         return 0;
     }
-    ll y = fastexpo(a, b / 2);
-    if (b % 2 == 0)
+    // in
+    if (s >= l && r >= e)
     {
-        return y * y;
+        return tree[tn].odd;
+    }
+
+    ll ans1 = query(arr, tree, s, mid, 2 * tn, l, r);
+    ll ans2 = query(arr, tree, mid + 1, e, (2 * tn) + 1, l, r);
+    return ans1 + ans2;
+}
+
+void update(ll arr[], node *tree, ll s, ll e, ll tn, ll idx, ll val)
+{
+    if (s == e)
+    {
+        tree[tn].odd = 1;
+        tree[tn].freq[arr[idx]]--;
+        arr[idx] = val;
+        tree[tn].freq[arr[idx]]++;
+        return;
+    }
+    ll mid = (s + e) / 2;
+    if (idx > mid)
+    {
+        if (tree[tn].freq[arr[idx]] % 2)
+        {
+            tree[tn].odd--;
+        }
+        else
+        {
+            tree[tn].odd++;
+        }
+        tree[tn].freq[arr[idx]]--;
+        tree[tn].freq[val]++;
+        if (tree[tn].freq[val] % 2)
+        {
+            tree[tn].odd++;
+        }
+        else
+        {
+            tree[tn].odd--;
+        }
+        update(arr, tree, mid + 1, e, (2 * tn) + 1, idx, val);
     }
     else
     {
-        return a * y * y;
+        if (tree[tn].freq[arr[idx]] % 2)
+        {
+            tree[tn].odd--;
+        }
+        else
+        {
+            tree[tn].odd++;
+        }
+        tree[tn].freq[arr[idx]]--;
+        tree[tn].freq[val]++;
+        if (tree[tn].freq[val] % 2)
+        {
+            tree[tn].odd++;
+        }
+        else
+        {
+            tree[tn].odd--;
+        }
+        update(arr, tree, s, mid, 2 * tn, idx, val);
     }
-}
-
-ll popcount(ll n)
-{
-    ll c = 0;
-    for (; n; ++c)
-        n &= n - 1;
-    return c;
-}
-
-ll ce(ll x, ll y)
-{
-    ll res = x / y;
-    if (x % y != 0)
-    {
-        res++;
-    }
-    return res;
-}
-
-bool pow2(ll x)
-{
-    ll res = x & (x - 1);
-    if (res == 0)
-    {
-        return true;
-    }
-    return false;
-}
-
-bool isPrime(int x)
-{
-    for (int d = 2; d * d <= x; d++)
-    {
-        if (x % d == 0)
-            return false;
-    }
-    return true;
 }
 
 void solve()
 {
-    ll n, m, k;
-    cin >> n >> m >> k;
-    ll x = min(n, m), y = max(n, m);
-    while (x)
+    ll n, m;
+    cin >> n >> m;
+    ll arr[n];
+    node tree[4 * n];
+    forn(i, n)
     {
-        ll temp = y % x;
-        if ((k - temp) % x == 0 && k <= y && k >= temp)
-        {
-            cout << "YES" << ln;
-            return;
-        }
-        y = x;
-        x = temp;
+        cin >> arr[i];
     }
-    cout << "NO" << ln;
+    build(arr, tree, 0, n - 1, 1);
+    while (m--)
+    {
+        ll val;
+        cin >> val;
+        if (val == 2)
+        {
+            ll a, b;
+            cin >> a >> b;
+            cout << query(arr, tree, 0, n - 1, 1, --a, --b) << " ";
+        }
+        else
+        {
+            ll a, b;
+            cin >> a >> b;
+            update(arr, tree, 0, n - 1, 1, --a, b);
+        }
+    }
+    cout << ln;
 }
 
 int main()
@@ -273,7 +230,7 @@ int main()
     //  freopen("revegetate.in", "r", stdin);
     // freopen("revegetate.out", "w", stdout);
     //#endif
-    ll t;
+    ll t = 1;
     cin >> t;
     for (int it = 1; it <= t; it++)
     {

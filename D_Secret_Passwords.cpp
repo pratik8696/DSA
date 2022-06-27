@@ -79,19 +79,6 @@ double eps = 1e-12;
 //   parent[v] = v;
 //}
 
-// int find_set(int v,v64 &parent) {
-//   if (-1 == parent[v])
-// return v;
-// return parent[v]=find_set(parent[v],parent);
-// }
-
-// void union_sets(int a, int b,v64 &parent) {
-//   a = find_set(a,parent);
-// b = find_set(b,parent);
-// if (a != b)
-// parent[b] = a;
-// }
-
 // function for prime factorization
 vector<pair<ll, ll>> pf(ll n)
 {
@@ -247,62 +234,54 @@ bool isPrime(int x)
     return true;
 }
 
+int find_set(int v, v64 &parent)
+{
+    if (-1 == parent[v])
+        return v;
+    return parent[v] = find_set(parent[v], parent);
+}
+
+void union_sets(int a, int b, v64 &parent)
+{
+    a = find_set(a, parent);
+    b = find_set(b, parent);
+    if (a != b)
+        parent[b] = a;
+}
+
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    uv64 adj;
-    forn(i, m)
+    ll n;
+    cin >> n;
+    v64 parent(26, -1);
+    unordered_map<ll, ll> mark;
+    forn(z, n)
     {
-        ll a, b;
-        cin >> a >> b;
-        adj[a].pb(b);
-        adj[b].pb(a);
-    }
-    // now we need to do bfs
-    v64 dist(n + 1, -1), vis(n + 1, 0), parent(n + 1, 0);
-    queue<ll> q;
-    q.push(1);
-    dist[1] = 1;
-    vis[1] = 1;
-    parent[1] = 1;
-    while (!q.empty())
-    {
-        ll curr = q.front();
-        q.pop();
-        for (auto child : adj[curr])
+        string s;
+        cin >> s;
+        sort(all(s));
+        forsn(i, 1, s.length())
         {
-            if (vis[child] == 0)
-            {
-                q.push(child);
-                vis[child] = 1;
-                dist[child] = dist[curr] + 1;
-                parent[child] = curr;
-            }
+            ll x = s[i] - 'a';
+            ll y = s[i - 1] - 'a';
+            union_sets(y, x, parent);
+        }
+        forn(i, s.length())
+        {
+            ll x = s[i] - 'a';
+            mark[x]++;
         }
     }
-    if (vis[n] == 0)
+    ll ans = 0;
+    for (auto t : mark)
     {
-        cout << "IMPOSSIBLE" << ln;
-        return;
+        // cout << t.fi << " " << parent[t.fi] << ln;
+        if (parent[t.fi] == -1)
+        {
+            ans++;
+        }
     }
-    // ending pt is n
-    // start kha h then it is 1
-    ll prev = n;
-    v64 route;
-    while (prev != 1)
-    {
-        route.pb(prev);
-        prev = parent[prev];
-    }
-    route.pb(prev);
-    reverse(all(route));
-    cout << route.size() << ln;
-    for (auto t : route)
-    {
-        cout << t << " ";
-    }
-    cout << ln;
+    cout << ans << ln;
 }
 
 int main()

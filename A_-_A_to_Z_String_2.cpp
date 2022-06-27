@@ -251,58 +251,15 @@ void solve()
 {
     ll n, m;
     cin >> n >> m;
-    uv64 adj;
-    forn(i, m)
+    string res = "";
+    for (char a = 'A'; a <= 'Z'; a++)
     {
-        ll a, b;
-        cin >> a >> b;
-        adj[a].pb(b);
-        adj[b].pb(a);
-    }
-    // now we need to do bfs
-    v64 dist(n + 1, -1), vis(n + 1, 0), parent(n + 1, 0);
-    queue<ll> q;
-    q.push(1);
-    dist[1] = 1;
-    vis[1] = 1;
-    parent[1] = 1;
-    while (!q.empty())
-    {
-        ll curr = q.front();
-        q.pop();
-        for (auto child : adj[curr])
+        forn(z, n)
         {
-            if (vis[child] == 0)
-            {
-                q.push(child);
-                vis[child] = 1;
-                dist[child] = dist[curr] + 1;
-                parent[child] = curr;
-            }
+            res.pb(a);
         }
     }
-    if (vis[n] == 0)
-    {
-        cout << "IMPOSSIBLE" << ln;
-        return;
-    }
-    // ending pt is n
-    // start kha h then it is 1
-    ll prev = n;
-    v64 route;
-    while (prev != 1)
-    {
-        route.pb(prev);
-        prev = parent[prev];
-    }
-    route.pb(prev);
-    reverse(all(route));
-    cout << route.size() << ln;
-    for (auto t : route)
-    {
-        cout << t << " ";
-    }
-    cout << ln;
+    cout << res[--m] << ln;
 }
 
 int main()

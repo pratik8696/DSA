@@ -247,62 +247,82 @@ bool isPrime(int x)
     return true;
 }
 
-void solve()
+ll n, k;
+ll le;
+ll rr;
+bool check(ll x, v64 &arr)
 {
-    ll n, m;
-    cin >> n >> m;
-    uv64 adj;
-    forn(i, m)
+    v64 pre, minn, idx;
+    pre.pb(0), minn.pb(0), idx.pb(0);
+    ll sum = 0, mini = INF, prev_idx = 1;
+    forn(i, n)
     {
-        ll a, b;
-        cin >> a >> b;
-        adj[a].pb(b);
-        adj[b].pb(a);
-    }
-    // now we need to do bfs
-    v64 dist(n + 1, -1), vis(n + 1, 0), parent(n + 1, 0);
-    queue<ll> q;
-    q.push(1);
-    dist[1] = 1;
-    vis[1] = 1;
-    parent[1] = 1;
-    while (!q.empty())
-    {
-        ll curr = q.front();
-        q.pop();
-        for (auto child : adj[curr])
+        sum += arr[i] - x;
+        pre.pb(sum);
+        if (mini > sum)
         {
-            if (vis[child] == 0)
-            {
-                q.push(child);
-                vis[child] = 1;
-                dist[child] = dist[curr] + 1;
-                parent[child] = curr;
-            }
+            mini = sum;
+            prev_idx = i + 1;
+        }
+        minn.pb(mini);
+        idx.pb(prev_idx);
+    }
+    // forn(i, n + 1)
+    // {
+    //     cout << pre[i] << " ";
+    // }
+    // cout << ln;
+    // forn(i, n + 1)
+    // {
+    //     cout << minn[i] << " ";
+    // }
+    // cout << ln;
+    // forn(i, n + 1)
+    // {
+    //     cout << idx[i] << " ";
+    // }
+    // cout << ln;
+    bool flag = 0;
+    forsn(i, k, n + 1)
+    {
+        if (pre[i] >= minn[i - k])
+        {
+            // cout << idx[i - k] + 1 << " " << i << ln;
+            le = idx[i - k] + 1;
+            rr = i;
+            flag = 1;
         }
     }
-    if (vis[n] == 0)
+    if (flag)
     {
-        cout << "IMPOSSIBLE" << ln;
-        return;
+        return true;
     }
-    // ending pt is n
-    // start kha h then it is 1
-    ll prev = n;
-    v64 route;
-    while (prev != 1)
+    return false;
+}
+
+void solve()
+{
+    cin >> n >> k;
+    v64 arr(n);
+    forn(i, n)
     {
-        route.pb(prev);
-        prev = parent[prev];
+        cin >> arr[i];
     }
-    route.pb(prev);
-    reverse(all(route));
-    cout << route.size() << ln;
-    for (auto t : route)
+    ll i = 0, j = MOD, ans = 0;
+    while (i <= j)
     {
-        cout << t << " ";
+        ll mid = i + (j - i) / 2;
+        if (check(mid, arr))
+        {
+            ans = mid;
+            i = mid + 1;
+        }
+        else
+        {
+            j = mid - 1;
+        }
     }
-    cout << ln;
+    cout << le << " " << rr << ln;
 }
 
 int main()

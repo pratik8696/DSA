@@ -247,62 +247,54 @@ bool isPrime(int x)
     return true;
 }
 
+ll n, flag;
+bool check(ll val)
+{
+    ll sum = 0;
+    forsn(i, 2, 1e6 + 1)
+    {
+        ll curr = fastexpo(i, 3);
+        ll curr_val = val / curr;
+        if (!curr_val)
+        {
+            break;
+        }
+        sum += curr_val;
+    }
+    if (sum >= n)
+    {
+        flag = sum;
+        return true;
+    }
+    return false;
+}
+
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    uv64 adj;
-    forn(i, m)
+    cin >> n;
+    ll i = 0, j = INF, ans = 0;
+    while (i <= j)
     {
-        ll a, b;
-        cin >> a >> b;
-        adj[a].pb(b);
-        adj[b].pb(a);
-    }
-    // now we need to do bfs
-    v64 dist(n + 1, -1), vis(n + 1, 0), parent(n + 1, 0);
-    queue<ll> q;
-    q.push(1);
-    dist[1] = 1;
-    vis[1] = 1;
-    parent[1] = 1;
-    while (!q.empty())
-    {
-        ll curr = q.front();
-        q.pop();
-        for (auto child : adj[curr])
+        ll mid = i + (j - i) / 2;
+        if (check(mid))
         {
-            if (vis[child] == 0)
-            {
-                q.push(child);
-                vis[child] = 1;
-                dist[child] = dist[curr] + 1;
-                parent[child] = curr;
-            }
+            ans = mid;
+            j = mid - 1;
+        }
+        else
+        {
+            i = mid + 1;
         }
     }
-    if (vis[n] == 0)
+    bool last = check(ans);
+    if (flag == n)
     {
-        cout << "IMPOSSIBLE" << ln;
-        return;
+        cout << ans << ln;
     }
-    // ending pt is n
-    // start kha h then it is 1
-    ll prev = n;
-    v64 route;
-    while (prev != 1)
+    else
     {
-        route.pb(prev);
-        prev = parent[prev];
+        cout << -1 << ln;
     }
-    route.pb(prev);
-    reverse(all(route));
-    cout << route.size() << ln;
-    for (auto t : route)
-    {
-        cout << t << " ";
-    }
-    cout << ln;
 }
 
 int main()

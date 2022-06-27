@@ -246,14 +246,10 @@ bool isPrime(int x)
     }
     return true;
 }
-
-ll last;
-
 void dfs(int v, v64 &vis, uv64 &adj, v64 &dist, ll dis)
 {
     vis[v] = 1;
     dist[v] = dis;
-    last = v;
     for (auto child : adj[v])
     {
         if (vis[child] == 0)
@@ -277,9 +273,25 @@ void solve()
     }
     v64 vis(n + 1, 0), dist(n + 1, 0);
     dfs(1, vis, adj, dist, 0);
-    fill(all(vis), 0);
-    dfs(last, vis, adj, dist, 0);
+
     ll maxx = 0;
+    ll last = 0;
+    forsn(i, 1, n + 1)
+    {
+        maxx = max(maxx, dist[i]);
+    }
+    forsn(i, 1, n + 1)
+    {
+        if (maxx == dist[i])
+        {
+            last = i;
+            break;
+        }
+    }
+    maxx = 0;
+    fill(all(vis), 0);
+    fill(all(dist), 0);
+    dfs(last, vis, adj, dist, 0);
     forsn(i, 1, n + 1)
     {
         maxx = max(maxx, dist[i]);

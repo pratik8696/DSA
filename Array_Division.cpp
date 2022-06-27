@@ -46,7 +46,12 @@ typedef multiset<ll> ms64;
 typedef multiset<p64> msp64;
 typedef map<ll, ll> m64;
 typedef map<ll, v64> mv64;
+typedef unordered_map<ll, v64> uv64;
+typedef unordered_map<ll, ll> u64;
+typedef unordered_map<p64, ll> up64;
+typedef unordered_map<ll, vp64> uvp64;
 typedef priority_queue<ll> pq64;
+typedef priority_queue<ll, v64, greater<ll>> pqs64;
 ll MOD = 1000000007;
 double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
@@ -77,7 +82,7 @@ double eps = 1e-12;
 // int find_set(int v,v64 &parent) {
 //   if (-1 == parent[v])
 // return v;
-// return find_set(parent[v]);
+// return parent[v]=find_set(parent[v],parent);
 // }
 
 // void union_sets(int a, int b,v64 &parent) {
@@ -242,46 +247,61 @@ bool isPrime(int x)
     return true;
 }
 
-bool check(ll val, ll arr[], ll n, ll k)
+bool check(ll val, v64 &arr, ll k)
 {
-    ll sum = 0, cc = 0;
-    forn(i, n + 1)
+    ll cc = 0, n = arr.size(), sum = 0, v = 0;
+    forn(i, n)
     {
-        if (arr[i] > val && i != n)
-        {
-            return false;
-        }
         if (sum + arr[i] <= val)
         {
             sum += arr[i];
         }
         else
         {
-            sum = arr[i];
             cc++;
+            sum = 0;
+            i--;
         }
     }
-    if (cc == k)
+    if (sum)
+    {
+        cc++;
+    }
+    if (cc <= k)
     {
         return true;
     }
-    return false;
+    return 0;
 }
 
 void solve()
 {
     ll n, k;
     cin >> n >> k;
-    ll arr[n + 1], sum = 0;
+    ll sum = 0, maxi = 0;
+    v64 arr(n, 0);
     forn(i, n)
     {
         cin >> arr[i];
         sum += arr[i];
+        maxi = max(maxi, arr[i]);
     }
-    arr[n] = INF;
-    // now lets do the division
-    ll i = 0, j = sum;
-    while(i)
+    ll i = maxi, j = sum, ans = 0;
+    // cout << check(10, arr, k) << ln;
+    while (i <= j)
+    {
+        ll mid = i + (j - i) / 2;
+        if (check(mid, arr, k))
+        {
+            ans = mid;
+            j = mid - 1;
+        }
+        else
+        {
+            i = mid + 1;
+        }
+    }
+    cout << ans << ln;
 }
 
 int main()

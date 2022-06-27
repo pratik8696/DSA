@@ -247,62 +247,51 @@ bool isPrime(int x)
     return true;
 }
 
+void dfs(int v, ll dist, v64 &distance, v64 &vis, uv64 &adj)
+{
+    vis[v] = 1;
+    distance[v] = dist;
+    for (auto child : adj[v])
+    {
+        if (vis[child] == 0)
+        {
+            dfs(child, dist + 1, distance, vis, adj);
+        }
+    }
+}
+
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
+    ll n;
+    cin >> n;
     uv64 adj;
-    forn(i, m)
+    forn(i, n - 1)
     {
         ll a, b;
         cin >> a >> b;
         adj[a].pb(b);
         adj[b].pb(a);
     }
-    // now we need to do bfs
-    v64 dist(n + 1, -1), vis(n + 1, 0), parent(n + 1, 0);
-    queue<ll> q;
-    q.push(1);
-    dist[1] = 1;
-    vis[1] = 1;
-    parent[1] = 1;
-    while (!q.empty())
+    // dfs from any node
+    v64 vis(n + 1, 0), distance(n + 1, 0);
+    dfs(1, 0, distance, vis, adj);
+    ll last = 0;
+    ll maxx = 0;
+    forsn(i, 1, n + 1)
     {
-        ll curr = q.front();
-        q.pop();
-        for (auto child : adj[curr])
+        if (distance[i] >= maxx)
         {
-            if (vis[child] == 0)
-            {
-                q.push(child);
-                vis[child] = 1;
-                dist[child] = dist[curr] + 1;
-                parent[child] = curr;
-            }
+            last = i;
+            maxx = distance[i];
         }
     }
-    if (vis[n] == 0)
+    fill(all(distance), 0), fill(all(vis), 0);
+    dfs(last, 0, distance, vis, adj);
+    for (auto t : distance)
     {
-        cout << "IMPOSSIBLE" << ln;
-        return;
+        maxx = max(maxx, t);
     }
-    // ending pt is n
-    // start kha h then it is 1
-    ll prev = n;
-    v64 route;
-    while (prev != 1)
-    {
-        route.pb(prev);
-        prev = parent[prev];
-    }
-    route.pb(prev);
-    reverse(all(route));
-    cout << route.size() << ln;
-    for (auto t : route)
-    {
-        cout << t << " ";
-    }
-    cout << ln;
+    cout << 3 * maxx << ln;
 }
 
 int main()

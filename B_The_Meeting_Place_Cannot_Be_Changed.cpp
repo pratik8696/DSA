@@ -247,62 +247,78 @@ bool isPrime(int x)
     return true;
 }
 
+bool check(double time, vector<pair<double, double>> &arr)
+{
+    ll n = arr.size();
+    vector<pair<double, double>> dist;
+    forn(i, n)
+    {
+        double left_limit = arr[i].fi - time * arr[i].se;
+        double right_limit = arr[i].fi + time * arr[i].se;
+        dist.pb({left_limit, right_limit});
+    }
+    sort(all(dist));
+    double prev = dist[0].se;
+    forn(i, n)
+    {
+        double val = dist[i].fi - prev;
+    }
+    ll res1 = 1;
+    forn(i, n)
+    {
+        double val = -prev + dist[i].fi;
+        double comp = 0.0000001;
+        if (val > comp)
+        {
+            return false;
+        }
+        prev = min(dist[i].se, prev);
+    }
+
+    return true;
+}
+
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    uv64 adj;
-    forn(i, m)
+    ll n;
+    cin >> n;
+    vector<pair<double, double>> arr;
+    vector<double> aa, bb;
+    double maxx = 0, maxxd = 0;
+    forn(i, n)
     {
-        ll a, b;
-        cin >> a >> b;
-        adj[a].pb(b);
-        adj[b].pb(a);
+        double a;
+        cin >> a;
+        aa.pb(a);
     }
-    // now we need to do bfs
-    v64 dist(n + 1, -1), vis(n + 1, 0), parent(n + 1, 0);
-    queue<ll> q;
-    q.push(1);
-    dist[1] = 1;
-    vis[1] = 1;
-    parent[1] = 1;
-    while (!q.empty())
+    forn(i, n)
     {
-        ll curr = q.front();
-        q.pop();
-        for (auto child : adj[curr])
+        double a;
+        cin >> a;
+        bb.pb(a);
+    }
+    forn(i, n)
+    {
+        double a = aa[i], b = bb[i];
+        arr.pb({a, b});
+    }
+    // cout << check(1.4, arr) << ln;
+    double i = 0.00, j = 1e9, ans = 0;
+    forn(z, 100)
+    {
+        double mid = i + (j - i) / 2;
+        if (check(mid, arr))
         {
-            if (vis[child] == 0)
-            {
-                q.push(child);
-                vis[child] = 1;
-                dist[child] = dist[curr] + 1;
-                parent[child] = curr;
-            }
+            // cout << mid << ln;
+            ans = mid;
+            j = mid - 1;
+        }
+        else
+        {
+            i = mid + 1;
         }
     }
-    if (vis[n] == 0)
-    {
-        cout << "IMPOSSIBLE" << ln;
-        return;
-    }
-    // ending pt is n
-    // start kha h then it is 1
-    ll prev = n;
-    v64 route;
-    while (prev != 1)
-    {
-        route.pb(prev);
-        prev = parent[prev];
-    }
-    route.pb(prev);
-    reverse(all(route));
-    cout << route.size() << ln;
-    for (auto t : route)
-    {
-        cout << t << " ";
-    }
-    cout << ln;
+    cout << fixed << setprecision(7) << ans << ln;
 }
 
 int main()

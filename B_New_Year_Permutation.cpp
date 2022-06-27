@@ -247,64 +247,102 @@ bool isPrime(int x)
     return true;
 }
 
+void union1(ll x, ll y, ll *s)
+{
+    if (s[x] < s[y])
+    {
+        s[x] = s[x] + s[y];
+        s[y] = x;
+    }
+    else
+    {
+        s[y] = s[x] + s[y];
+        s[x] = y;
+    }
+}
+
+ll find(ll x, ll *s)
+{
+    ll u = x;
+    while (s[u] >= 0)
+    {
+        u = s[u];
+    }
+    return u;
+}
+
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    uv64 adj;
-    forn(i, m)
+    ll n;
+    cin >> n;
+    ll p[n];
+    for (ll i = 0; i < n; i++)
     {
-        ll a, b;
-        cin >> a >> b;
-        adj[a].pb(b);
-        adj[b].pb(a);
+        cin >> p[i];
     }
-    // now we need to do bfs
-    v64 dist(n + 1, -1), vis(n + 1, 0), parent(n + 1, 0);
-    queue<ll> q;
-    q.push(1);
-    dist[1] = 1;
-    vis[1] = 1;
-    parent[1] = 1;
-    while (!q.empty())
+    char adj[n][n];
+    for (ll i = 0; i < n; i++)
     {
-        ll curr = q.front();
-        q.pop();
-        for (auto child : adj[curr])
+        string s;
+        cin >> s;
+        for (ll j = 0; j < n; j++)
         {
-            if (vis[child] == 0)
+            adj[i][j] = s[j];
+        }
+    }
+
+    ll s[n];
+    for (ll i = 0; i < n; i++)
+    {
+        s[i] = -1;
+    }
+    for (ll i = 0; i < n; i++)
+    {
+        for (ll j = i; j < n; j++)
+        {
+            if (adj[i][j] == '1')
             {
-                q.push(child);
-                vis[child] = 1;
-                dist[child] = dist[curr] + 1;
-                parent[child] = curr;
+                ll x = find(i, s);
+                ll y = find(j, s);
+                if (x != y)
+                {
+                    union1(x, y, s);
+                }
             }
         }
     }
-    if (vis[n] == 0)
+    vector<ll> ad[n];
+    for (ll i = 0; i < n; i++)
     {
-        cout << "IMPOSSIBLE" << ln;
-        return;
+        ll x = find(i, s);
+        ad[x].push_back(i);
     }
-    // ending pt is n
-    // start kha h then it is 1
-    ll prev = n;
-    v64 route;
-    while (prev != 1)
+    ll ans[n];
+    for (ll i = 0; i < n; i++)
     {
-        route.pb(prev);
-        prev = parent[prev];
+        if (ad[i].size() != 0)
+        {
+            vector<ll> out;
+            vector<ll> in;
+            for (ll j = 0; j < ad[i].size(); j++)
+            {
+                in.push_back(ad[i][j]);
+                out.push_back(p[ad[i][j]]);
+            }
+            sort(in.begin(), in.end());
+            sort(out.begin(), out.end());
+            for (ll j = 0; j < in.size(); j++)
+            {
+                ans[in[j]] = out[j];
+            }
+        }
     }
-    route.pb(prev);
-    reverse(all(route));
-    cout << route.size() << ln;
-    for (auto t : route)
+    for (auto it : ans)
     {
-        cout << t << " ";
+        cout << it << " ";
     }
-    cout << ln;
+    cout << endl;
 }
-
 int main()
 {
     fast_cin();

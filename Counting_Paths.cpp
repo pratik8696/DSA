@@ -247,25 +247,14 @@ bool isPrime(int x)
     return true;
 }
 
-void solve()
+void bfs(uv64 &adj, v64 &dist, ll src, u64 &parent)
 {
-    ll n, m;
-    cin >> n >> m;
-    uv64 adj;
-    forn(i, m)
-    {
-        ll a, b;
-        cin >> a >> b;
-        adj[a].pb(b);
-        adj[b].pb(a);
-    }
-    // now we need to do bfs
-    v64 dist(n + 1, -1), vis(n + 1, 0), parent(n + 1, 0);
     queue<ll> q;
-    q.push(1);
-    dist[1] = 1;
-    vis[1] = 1;
-    parent[1] = 1;
+    v64 vis(dist.size(), 0);
+    q.push(src);
+    dist[src] = 0;
+    vis[src] = 1;
+    parent[src] = src;
     while (!q.empty())
     {
         ll curr = q.front();
@@ -274,33 +263,116 @@ void solve()
         {
             if (vis[child] == 0)
             {
+                parent[child] = curr;
+                dist[child] = dist[curr] + 1;
                 q.push(child);
                 vis[child] = 1;
-                dist[child] = dist[curr] + 1;
-                parent[child] = curr;
             }
         }
     }
-    if (vis[n] == 0)
+}
+
+ll dfs(int v, v64 &vis, uv64 &adj, v64 &dist, v64 &ans)
+{
+    vis[v] = 1;
+    ll size = dist[v];
+    // cout << v << " " << size << ln;
+    for (auto child : adj[v])
     {
-        cout << "IMPOSSIBLE" << ln;
-        return;
+        if (vis[child] == 0)
+        {
+            size += dfs(child, vis, adj, dist, ans);
+        }
     }
-    // ending pt is n
-    // start kha h then it is 1
-    ll prev = n;
-    v64 route;
-    while (prev != 1)
+    ans[v] = size;
+    // cout << v << " " << size << ln;
+    return size;
+}
+
+void solve()
+{
+    ll n, m;
+    cin >> n >> m;
+    uv64 adj;
+    v64 vis(n + 1, 0);
+    forn(i, n - 1)
     {
-        route.pb(prev);
-        prev = parent[prev];
+        ll a, b;
+        cin >> a >> b;
+        adj[a].pb(b);
+        adj[b].pb(a);
     }
-    route.pb(prev);
-    reverse(all(route));
-    cout << route.size() << ln;
-    for (auto t : route)
+    u64 parent;
+    ll sparse[n + 1][30];
+    v64 lvl(n + 1, 0);
+    bfs(adj, lvl, 1, parent);
+    parent[1] = 0;
+    parent[0] = 0;
+    forsn(i, 1, n + 1)
     {
-        cout << t << " ";
+        sparse[i][0] = parent[i];
+    }
+    for (ll j = 1; j < 30; j++)
+    {
+        for (ll i = 1; i <= n; i++)
+        {
+            ll par = sparse[i][j - 1];
+            if (par != 0)
+            {
+                sparse[i][j] = sparse[par][j - 1];
+            }
+            else
+            {
+                sparse[i][j] = 0;
+            }
+        }
+    }
+    v64 dist(n + 1, 0);
+    while (m--)
+    {
+        ll a, b, oa, ob;
+        cin >> a >> b;
+        oa = a, ob = b;
+        ll rem = lvl[a] - lvl[b];
+        if (rem < 0)
+        {
+            swap(a, b);
+        }
+        ll steps = abs(rem);
+        while (steps)
+        {
+            // a needs to come up
+            a = sparse[a][__lg(steps)];
+            steps -= fastexpo(2, __lg(steps));
+        }
+        // cout << a << " " << b << ln;
+        ll lca;
+        if (a == b)
+        {
+            lca = a;
+        }
+        else
+        {
+            for (ll i = 30 - 1; i >= 0; i--)
+            {
+                if (sparse[a][i] != sparse[b][i])
+                {
+                    a = sparse[a][i];
+                    b = sparse[b][i];
+                }
+            }
+            lca = sparse[a][0];
+        }
+        dist[parent[lca]]--;
+        dist[lca]--;
+        dist[oa]++;
+        dist[ob]++;
+    }
+    v64 ans(n + 1, 0);
+    dfs(1, vis, adj, dist, ans);
+    forsn(i, 1, n + 1)
+    {
+        cout << ans[i] << " ";
     }
     cout << ln;
 }

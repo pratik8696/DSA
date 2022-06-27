@@ -247,62 +247,108 @@ bool isPrime(int x)
     return true;
 }
 
-void solve()
+ll n;
+ll coin1, coin2, start1, start2, k;
+ll val1, val2, val3;
+
+bool compare(p64 a, p64 b)
 {
-    ll n, m;
-    cin >> n >> m;
-    uv64 adj;
-    forn(i, m)
+    return a.fi > b.fi;
+}
+
+bool check(ll cc, v64 &res, ll arr[])
+{
+    vp64 curr;
+    ll cc1 = 0, cc2 = 0, cc3 = 0;
+    forsn(i, 1, cc + 1)
     {
-        ll a, b;
-        cin >> a >> b;
-        adj[a].pb(b);
-        adj[b].pb(a);
-    }
-    // now we need to do bfs
-    v64 dist(n + 1, -1), vis(n + 1, 0), parent(n + 1, 0);
-    queue<ll> q;
-    q.push(1);
-    dist[1] = 1;
-    vis[1] = 1;
-    parent[1] = 1;
-    while (!q.empty())
-    {
-        ll curr = q.front();
-        q.pop();
-        for (auto child : adj[curr])
+        if (res[i] == val3)
         {
-            if (vis[child] == 0)
-            {
-                q.push(child);
-                vis[child] = 1;
-                dist[child] = dist[curr] + 1;
-                parent[child] = curr;
-            }
+            cc3++;
+        }
+        else if (res[i] == val1)
+        {
+            cc1++;
+        }
+        else if (res[i] == val2)
+        {
+            cc2++;
         }
     }
-    if (vis[n] == 0)
+    curr.pb({val3, cc3});
+    curr.pb({val1, cc1});
+    curr.pb({val2, cc2});
+    ll sum = 0;
+    forn(i, n)
     {
-        cout << "IMPOSSIBLE" << ln;
-        return;
+        if (curr[0].se)
+        {
+            sum += (curr[0].fi * arr[i]) / 100;
+            curr[0].se--;
+        }
+        else if (curr[1].se)
+        {
+            sum += (curr[1].fi * arr[i]) / 100;
+            curr[1].se--;
+        }
+        else if (curr[2].se)
+        {
+            sum += (curr[2].fi * arr[i]) / 100;
+            curr[2].se--;
+        }
     }
-    // ending pt is n
-    // start kha h then it is 1
-    ll prev = n;
-    v64 route;
-    while (prev != 1)
+    if (sum >= k)
     {
-        route.pb(prev);
-        prev = parent[prev];
+        return true;
     }
-    route.pb(prev);
-    reverse(all(route));
-    cout << route.size() << ln;
-    for (auto t : route)
+    return false;
+}
+
+void solve()
+{
+    cin >> n;
+    ll arr[n];
+    forn(i, n)
     {
-        cout << t << " ";
+        cin >> arr[i];
     }
-    cout << ln;
+    sort(al(arr, n), greater<ll>());
+    v64 res(n + 1);
+    cin >> coin1 >> start1 >> coin2 >> start2 >> k;
+    if (coin1 < coin2)
+    {
+        swap(coin1, coin2);
+        swap(start1, start2);
+    }
+    for (ll i = start1; i < n + 1; i += start1)
+    {
+        res[i] += coin1;
+    }
+    for (ll i = start2; i < n + 1; i += start2)
+    {
+        res[i] += coin2;
+    }
+    val1 = coin1, val2 = coin2, val3 = coin1 + coin2;
+    // forsn(i, 1, n + 1)
+    // {
+    //     cout << res[i] << " ";
+    // }
+    // cout << ln;
+    ll i = 0, j = n, ans = -1;
+    while (i <= j)
+    {
+        ll mid = i + (j - i) / 2;
+        if (check(mid, res, arr))
+        {
+            ans = mid;
+            j = mid - 1;
+        }
+        else
+        {
+            i = mid + 1;
+        }
+    }
+    cout << ans << ln;
 }
 
 int main()
@@ -312,8 +358,8 @@ int main()
     //  freopen("revegetate.in", "r", stdin);
     // freopen("revegetate.out", "w", stdout);
     //#endif
-    ll t = 1;
-    // cin >> t;
+    ll t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

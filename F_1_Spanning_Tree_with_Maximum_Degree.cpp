@@ -58,6 +58,30 @@ double eps = 1e-12;
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
 #define rforn(i, s) for (ll i = s; i >= 0; i--)
 #define rforsn(i, s, e) for (ll i = s; i >= e; i--)
+struct custom_hash
+{
+    static uint64_t splitmix64(uint64_t x)
+    {
+        x += 0x9e3779b97f4a7c15;
+        x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
+        x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
+        return x ^ (x >> 31);
+    }
+
+    size_t operator()(p64 x) const
+    {
+        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+        return splitmix64(x.first + FIXED_RANDOM) ^ splitmix64(x.second + FIXED_RANDOM);
+    }
+    size_t operator()(ll x) const
+    {
+        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+        return splitmix64(x + FIXED_RANDOM);
+    }
+};
+typedef gp_hash_table<ll, ll, custom_hash> fm64;
+typedef gp_hash_table<p64, ll, custom_hash> fmp64;
+
 #define ln "\n"
 #define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
@@ -247,25 +271,15 @@ bool isPrime(int x)
     return true;
 }
 
-void solve()
+
+
+void bfs(uv64 &adj, v64 &dist, ll src, vp64 &ans)
 {
-    ll n, m;
-    cin >> n >> m;
-    uv64 adj;
-    forn(i, m)
-    {
-        ll a, b;
-        cin >> a >> b;
-        adj[a].pb(b);
-        adj[b].pb(a);
-    }
-    // now we need to do bfs
-    v64 dist(n + 1, -1), vis(n + 1, 0), parent(n + 1, 0);
     queue<ll> q;
-    q.push(1);
-    dist[1] = 1;
-    vis[1] = 1;
-    parent[1] = 1;
+    v64 vis(dist.size(), 0);
+    q.push(src);
+    dist[src] = 0;
+    vis[src] = 1;
     while (!q.empty())
     {
         ll curr = q.front();
@@ -274,35 +288,46 @@ void solve()
         {
             if (vis[child] == 0)
             {
+                ans.pb({curr, child});
+                dist[child] = dist[curr] + 1;
                 q.push(child);
                 vis[child] = 1;
-                dist[child] = dist[curr] + 1;
-                parent[child] = curr;
             }
         }
     }
-    if (vis[n] == 0)
+}
+
+void solve()
+{
+    ll n, m;
+    cin >> n >> m;
+    uv64 adj;
+    fm64 indegree;
+    forn(i, m)
     {
-        cout << "IMPOSSIBLE" << ln;
-        return;
+        ll a, b;
+        cin >> a >> b;
+        adj[a].pb(b);
+        adj[b].pb(a);
+        indegree[a]++;
+        indegree[b]++;
     }
-    // ending pt is n
-    // start kha h then it is 1
-    ll prev = n;
-    v64 route;
-    while (prev != 1)
+    ll node = 0, val = 0;
+    for (auto t : indegree)
     {
-        route.pb(prev);
-        prev = parent[prev];
+        if (t.se > val)
+        {
+            val = t.se;
+            node = t.fi;
+        }
     }
-    route.pb(prev);
-    reverse(all(route));
-    cout << route.size() << ln;
-    for (auto t : route)
+    vp64 ans;
+    v64 dist(n + 1, 0);
+    bfs(adj, dist, node, ans);
+    for (auto t : ans)
     {
-        cout << t << " ";
+        cout << t.fi << " " << t.se << ln;
     }
-    cout << ln;
 }
 
 int main()

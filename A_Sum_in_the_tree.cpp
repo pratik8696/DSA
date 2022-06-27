@@ -247,62 +247,119 @@ bool isPrime(int x)
     return true;
 }
 
-void solve()
+ll ans = 0, cc = 0;
+void bfs(uv64 &adj, v64 &dist, ll src, v64 &sums, v64 &parent, v64 &ans)
 {
-    ll n, m;
-    cin >> n >> m;
-    uv64 adj;
-    forn(i, m)
-    {
-        ll a, b;
-        cin >> a >> b;
-        adj[a].pb(b);
-        adj[b].pb(a);
-    }
-    // now we need to do bfs
-    v64 dist(n + 1, -1), vis(n + 1, 0), parent(n + 1, 0);
     queue<ll> q;
-    q.push(1);
-    dist[1] = 1;
-    vis[1] = 1;
-    parent[1] = 1;
+    v64 vis(dist.size(), 0);
+    q.push(src);
+    dist[src] = 1;
+    vis[src] = 1;
+    ans[src] = sums[1];
     while (!q.empty())
     {
         ll curr = q.front();
         q.pop();
-        for (auto child : adj[curr])
+        if (dist[curr] % 2 == 0 && sums[curr] == -1)
         {
-            if (vis[child] == 0)
+            set<ll> types, vals;
+            for (auto child : adj[curr])
             {
-                q.push(child);
-                vis[child] = 1;
-                dist[child] = dist[curr] + 1;
-                parent[child] = curr;
+                if (vis[child] == 0)
+                {
+                    vis[child] = 1;
+                    dist[child] = dist[curr] + 1;
+                    types.ie(sums[child]);
+                    vals.ie(child);
+                }
+            }
+            // if val is smaller
+            for (auto t : vals)
+            {
+                if (sums[parent[curr]] > sums[t])
+                {
+                    cout << -1 << ln;
+                    exit(0);
+                }
+            }
+            // else set the value i.e diff of odd - diff of the parent
+            // if no child then set it to the prev values
+            if (types.size() == 0)
+            {
+                sums[curr] = sums[parent[curr]];
+                ans[curr] = 0;
+            }
+            else
+            {
+                sums[curr] = *types.begin();
+                ans[curr] = sums[curr] - sums[parent[curr]];
+                for (auto t : vals)
+                {
+                    q.push(t);
+                }
             }
         }
+        else if (dist[curr] % 2 && sums[curr] != -1)
+        {
+            ll count = 0;
+            for (auto child : adj[curr])
+            {
+                if (vis[child] == 0)
+                {
+                    vis[child] = 1;
+                    dist[child] = dist[curr] + 1;
+                    q.push(child);
+                    count++;
+                }
+            }
+            ans[curr] = sums[curr] - sums[parent[curr]];
+        }
+        else
+        {
+            // cout << curr << " " << dist[curr] << " " << sums[curr] << ln;
+            cout << -1 << ln;
+            exit(0);
+        }
     }
-    if (vis[n] == 0)
+}
+
+void solve()
+{
+    ll n;
+    cin >> n;
+    uv64 adj;
+    v64 sums(n + 1), parent(n + 1, 0), dist(n + 1, 0);
+    parent[1] = 0;
+    forsn(i, 2, n + 1)
     {
-        cout << "IMPOSSIBLE" << ln;
-        return;
+        ll x;
+        cin >> x;
+        adj[x].pb(i);
+        adj[i].pb(x);
+        parent[i] = x;
     }
-    // ending pt is n
-    // start kha h then it is 1
-    ll prev = n;
-    v64 route;
-    while (prev != 1)
+    forsn(i, 1, n + 1)
     {
-        route.pb(prev);
-        prev = parent[prev];
+        cin >> sums[i];
+        // cout << sums[i] << " ";
     }
-    route.pb(prev);
-    reverse(all(route));
-    cout << route.size() << ln;
-    for (auto t : route)
+    // cout << ln;
+    v64 ans(n + 1, 0);
+    bfs(adj, dist, 1, sums, parent, ans);
+    // forsn(i, 1, n + 1)
+    // {
+    // cout << sums[i] << " ";
+    // }
+    // cout << ln;
+    ll res = 0;
+    forsn(i, 1, n + 1)
     {
-        cout << t << " ";
+        // cout << ans[i] << " ";
+        res += ans[i];
     }
-    cout << ln;
+    // cout << ln;
+    cout << res << ln;
+    // cout << ans << " " << cc << ln;
 }
 
 int main()

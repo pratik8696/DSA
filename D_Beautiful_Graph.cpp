@@ -52,7 +52,7 @@ typedef unordered_map<p64, ll> up64;
 typedef unordered_map<ll, vp64> uvp64;
 typedef priority_queue<ll> pq64;
 typedef priority_queue<ll, v64, greater<ll>> pqs64;
-ll MOD = 1000000007;
+ll MOD = 998244353;
 double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
@@ -247,6 +247,34 @@ bool isPrime(int x)
     return true;
 }
 
+ll white = 0, total = 0;
+
+bool dfs(int v, v64 &vis, uv64 &adj, v64 &col, ll curr)
+{
+    vis[v] = 1;
+    col[v] = curr;
+    total++;
+    if (curr == 1)
+    {
+        white++;
+    }
+    for (auto child : adj[v])
+    {
+        if (vis[child] == 0)
+        {
+            if (dfs(child, vis, adj, col, 3 - curr))
+            {
+                return true;
+            }
+        }
+        else if (col[child] == col[v])
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 void solve()
 {
     ll n, m;
@@ -259,50 +287,26 @@ void solve()
         adj[a].pb(b);
         adj[b].pb(a);
     }
-    // now we need to do bfs
-    v64 dist(n + 1, -1), vis(n + 1, 0), parent(n + 1, 0);
-    queue<ll> q;
-    q.push(1);
-    dist[1] = 1;
-    vis[1] = 1;
-    parent[1] = 1;
-    while (!q.empty())
+    v64 vis(n + 1, 0), col(n + 1, 0);
+    ll res = 1, res1 = 1;
+    forsn(i, 1, n + 1)
     {
-        ll curr = q.front();
-        q.pop();
-        for (auto child : adj[curr])
+        if (vis[i] == 0)
         {
-            if (vis[child] == 0)
-            {
-                q.push(child);
-                vis[child] = 1;
-                dist[child] = dist[curr] + 1;
-                parent[child] = curr;
-            }
+            res &= 1 - dfs(i, vis, adj, col, 1);
+            ll val = white;
+            res1 *= modpow(2, val, MOD) + modpow(2, total - val, MOD);
+            res1 %= MOD;
+            white = 0, total = 0;
         }
     }
-    if (vis[n] == 0)
+    if (res == 0)
     {
-        cout << "IMPOSSIBLE" << ln;
+        cout << 0 << ln;
         return;
     }
-    // ending pt is n
-    // start kha h then it is 1
-    ll prev = n;
-    v64 route;
-    while (prev != 1)
-    {
-        route.pb(prev);
-        prev = parent[prev];
-    }
-    route.pb(prev);
-    reverse(all(route));
-    cout << route.size() << ln;
-    for (auto t : route)
-    {
-        cout << t << " ";
-    }
-    cout << ln;
+    res1 %= MOD;
+    cout << res1 << ln;
 }
 
 int main()
@@ -313,7 +317,7 @@ int main()
     // freopen("revegetate.out", "w", stdout);
     //#endif
     ll t = 1;
-    // cin >> t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

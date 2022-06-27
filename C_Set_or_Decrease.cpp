@@ -246,63 +246,63 @@ bool isPrime(int x)
     }
     return true;
 }
+ll n, k, org;
+
+bool check(ll steps, v64 &pre)
+{
+    ll init = org;
+    if (steps > n - 1)
+    {
+        init -= (steps - (n - 1));
+    }
+    ll limit = min(n - 1, steps);
+    for (ll i = 0; i <= limit; i++)
+    {
+        ll rem_val = (init - i) * (limit - i + 1);
+        ll sum_rem = pre.back() - pre[limit - i];
+        ll curr_val = rem_val + sum_rem;
+        if (curr_val <= k)
+        {
+            return true;
+        }
+    }
+    return false;
+}
 
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    uv64 adj;
-    forn(i, m)
+    cin >> n >> k;
+    v64 arr(n);
+    forn(i, n)
     {
-        ll a, b;
-        cin >> a >> b;
-        adj[a].pb(b);
-        adj[b].pb(a);
+        cin >> arr[i];
     }
-    // now we need to do bfs
-    v64 dist(n + 1, -1), vis(n + 1, 0), parent(n + 1, 0);
-    queue<ll> q;
-    q.push(1);
-    dist[1] = 1;
-    vis[1] = 1;
-    parent[1] = 1;
-    while (!q.empty())
+    sort(all(arr), greater<ll>());
+    org = arr.back();
+    arr.pop_back();
+    ll sum = 0;
+    v64 pre;
+    pre.pb(0);
+    forn(i, n - 1)
     {
-        ll curr = q.front();
-        q.pop();
-        for (auto child : adj[curr])
+        sum += arr[i];
+        pre.pb(sum);
+    }
+    ll i = 0, j = 1e17, ans = 0;
+    while (i <= j)
+    {
+        ll mid = i + (j - i) / 2;
+        if (check(mid, pre))
         {
-            if (vis[child] == 0)
-            {
-                q.push(child);
-                vis[child] = 1;
-                dist[child] = dist[curr] + 1;
-                parent[child] = curr;
-            }
+            ans = mid;
+            j = mid - 1;
+        }
+        else
+        {
+            i = mid + 1;
         }
     }
-    if (vis[n] == 0)
-    {
-        cout << "IMPOSSIBLE" << ln;
-        return;
-    }
-    // ending pt is n
-    // start kha h then it is 1
-    ll prev = n;
-    v64 route;
-    while (prev != 1)
-    {
-        route.pb(prev);
-        prev = parent[prev];
-    }
-    route.pb(prev);
-    reverse(all(route));
-    cout << route.size() << ln;
-    for (auto t : route)
-    {
-        cout << t << " ";
-    }
-    cout << ln;
+    cout << ans << ln;
 }
 
 int main()
@@ -313,7 +313,7 @@ int main()
     // freopen("revegetate.out", "w", stdout);
     //#endif
     ll t = 1;
-    // cin >> t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

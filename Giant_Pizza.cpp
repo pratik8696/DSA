@@ -247,62 +247,119 @@ bool isPrime(int x)
     return true;
 }
 
+v64 order;
+void dfs(int v, u64 &vis, uv64 &adj)
+{
+    vis[v] = 1;
+    for (auto child : adj[v])
+    {
+        if (vis[child] == 0)
+        {
+            dfs(child, vis, adj);
+        }
+    }
+    order.pb(v);
+}
+v64 path;
+void dfs2(int v, u64 &vis, uv64 &adj)
+{
+    vis[v] = 1;
+    path.pb(v);
+    for (auto child : adj[v])
+    {
+        if (vis[child] == 0)
+        {
+            dfs2(child, vis, adj);
+        }
+    }
+    // order.pb(v);
+}
+
 void solve()
 {
     ll n, m;
     cin >> n >> m;
-    uv64 adj;
-    forn(i, m)
+    uv64 adj, radj;
+    forn(i, n)
     {
-        ll a, b;
-        cin >> a >> b;
-        adj[a].pb(b);
-        adj[b].pb(a);
-    }
-    // now we need to do bfs
-    v64 dist(n + 1, -1), vis(n + 1, 0), parent(n + 1, 0);
-    queue<ll> q;
-    q.push(1);
-    dist[1] = 1;
-    vis[1] = 1;
-    parent[1] = 1;
-    while (!q.empty())
-    {
-        ll curr = q.front();
-        q.pop();
-        for (auto child : adj[curr])
+        char a, b;
+        ll x, y;
+        cin >> a >> x >> b >> y;
+        if (a == '-')
         {
-            if (vis[child] == 0)
-            {
-                q.push(child);
-                vis[child] = 1;
-                dist[child] = dist[curr] + 1;
-                parent[child] = curr;
-            }
+            x = -x;
+        }
+        if (b == '-')
+        {
+            y = -y;
+        }
+        adj[-x].pb(y);
+        adj[-y].pb(x);
+        radj[y].pb(-x);
+        radj[x].pb(-y);
+    }
+    u64 vis;
+    ll cc = 0;
+    forsn(i, -m, m + 1)
+    {
+        if (!vis[i] && i != 0)
+        {
+            cc++;
+            dfs(i, vis, adj);
         }
     }
-    if (vis[n] == 0)
+    // cout << cc << ln;
+    reverse(all(order));
+    for (auto t : order)
     {
-        cout << "IMPOSSIBLE" << ln;
-        return;
+        // cout << t << " ";
     }
-    // ending pt is n
-    // start kha h then it is 1
-    ll prev = n;
-    v64 route;
-    while (prev != 1)
+    // cout << ln;
+    u64 ans, viss;
+    u64 marker;
+    forn(i, order.size())
     {
-        route.pb(prev);
-        prev = parent[prev];
+        if (viss[order[i]] == 0)
+        {
+            ll val = 1;
+            dfs2(order[i], viss, radj);
+            unordered_set<ll> check;
+            for (auto t : path)
+            {
+                if (check.count(abs(t)))
+                {
+                    cout << "IMPOSSIBLE" << ln;
+                    exit(0);
+                }
+                if (marker[abs(t)])
+                {
+                    val = 0;
+                }
+            }
+            for (auto t : path)
+            {
+                marker[abs(t)]++;
+                ans[t] = val;
+                // cout << t << " ";
+            }
+            // cout << ln;
+            path.clear();
+        }
     }
-    route.pb(prev);
-    reverse(all(route));
-    cout << route.size() << ln;
-    for (auto t : route)
+    forsn(i, 1, m + 1)
     {
-        cout << t << " ";
+        if (ans[i] == 1)
+        {
+            cout << "+ ";
+        }
+        else
+        {
+            cout << "- ";
+        }
     }
     cout << ln;
+    order.clear();
+    path.clear();
 }
 
 int main()

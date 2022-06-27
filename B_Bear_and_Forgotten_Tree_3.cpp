@@ -58,6 +58,30 @@ double eps = 1e-12;
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
 #define rforn(i, s) for (ll i = s; i >= 0; i--)
 #define rforsn(i, s, e) for (ll i = s; i >= e; i--)
+struct custom_hash
+{
+    static uint64_t splitmix64(uint64_t x)
+    {
+        x += 0x9e3779b97f4a7c15;
+        x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
+        x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
+        return x ^ (x >> 31);
+    }
+
+    size_t operator()(p64 x) const
+    {
+        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+        return splitmix64(x.first + FIXED_RANDOM) ^ splitmix64(x.second + FIXED_RANDOM);
+    }
+    size_t operator()(ll x) const
+    {
+        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+        return splitmix64(x + FIXED_RANDOM);
+    }
+};
+typedef gp_hash_table<ll, ll, custom_hash> fm64;
+typedef gp_hash_table<p64, ll, custom_hash> fmp64;
+
 #define ln "\n"
 #define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
@@ -249,62 +273,60 @@ bool isPrime(int x)
 
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    uv64 adj;
-    forn(i, m)
+    ll n, d, h;
+    cin >> n >> d >> h;
+    // max dia ==> 2*h
+    // min dia ==> 2
+    if (h > n - 1 || d > 2 * h || h < 1)
     {
-        ll a, b;
-        cin >> a >> b;
-        adj[a].pb(b);
-        adj[b].pb(a);
-    }
-    // now we need to do bfs
-    v64 dist(n + 1, -1), vis(n + 1, 0), parent(n + 1, 0);
-    queue<ll> q;
-    q.push(1);
-    dist[1] = 1;
-    vis[1] = 1;
-    parent[1] = 1;
-    while (!q.empty())
-    {
-        ll curr = q.front();
-        q.pop();
-        for (auto child : adj[curr])
-        {
-            if (vis[child] == 0)
-            {
-                q.push(child);
-                vis[child] = 1;
-                dist[child] = dist[curr] + 1;
-                parent[child] = curr;
-            }
-        }
-    }
-    if (vis[n] == 0)
-    {
-        cout << "IMPOSSIBLE" << ln;
+        cout << -1 << ln;
         return;
     }
-    // ending pt is n
-    // start kha h then it is 1
-    ll prev = n;
-    v64 route;
-    while (prev != 1)
+    if (d < 2 && n > 2)
     {
-        route.pb(prev);
-        prev = parent[prev];
+        cout << -1 << ln;
+        return;
     }
-    route.pb(prev);
-    reverse(all(route));
-    cout << route.size() << ln;
-    for (auto t : route)
+    s64 res;
+    forsn(i, 2, n + 1)
     {
-        cout << t << " ";
+        res.ie(i);
     }
-    cout << ln;
-}
+    v64 arr(d + 1, 0);
+    arr[h] = 1;
+    forn(i, d + 1)
+    {
+        if (arr[i] == 0)
+        {
+            arr[i] = *res.begin();
+            res.erase(res.begin());
+        }
+    }
+    vp64 ans;
+    if (h != d || n == 2)
+    {
+        for (auto t : res)
+        {
+            ans.pb({1ll, t});
+        }
+    }
+    else
+    {
+        for (auto t : res)
+        {
+            ans.pb({3ll, t});
+        }
+    }
 
+    forn(i, d)
+    {
+        ans.pb({arr[i], arr[i + 1]});
+    }
+    for (auto t : ans)
+    {
+        cout << t.fi << " " << t.se << ln;
+    }
+}
 int main()
 {
     fast_cin();

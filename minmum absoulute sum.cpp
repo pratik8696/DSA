@@ -249,60 +249,51 @@ bool isPrime(int x)
 
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    uv64 adj;
-    forn(i, m)
+    ll n;
+    cin >> n;
+    ll arr[n],sum=0,org;
+    forn(i, n)
     {
-        ll a, b;
-        cin >> a >> b;
-        adj[a].pb(b);
-        adj[b].pb(a);
+        cin >> arr[i];
+        sum+=arr[i];
     }
-    // now we need to do bfs
-    v64 dist(n + 1, -1), vis(n + 1, 0), parent(n + 1, 0);
-    queue<ll> q;
-    q.push(1);
-    dist[1] = 1;
-    vis[1] = 1;
-    parent[1] = 1;
-    while (!q.empty())
+    org=sum;
+	v64 curr(sum+1,0);
+	v64 dp(sum+1,0);
+    forsn(i,1,n+1)
     {
-        ll curr = q.front();
-        q.pop();
-        for (auto child : adj[curr])
-        {
-            if (vis[child] == 0)
-            {
-                q.push(child);
-                vis[child] = 1;
-                dist[child] = dist[curr] + 1;
-                parent[child] = curr;
-            }
-        }
+    	curr[0]=1,dp[0]=1;
+    	forsn(j,1,sum+1)
+    	{
+    		if(arr[i-1]<=j)
+    		{
+				dp[i] = curr[j-arr[i-1]] + curr[j];
+    		}
+    		else
+    		{
+    			dp[i] = curr[j];
+    		}
+    	}
+    	curr=dp;
     }
-    if (vis[n] == 0)
+    
+    forsn(j,1,sum+1)
     {
-        cout << "IMPOSSIBLE" << ln;
-        return;
+    	cout<<curr[j]<<" ";
+    	cout<<dp[j]<<" ";
     }
-    // ending pt is n
-    // start kha h then it is 1
-    ll prev = n;
-    v64 route;
-    while (prev != 1)
-    {
-        route.pb(prev);
-        prev = parent[prev];
-    }
-    route.pb(prev);
-    reverse(all(route));
-    cout << route.size() << ln;
-    for (auto t : route)
-    {
-        cout << t << " ";
-    }
-    cout << ln;
+    cout<<ln;
+    
+    // ll mindiff=INF;
+    // forsn(i,1,sum+1)
+    // {
+    	// if(dp[n][i])
+    	// {
+	    	// ll currdiff=abs(2*i-org);
+	    	// mindiff=min(mindiff,currdiff);    		
+    	// }
+    // }
+    // cout<<mindiff<<ln;
 }
 
 int main()
@@ -312,8 +303,8 @@ int main()
     //  freopen("revegetate.in", "r", stdin);
     // freopen("revegetate.out", "w", stdout);
     //#endif
-    ll t = 1;
-    // cin >> t;
+    ll t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

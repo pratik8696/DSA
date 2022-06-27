@@ -246,63 +246,80 @@ bool isPrime(int x)
     }
     return true;
 }
+v64 order;
+void dfs(int v, v64 &vis, uv64 &adj)
+{
+    vis[v] = 1;
+    for (auto child : adj[v])
+    {
+        if (vis[child] == 0)
+        {
+            dfs(child, vis, adj);
+        }
+    }
+    order.pb(v);
+}
+
+v64 path;
+
+void dfs2(int v, v64 &vis, uv64 &adj)
+{
+    vis[v] = 1;
+    path.pb(v);
+    for (auto child : adj[v])
+    {
+        if (vis[child] == 0)
+        {
+            dfs2(child, vis, adj);
+        }
+    }
+}
 
 void solve()
 {
     ll n, m;
     cin >> n >> m;
-    uv64 adj;
+    uv64 adj, radj;
     forn(i, m)
     {
         ll a, b;
         cin >> a >> b;
         adj[a].pb(b);
-        adj[b].pb(a);
+        radj[b].pb(a);
     }
-    // now we need to do bfs
-    v64 dist(n + 1, -1), vis(n + 1, 0), parent(n + 1, 0);
-    queue<ll> q;
-    q.push(1);
-    dist[1] = 1;
-    vis[1] = 1;
-    parent[1] = 1;
-    while (!q.empty())
+    // now we need to do the dfs
+    v64 vis(n + 1, 0);
+    forsn(i, 1, n + 1)
     {
-        ll curr = q.front();
-        q.pop();
-        for (auto child : adj[curr])
+        if (!vis[i])
         {
-            if (vis[child] == 0)
+            dfs(i, vis, adj);
+        }
+    }
+    reverse(all(order));
+    fill(all(vis), 0);
+    ll cc = 0;
+    u64 res;
+    forsn(i, 0, n)
+    {
+        if (!vis[order[i]])
+        {
+            cc++;
+            path.clear();
+            dfs2(order[i], vis, radj);
+            for (auto t : path)
             {
-                q.push(child);
-                vis[child] = 1;
-                dist[child] = dist[curr] + 1;
-                parent[child] = curr;
+                res[t] = cc;
             }
         }
     }
-    if (vis[n] == 0)
+    cout << cc << ln;
+    forsn(i, 1, n + 1)
     {
-        cout << "IMPOSSIBLE" << ln;
-        return;
-    }
-    // ending pt is n
-    // start kha h then it is 1
-    ll prev = n;
-    v64 route;
-    while (prev != 1)
-    {
-        route.pb(prev);
-        prev = parent[prev];
-    }
-    route.pb(prev);
-    reverse(all(route));
-    cout << route.size() << ln;
-    for (auto t : route)
-    {
-        cout << t << " ";
+        cout << res[i] << " ";
     }
     cout << ln;
+    order.clear(), path.clear();
 }
 
 int main()

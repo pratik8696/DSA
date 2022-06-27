@@ -247,64 +247,88 @@ bool isPrime(int x)
     return true;
 }
 
-void solve()
+void buildtree(ll arr[], ll tree[], ll start, ll end, ll treenode)
 {
-    ll n, m;
-    cin >> n >> m;
-    uv64 adj;
-    forn(i, m)
+    int mid = (start + end) / 2;
+    if (start == end)
     {
-        ll a, b;
-        cin >> a >> b;
-        adj[a].pb(b);
-        adj[b].pb(a);
-    }
-    // now we need to do bfs
-    v64 dist(n + 1, -1), vis(n + 1, 0), parent(n + 1, 0);
-    queue<ll> q;
-    q.push(1);
-    dist[1] = 1;
-    vis[1] = 1;
-    parent[1] = 1;
-    while (!q.empty())
-    {
-        ll curr = q.front();
-        q.pop();
-        for (auto child : adj[curr])
-        {
-            if (vis[child] == 0)
-            {
-                q.push(child);
-                vis[child] = 1;
-                dist[child] = dist[curr] + 1;
-                parent[child] = curr;
-            }
-        }
-    }
-    if (vis[n] == 0)
-    {
-        cout << "IMPOSSIBLE" << ln;
+        tree[treenode] = arr[start];
         return;
     }
-    // ending pt is n
-    // start kha h then it is 1
-    ll prev = n;
-    v64 route;
-    while (prev != 1)
-    {
-        route.pb(prev);
-        prev = parent[prev];
-    }
-    route.pb(prev);
-    reverse(all(route));
-    cout << route.size() << ln;
-    for (auto t : route)
-    {
-        cout << t << " ";
-    }
-    cout << ln;
+    buildtree(arr, tree, start, mid, 2 * treenode);
+    buildtree(arr, tree, mid + 1, end, 2 * treenode + 1);
+    tree[treenode] = tree[treenode * 2] + tree[(treenode * 2) + 1];
 }
 
+void update(ll arr[], ll tree[], ll s, ll e, ll tn, ll idx, ll val)
+{
+    if (s == e)
+    {
+        arr[idx] = val;
+        tree[tn] = val;
+        return;
+    }
+    ll mid = (s + e) / 2;
+    if (mid >= idx)
+    {
+        // go left
+        update(arr, tree, s, mid, 2 * tn, idx, val);
+    }
+    else
+    {
+        update(arr, tree, mid + 1, e, (2 * tn) + 1, idx, val);
+    }
+    tree[tn] = tree[2 * tn] + tree[(2 * tn) + 1];
+}
+
+ll query(ll arr[], ll tree[], ll s, ll e, ll tn, ll left, ll right)
+{
+    ll mid = (s + e) / 2;
+    //  out
+    if (s > right || left > e)
+    {
+        return 0;
+    }
+    // in
+    if (s >= left && e <= right)
+    {
+        return tree[tn];
+    }
+    // half in half out
+    ll ans1 = query(arr, tree, s, mid, 2 * tn, left, right);
+    ll ans2 = query(arr, tree, mid + 1, e, 2 * tn + 1, left, right);
+    return ans1 + ans2;
+}
+
+void solve()
+{
+    ll n;
+    cin >> n;
+    ll arr[n];
+    forn(i, n)
+    {
+        cin >> arr[i];
+    }
+    ll tree[4 * n];
+    buildtree(arr, tree, 0, n - 1, 1);
+    forsn(i, 1, n + 1)
+    {
+        cout << tree[i] << " ";
+    }
+    cout << ln;
+    update(arr, tree, 0, n - 1, 1, 3, 10);
+    forsn(i, 1, n + 1)
+    {
+        cout << tree[i] << " ";
+    }
+    cout << ln;
+    forsn(i, 1, n + 1)
+    {
+        cout << arr[i - 1] << " ";
+    }
+    cout << ln;
+    cout << query(arr, tree, 0, n - 1, 1, 2, 4) << ln;
+}
 int main()
 {
     fast_cin();

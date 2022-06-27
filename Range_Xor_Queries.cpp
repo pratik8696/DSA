@@ -247,62 +247,74 @@ bool isPrime(int x)
     return true;
 }
 
+void build(ll arr[], ll tree[], ll s, ll e, ll tn)
+{
+    if (s == e)
+    {
+        tree[tn] = arr[s];
+        return;
+    }
+    ll mid = (s + e) / 2;
+    build(arr, tree, s, mid, 2 * tn);
+    build(arr, tree, mid + 1, e, (2 * tn) + 1);
+    tree[tn] = tree[2 * tn] ^ tree[(2 * tn) + 1];
+}
+
+ll query(ll arr[], ll tree[], ll s, ll e, ll tn, ll l, ll r)
+{
+    ll mid = (s + e) / 2;
+    // out
+    if (s > r || l > e)
+    {
+        return 0;
+    }
+    // in
+    if (s >= l && r >= e)
+    {
+        return tree[tn];
+    }
+
+    ll ans1 = query(arr, tree, s, mid, 2 * tn, l, r);
+    ll ans2 = query(arr, tree, mid + 1, e, (2 * tn) + 1, l, r);
+    return ans1 ^ ans2;
+}
+
+void update(ll arr[], ll tree[], ll s, ll e, ll tn, ll idx, ll val)
+{
+    if (s == e)
+    {
+        arr[idx] ^= val;
+        tree[tn] ^= val;
+        return;
+    }
+    ll mid = (s + e) / 2;
+    if (idx > mid)
+    {
+        update(arr, tree, mid + 1, e, (2 * tn) + 1, idx, val);
+    }
+    else
+    {
+        update(arr, tree, s, mid, 2 * tn, idx, val);
+    }
+    tree[tn] = tree[2 * tn] ^ tree[(2 * tn) + 1];
+}
+
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    uv64 adj;
-    forn(i, m)
+    ll n, q;
+    cin >> n >> q;
+    ll arr[n], tree[4 * n];
+    forn(i, n)
+    {
+        cin >> arr[i];
+    }
+    build(arr, tree, 0, n - 1, 1);
+    while (q--)
     {
         ll a, b;
         cin >> a >> b;
-        adj[a].pb(b);
-        adj[b].pb(a);
+        cout << query(arr, tree, 0, n - 1, 1, --a, --b) << ln;
     }
-    // now we need to do bfs
-    v64 dist(n + 1, -1), vis(n + 1, 0), parent(n + 1, 0);
-    queue<ll> q;
-    q.push(1);
-    dist[1] = 1;
-    vis[1] = 1;
-    parent[1] = 1;
-    while (!q.empty())
-    {
-        ll curr = q.front();
-        q.pop();
-        for (auto child : adj[curr])
-        {
-            if (vis[child] == 0)
-            {
-                q.push(child);
-                vis[child] = 1;
-                dist[child] = dist[curr] + 1;
-                parent[child] = curr;
-            }
-        }
-    }
-    if (vis[n] == 0)
-    {
-        cout << "IMPOSSIBLE" << ln;
-        return;
-    }
-    // ending pt is n
-    // start kha h then it is 1
-    ll prev = n;
-    v64 route;
-    while (prev != 1)
-    {
-        route.pb(prev);
-        prev = parent[prev];
-    }
-    route.pb(prev);
-    reverse(all(route));
-    cout << route.size() << ln;
-    for (auto t : route)
-    {
-        cout << t << " ";
-    }
-    cout << ln;
 }
 
 int main()
@@ -312,7 +324,7 @@ int main()
     //  freopen("revegetate.in", "r", stdin);
     // freopen("revegetate.out", "w", stdout);
     //#endif
-    ll t = 1;
+    ll t=1;
     // cin >> t;
     for (int it = 1; it <= t; it++)
     {

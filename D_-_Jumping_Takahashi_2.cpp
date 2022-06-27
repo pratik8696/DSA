@@ -247,62 +247,84 @@ bool isPrime(int x)
     return true;
 }
 
-void solve()
+vector<pair<p64, ll>> pts;
+void dfs(int v, v64 &vis, uvp64 &adj, ll k)
 {
-    ll n, m;
-    cin >> n >> m;
-    uv64 adj;
-    forn(i, m)
+    vis[v] = 1;
+    for (auto t : adj[v])
     {
-        ll a, b;
-        cin >> a >> b;
-        adj[a].pb(b);
-        adj[b].pb(a);
-    }
-    // now we need to do bfs
-    v64 dist(n + 1, -1), vis(n + 1, 0), parent(n + 1, 0);
-    queue<ll> q;
-    q.push(1);
-    dist[1] = 1;
-    vis[1] = 1;
-    parent[1] = 1;
-    while (!q.empty())
-    {
-        ll curr = q.front();
-        q.pop();
-        for (auto child : adj[curr])
+        ll dist = t.second;
+        ll child = t.first;
+        ll power = pts[v - 1].second;
+        if (k * power >= dist)
         {
             if (vis[child] == 0)
             {
-                q.push(child);
-                vis[child] = 1;
-                dist[child] = dist[curr] + 1;
-                parent[child] = curr;
+                dfs(child, vis, adj, k);
             }
         }
     }
-    if (vis[n] == 0)
+}
+
+void solve()
+{
+    ll n;
+    cin >> n;
+    forn(i, n)
     {
-        cout << "IMPOSSIBLE" << ln;
-        return;
+        ll a, b, c;
+        cin >> a >> b >> c;
+        pts.pb({{a, b}, c});
     }
-    // ending pt is n
-    // start kha h then it is 1
-    ll prev = n;
-    v64 route;
-    while (prev != 1)
+    uvp64 adj;
+    forn(i, n)
     {
-        route.pb(prev);
-        prev = parent[prev];
+        ll x1 = pts[i].first.first;
+        ll y1 = pts[i].first.second;
+        ll res = 0;
+        forsn(j, 0, n)
+        {
+            if (i != j)
+            {
+                ll x2 = pts[j].first.first;
+                ll y2 = pts[j].first.second;
+                ll dist = abs(x1 - x2) + abs(y1 - y2);
+                adj[i + 1].pb({j + 1, dist});
+                adj[j + 1].pb({i + 1, dist});
+            }
+        }
     }
-    route.pb(prev);
-    reverse(all(route));
-    cout << route.size() << ln;
-    for (auto t : route)
+    ll answer = INF;
+    forn(q, n)
     {
-        cout << t << " ";
+        ll l = 0, r = 1e10, ans = 0;
+        while (l <= r)
+        {
+            ll mid = l + (r - l) / 2;
+            v64 vis(n + 1, 0);
+            dfs(q + 1, vis, adj, mid);
+            bool flag = 1;
+            forsn(z, 1, n + 1)
+            {
+                if (vis[z] == 0)
+                {
+                    flag = 0;
+                    break;
+                }
+            }
+            if (flag)
+            {
+                r = mid - 1;
+                ans = mid;
+            }
+            else
+            {
+                l = mid + 1;
+            }
+        }
+        answer = min(ans, answer);
     }
-    cout << ln;
+    cout << answer << ln;
 }
 
 int main()

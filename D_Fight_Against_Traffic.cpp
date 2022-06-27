@@ -247,25 +247,13 @@ bool isPrime(int x)
     return true;
 }
 
-void solve()
+void bfs(uv64 &adj, v64 &dist, ll src)
 {
-    ll n, m;
-    cin >> n >> m;
-    uv64 adj;
-    forn(i, m)
-    {
-        ll a, b;
-        cin >> a >> b;
-        adj[a].pb(b);
-        adj[b].pb(a);
-    }
-    // now we need to do bfs
-    v64 dist(n + 1, -1), vis(n + 1, 0), parent(n + 1, 0);
     queue<ll> q;
-    q.push(1);
-    dist[1] = 1;
-    vis[1] = 1;
-    parent[1] = 1;
+    v64 vis(dist.size(), 0);
+    q.push(src);
+    dist[src] = 0;
+    vis[src] = 1;
     while (!q.empty())
     {
         ll curr = q.front();
@@ -274,35 +262,45 @@ void solve()
         {
             if (vis[child] == 0)
             {
+                dist[child] = dist[curr] + 1;
                 q.push(child);
                 vis[child] = 1;
-                dist[child] = dist[curr] + 1;
-                parent[child] = curr;
             }
         }
     }
-    if (vis[n] == 0)
+}
+
+void solve()
+{
+    ll n, m, st, end;
+    cin >> n >> m >> st >> end;
+    uv64 adj;
+    map<p64, ll> edges;
+    forn(i, m)
     {
-        cout << "IMPOSSIBLE" << ln;
-        return;
+        ll a, b;
+        cin >> a >> b;
+        adj[a].pb(b);
+        adj[b].pb(a);
+        edges[{a, b}]++;
+        edges[{b, a}]++;
     }
-    // ending pt is n
-    // start kha h then it is 1
-    ll prev = n;
-    v64 route;
-    while (prev != 1)
+    // now we do bfs from both source and end nodes
+    v64 distsrc(n + 1, 0), distend(n + 1, 0);
+    bfs(adj, distsrc, st), bfs(adj, distend, end);
+    ll dist = distsrc[end];
+    ll ans = 0;
+    forsn(i, 1, n + 1)
     {
-        route.pb(prev);
-        prev = parent[prev];
+        forsn(j, 1, n + 1)
+        {
+            if (i != j && distsrc[i] + distend[j] + 1 >= dist && distsrc[j] + distend[i] + 1 >= dist && edges[{i, j}] == 0)
+            {
+                ans++;
+            }
+        }
     }
-    route.pb(prev);
-    reverse(all(route));
-    cout << route.size() << ln;
-    for (auto t : route)
-    {
-        cout << t << " ";
-    }
-    cout << ln;
+    cout << ans/2 << ln;
 }
 
 int main()

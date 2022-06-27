@@ -249,60 +249,179 @@ bool isPrime(int x)
 
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    uv64 adj;
-    forn(i, m)
+    ll n;
+    cin >> n;
+    ll arr[n + 1];
+    ll zz = 0;
+    forn(i, n)
     {
-        ll a, b;
-        cin >> a >> b;
-        adj[a].pb(b);
-        adj[b].pb(a);
-    }
-    // now we need to do bfs
-    v64 dist(n + 1, -1), vis(n + 1, 0), parent(n + 1, 0);
-    queue<ll> q;
-    q.push(1);
-    dist[1] = 1;
-    vis[1] = 1;
-    parent[1] = 1;
-    while (!q.empty())
-    {
-        ll curr = q.front();
-        q.pop();
-        for (auto child : adj[curr])
+        cin >> arr[i];
+        if (arr[i] == 0)
         {
-            if (vis[child] == 0)
-            {
-                q.push(child);
-                vis[child] = 1;
-                dist[child] = dist[curr] + 1;
-                parent[child] = curr;
-            }
+            zz++;
         }
     }
-    if (vis[n] == 0)
+    if (zz == n)
     {
-        cout << "IMPOSSIBLE" << ln;
+        cout << "0 0" << ln;
         return;
     }
-    // ending pt is n
-    // start kha h then it is 1
-    ll prev = n;
-    v64 route;
-    while (prev != 1)
+    arr[n] = 0;
+    // now create segments
+    vv64 res;
+    vp64 range;
+    ll l = 0, r = 0;
+    v64 curr;
+    forn(i, n + 1)
     {
-        route.pb(prev);
-        prev = parent[prev];
+        if (arr[i] == 0)
+        {
+            if (curr.size())
+            {
+                res.pb(curr);
+                range.pb({l, i - 1});
+                curr.clear();
+            }
+            l = i + 1;
+        }
+        else
+        {
+            curr.pb(arr[i]);
+        }
     }
-    route.pb(prev);
-    reverse(all(route));
-    cout << route.size() << ln;
-    for (auto t : route)
+    vector<pair<ll, p64>> result;
+    forn(z, res.size())
     {
-        cout << t << " ";
+        auto &x = res[z];
+        ll cc = 0;
+        // calculate no of negs
+        for (auto y : x)
+        {
+            // cout << y << " ";
+            if (y < 0)
+            {
+                cc++;
+            }
+        }
+        // cout << ln;
+        // if negs are even
+        if (cc % 2 == 0)
+        {
+            ll c = 0;
+            for (auto y : x)
+            {
+                if (abs(y) == 2)
+                {
+                    c += 2;
+                }
+                else
+                {
+                    c++;
+                }
+            }
+            result.pb({c, {range[z].fi, range[z].se}});
+        }
+        // if negs are odd then do the divide thing
+        if (cc % 2)
+        {
+            ll orgval = 1;
+            for (auto y : x)
+            {
+                if (abs(y) == 2)
+                {
+                    orgval += 2;
+                }
+                else
+                {
+                    orgval++;
+                }
+            }
+            // for left
+            ll val = 1, neg = 0, ff = 0;
+            forn(i, x.size())
+            {
+                ll y = x[i];
+                if (y < 0)
+                {
+                    if (ff)
+                    {
+                        result.pb({val, {range[z].fi, range[z].fi + i - 1}});
+                    }
+                    if (i != x.size() - 1)
+                    {
+                        result.pb({orgval - abs(y) / 2, {range[z].fi + i + 1, range[z].se}});
+                    }
+                    else if (i == x.size() - 1)
+                    {
+                        // result.pb({orgval / (val * y), {range[z].fi + i + 0, range[z].se}});
+                    }
+                    break;
+                }
+                else
+                {
+                    ff++;
+                    if (abs(y) == 2)
+                    {
+                        val += 2;
+                    }
+                    else
+                    {
+                        val++;
+                    }
+                }
+            }
+            // for right
+            val = 1, neg = 0, ff = 0;
+            // check the last index
+            for (ll i = x.size(); i >= 0; i--)
+            {
+                if (x[i] < 0)
+                {
+                    neg = i;
+                    break;
+                }
+            }
+            for (ll i = 0; i < x.size(); i++)
+            {
+                ll y = x[i];
+                if (i == neg)
+                {
+                    if (ff)
+                    {
+                        result.pb({val, {range[z].fi, range[z].fi + i - 1}});
+                    }
+
+                    if (i != x.size() - 1)
+                    {
+                        result.pb({orgval - (val + abs(y)), {range[z].fi + i + 1, range[z].se}});
+                    }
+                    else if (i == x.size() - 1)
+                    {
+                        // result.pb({orgval / (val * y), {range[z].fi + i + 0, range[z].se}});
+                    }
+
+                    break;
+                }
+                else
+                {
+                    if (abs(y) == 2)
+                    {
+                        val++;
+                    }
+                    ff++;
+                }
+            }
+        }
+        // cout << ln;
     }
-    cout << ln;
+    sort(all(result));
+    // for (auto t : result)
+    // {
+    //     // cout << t.fi << " " << t.se.fi << " " << t.se.se << ln;
+    // }
+    auto t = result.back();
+    cout << t.se.fi << " " << n - 1 - t.se.se << ln;
+    // cout << ln;
 }
 
 int main()
@@ -313,7 +432,7 @@ int main()
     // freopen("revegetate.out", "w", stdout);
     //#endif
     ll t = 1;
-    // cin >> t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

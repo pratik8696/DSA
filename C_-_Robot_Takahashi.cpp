@@ -26,7 +26,7 @@ using namespace std;
 using namespace __gnu_pbds;
 typedef long long ll;
 // use less_equal to make it multiset
-typedef tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update> pbds;
+typedef tree<ll, null_type, less_equal<ll>, rb_tree_tag, tree_order_statistics_node_update> pbds;
 typedef unsigned long long ull;
 typedef long double ld;
 typedef pair<int, int> p32;
@@ -249,60 +249,40 @@ bool isPrime(int x)
 
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    uv64 adj;
-    forn(i, m)
+    ll n;
+    cin >> n;
+    ll arr[n];
+    string s;
+    cin >> s;
+    pbds parent, child;
+    ll x = -1, y = -1;
+    forn(i, n)
     {
-        ll a, b;
-        cin >> a >> b;
-        adj[a].pb(b);
-        adj[b].pb(a);
-    }
-    // now we need to do bfs
-    v64 dist(n + 1, -1), vis(n + 1, 0), parent(n + 1, 0);
-    queue<ll> q;
-    q.push(1);
-    dist[1] = 1;
-    vis[1] = 1;
-    parent[1] = 1;
-    while (!q.empty())
-    {
-        ll curr = q.front();
-        q.pop();
-        for (auto child : adj[curr])
+        cin >> arr[i];
+        if (s[i] == '0')
         {
-            if (vis[child] == 0)
-            {
-                q.push(child);
-                vis[child] = 1;
-                dist[child] = dist[curr] + 1;
-                parent[child] = curr;
-            }
+            child.ie(arr[i]);
+            x = max(arr[i], x);
+        }
+        else
+        {
+            y = max(arr[i], y);
+            parent.ie(arr[i]);
         }
     }
-    if (vis[n] == 0)
+    if (x == -1 || y == -1)
     {
-        cout << "IMPOSSIBLE" << ln;
+        cout << n << ln;
         return;
     }
-    // ending pt is n
-    // start kha h then it is 1
-    ll prev = n;
-    v64 route;
-    while (prev != 1)
+    ll ans = max(child.size(), parent.size()), cc = 1;
+    for (auto t : child)
     {
-        route.pb(prev);
-        prev = parent[prev];
+        ll val_parent = parent.size() - parent.order_of_key(t + 1);
+        ans = max(cc + val_parent, ans);
+        cc++;
     }
-    route.pb(prev);
-    reverse(all(route));
-    cout << route.size() << ln;
-    for (auto t : route)
-    {
-        cout << t << " ";
-    }
-    cout << ln;
+    cout << ans << ln;
 }
 
 int main()

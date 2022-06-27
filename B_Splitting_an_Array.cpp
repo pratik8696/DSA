@@ -250,44 +250,28 @@ bool isPrime(int x)
 bool check(ll val, v64 &arr, ll k)
 {
     ll cc = 0, n = arr.size(), sum = 0, v = 0;
-    multiset<ll> pq;
-    forsn(i, 0, n)
+    forn(i, n)
     {
         if (sum + arr[i] <= val)
         {
             sum += arr[i];
-            v++;
         }
         else
         {
-            pq.ie(-v);
             cc++;
-            i--;
             sum = 0;
-            v = 0;
+            i--;
         }
     }
-    if (sum > 0)
+    if (sum)
     {
-        pq.ie(-1);
         cc++;
     }
-    ll ans = 0;
-    for (auto t : pq)
-    {
-        ll curr = abs(t);
-        ans += max(curr - 1ll, 1ll);
-    }
-    cout << cc << " " << ans << ln;
-    if (cc > k)
-    {
-        return false;
-    }
-    if (ans >= k && pq.size() <= k)
+    if (cc <= k)
     {
         return true;
     }
-    return false;
+    return 0;
 }
 
 void solve()
@@ -303,18 +287,18 @@ void solve()
         maxi = max(maxi, arr[i]);
     }
     ll i = maxi, j = sum, ans = 0;
-    // cout << check(11, arr, k) << ln;
+    // cout << check(10, arr, k) << ln;
     while (i <= j)
     {
         ll mid = i + (j - i) / 2;
         if (check(mid, arr, k))
         {
             ans = mid;
-            i = mid + 1;
+            j = mid - 1;
         }
         else
         {
-            j = mid - 1;
+            i = mid + 1;
         }
     }
     cout << ans << ln;

@@ -247,62 +247,106 @@ bool isPrime(int x)
     return true;
 }
 
-void solve()
+struct node
 {
-    ll n, m;
-    cin >> n >> m;
-    uv64 adj;
-    forn(i, m)
+    ll first;
+    ll second;
+};
+
+void buildtree(ll arr[], node *tree, ll start, ll end, ll treenode)
+{
+    int mid = (start + end) / 2;
+    if (start == end)
     {
-        ll a, b;
-        cin >> a >> b;
-        adj[a].pb(b);
-        adj[b].pb(a);
-    }
-    // now we need to do bfs
-    v64 dist(n + 1, -1), vis(n + 1, 0), parent(n + 1, 0);
-    queue<ll> q;
-    q.push(1);
-    dist[1] = 1;
-    vis[1] = 1;
-    parent[1] = 1;
-    while (!q.empty())
-    {
-        ll curr = q.front();
-        q.pop();
-        for (auto child : adj[curr])
-        {
-            if (vis[child] == 0)
-            {
-                q.push(child);
-                vis[child] = 1;
-                dist[child] = dist[curr] + 1;
-                parent[child] = curr;
-            }
-        }
-    }
-    if (vis[n] == 0)
-    {
-        cout << "IMPOSSIBLE" << ln;
+        tree[treenode].first = arr[start];
+        tree[treenode].second = INT_MIN;
         return;
     }
-    // ending pt is n
-    // start kha h then it is 1
-    ll prev = n;
-    v64 route;
-    while (prev != 1)
+    buildtree(arr, tree, start, mid, 2 * treenode);
+    buildtree(arr, tree, mid + 1, end, 2 * treenode + 1);
+    node a = tree[2 * treenode], b = tree[(2 * treenode) + 1];
+    tree[treenode].first = max(a.first, b.first);
+    tree[treenode].second = min(max(a.first, b.second), max(a.second, b.first));
+    return;
+}
+
+void update(ll arr[], node *tree, ll s, ll e, ll tn, ll idx, ll val)
+{
+    if (s == e)
     {
-        route.pb(prev);
-        prev = parent[prev];
+        arr[idx] = val;
+        tree[tn].first = val;
+        return;
     }
-    route.pb(prev);
-    reverse(all(route));
-    cout << route.size() << ln;
-    for (auto t : route)
+    ll mid = (s + e) / 2;
+    if (mid >= idx)
     {
-        cout << t << " ";
+        // go left
+        update(arr, tree, s, mid, 2 * tn, idx, val);
+    }
+    else
+    {
+        update(arr, tree, mid + 1, e, (2 * tn) + 1, idx, val);
+    }
+    node a = tree[2 * tn], b = tree[(2 * tn) + 1];
+    tree[tn].first = max(a.first, b.first);
+    tree[tn].second = min(max(a.first, b.second), max(a.second, b.first));
+}
+
+node query(ll arr[], node *tree, ll s, ll e, ll tn, ll left, ll right)
+{
+    ll mid = (s + e) / 2;
+    //  out
+    if (s > right || left > e)
+    {
+        node p;
+        p.first = INT_MIN;
+        p.second = INT_MIN;
+        return p;
+    }
+    // in
+    if (s >= left && e <= right)
+    {
+        return tree[tn];
+    }
+    // half in half out
+    node a = query(arr, tree, s, mid, 2 * tn, left, right);
+    node b = query(arr, tree, mid + 1, e, 2 * tn + 1, left, right);
+    node res;
+    res.first = max(a.first, b.first);
+    res.second = min(max(a.first, b.second), max(a.second, b.first));
+    return res;
+}
+
+void solve()
+{
+    ll n;
+    cin >> n;
+    ll arr[n];
+    forn(i, n)
+    {
+        cin >> arr[i];
+    }
+    node *tree = new node[4 * n];
+    buildtree(arr, tree, 0, n - 1, 1);
+    forsn(i, 1, 4 * n)
+    {
+        cout << tree[i].fi << " " << tree[i].se << ln;
     }
     cout << ln;
+    update(arr, tree, 0, n - 1, 1, 3, 10);
+    forsn(i, 0, n)
+    {
+        cout << arr[i] << " ";
+    }
+    cout << ln;
+    forsn(i, 1, 4 * n)
+    {
+        cout << tree[i].fi << " " << tree[i].se << ln;
+    }
+    cout << ln;
+    node pq = query(arr, tree, 0, n - 1, 1, 3, 7);
+    cout << pq.first << " " << pq.second << ln;
 }
 
 int main()
@@ -312,8 +356,8 @@ int main()
     //  freopen("revegetate.in", "r", stdin);
     // freopen("revegetate.out", "w", stdout);
     //#endif
-    ll t = 1;
-    // cin >> t;
+    ll t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

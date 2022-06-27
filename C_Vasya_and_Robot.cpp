@@ -247,62 +247,107 @@ bool isPrime(int x)
     return true;
 }
 
-void solve()
+ll n;
+string s;
+ll fx, fy;
+
+bool check(ll cc, vp64 &pre, vp64 &post)
 {
-    ll n, m;
-    cin >> n >> m;
-    uv64 adj;
-    forn(i, m)
+    ll prex = 0, prey = 0, postx = 0, posty = 0;
+    forsn(i, cc, n + 1)
     {
-        ll a, b;
-        cin >> a >> b;
-        adj[a].pb(b);
-        adj[b].pb(a);
-    }
-    // now we need to do bfs
-    v64 dist(n + 1, -1), vis(n + 1, 0), parent(n + 1, 0);
-    queue<ll> q;
-    q.push(1);
-    dist[1] = 1;
-    vis[1] = 1;
-    parent[1] = 1;
-    while (!q.empty())
-    {
-        ll curr = q.front();
-        q.pop();
-        for (auto child : adj[curr])
+        // piche ke vals
+        ll px = pre[i - cc].fi;
+        ll py = pre[i - cc].se;
+        // age ka vals;
+        ll pox = post[i + 1].fi;
+        ll poy = post[i + 1].se;
+        // change needed
+        ll fix = px + pox;
+        ll fiy = py + poy;
+        // deviation
+        ll dx = abs(fix - fx);
+        ll dy = abs(fiy - fy);
+        // cout << i << " " << dx + dy << ln;
+        if (cc >= dx + dy)
         {
-            if (vis[child] == 0)
-            {
-                q.push(child);
-                vis[child] = 1;
-                dist[child] = dist[curr] + 1;
-                parent[child] = curr;
-            }
+            return true;
         }
     }
-    if (vis[n] == 0)
+    return false;
+}
+
+void solve()
+{
+    cin >> n;
+    cin >> s;
+    cin >> fx >> fy;
+    if ((abs(fx) + abs(fy)) % 2 != n % 2)
     {
-        cout << "IMPOSSIBLE" << ln;
+        cout << -1 << ln;
         return;
     }
-    // ending pt is n
-    // start kha h then it is 1
-    ll prev = n;
-    v64 route;
-    while (prev != 1)
+    vp64 pre(n + 2, mp(0, 0)), post(n + 2, mp(0, 0));
+    ll x = 0, y = 0;
+    forsn(i, 1, n + 1)
     {
-        route.pb(prev);
-        prev = parent[prev];
+        if (s[i - 1] == 'U')
+        {
+            y++;
+        }
+        if (s[i - 1] == 'D')
+        {
+            y--;
+        }
+        if (s[i - 1] == 'R')
+        {
+            x++;
+        }
+        if (s[i - 1] == 'L')
+        {
+            x--;
+        }
+        pre[i] = {x, y};
+        // cout << pre[i].fi << " " << pre[i].se << ln;
     }
-    route.pb(prev);
-    reverse(all(route));
-    cout << route.size() << ln;
-    for (auto t : route)
+    x = 0, y = 0;
+    for (ll i = n; i >= 1; i--)
     {
-        cout << t << " ";
+        if (s[i - 1] == 'U')
+        {
+            y++;
+        }
+        if (s[i - 1] == 'D')
+        {
+            y--;
+        }
+        if (s[i - 1] == 'R')
+        {
+            x++;
+        }
+        if (s[i - 1] == 'L')
+        {
+            x--;
+        }
+        post[i] = {x, y};
+        // cout << post[i].fi << " " << post[i].se << ln;
     }
-    cout << ln;
+    // cout << check(3, pre, post) << ln;
+    ll i = 0, j = n, ans = -1;
+    while (i <= j)
+    {
+        ll mid = i + (j - i) / 2;
+        if (check(mid, pre, post))
+        {
+            ans = mid;
+            j = mid - 1;
+        }
+        else
+        {
+            i = mid + 1;
+        }
+    }
+    cout << ans << ln;
 }
 
 int main()

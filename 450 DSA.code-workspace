@@ -2,6 +2,9 @@
 	"folders": [
 		{
 			"path": "."
+		},
+		{
+			"path": ".."
 		}
 	],
 	"settings": {
@@ -17,7 +20,9 @@
 			"vector": "cpp",
 			"initializer_list": "cpp",
 			"regex": "cpp",
-			"valarray": "cpp"
+			"valarray": "cpp",
+			"iomanip": "cpp",
+			"cstdlib": "cpp"
 		}
 	}
 }

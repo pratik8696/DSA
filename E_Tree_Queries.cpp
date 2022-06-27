@@ -247,62 +247,81 @@ bool isPrime(int x)
     return true;
 }
 
+ll tt = 1;
+
+void dfs(int v, v64 &vis, uv64 &adj, v64 &parent, v64 &intime, v64 &outtime, ll par, v64 &lvl, ll curr_lvl)
+{
+    vis[v] = 1;
+    lvl[v] = curr_lvl;
+    parent[v] = par;
+    intime[v] = tt++;
+    for (auto child : adj[v])
+    {
+        if (vis[child] == 0)
+        {
+            dfs(child, vis, adj, parent, intime, outtime, v, lvl, curr_lvl + 1);
+        }
+    }
+    outtime[v] = tt++;
+}
+
 void solve()
 {
     ll n, m;
     cin >> n >> m;
     uv64 adj;
-    forn(i, m)
+    forn(i, n - 1)
     {
         ll a, b;
         cin >> a >> b;
         adj[a].pb(b);
         adj[b].pb(a);
     }
-    // now we need to do bfs
-    v64 dist(n + 1, -1), vis(n + 1, 0), parent(n + 1, 0);
-    queue<ll> q;
-    q.push(1);
-    dist[1] = 1;
-    vis[1] = 1;
-    parent[1] = 1;
-    while (!q.empty())
+    v64 lvl(n + 1, 0), parent(n + 1, -1), intime(n + 1, 0), outtime(n + 1, 0), vis(n + 1, 0);
+    intime[0] = -INF;
+    outtime[0] = INF;
+    dfs(1, vis, adj, parent, intime, outtime, 0, lvl, 0);
+    while (m--)
     {
-        ll curr = q.front();
-        q.pop();
-        for (auto child : adj[curr])
+        ll len;
+        cin >> len;
+        v64 curr;
+        ll lvl_curr = -INF;
+        ll node = 0;
+        forn(i, len)
         {
-            if (vis[child] == 0)
+            ll x;
+            cin >> x;
+            curr.pb(parent[x]);
+            if (lvl_curr < lvl[x])
             {
-                q.push(child);
-                vis[child] = 1;
-                dist[child] = dist[curr] + 1;
-                parent[child] = curr;
+                lvl_curr = lvl[x];
+                node = x;
             }
         }
+        bool flag = 1;
+        for (auto t : curr)
+        {
+            if (intime[t] < intime[node] && outtime[t] > outtime[node])
+            {
+                // good
+            }
+            else
+            {
+                // cout << node << " " << t << ln;
+                flag = 0;
+                break;
+            }
+        }
+        if (flag)
+        {
+            cout << "YES" << ln;
+        }
+        else
+        {
+            cout << "NO" << ln;
+        }
     }
-    if (vis[n] == 0)
-    {
-        cout << "IMPOSSIBLE" << ln;
-        return;
-    }
-    // ending pt is n
-    // start kha h then it is 1
-    ll prev = n;
-    v64 route;
-    while (prev != 1)
-    {
-        route.pb(prev);
-        prev = parent[prev];
-    }
-    route.pb(prev);
-    reverse(all(route));
-    cout << route.size() << ln;
-    for (auto t : route)
-    {
-        cout << t << " ";
-    }
-    cout << ln;
 }
 
 int main()

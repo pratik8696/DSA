@@ -249,60 +249,126 @@ bool isPrime(int x)
 
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    uv64 adj;
-    forn(i, m)
+    ll n, k, p;
+    cin >> n >> k >> p;
+    ll arr[n];
+    v64 left, right;
+    forn(i, n)
     {
-        ll a, b;
-        cin >> a >> b;
-        adj[a].pb(b);
-        adj[b].pb(a);
-    }
-    // now we need to do bfs
-    v64 dist(n + 1, -1), vis(n + 1, 0), parent(n + 1, 0);
-    queue<ll> q;
-    q.push(1);
-    dist[1] = 1;
-    vis[1] = 1;
-    parent[1] = 1;
-    while (!q.empty())
-    {
-        ll curr = q.front();
-        q.pop();
-        for (auto child : adj[curr])
+        cin >> arr[i];
+        if (arr[i] <= p)
         {
-            if (vis[child] == 0)
+            left.pb(arr[i]);
+        }
+        else
+        {
+            right.pb(arr[i]);
+        }
+    }
+    sort(all(left));
+    sort(all(right));
+    s64 keys;
+    forn(i, k)
+    {
+        ll x;
+        cin >> x;
+        keys.ie(x);
+    }
+    // now we will start from the values which are less than p
+    ll ans = 0;
+    for (auto t : left)
+    {
+        ll left_val = 1e16, right_val = 1e16;
+        auto it = keys.upper_bound(t);
+        if (it != keys.end())
+        {
+            right_val = *it;
+        }
+        if (it != keys.begin())
+        {
+            auto t = --it;
+            left_val = *t;
+        }
+        // smaller diff jiska hoga org position se plus
+        //  we will always prefer one in the direction of office mtlb right wla
+        // if and only if its value is less than equal to office else
+        // diff lo and check kro kisse krna hoga
+        // cout << left_val << " " << right_val << ln;
+        if (right_val <= p)
+        {
+            // right ko le le
+            // delete right pos
+            ans = max(ans, abs(p - t));
+            keys.erase(keys.lower_bound(right_val));
+        }
+        else
+        {
+            // jiska diff minimum from start pt
+            ll right_diff = abs(right_val - p);
+            ll left_diff = abs(left_val - t);
+            ll val1 = abs(p - t) + 2 * right_diff;
+            ll val2 = abs(p - t) + 2 * left_diff;
+            // cout << left_diff << " " << right_diff << " " << abs(p - t) << " " << p << " " << t << ln;
+            // cout << val1 << " " << val2 << ln;
+            if (val1 <= val2)
             {
-                q.push(child);
-                vis[child] = 1;
-                dist[child] = dist[curr] + 1;
-                parent[child] = curr;
+                ans = max(val1, ans);
+                keys.erase(keys.lower_bound(right_val));
+            }
+            else
+            {
+                ans = max(val2, ans);
+                keys.erase(keys.lower_bound(left_val));
             }
         }
     }
-    if (vis[n] == 0)
+    // cout << ans << ln;
+    // now reverse the set
+    for (auto t : right)
     {
-        cout << "IMPOSSIBLE" << ln;
-        return;
+        ll left_val = 1e16, right_val = 1e16;
+        auto it = keys.upper_bound(t);
+        if (it != keys.end())
+        {
+            right_val = *it;
+        }
+        if (it != keys.begin())
+        {
+            auto t = --it;
+            left_val = *t;
+        }
+        // smaller diff jiska hoga org position se plus
+        //  we will always prefer one in the direction of office mtlb right wla
+        // if and only if its value is less than equal to office else
+        // diff lo and check kro kisse krna hoga
+        // cout << left_val << " " << right_val << ln;
+        if (left_val >= p)
+        {
+            // right ko le le
+            // delete right pos
+            ans = max(ans, abs(t - p));
+            keys.erase(keys.lower_bound(left_val));
+        }
+        else
+        {
+            // jiska diff minimum from start pt
+            ll right_diff = abs(right_val - t);
+            ll left_diff = abs(left_val - p);
+            ll val1 = abs(p - t) + 2 * right_diff;
+            ll val2 = abs(p - t) + 2 * left_diff;
+            if (val1 <= val2)
+            {
+                ans = max(val1, ans);
+                keys.erase(keys.lower_bound(right_val));
+            }
+            else
+            {
+                ans = max(val2, ans);
+                keys.erase(keys.lower_bound(left_val));
+            }
+        }
     }
-    // ending pt is n
-    // start kha h then it is 1
-    ll prev = n;
-    v64 route;
-    while (prev != 1)
-    {
-        route.pb(prev);
-        prev = parent[prev];
-    }
-    route.pb(prev);
-    reverse(all(route));
-    cout << route.size() << ln;
-    for (auto t : route)
-    {
-        cout << t << " ";
-    }
-    cout << ln;
+    cout << ans << ln;
 }
 
 int main()

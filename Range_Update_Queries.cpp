@@ -247,64 +247,117 @@ bool isPrime(int x)
     return true;
 }
 
-void solve()
+void build(ll arr[], ll tree[], ll s, ll e, ll tn)
 {
-    ll n, m;
-    cin >> n >> m;
-    uv64 adj;
-    forn(i, m)
+    if (s == e)
     {
-        ll a, b;
-        cin >> a >> b;
-        adj[a].pb(b);
-        adj[b].pb(a);
-    }
-    // now we need to do bfs
-    v64 dist(n + 1, -1), vis(n + 1, 0), parent(n + 1, 0);
-    queue<ll> q;
-    q.push(1);
-    dist[1] = 1;
-    vis[1] = 1;
-    parent[1] = 1;
-    while (!q.empty())
-    {
-        ll curr = q.front();
-        q.pop();
-        for (auto child : adj[curr])
-        {
-            if (vis[child] == 0)
-            {
-                q.push(child);
-                vis[child] = 1;
-                dist[child] = dist[curr] + 1;
-                parent[child] = curr;
-            }
-        }
-    }
-    if (vis[n] == 0)
-    {
-        cout << "IMPOSSIBLE" << ln;
+        tree[tn] = arr[s];
         return;
     }
-    // ending pt is n
-    // start kha h then it is 1
-    ll prev = n;
-    v64 route;
-    while (prev != 1)
-    {
-        route.pb(prev);
-        prev = parent[prev];
-    }
-    route.pb(prev);
-    reverse(all(route));
-    cout << route.size() << ln;
-    for (auto t : route)
-    {
-        cout << t << " ";
-    }
-    cout << ln;
+    ll mid = (s + e) / 2;
+    build(arr, tree, s, mid, 2 * tn);
+    build(arr, tree, mid + 1, e, (2 * tn) + 1);
+    tree[tn] = tree[2 * tn] + tree[(2 * tn) + 1];
 }
 
+ll query(ll arr[], ll tree[], ll s, ll e, ll tn, ll l, ll r, ll lazy[])
+{
+    if (lazy[tn] != 0)
+    {
+        ll x = lazy[tn];
+        lazy[tn] = 0;
+        tree[tn] += x * (e - s + 1);
+        if (s != e)
+        {
+            lazy[2 * tn] += x;
+            lazy[(2 * tn) + 1] += x;
+        }
+    }
+
+    ll mid = (s + e) / 2;
+    // out
+    if (s > r || l > e)
+    {
+        return 0;
+    }
+    // in
+    if (s >= l && r >= e)
+    {
+        return tree[tn];
+    }
+
+    ll ans1 = query(arr, tree, s, mid, 2 * tn, l, r, lazy);
+    ll ans2 = query(arr, tree, mid + 1, e, (2 * tn) + 1, l, r, lazy);
+    return ans1 + ans2;
+}
+
+void update(ll arr[], ll tree[], ll s, ll e, ll tn, ll l, ll r, ll val, ll lazy[])
+{
+    if (lazy[tn] != 0)
+    {
+        ll x = lazy[tn];
+        lazy[tn] = 0;
+        tree[tn] += x * (e - s + 1);
+        if (s != e)
+        {
+            lazy[2 * tn] += x;
+            lazy[(2 * tn) + 1] += x;
+        }
+    }
+
+    // out
+    if (s > r || l > e)
+    {
+        return;
+    }
+    // in
+    if (s >= l && r >= e)
+    {
+        // insert in lazy
+        tree[tn] += val * (e - s + 1);
+        if (s != e)
+        {
+            lazy[2 * tn] += val;
+            lazy[(2 * tn) + 1] += val;
+        }
+        return;
+    }
+
+    ll mid = (s + e) / 2;
+    update(arr, tree, mid + 1, e, (2 * tn) + 1, l, r, val, lazy);
+    update(arr, tree, s, mid, 2 * tn, l, r, val, lazy);
+    tree[tn] = tree[2 * tn] + tree[(2 * tn) + 1];
+}
+
+void solve()
+{
+    ll n, q;
+    cin >> n >> q;
+    ll arr[n], tree[4 * n], lazy[4 * n];
+    fill(al(lazy, 4 * n), 0);
+    forn(i, n)
+    {
+        cin >> arr[i];
+    }
+    build(arr, tree, 0, n - 1, 1);
+    while (q--)
+    {
+        ll val;
+        cin >> val;
+        if (val == 2)
+        {
+            ll a;
+            cin >> a;
+            cout << query(arr, tree, 0, n - 1, 1, a-1, a-1, lazy) << ln;
+        }
+        else
+        {
+            ll left, right, val;
+            cin >> left >> right >> val;
+            update(arr, tree, 0, n - 1, 1, --left, --right, val, lazy);
+        }
+    }
+}
 int main()
 {
     fast_cin();

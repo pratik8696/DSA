@@ -247,62 +247,58 @@ bool isPrime(int x)
     return true;
 }
 
+bool check(long double time, vector<pair<long double,long double>> &arr)
+{
+    ll n = arr.size();
+    vector<pair<double, double>> dist;
+    long double left = -1e16, right = 1e16;
+    forn(i, n)
+    {
+        long double left_limit = arr[i].fi - time * arr[i].se;
+        long double right_limit = arr[i].fi + time * arr[i].se;
+        dist.pb({left_limit, right_limit});
+        left = max(left_limit, left);
+        right = min(right_limit, right);
+    }
+    if (right - left > 0)
+    {
+        return true;
+    }
+    return false;
+}
+
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    uv64 adj;
-    forn(i, m)
+    ll n;
+    cin >> n;
+    vector<pair<long double, long double>> arr;
+    long double mini = INF, maxxd = 0, minnd = INF;
+    forn(i, n)
     {
-        ll a, b;
+        long double a, b;
         cin >> a >> b;
-        adj[a].pb(b);
-        adj[b].pb(a);
+        arr.pb({a, b});
+        mini = min(mini, abs(b));
+        maxxd = max(maxxd, abs(a));
+        minnd = min(minnd, a);
     }
-    // now we need to do bfs
-    v64 dist(n + 1, -1), vis(n + 1, 0), parent(n + 1, 0);
-    queue<ll> q;
-    q.push(1);
-    dist[1] = 1;
-    vis[1] = 1;
-    parent[1] = 1;
-    while (!q.empty())
+    // cout << check(1.4, arr) << ln;
+    long double i = 0.00, j = (maxxd - minnd) / mini, ans = 0;
+    forn(z, 30)
     {
-        ll curr = q.front();
-        q.pop();
-        for (auto child : adj[curr])
+        long double mid = i + (j - i) / 2;
+        if (check(mid, arr))
         {
-            if (vis[child] == 0)
-            {
-                q.push(child);
-                vis[child] = 1;
-                dist[child] = dist[curr] + 1;
-                parent[child] = curr;
-            }
+            // cout << mid << ln;
+            ans = mid;
+            j = mid - 1;
+        }
+        else
+        {
+            i = mid + 1;
         }
     }
-    if (vis[n] == 0)
-    {
-        cout << "IMPOSSIBLE" << ln;
-        return;
-    }
-    // ending pt is n
-    // start kha h then it is 1
-    ll prev = n;
-    v64 route;
-    while (prev != 1)
-    {
-        route.pb(prev);
-        prev = parent[prev];
-    }
-    route.pb(prev);
-    reverse(all(route));
-    cout << route.size() << ln;
-    for (auto t : route)
-    {
-        cout << t << " ";
-    }
-    cout << ln;
+    cout << fixed << setprecision(10) << ans << ln;
 }
 
 int main()

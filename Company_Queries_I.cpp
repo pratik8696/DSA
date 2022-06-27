@@ -247,25 +247,13 @@ bool isPrime(int x)
     return true;
 }
 
-void solve()
+void bfs(uv64 &adj, v64 &dist, ll src)
 {
-    ll n, m;
-    cin >> n >> m;
-    uv64 adj;
-    forn(i, m)
-    {
-        ll a, b;
-        cin >> a >> b;
-        adj[a].pb(b);
-        adj[b].pb(a);
-    }
-    // now we need to do bfs
-    v64 dist(n + 1, -1), vis(n + 1, 0), parent(n + 1, 0);
     queue<ll> q;
-    q.push(1);
-    dist[1] = 1;
-    vis[1] = 1;
-    parent[1] = 1;
+    v64 vis(dist.size(), 0);
+    q.push(src);
+    dist[src] = 0;
+    vis[src] = 1;
     while (!q.empty())
     {
         ll curr = q.front();
@@ -274,35 +262,67 @@ void solve()
         {
             if (vis[child] == 0)
             {
+                dist[child] = dist[curr] + 1;
                 q.push(child);
                 vis[child] = 1;
-                dist[child] = dist[curr] + 1;
-                parent[child] = curr;
             }
         }
     }
-    if (vis[n] == 0)
+}
+
+void solve()
+{
+    ll n, m;
+    cin >> n >> m;
+    uv64 adj;
+    v64 parent(n + 1, -1);
+    forsn(i, 2, n + 1)
     {
-        cout << "IMPOSSIBLE" << ln;
-        return;
+        ll x;
+        cin >> x;
+        parent[i] = x;
+        adj[x].pb(i);
+        adj[i].pb(x);
     }
-    // ending pt is n
-    // start kha h then it is 1
-    ll prev = n;
-    v64 route;
-    while (prev != 1)
+    vv64 sparse(n + 1, v64(31, -1));
+    v64 lvl(n + 1, 0);
+    bfs(adj, lvl, 1);
+    forsn(i, 1, n + 1)
     {
-        route.pb(prev);
-        prev = parent[prev];
+        sparse[i][0] = parent[i];
     }
-    route.pb(prev);
-    reverse(all(route));
-    cout << route.size() << ln;
-    for (auto t : route)
+    for (ll j = 1; j < 30; j++)
     {
-        cout << t << " ";
+        for (ll i = 1; i <= n; i++)
+        {
+            ll par = sparse[i][j - 1];
+            if (par != -1)
+            {
+                sparse[i][j] = sparse[par][j - 1];
+            }
+        }
     }
-    cout << ln;
+    while (m--)
+    {
+        ll a, b;
+        cin >> a >> b;
+        ll steps = b;
+        // cout << lvl[a] << " " << b << ln;
+        if (lvl[a] < b)
+        {
+            cout << -1 << ln;
+        }
+        else
+        {
+            while (steps > 0)
+            {
+                // a needs to come up
+                a = sparse[a][__lg(steps)];
+                steps -= fastexpo(2, __lg(steps));
+            }
+            cout << a << ln;
+        }
+    }
 }
 
 int main()

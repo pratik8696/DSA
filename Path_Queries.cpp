@@ -58,6 +58,30 @@ double eps = 1e-12;
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
 #define rforn(i, s) for (ll i = s; i >= 0; i--)
 #define rforsn(i, s, e) for (ll i = s; i >= e; i--)
+struct custom_hash
+{
+    static uint64_t splitmix64(uint64_t x)
+    {
+        x += 0x9e3779b97f4a7c15;
+        x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
+        x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
+        return x ^ (x >> 31);
+    }
+
+    size_t operator()(p64 x) const
+    {
+        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+        return splitmix64(x.first + FIXED_RANDOM) ^ splitmix64(x.second + FIXED_RANDOM);
+    }
+    size_t operator()(ll x) const
+    {
+        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+        return splitmix64(x + FIXED_RANDOM);
+    }
+};
+typedef gp_hash_table<ll, ll, custom_hash> fm64;
+typedef gp_hash_table<p64, ll, custom_hash> fmp64;
+
 #define ln "\n"
 #define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
@@ -247,62 +271,124 @@ bool isPrime(int x)
     return true;
 }
 
+void build(ll arr[], ll tree[], ll s, ll e, ll tn)
+{
+    if (s == e)
+    {
+        tree[tn] = arr[s];
+        return;
+    }
+    ll mid = (s + e) / 2;
+    build(arr, tree, s, mid, 2 * tn);
+    build(arr, tree, mid + 1, e, (2 * tn) + 1);
+    tree[tn] = tree[2 * tn] + tree[(2 * tn) + 1];
+}
+
+ll query(ll arr[], ll tree[], ll s, ll e, ll tn, ll l, ll r)
+{
+    ll mid = (s + e) / 2;
+    // out
+    if (s > r || l > e)
+    {
+        return 0;
+    }
+    // in
+    if (s >= l && r >= e)
+    {
+        return tree[tn];
+    }
+
+    ll ans1 = query(arr, tree, s, mid, 2 * tn, l, r);
+    ll ans2 = query(arr, tree, mid + 1, e, (2 * tn) + 1, l, r);
+    return ans1 + ans2;
+}
+
+void update(ll arr[], ll tree[], ll s, ll e, ll tn, ll idx, ll val)
+{
+    if (s == e)
+    {
+        arr[idx] = val;
+        tree[tn] = val;
+        return;
+    }
+    ll mid = (s + e) / 2;
+    if (idx > mid)
+    {
+        update(arr, tree, mid + 1, e, (2 * tn) + 1, idx, val);
+    }
+    else
+    {
+        update(arr, tree, s, mid, 2 * tn, idx, val);
+    }
+    tree[tn] = tree[2 * tn] + tree[(2 * tn) + 1];
+}
+
+ll timer;
+u64 intime, outtime;
+
+void dfs(int v, v64 &vis, uv64 &adj, v64 &val, ll arr[])
+{
+    vis[v] = 1;
+    arr[timer] = val[v];
+    intime[v] = timer;
+    timer++;
+    for (auto child : adj[v])
+    {
+        if (vis[child] == 0)
+        {
+            dfs(child, vis, adj, val, arr);
+        }
+    }
+    arr[timer] = -val[v];
+    outtime[v] = timer;
+    timer++;
+}
+
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
+    ll n, k;
+    cin >> n >> k;
+    v64 val(n + 1, 0);
+    forn(i, n)
+    {
+        cin >> val[i + 1];
+    }
     uv64 adj;
-    forn(i, m)
+    forn(i, n - 1)
     {
         ll a, b;
         cin >> a >> b;
         adj[a].pb(b);
         adj[b].pb(a);
     }
-    // now we need to do bfs
-    v64 dist(n + 1, -1), vis(n + 1, 0), parent(n + 1, 0);
-    queue<ll> q;
-    q.push(1);
-    dist[1] = 1;
-    vis[1] = 1;
-    parent[1] = 1;
-    while (!q.empty())
+    v64 vis(n + 1, 0);
+    ll arr[2 * n], tree[8 * n];
+    dfs(1, vis, adj, val, arr);
+    build(arr, tree, 0, (2 * n) - 1, 1);
+    // forn(i, 2 * n)
+    // {
+    //     cout << arr[i] << " ";
+    // }
+    // cout << ln;
+    while (k--)
     {
-        ll curr = q.front();
-        q.pop();
-        for (auto child : adj[curr])
+        ll x;
+        cin >> x;
+        if (x == 2)
         {
-            if (vis[child] == 0)
-            {
-                q.push(child);
-                vis[child] = 1;
-                dist[child] = dist[curr] + 1;
-                parent[child] = curr;
-            }
+            cin >> x;
+            // cout << intime[x] << " " << outtime[x] << ln;
+            cout << query(arr, tree, 0, (2 * n) - 1, 1, 0, intime[x]) << ln;
+        }
+        else
+        {
+            ll a, b;
+            cin >> a >> b;
+            // cout << intime[a] << " " << outtime[a] << ln;
+            update(arr, tree, 0, (2 * n) - 1, 1, intime[a] , b);
+            update(arr, tree, 0, (2 * n) - 1, 1, outtime[a], -b);
         }
     }
-    if (vis[n] == 0)
-    {
-        cout << "IMPOSSIBLE" << ln;
-        return;
-    }
-    // ending pt is n
-    // start kha h then it is 1
-    ll prev = n;
-    v64 route;
-    while (prev != 1)
-    {
-        route.pb(prev);
-        prev = parent[prev];
-    }
-    route.pb(prev);
-    reverse(all(route));
-    cout << route.size() << ln;
-    for (auto t : route)
-    {
-        cout << t << " ";
-    }
-    cout << ln;
 }
 
 int main()

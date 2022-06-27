@@ -16,6 +16,7 @@
 #include <cmath>
 #include <string>
 #include <vector>
+
 #include <map>
 #include <unordered_map>
 #include <stack>
@@ -247,58 +248,131 @@ bool isPrime(int x)
     return true;
 }
 
-void solve()
+ll n, m, k;
+bool check(ll max_val, unordered_map<ll, vp64> &edge, v64 &dist)
 {
-    ll n, m;
-    cin >> n >> m;
-    uv64 adj;
-    forn(i, m)
-    {
-        ll a, b;
-        cin >> a >> b;
-        adj[a].pb(b);
-        adj[b].pb(a);
-    }
-    // now we need to do bfs
-    v64 dist(n + 1, -1), vis(n + 1, 0), parent(n + 1, 0);
     queue<ll> q;
     q.push(1);
-    dist[1] = 1;
-    vis[1] = 1;
-    parent[1] = 1;
+    dist[1] = 0;
+    ll flag = 0;
     while (!q.empty())
     {
         ll curr = q.front();
         q.pop();
-        for (auto child : adj[curr])
+        for (auto t : edge[curr])
         {
-            if (vis[child] == 0)
+            ll child = t.fi;
+            ll wt = t.se;
+            if (wt > max_val)
             {
-                q.push(child);
-                vis[child] = 1;
+                continue;
+            }
+            else
+            {
+                // par[child] = curr;
                 dist[child] = dist[curr] + 1;
-                parent[child] = curr;
+                if (child == n)
+                {
+                    flag = 1;
+                    break;
+                }
+                q.push(child);
             }
         }
+        if (flag)
+        {
+            break;
+        }
     }
-    if (vis[n] == 0)
+    if (dist[n] <= k)
     {
-        cout << "IMPOSSIBLE" << ln;
+        fill(all(dist), 1e15);
+        return true;
+    }
+    fill(all(dist), 1e15);
+    return false;
+}
+
+void solve()
+{
+    cin >> n >> m >> k;
+    unordered_map<ll, vp64> edge;
+    v64 vis(n + 1, 0), dist(n + 1, 1e15);
+    v64 par(n + 1, 0);
+    ll maxx = 0;
+    forn(i, m)
+    {
+        ll a, b, c;
+        cin >> a >> b >> c;
+        edge[a].pb({b, c});
+        maxx = max(maxx, c);
+    }
+    ll i = 0, j = maxx, ans = -1;
+    while (i <= j)
+    {
+        ll mid = i + (j - i) / 2;
+        if (check(mid, edge, dist))
+        {
+            ans = mid;
+            j = mid - 1;
+        }
+        else
+        {
+            i = mid + 1;
+        }
+    }
+    // now find a path where max is 6 and reaches dist in min time
+    if (ans == -1)
+    {
+        cout << -1 << ln;
         return;
     }
-    // ending pt is n
-    // start kha h then it is 1
+
+    queue<ll> q;
+    q.push(1);
+    par[1] = 1;
+    ll flag = 0;
+    while (!q.empty())
+    {
+        ll curr = q.front();
+        q.pop();
+        for (auto t : edge[curr])
+        {
+            ll child = t.fi;
+            ll wt = t.se;
+            if (wt > ans)
+            {
+                continue;
+            }
+            else
+            {
+                par[child] = curr;
+                dist[child] = dist[curr] + 1;
+                if (child == n)
+                {
+                    flag = 1;
+                    break;
+                }
+                q.push(child);
+            }
+        }
+        if (flag)
+        {
+            break;
+        }
+    }
+
+    v64 path;
     ll prev = n;
-    v64 route;
     while (prev != 1)
     {
-        route.pb(prev);
-        prev = parent[prev];
+        path.pb(prev);
+        prev = par[prev];
     }
-    route.pb(prev);
-    reverse(all(route));
-    cout << route.size() << ln;
-    for (auto t : route)
+    path.pb(prev);
+    reverse(all(path));
+    cout << path.size() - 1 << ln;
+    for (auto t : path)
     {
         cout << t << " ";
     }

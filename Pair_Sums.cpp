@@ -2,8 +2,6 @@
 #pragma GCC target("sse,sse2,sse3,ssse3,sse4,popcnt,abm,mmx,avx,avx2,fma")
 #pragma GCC optimize("unroll-loops")
 #include <bits/stdc++.h>
-#include <ext/pb_ds/assoc_container.hpp>
-#include <ext/pb_ds/tree_policy.hpp>
 #include <complex>
 #include <queue>
 #include <set>
@@ -23,11 +21,8 @@
 #include <fstream>
 
 using namespace std;
-using namespace __gnu_pbds;
-typedef long long ll;
-// use less_equal to make it multiset
-typedef tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update> pbds;
 typedef unsigned long long ull;
+typedef long long ll;
 typedef long double ld;
 typedef pair<int, int> p32;
 typedef pair<ll, ll> p64;
@@ -39,19 +34,6 @@ typedef vector<vector<ll>> vv64;
 typedef vector<vector<p64>> vvp64;
 typedef vector<p64> vp64;
 typedef vector<p32> vp32;
-typedef vector<pair<p64, ll>> vpp64;
-typedef set<ll> s64;
-typedef set<p64> sp64;
-typedef multiset<ll> ms64;
-typedef multiset<p64> msp64;
-typedef map<ll, ll> m64;
-typedef map<ll, v64> mv64;
-typedef unordered_map<ll, v64> uv64;
-typedef unordered_map<ll, ll> u64;
-typedef unordered_map<p64, ll> up64;
-typedef unordered_map<ll, vp64> uvp64;
-typedef priority_queue<ll> pq64;
-typedef priority_queue<ll, v64, greater<ll>> pqs64;
 ll MOD = 1000000007;
 double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
@@ -61,10 +43,11 @@ double eps = 1e-12;
 #define ln "\n"
 #define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
-#define ie insert
 #define pb push_back
 #define fi first
 #define se second
+#define m64 map<ll, ll>
+#define mv64 map<ll, v64>
 #define INF 2e18
 #define fast_cin()                    \
     ios_base::sync_with_stdio(false); \
@@ -73,24 +56,6 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-
-// dsu functions
-// void make_set(int v) {
-//   parent[v] = v;
-//}
-
-// int find_set(int v,v64 &parent) {
-//   if (-1 == parent[v])
-// return v;
-// return parent[v]=find_set(parent[v],parent);
-// }
-
-// void union_sets(int a, int b,v64 &parent) {
-//   a = find_set(a,parent);
-// b = find_set(b,parent);
-// if (a != b)
-// parent[b] = a;
-// }
 
 // function for prime factorization
 vector<pair<ll, ll>> pf(ll n)
@@ -129,62 +94,37 @@ ll sumofno(ll n)
 }
 
 // modular exponentiation
-long long modpow(long long x, long long n, long long p)
+long long modpow(long long val, long long deg, long long mod)
 {
-
-    if (n == 0)
-        return 1 % p;
-
-    ll ans = 1, base = x;
-    while (n > 0)
-    {
-        if (n % 2 == 1)
-        {
-            ans = (ans * base) % p;
-            n--;
-        }
-        else
-        {
-            base = (base * base) % p;
-            n /= 2;
-        }
-    }
-    if (ans < 0)
-        ans = (ans + p) % p;
-    return ans;
+    if (!deg)
+        return 1 % mod;
+    if (deg & 1)
+        return modpow(val, deg - 1, mod) * val % mod;
+    long long res = modpow(val, deg >> 1, mod);
+    return (res * res) % mod;
 }
 
-// const int N = 1e6 + 100;
-// long long fact[N];
-//  initialise the factorial
-// void initfact(){
-// fact[0] = 1;
-// for (int i = 1; i < N; i++)
-//{
-// fact[i] = (fact[i - 1] * i);
-// fact[i] %= MOD;
-// }}
+const int N = 1e6 + 100;
+long long fact[N];
+// initialise the factorial
+void initfact()
+{
+    fact[0] = 1;
+    for (int i = 1; i < N; i++)
+    {
+        fact[i] = (fact[i - 1] * i);
+        fact[i] %= MOD;
+    }
+}
 
 // formula for c
-// ll C(ll n, ll i)
-//{
-// ll res = fact[n];
-// ll div = fact[n - i] * fact[i];
-// div %= MOD;
-// div = modpow(div, MOD - 2, MOD);
-// return (res * div) % MOD;
-// }
-
-long long CW(ll n, ll m)
+ll C(ll n, ll i)
 {
-    if (m > n - m)
-        m = n - m;
-    long long ans = 1;
-    for (int i = 0; i < m; i++)
-    {
-        ans = ans * (n - i) / (i + 1);
-    }
-    return ans;
+    ll res = fact[n];
+    ll div = fact[n - i] * fact[i];
+    div %= MOD;
+    div = modpow(div, MOD - 2, MOD);
+    return (res * div) % MOD;
 }
 
 // function for fast expo
@@ -237,81 +177,44 @@ bool pow2(ll x)
     return false;
 }
 
-bool isPrime(int x)
-{
-    for (int d = 2; d * d <= x; d++)
-    {
-        if (x % d == 0)
-            return false;
-    }
-    return true;
-}
-
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    uv64 adj;
-    forn(i, m)
+    ll n, k;
+    cin >> n >> k;
+    ll arr[n], brr[n];
+    map<ll, ll> hsh;
+    forn(i, n)
     {
-        ll a, b;
-        cin >> a >> b;
-        adj[a].pb(b);
-        adj[b].pb(a);
-    }
-    // now we need to do bfs
-    v64 dist(n + 1, -1), vis(n + 1, 0), parent(n + 1, 0);
-    queue<ll> q;
-    q.push(1);
-    dist[1] = 1;
-    vis[1] = 1;
-    parent[1] = 1;
-    while (!q.empty())
-    {
-        ll curr = q.front();
-        q.pop();
-        for (auto child : adj[curr])
+        cin >> arr[i];
+        if (k - arr[i] >= 0)
         {
-            if (vis[child] == 0)
-            {
-                q.push(child);
-                vis[child] = 1;
-                dist[child] = dist[curr] + 1;
-                parent[child] = curr;
-            }
+            brr[i] = k - arr[i];
+        }
+        else
+        {
+            brr[i] = 0;
+        }
+        hsh[arr[i]]++;
+    }
+    forn(i, n)
+    {
+        if (hsh[brr[i]] >= 1 && brr[i] * 2 != k)
+        {
+            cout << "YES" << ln;
+            return;
+        }
+        else if (hsh[brr[i]] >= 2 && brr[i] * 2 == k)
+        {
+            cout << "YES" << ln;
+            return;
         }
     }
-    if (vis[n] == 0)
-    {
-        cout << "IMPOSSIBLE" << ln;
-        return;
-    }
-    // ending pt is n
-    // start kha h then it is 1
-    ll prev = n;
-    v64 route;
-    while (prev != 1)
-    {
-        route.pb(prev);
-        prev = parent[prev];
-    }
-    route.pb(prev);
-    reverse(all(route));
-    cout << route.size() << ln;
-    for (auto t : route)
-    {
-        cout << t << " ";
-    }
-    cout << ln;
+    cout << "NO" << ln;
 }
 
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
     ll t = 1;
     // cin >> t;
     for (int it = 1; it <= t; it++)

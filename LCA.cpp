@@ -247,25 +247,13 @@ bool isPrime(int x)
     return true;
 }
 
-void solve()
+void bfs(uv64 &adj, v64 &dist, ll src)
 {
-    ll n, m;
-    cin >> n >> m;
-    uv64 adj;
-    forn(i, m)
-    {
-        ll a, b;
-        cin >> a >> b;
-        adj[a].pb(b);
-        adj[b].pb(a);
-    }
-    // now we need to do bfs
-    v64 dist(n + 1, -1), vis(n + 1, 0), parent(n + 1, 0);
     queue<ll> q;
-    q.push(1);
-    dist[1] = 1;
-    vis[1] = 1;
-    parent[1] = 1;
+    v64 vis(dist.size(), 0);
+    q.push(src);
+    dist[src] = 0;
+    vis[src] = 1;
     while (!q.empty())
     {
         ll curr = q.front();
@@ -274,35 +262,121 @@ void solve()
         {
             if (vis[child] == 0)
             {
+                dist[child] = dist[curr] + 1;
                 q.push(child);
                 vis[child] = 1;
-                dist[child] = dist[curr] + 1;
-                parent[child] = curr;
             }
         }
     }
-    if (vis[n] == 0)
+}
+
+void dfs(int v, v64 &vis, uv64 &adj, v64 &parent, ll par)
+{
+    vis[v] = 1;
+    parent[v] = par;
+    for (auto child : adj[v])
     {
-        cout << "IMPOSSIBLE" << ln;
-        return;
+        if (vis[child] == 0)
+        {
+            dfs(child, vis, adj, parent, v);
+        }
     }
-    // ending pt is n
-    // start kha h then it is 1
-    ll prev = n;
-    v64 route;
-    while (prev != 1)
+}
+
+void sparse_table(vv64 &sparse, v64 &parent)
+{
+    ll n = parent.size() - 1;
+    for (ll i = 1; i <= n; i++)
     {
-        route.pb(prev);
-        prev = parent[prev];
+        sparse[i][0] = parent[i];
     }
-    route.pb(prev);
-    reverse(all(route));
-    cout << route.size() << ln;
-    for (auto t : route)
+
+    forsn(j, 1, 4)
     {
-        cout << t << " ";
+        forsn(i, 1, n + 1)
+        {
+            ll par = sparse[i][j - 1];
+            if (par != -1)
+            {
+                sparse[i][j] = sparse[par][j - 1];
+            }
+        }
+    }
+}
+
+ll lca(ll a, ll b, vv64 &sparse, v64 &lvl)
+{
+    ll diff = lvl[a] - lvl[b];
+    if (diff > 0)
+    {
+        // increase a
+        while (diff)
+        {
+            a = sparse[a][__lg(diff)];
+            diff -= fastexpo(2, __lg(diff));
+        }
+    }
+    else if (diff < 0)
+    {
+        diff = abs(diff);
+        // increase b
+        while (diff)
+        {
+            b = sparse[b][__lg(diff)];
+            diff -= fastexpo(2, __lg(diff));
+        }
+    }
+
+    forsn(i, 0, 4)
+    {
+        if (sparse[a][0] != sparse[b][0])
+        {
+            a = sparse[a][0];
+            b = sparse[b][0];
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    return sparse[b][0];
+}
+
+
+void solve()
+{
+    ll n;
+    cin >> n;
+    uv64 adj;
+    vv64 sparse(n + 10, v64(__lg(n) + 1, -1));
+    v64 parent(n + 1, -1), vis(n + 1, 0), lvl(n + 1, 0);
+    forn(i, n - 1)
+    {
+        ll a, b;
+        cin >> a >> b;
+        adj[a].pb(b);
+        adj[b].pb(a);
+    }
+    // now we are going to do dfs for calculating the parent
+    dfs(1, vis, adj, parent, -1);
+    bfs(adj, lvl, 1);
+    sparse_table(sparse, parent);
+    forsn(i, 1, n + 1)
+    {
+        forsn(j, 0, 4)
+        {
+            cout << sparse[i][j] << "  ";
+        }
+        cout << ln;
+    }
+    forsn(i, 1, n + 1)
+    {
+        cout << lvl[i] << " ";
     }
     cout << ln;
+    // now lets find lca
+    cout << lca(1, 9, sparse, lvl) << ln;
 }
 
 int main()

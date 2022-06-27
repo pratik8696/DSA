@@ -247,25 +247,13 @@ bool isPrime(int x)
     return true;
 }
 
-void solve()
+void bfs(uv64 &adj, v64 &dist, ll src)
 {
-    ll n, m;
-    cin >> n >> m;
-    uv64 adj;
-    forn(i, m)
-    {
-        ll a, b;
-        cin >> a >> b;
-        adj[a].pb(b);
-        adj[b].pb(a);
-    }
-    // now we need to do bfs
-    v64 dist(n + 1, -1), vis(n + 1, 0), parent(n + 1, 0);
     queue<ll> q;
-    q.push(1);
-    dist[1] = 1;
-    vis[1] = 1;
-    parent[1] = 1;
+    v64 vis(dist.size(), 0);
+    q.push(src);
+    dist[src] = 0;
+    vis[src] = 1;
     while (!q.empty())
     {
         ll curr = q.front();
@@ -274,35 +262,64 @@ void solve()
         {
             if (vis[child] == 0)
             {
+                dist[child] = dist[curr] + 1;
                 q.push(child);
                 vis[child] = 1;
-                dist[child] = dist[curr] + 1;
-                parent[child] = curr;
             }
         }
     }
-    if (vis[n] == 0)
+}
+
+void solve()
+{
+    ll n;
+    cin >> n;
+    uv64 adj;
+    forn(i, n - 1)
     {
-        cout << "IMPOSSIBLE" << ln;
-        return;
+        ll a, b;
+        cin >> a >> b;
+        adj[a].pb(b);
+        adj[b].pb(a);
     }
-    // ending pt is n
-    // start kha h then it is 1
-    ll prev = n;
-    v64 route;
-    while (prev != 1)
+    v64 dist(n + 1, 0), dist2(n + 1, 0);
+    bfs(adj, dist, 1);
+    ll node = 1, dis = -INF;
+    forsn(i, 1, n + 1)
     {
-        route.pb(prev);
-        prev = parent[prev];
+        if (dis < dist[i])
+        {
+            node = i;
+            dis = dist[i];
+        }
     }
-    route.pb(prev);
-    reverse(all(route));
-    cout << route.size() << ln;
-    for (auto t : route)
+    fill(all(dist), 0);
+    bfs(adj, dist, node);
+    dis = -1;
+    forsn(i, 1, n + 1)
     {
-        cout << t << " ";
+        if (dis < dist[i])
+        {
+            node = i;
+            dis = dist[i];
+        }
     }
-    cout << ln;
+    bfs(adj, dist2, node);
+    // forsn(i, 1, n + 1)
+    // {
+    //     cout << dist[i] << " ";
+    // }
+    // cout << ln;
+    // forsn(i, 1, n + 1)
+    // {
+    //     cout << dist2[i] << " ";
+    // }
+    // cout << ln;
+    forsn(i, 1, n + 1)
+    {
+        cout << max(dist2[i], dist[i]) + 1 <<ln;
+    }
+    // cout << ln;
 }
 
 int main()

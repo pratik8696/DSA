@@ -249,60 +249,77 @@ bool isPrime(int x)
 
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    uv64 adj;
-    forn(i, m)
+    ll n;
+    cin >> n;
+    string s;
+    cin >> s;
+    string ref = "";
+    ref.pb('8');
+    while (ref.length() != s.length())
     {
-        ll a, b;
-        cin >> a >> b;
-        adj[a].pb(b);
-        adj[b].pb(a);
+        ref.pb('9');
     }
-    // now we need to do bfs
-    v64 dist(n + 1, -1), vis(n + 1, 0), parent(n + 1, 0);
-    queue<ll> q;
-    q.push(1);
-    dist[1] = 1;
-    vis[1] = 1;
-    parent[1] = 1;
-    while (!q.empty())
+    if (s >= ref)
     {
-        ll curr = q.front();
-        q.pop();
-        for (auto child : adj[curr])
+        v64 add, rem;
+        add.pb(2);
+        while (add.size() != s.length())
         {
-            if (vis[child] == 0)
+            add.pb(1);
+        }
+        add.pb(0);
+        forn(i, n)
+        {
+            if (s[i] == '9')
             {
-                q.push(child);
-                vis[child] = 1;
-                dist[child] = dist[curr] + 1;
-                parent[child] = curr;
+                rem.pb(int(s[i]) - '9');
+            }
+            else
+            {
+                rem.pb('9' - int(s[i]));
             }
         }
+        reverse(all(rem));
+        rem.pb(0);
+        n = add.size();
+        ll carry = 0;
+        forn(i, n)
+        {
+            ll curr = add[i] + rem[i];
+            if (carry)
+            {
+                curr += carry;
+                carry = 0;
+            }
+            if (curr >= 10)
+            {
+                carry = curr / 10;
+                add[i] = curr % 10;
+            }
+            else
+            {
+                add[i] = curr;
+            }
+        }
+        if (add.back() == 0)
+        {
+            add.pop_back();
+        }
+        reverse(all(add));
+        for (auto t : add)
+        {
+            cout << t;
+        }
+        cout << ln;
     }
-    if (vis[n] == 0)
+    else
     {
-        cout << "IMPOSSIBLE" << ln;
-        return;
+        forn(i, n)
+        {
+            cout << '9' - s[i];
+        }
+        cout << ln;
     }
-    // ending pt is n
-    // start kha h then it is 1
-    ll prev = n;
-    v64 route;
-    while (prev != 1)
-    {
-        route.pb(prev);
-        prev = parent[prev];
-    }
-    route.pb(prev);
-    reverse(all(route));
-    cout << route.size() << ln;
-    for (auto t : route)
-    {
-        cout << t << " ";
-    }
-    cout << ln;
 }
 
 int main()
@@ -312,8 +329,8 @@ int main()
     //  freopen("revegetate.in", "r", stdin);
     // freopen("revegetate.out", "w", stdout);
     //#endif
-    ll t = 1;
-    // cin >> t;
+    ll t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

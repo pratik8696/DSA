@@ -247,62 +247,85 @@ bool isPrime(int x)
     return true;
 }
 
-void solve()
+ll n;
+ll coin1, coin2, start1, start2, k;
+ll val1, val2, val3;
+
+bool compare(p64 a, p64 b)
 {
-    ll n, m;
-    cin >> n >> m;
-    uv64 adj;
-    forn(i, m)
+    return a.fi > b.fi;
+}
+
+bool check(ll cc, ll arr[])
+{
+    vp64 curr;
+    ll cc1 = 0, cc2 = 0, cc3 = 0;
+    forsn(i, 1, cc + 1)
     {
-        ll a, b;
-        cin >> a >> b;
-        adj[a].pb(b);
-        adj[b].pb(a);
-    }
-    // now we need to do bfs
-    v64 dist(n + 1, -1), vis(n + 1, 0), parent(n + 1, 0);
-    queue<ll> q;
-    q.push(1);
-    dist[1] = 1;
-    vis[1] = 1;
-    parent[1] = 1;
-    while (!q.empty())
-    {
-        ll curr = q.front();
-        q.pop();
-        for (auto child : adj[curr])
+        if (i % start1 == 0 && i % start2 == 0)
         {
-            if (vis[child] == 0)
-            {
-                q.push(child);
-                vis[child] = 1;
-                dist[child] = dist[curr] + 1;
-                parent[child] = curr;
-            }
+            cc3++;
+        }
+        else if (i % start1 == 0)
+        {
+            cc1++;
+        }
+        else if (i % start2 == 0)
+        {
+            cc2++;
         }
     }
-    if (vis[n] == 0)
+    ll sum = 0;
+    forn(i, cc3)
     {
-        cout << "IMPOSSIBLE" << ln;
-        return;
+        sum += (arr[i] * val3) / 100;
     }
-    // ending pt is n
-    // start kha h then it is 1
-    ll prev = n;
-    v64 route;
-    while (prev != 1)
+    forn(i, cc1)
     {
-        route.pb(prev);
-        prev = parent[prev];
+        sum += (arr[i + cc3] * val1) / 100;
     }
-    route.pb(prev);
-    reverse(all(route));
-    cout << route.size() << ln;
-    for (auto t : route)
+    forn(i, cc2)
     {
-        cout << t << " ";
+        sum += (arr[i + cc3 + cc1] * val2) / 100;
     }
-    cout << ln;
+    if (sum >= k)
+    {
+        return true;
+    }
+    return false;
+}
+
+void solve()
+{
+    cin >> n;
+    ll arr[n];
+    forn(i, n)
+    {
+        cin >> arr[i];
+    }
+    sort(al(arr, n), greater<ll>());
+    cin >> coin1 >> start1 >> coin2 >> start2 >> k;
+    if (coin1 < coin2)
+    {
+        swap(coin1, coin2);
+        swap(start1, start2);
+    }
+    val1 = coin1, val2 = coin2, val3 = coin1 + coin2;
+    ll i = 0, j = n, ans = -1;
+    while (i <= j)
+    {
+        ll mid = i + (j - i) / 2;
+        if (check(mid, arr))
+        {
+            ans = mid;
+            j = mid - 1;
+        }
+        else
+        {
+            i = mid + 1;
+        }
+    }
+    cout << ans << ln;
 }
 
 int main()
@@ -312,8 +335,8 @@ int main()
     //  freopen("revegetate.in", "r", stdin);
     // freopen("revegetate.out", "w", stdout);
     //#endif
-    ll t = 1;
-    // cin >> t;
+    ll t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

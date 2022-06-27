@@ -249,60 +249,47 @@ bool isPrime(int x)
 
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    uv64 adj;
-    forn(i, m)
+    ll n;
+    cin >> n;
+    ll arr[n];
+    set<p64> s;
+    forn(i, n)
     {
-        ll a, b;
-        cin >> a >> b;
-        adj[a].pb(b);
-        adj[b].pb(a);
-    }
-    // now we need to do bfs
-    v64 dist(n + 1, -1), vis(n + 1, 0), parent(n + 1, 0);
-    queue<ll> q;
-    q.push(1);
-    dist[1] = 1;
-    vis[1] = 1;
-    parent[1] = 1;
-    while (!q.empty())
-    {
-        ll curr = q.front();
-        q.pop();
-        for (auto child : adj[curr])
+        cin >> arr[i];
+        if (arr[i])
         {
-            if (vis[child] == 0)
-            {
-                q.push(child);
-                vis[child] = 1;
-                dist[child] = dist[curr] + 1;
-                parent[child] = curr;
-            }
+            s.ie({arr[i], i + 1});
         }
     }
-    if (vis[n] == 0)
+    vp64 ans;
+    while (s.size() > 1)
     {
-        cout << "IMPOSSIBLE" << ln;
-        return;
+        auto bit = s.rbegin();
+        auto sit = s.begin();
+
+        ll vals = sit->first, idxs = sit->second;
+        ll vall = bit->first, idxl = bit->second;
+
+        s.erase(s.find({vals, idxs}));
+        s.erase(s.find({vall, idxl}));
+
+        // cout << idxs << " " << idxl << ln;
+        ans.pb({idxs, idxl});
+        vals--, vall--;
+        if (vals)
+        {
+            s.ie({vals, idxs});
+        }
+        if (vall)
+        {
+            s.ie({vall, idxl});
+        }
     }
-    // ending pt is n
-    // start kha h then it is 1
-    ll prev = n;
-    v64 route;
-    while (prev != 1)
+    cout << ans.size() << ln;
+    for (auto t : ans)
     {
-        route.pb(prev);
-        prev = parent[prev];
+        cout << t.fi << " " << t.se << ln;
     }
-    route.pb(prev);
-    reverse(all(route));
-    cout << route.size() << ln;
-    for (auto t : route)
-    {
-        cout << t << " ";
-    }
-    cout << ln;
 }
 
 int main()
@@ -312,8 +299,8 @@ int main()
     //  freopen("revegetate.in", "r", stdin);
     // freopen("revegetate.out", "w", stdout);
     //#endif
-    ll t = 1;
-    // cin >> t;
+    ll t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

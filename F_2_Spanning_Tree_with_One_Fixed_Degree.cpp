@@ -58,6 +58,30 @@ double eps = 1e-12;
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
 #define rforn(i, s) for (ll i = s; i >= 0; i--)
 #define rforsn(i, s, e) for (ll i = s; i >= e; i--)
+struct custom_hash
+{
+    static uint64_t splitmix64(uint64_t x)
+    {
+        x += 0x9e3779b97f4a7c15;
+        x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
+        x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
+        return x ^ (x >> 31);
+    }
+
+    size_t operator()(p64 x) const
+    {
+        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+        return splitmix64(x.first + FIXED_RANDOM) ^ splitmix64(x.second + FIXED_RANDOM);
+    }
+    size_t operator()(ll x) const
+    {
+        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+        return splitmix64(x + FIXED_RANDOM);
+    }
+};
+typedef gp_hash_table<ll, ll, custom_hash> fm64;
+typedef gp_hash_table<p64, ll, custom_hash> fmp64;
+
 #define ln "\n"
 #define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
@@ -247,10 +271,50 @@ bool isPrime(int x)
     return true;
 }
 
+ll n, m, k;
+void bfs(uv64 &adj, v64 &dist, ll src, vp64 &ans)
+{
+    queue<ll> q;
+    v64 vis(dist.size(), 0);
+    dist[src] = 0;
+    vis[src] = 1;
+    q.push(src);
+    while (!q.empty())
+    {
+        ll curr = q.front();
+        // cout << curr << ln;
+        q.pop();
+        for (auto child : adj[curr])
+        {
+            if (vis[child] == 0)
+            {
+                ans.pb({curr, child});
+                dist[child] = dist[curr] + 1;
+                q.push(child);
+                vis[child] = 1;
+            }
+        }
+    }
+}
+
+ll type;
+u64 kind;
+void dfs(int v, v64 &vis, uv64 &adj)
+{
+    vis[v] = 1;
+    kind[v] = type;
+    for (auto child : adj[v])
+    {
+        if (vis[child] == 0 && child != 1)
+        {
+            dfs(child, vis, adj);
+        }
+    }
+}
+
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
+    cin >> n >> m >> k;
     uv64 adj;
     forn(i, m)
     {
@@ -259,50 +323,76 @@ void solve()
         adj[a].pb(b);
         adj[b].pb(a);
     }
-    // now we need to do bfs
-    v64 dist(n + 1, -1), vis(n + 1, 0), parent(n + 1, 0);
-    queue<ll> q;
-    q.push(1);
-    dist[1] = 1;
-    vis[1] = 1;
-    parent[1] = 1;
-    while (!q.empty())
+    // remove a and find the cc
+    v64 vis(n + 1, 0);
+    vp64 ans;
+    ll cc = 0;
+    forsn(i, 2, n + 1)
     {
-        ll curr = q.front();
-        q.pop();
-        for (auto child : adj[curr])
+        if (vis[i] == 0)
         {
-            if (vis[child] == 0)
-            {
-                q.push(child);
-                vis[child] = 1;
-                dist[child] = dist[curr] + 1;
-                parent[child] = curr;
-            }
+            cc++, type++;
+            dfs(i, vis, adj);
         }
     }
-    if (vis[n] == 0)
+    if (cc > k || k > adj[1].size())
     {
-        cout << "IMPOSSIBLE" << ln;
+        cout << "NO" << ln;
         return;
     }
-    // ending pt is n
-    // start kha h then it is 1
-    ll prev = n;
-    v64 route;
-    while (prev != 1)
+    auto &x = adj[1];
+    // forsn(i, 1, n + 1)
+    // {
+    //     cout << kind[i] << " ";
+    // }
+    // cout << ln;
+    s64 comp;
+    s64 nes;
+    forn(i, x.size())
     {
-        route.pb(prev);
-        prev = parent[prev];
+        if (comp.count(kind[x[i]]) == 0)
+        {
+            comp.ie(kind[x[i]]);
+            nes.ie(x[i]);
+        }
     }
-    route.pb(prev);
-    reverse(all(route));
-    cout << route.size() << ln;
-    for (auto t : route)
+    if (nes.size() == 1)
     {
-        cout << t << " ";
+        nes.clear(), kind.clear();
     }
-    cout << ln;
+    ll rem = max(k - ll(nes.size()), ll(0));
+    // cout << rem << ln;
+    forn(i, x.size())
+    {
+        if (nes.count(x[i]))
+        {
+            continue;
+        }
+        else if (rem)
+        {
+            rem--;
+        }
+        else
+        {
+            x[i] = 1;
+        }
+    }
+    // forsn(i, 1, n + 1)
+    // {
+    //     cout << i << "--> ";
+    //     for (auto t : adj[i])
+    //     {
+    //         cout << t << " ";
+    //     }
+    //     cout << ln;
+    // }
+    v64 dist(n + 1, 0);
+    bfs(adj, dist, 1, ans);
+    cout << "YES" << ln;
+    for (auto t : ans)
+    {
+        cout << t.fi << " " << t.se << ln;
+    }
 }
 
 int main()

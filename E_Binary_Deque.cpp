@@ -261,20 +261,41 @@ void solve()
     pre[0] = -1e10;
     for (ll i = n; i >= 1; i--)
     {
-        sum += arr[i-1];
+        sum += arr[i - 1];
         pre[i] = -sum;
     }
-    forn(i, n + 2)
+    if (abs(pre[1]) < k)
     {
-        cout << pre[i] << " ";
+        cout << -1 << ln;
+        return;
     }
-    cout << ln;
+    // forn(i, n + 2)
+    // {
+    //     cout << pre[i] << " ";
+    // }
+    // cout << ln;
     ll val = -k;
-    ll idx = upper_bound(all(pre), val) - pre.begin() - 1;
-    cout << idx << " " << pre[idx] << ln;
+    ll idx = lower_bound(all(pre), val) - pre.begin();
+    ll ans = idx - 1;
+    ll final = ans;
+    // cout << idx << " " << pre[idx] << " " << ans << ln;
     for (ll i = n - 1; i >= 0; i--)
     {
+        if (arr[i] == 1)
+        {
+            val--;
+        }
+        idx = lower_bound(all(pre), val) - pre.begin();
+        ans = idx - 1;
+        ll res = ans + n - (i);
+        if (ans >= 0)
+        {
+            final = min(final, res);
+        }
+        // cout << idx << " " << pre[idx] << " " << ans << ln;
+        // cout << res << ln;
     }
+    cout << final << ln;
 }
 
 int main()
