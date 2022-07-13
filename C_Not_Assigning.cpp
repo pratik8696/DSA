@@ -83,7 +83,6 @@ typedef gp_hash_table<ll, ll, custom_hash> fm64;
 typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 
 #define ln "\n"
-#define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
 #define ie insert
 #define pb push_back
@@ -97,11 +96,24 @@ typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-
-// dsu functions
-// void make_set(int v) {
-//   parent[v] = v;
-//}
+#define dbg(a) cout << a << endl;
+#define dbg2(a) cout << a << ' ';
+using ld = long double;
+using db = double;
+using str = string; // yay python!
+// INPUT
+#define tcT template <class T
+#define tcTU tcT, class U
+#define tcTUU tcT, class... U
+tcT > void re(T &x)
+{
+    cin >> x;
+}
+tcTUU > void re(T &t, U &...u)
+{
+    re(t);
+    re(u...);
+}
 
 int find_set(int v, v64 &parent)
 {
@@ -273,15 +285,44 @@ bool isPrime(int x)
     return true;
 }
 
-void dfs(int v, v64 &vis, uvp64 &adj)
+ll flag = 1;
+void d(int v, v64 &vis, uv64 &adj)
 {
     vis[v] = 1;
-    for (auto t : adj[v])
+    ll cc = 0;
+    for (auto child : adj[v])
     {
-        auto child = t.fi;
         if (vis[child] == 0)
         {
-            dfs(child, vis, adj);
+            cc++;
+            d(child, vis, adj);
+        }
+    }
+    if (v != 1 && cc >= 2)
+    {
+        flag = 0;
+    }
+}
+
+void dfs(int v, v64 &vis, uv64 &adj, ll curr, fmp64 &check)
+{
+    vis[v] = 1;
+    for (auto child : adj[v])
+    {
+        if (vis[child] == 0 && child != 1)
+        {
+            ll next = 0;
+            if (curr == 2)
+            {
+                next = 3;
+            }
+            else
+            {
+                next = 2;
+            }
+            check[{v, child}] = next;
+            check[{child, v}] = next;
+            dfs(child, vis, adj, next, check);
         }
     }
 }
@@ -290,57 +331,52 @@ void solve()
 {
     ll n;
     cin >> n;
-    vector<pair<p64, ll>> edges;
-    forn(i, n)
+    uv64 adj;
+    vp64 edges;
+    forn(i, n - 1)
     {
-        ll a, b, wt;
-        cin >> a >> b >> wt;
-        edges.pb({{a, b}, wt});
+        ll a, b;
+        re(a, b);
+        edges.pb({a, b});
+        adj[a].pb(b);
+        adj[b].pb(a);
     }
-    // construct the graph
-    // 1 2 3 4 5 6 7
-    // 1->2
-    // 1->3
-    // 1->4
-    // 1->5
-    // 1->6
-    // 1->7
-    // 2->1
-    // 2->3
-    // 2->4
-    // 2->5
-    // 2->6
-    // 2->7
-    uvp64 adj;
-    forn(i, n)
+    v64 vis(n + 1, 0);
+    d(1, vis, adj);
+    if (flag == 0 || adj[1].size() > 2)
     {
-        // i -> j
-        ll x1 = edges[i].fi.fi, y1 = edges[i].fi.se;
-        ll power = edges[i].se;
-        forn(j, n)
-        {
-            ll x2 = edges[j].fi.fi, y2 = edges[j].fi.se;
-            if (i != j)
-            {
-                ll dist = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
-                if (dist <= power * power)
-                {
-                    adj[i].pb({j, power});
-                }
-            }
-        }
+        flag = 1;
+        cout << -1 << ln;
+        return;
     }
-    forn(i, n)
+    fmp64 check;
+
+    fill(all(vis), 0);
+    // cout << "1 mai kya hai" << ln;
+    // for (auto t : adj[1])
+    // {
+    //     cout << t << " ";
+    // }
+    // cout << ln;
+    if (adj[1].size())
     {
-        v64 vis(n + 1, 0);
-        dfs(i, vis, adj);
-        cout << "FOR NODE -> " << i << ln;
-        forn(i, n)
-        {
-            cout << vis[i] << " ";
-        }
-        cout << ln;
+        ll first = adj[1][0]; // iske sath 2
+        // cout << first << ln;
+        check[{1, first}] = 2, check[{first, 1}] = 2;
+        dfs(first, vis, adj, 2, check);
     }
+    if (adj[1].size() == 2)
+    {
+        ll second = adj[1][1]; // iske sath 3
+        // cout << second << ln;
+        check[{1, second}] = 3, check[{second, 1}] = 3;
+        dfs(second, vis, adj, 3, check);
+    }
+    for (auto t : edges)
+    {
+        cout << check[t] << " ";
+    }
+    cout << ln;
 }
 
 int main()
@@ -351,7 +387,7 @@ int main()
     // freopen("revegetate.out", "w", stdout);
     //#endif
     ll t = 1;
-    // cin >> t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

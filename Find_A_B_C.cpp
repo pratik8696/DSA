@@ -83,7 +83,6 @@ typedef gp_hash_table<ll, ll, custom_hash> fm64;
 typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 
 #define ln "\n"
-#define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
 #define ie insert
 #define pb push_back
@@ -97,11 +96,24 @@ typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-
-// dsu functions
-// void make_set(int v) {
-//   parent[v] = v;
-//}
+#define dbg(a) cout << a << endl;
+#define dbg2(a) cout << a << ' ';
+using ld = long double;
+using db = double;
+using str = string; // yay python!
+// INPUT
+#define tcT template <class T
+#define tcTU tcT, class U
+#define tcTUU tcT, class... U
+tcT > void re(T &x)
+{
+    cin >> x;
+}
+tcTUU > void re(T &t, U &...u)
+{
+    re(t);
+    re(u...);
+}
 
 int find_set(int v, v64 &parent)
 {
@@ -273,73 +285,38 @@ bool isPrime(int x)
     return true;
 }
 
-void dfs(int v, v64 &vis, uvp64 &adj)
-{
-    vis[v] = 1;
-    for (auto t : adj[v])
-    {
-        auto child = t.fi;
-        if (vis[child] == 0)
-        {
-            dfs(child, vis, adj);
-        }
-    }
-}
-
 void solve()
 {
     ll n;
     cin >> n;
-    vector<pair<p64, ll>> edges;
+    n++;
+    ll arr[n];
     forn(i, n)
     {
-        ll a, b, wt;
-        cin >> a >> b >> wt;
-        edges.pb({{a, b}, wt});
+        cin >> arr[i];
     }
-    // construct the graph
-    // 1 2 3 4 5 6 7
-    // 1->2
-    // 1->3
-    // 1->4
-    // 1->5
-    // 1->6
-    // 1->7
-    // 2->1
-    // 2->3
-    // 2->4
-    // 2->5
-    // 2->6
-    // 2->7
-    uvp64 adj;
-    forn(i, n)
+    ll sum = arr[0];
+    ll odd_count = arr[0] - arr[1];
+    if (odd_count >= 1)
     {
-        // i -> j
-        ll x1 = edges[i].fi.fi, y1 = edges[i].fi.se;
-        ll power = edges[i].se;
-        forn(j, n)
+        if (odd_count == 1)
         {
-            ll x2 = edges[j].fi.fi, y2 = edges[j].fi.se;
-            if (i != j)
-            {
-                ll dist = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
-                if (dist <= power * power)
-                {
-                    adj[i].pb({j, power});
-                }
-            }
+            sum -= 1;
+            cout << 0 << " " << 1 << " " << sum << ln;
+        }
+        else if (odd_count == 2)    
+        {
+            cout << 1 << " " << 1 << " " << sum - 2 << ln;
+        }
+        else
+        {
+            sum -= 2;
+            cout << 1 << " " << 1 << " " << sum << ln;
         }
     }
-    forn(i, n)
+    else
     {
-        v64 vis(n + 1, 0);
-        dfs(i, vis, adj);
-        cout << "FOR NODE -> " << i << ln;
-        forn(i, n)
-        {
-            cout << vis[i] << " ";
-        }
-        cout << ln;
+        cout << 0 << " " << 0 << " " << arr[0] << ln;
     }
 }
 
@@ -351,7 +328,7 @@ int main()
     // freopen("revegetate.out", "w", stdout);
     //#endif
     ll t = 1;
-    // cin >> t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

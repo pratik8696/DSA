@@ -52,7 +52,7 @@ typedef unordered_map<p64, ll> up64;
 typedef unordered_map<ll, vp64> uvp64;
 typedef priority_queue<ll> pq64;
 typedef priority_queue<ll, v64, greater<ll>> pqs64;
-const int MOD = 1000000007;
+ll MOD = 1000000007;
 double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
@@ -273,83 +273,63 @@ bool isPrime(int x)
     return true;
 }
 
-void dfs(int v, v64 &vis, uvp64 &adj)
-{
-    vis[v] = 1;
-    for (auto t : adj[v])
-    {
-        auto child = t.fi;
-        if (vis[child] == 0)
-        {
-            dfs(child, vis, adj);
-        }
-    }
-}
-
 void solve()
 {
-    ll n;
-    cin >> n;
-    vector<pair<p64, ll>> edges;
-    forn(i, n)
+    ll n, m;
+    cin >> n >> m;
+    uv64 adj;
+    forn(i, m)
     {
-        ll a, b, wt;
-        cin >> a >> b >> wt;
-        edges.pb({{a, b}, wt});
+        ll a, b;
+        cin >> a >> b;
+        adj[a].pb(b);
+        adj[b].pb(a);
     }
-    // construct the graph
-    // 1 2 3 4 5 6 7
-    // 1->2
-    // 1->3
-    // 1->4
-    // 1->5
-    // 1->6
-    // 1->7
-    // 2->1
-    // 2->3
-    // 2->4
-    // 2->5
-    // 2->6
-    // 2->7
-    uvp64 adj;
+    v64 queries;
     forn(i, n)
     {
-        // i -> j
-        ll x1 = edges[i].fi.fi, y1 = edges[i].fi.se;
-        ll power = edges[i].se;
-        forn(j, n)
+        ll x;
+        cin >> x;
+        queries.pb(x);
+    }
+    reverse(all(queries));
+    v64 parent(n + 1, -1);
+    u64 active;
+    ll cc = 0;
+    v64 ans(n);
+    forn(i, n)
+    {
+        ll node = queries[i];
+        active[node] = 1;
+        cc++;
+        // now i will traverse all the edges and find the rem cc component
+        for (auto child : adj[node])
         {
-            ll x2 = edges[j].fi.fi, y2 = edges[j].fi.se;
-            if (i != j)
+            if (active[child] && active[node])
             {
-                ll dist = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
-                if (dist <= power * power)
+                if (find_set(node, parent) != find_set(child, parent))
                 {
-                    adj[i].pb({j, power});
+                    union_sets(node, child, parent);
+                    cc--;
                 }
             }
         }
+        ans[i] = cc == 1;
     }
-    forn(i, n)
+    reverse(all(ans));
+    for (auto t : ans)
     {
-        v64 vis(n + 1, 0);
-        dfs(i, vis, adj);
-        cout << "FOR NODE -> " << i << ln;
-        forn(i, n)
-        {
-            cout << vis[i] << " ";
-        }
-        cout << ln;
+        cout << (t == 1 ? "YES" : "NO") << ln;
     }
 }
 
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
+#ifndef ONLINE_JUDGE
+    freopen("closing.in", "r", stdin);
+    freopen("closing.out", "w", stdout);
+#endif
     ll t = 1;
     // cin >> t;
     for (int it = 1; it <= t; it++)

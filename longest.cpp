@@ -81,6 +81,7 @@ struct custom_hash
 };
 typedef gp_hash_table<ll, ll, custom_hash> fm64;
 typedef gp_hash_table<p64, ll, custom_hash> fmp64;
+typedef gp_hash_table<p64, v64, custom_hash> fmvp64;
 
 #define ln "\n"
 #define dbg(x) cout << #x << " = " << x << ln
@@ -97,25 +98,23 @@ typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-
-// dsu functions
-// void make_set(int v) {
-//   parent[v] = v;
-//}
-
-int find_set(int v, v64 &parent)
+#define dbg(a) cout << a << endl;
+#define dbg2(a) cout << a << ' ';
+using ld = long double;
+using db = double;
+using str = string; // yay python!
+// INPUT
+#define tcT template <class T
+#define tcTU tcT, class U
+#define tcTUU tcT, class... U
+tcT > void re(T &x)
 {
-    if (-1 == parent[v])
-        return v;
-    return parent[v] = find_set(parent[v], parent);
+    cin >> x;
 }
-
-void union_sets(int a, int b, v64 &parent)
+tcTUU > void re(T &t, U &...u)
 {
-    a = find_set(a, parent);
-    b = find_set(b, parent);
-    if (a != b)
-        parent[b] = a;
+    re(t);
+    re(u...);
 }
 
 // function for prime factorization
@@ -273,12 +272,14 @@ bool isPrime(int x)
     return true;
 }
 
-void dfs(int v, v64 &vis, uvp64 &adj)
+int dx[4] = {-1, 0, 1, 0};
+int dy[4] = {0, 1, 0, -1};
+
+void dfs(int v, fmp64 &vis, fmvp64 &adj)
 {
     vis[v] = 1;
-    for (auto t : adj[v])
+    for (auto child : adj[v])
     {
-        auto child = t.fi;
         if (vis[child] == 0)
         {
             dfs(child, vis, adj);
@@ -286,85 +287,67 @@ void dfs(int v, v64 &vis, uvp64 &adj)
     }
 }
 
-void solve()
+class Solution
 {
-    ll n;
-    cin >> n;
-    vector<pair<p64, ll>> edges;
-    forn(i, n)
+public:
+    int longestIncreasingPath(vector<vector<int>> &matrix)
     {
-        ll a, b, wt;
-        cin >> a >> b >> wt;
-        edges.pb({{a, b}, wt});
-    }
-    // construct the graph
-    // 1 2 3 4 5 6 7
-    // 1->2
-    // 1->3
-    // 1->4
-    // 1->5
-    // 1->6
-    // 1->7
-    // 2->1
-    // 2->3
-    // 2->4
-    // 2->5
-    // 2->6
-    // 2->7
-    uvp64 adj;
-    forn(i, n)
-    {
-        // i -> j
-        ll x1 = edges[i].fi.fi, y1 = edges[i].fi.se;
-        ll power = edges[i].se;
-        forn(j, n)
+        ll n = matrix.size(), m = matrix[0].size();
+        vv64 arr(n + 10, v64(m + 10, INF));
+        forsn(i, 1, n + 1)
         {
-            ll x2 = edges[j].fi.fi, y2 = edges[j].fi.se;
-            if (i != j)
+            forsn(j, 1, m + 1)
             {
-                ll dist = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
-                if (dist <= power * power)
+                arr[i][j] = matrix[i - 1][j - 1];
+            }
+        }
+        fmvp64 adj;
+        fmp64 dist;
+        fmp64 indegree;
+        forsn(i, 1, n + 1)
+        {
+            forsn(j, 1, m + 1)
+            {
+                dist[{i, j}] = INF;
+                forn(z, 4)
                 {
-                    adj[i].pb({j, power});
+                    ll X = i + dx[z];
+                    ll Y = j + dy[Z];
+                    if (arr[i][j] < arr[X][Y])
+                    {
+                        adj[{i, j}].pb({X, Y});
+                        indegree[{X, Y}]++;
+                    }
+                }
+            }
+        }
+        queue<p64> q;
+
+        forsn(i, 1, n + 1)
+        {
+            forsn(j, 1, m + 1)
+            {
+                if (indegree[{i, j}] == 0)
+                {
+                    q.push({i, j});
+                    dist[{i, j}] = 0;
+                }
+            }
+        }
+
+        while (!q.empty())
+        {
+            ll currx = q.front().first;
+            ll curry = q.front().second;
+            for (auto t : adj[{currx, curry}])
+            {
+                auto childx = t.first;
+                auto childy = t.second;
+                if (dist[{childx, childy}] > dist[{currx, curry}] + 1)
+                {
+                    dist[{childx, childy}] = dist[{currx, curry}] + 1;
                 }
             }
         }
     }
-    forn(i, n)
-    {
-        v64 vis(n + 1, 0);
-        dfs(i, vis, adj);
-        cout << "FOR NODE -> " << i << ln;
-        forn(i, n)
-        {
-            cout << vis[i] << " ";
-        }
-        cout << ln;
-    }
-}
-
-int main()
-{
-    fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
-    ll t = 1;
-    // cin >> t;
-    for (int it = 1; it <= t; it++)
-    {
-        solve();
-    }
-    return 0;
-}
-
-/*
-1. Check borderline constraints. Can a variable you are dividing by be 0?
-2. Use ll while using bitshifts
-3. Do not erase from set while iterating it
-4. Initialise everything
-5. Read the task carefully, is something unique, sorted, adjacent, guaranteed??
-6. DO NOT use if(!mp[x]) if you want to iterate the map later
-7. Are you using i in all loops? Are the i's conflicting?
-*/
+};

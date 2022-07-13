@@ -273,76 +273,72 @@ bool isPrime(int x)
     return true;
 }
 
-void dfs(int v, v64 &vis, uvp64 &adj)
+bool check(char s)
 {
-    vis[v] = 1;
-    for (auto t : adj[v])
+    if (s == 'a' || s == 'e' || s == 'i' || s == 'o' || s == 'u')
     {
-        auto child = t.fi;
-        if (vis[child] == 0)
-        {
-            dfs(child, vis, adj);
-        }
+        return 0;
     }
+    return 1;
+}
+
+void correct(string st, string t, string ans)
+{
+    reverse(all(ans));
+    cout << st + t + ans << ln;
 }
 
 void solve()
 {
+    string ans;
+    string s;
     ll n;
     cin >> n;
-    vector<pair<p64, ll>> edges;
-    forn(i, n)
+    ll i = n - 1;
+    cin >> s;
+    string st = "", t = "";
+    while (i >= 0 && check(s[i]))
     {
-        ll a, b, wt;
-        cin >> a >> b >> wt;
-        edges.pb({{a, b}, wt});
+        ans.pb(s[i]);
+        i--;
     }
-    // construct the graph
-    // 1 2 3 4 5 6 7
-    // 1->2
-    // 1->3
-    // 1->4
-    // 1->5
-    // 1->6
-    // 1->7
-    // 2->1
-    // 2->3
-    // 2->4
-    // 2->5
-    // 2->6
-    // 2->7
-    uvp64 adj;
-    forn(i, n)
+    string temp1 = "", temp2 = "";
+    if (i != -1)
     {
-        // i -> j
-        ll x1 = edges[i].fi.fi, y1 = edges[i].fi.se;
-        ll power = edges[i].se;
-        forn(j, n)
+        ans.pb(s[i]), i--;
+    }
+    ll j = i, cnt = 0;
+    for (ll i = j; i >= 0; i--)
+    {
+        temp1.clear(), temp2.clear();
+        while (i >= 0 && check(s[i]))
         {
-            ll x2 = edges[j].fi.fi, y2 = edges[j].fi.se;
-            if (i != j)
-            {
-                ll dist = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
-                if (dist <= power * power)
-                {
-                    adj[i].pb({j, power});
-                }
-            }
+            temp2.pb(s[i]);
+            string p;
+            p.pb(s[i]);
+            temp1 = p + temp1, i--;
         }
-    }
-    forn(i, n)
-    {
-        v64 vis(n + 1, 0);
-        dfs(i, vis, adj);
-        cout << "FOR NODE -> " << i << ln;
-        forn(i, n)
+        cnt++;
+        if (i != -1)
         {
-            cout << vis[i] << " ";
+            temp2.pb(s[i]);
+            string p;
+            p.pb(s[i]);
+            temp1 = p + temp1, i--;
         }
-        cout << ln;
+        if (cnt % 2 != 0)
+        {
+            st.append(temp2);
+        }
+        else
+        {
+            t = temp1 + t;
+        }
+        temp1.clear(), temp2.clear();
+        i++;
     }
+    correct(st, t, ans);
 }
-
 int main()
 {
     fast_cin();
@@ -351,7 +347,7 @@ int main()
     // freopen("revegetate.out", "w", stdout);
     //#endif
     ll t = 1;
-    // cin >> t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

@@ -83,7 +83,6 @@ typedef gp_hash_table<ll, ll, custom_hash> fm64;
 typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 
 #define ln "\n"
-#define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
 #define ie insert
 #define pb push_back
@@ -97,11 +96,24 @@ typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-
-// dsu functions
-// void make_set(int v) {
-//   parent[v] = v;
-//}
+#define dbg(a) cout << a << endl;
+#define dbg2(a) cout << a << ' ';
+using ld = long double;
+using db = double;
+using str = string; // yay python!
+// INPUT
+#define tcT template <class T
+#define tcTU tcT, class U
+#define tcTUU tcT, class... U
+tcT > void re(T &x)
+{
+    cin >> x;
+}
+tcTUU > void re(T &t, U &...u)
+{
+    re(t);
+    re(u...);
+}
 
 int find_set(int v, v64 &parent)
 {
@@ -273,73 +285,137 @@ bool isPrime(int x)
     return true;
 }
 
-void dfs(int v, v64 &vis, uvp64 &adj)
+v64 poww;
+
+void build(ll arr[], ll tree[], ll s, ll e, ll tn)
 {
-    vis[v] = 1;
-    for (auto t : adj[v])
+    if (s == e)
     {
-        auto child = t.fi;
-        if (vis[child] == 0)
+        tree[tn] = arr[s];
+        return;
+    }
+    ll mid = (s + e) / 2;
+    build(arr, tree, s, mid, 2 * tn);
+    build(arr, tree, mid + 1, e, (2 * tn) + 1);
+    tree[tn] = (tree[2 * tn] | tree[(2 * tn) + 1]);
+}
+
+ll query(ll arr[], ll tree[], ll s, ll e, ll tn, ll l, ll r, ll lazy[])
+{
+    ll mid = (s + e) / 2;
+    // out
+    if (s > r || l > e)
+    {
+        return 0;
+    }
+    // in
+    if (s >= l && r >= e)
+    {
+        return tree[tn];
+    }
+
+    ll ans1 = query(arr, tree, s, mid, 2 * tn, l, r, lazy);
+    ll ans2 = query(arr, tree, mid + 1, e, (2 * tn) + 1, l, r, lazy);
+    return ans1 | ans2;
+}
+
+void update(ll arr[], ll tree[], ll s, ll e, ll tn, ll l, ll r, ll val, ll lazy[])
+{
+    if (lazy[tn] != 0)
+    {
+        ll x = lazy[tn];
+        lazy[tn] = 0;
+        tree[tn] = x;
+        if (s != e)
         {
-            dfs(child, vis, adj);
+            lazy[2 * tn] = x;
+            lazy[(2 * tn) + 1] = x;
         }
     }
+
+    // out
+    if (s > r || l > e)
+    {
+        return;
+    }
+    // in
+    if (s >= l && r >= e)
+    {
+        // insert in lazy
+        tree[tn] = val;
+        lazy[tn] = val;
+        return;
+    }
+
+    ll mid = (s + e) / 2;
+    update(arr, tree, mid + 1, e, (2 * tn) + 1, l, r, val, lazy);
+    update(arr, tree, s, mid, 2 * tn, l, r, val, lazy);
+    tree[tn] = (tree[2 * tn] | tree[(2 * tn) + 1]);
+}
+
+ll timer;
+u64 intime, outtime;
+void dfs(int v, v64 &vis, uv64 &adj, ll arr[], ll col[])
+{
+    vis[v] = 1;
+    intime[v] = timer;
+    arr[timer] = col[v];
+    // arr[timer] = v;
+    timer++;
+    for (auto child : adj[v])
+    {
+        if (vis[child] == 0)
+        {
+            dfs(child, vis, adj, arr, col);
+        }
+    }
+    outtime[v] = timer;
+    arr[timer] = col[v];
+    // arr[timer] = v;
+    timer++;
 }
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    vector<pair<p64, ll>> edges;
+    ll n, m;
+    cin >> n >> m;
+    ll col[n + 1];
     forn(i, n)
     {
-        ll a, b, wt;
-        cin >> a >> b >> wt;
-        edges.pb({{a, b}, wt});
+        cin >> col[i + 1];
+        col[i + 1] = poww[col[i + 1]];
     }
-    // construct the graph
-    // 1 2 3 4 5 6 7
-    // 1->2
-    // 1->3
-    // 1->4
-    // 1->5
-    // 1->6
-    // 1->7
-    // 2->1
-    // 2->3
-    // 2->4
-    // 2->5
-    // 2->6
-    // 2->7
-    uvp64 adj;
-    forn(i, n)
+    uv64 adj;
+    forn(i, n - 1)
     {
-        // i -> j
-        ll x1 = edges[i].fi.fi, y1 = edges[i].fi.se;
-        ll power = edges[i].se;
-        forn(j, n)
-        {
-            ll x2 = edges[j].fi.fi, y2 = edges[j].fi.se;
-            if (i != j)
-            {
-                ll dist = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
-                if (dist <= power * power)
-                {
-                    adj[i].pb({j, power});
-                }
-            }
-        }
+        ll a, b;
+        re(a, b);
+        adj[a].pb(b);
+        adj[b].pb(a);
     }
-    forn(i, n)
+    // construct the euler tour
+    ll arr[2 * n], tree[8 * n], lazy[8 * n];
+    fill(al(tree, 8 * n), 0);
+    fill(al(lazy, 8 * n), 0);
+    v64 vis(n + 1, 0);
+    dfs(1, vis, adj, arr, col);
+    build(arr, tree, 0, (2 * n) - 1, 1);
+    while (m--)
     {
-        v64 vis(n + 1, 0);
-        dfs(i, vis, adj);
-        cout << "FOR NODE -> " << i << ln;
-        forn(i, n)
+        ll opt;
+        re(opt);
+        if (opt == 1)
         {
-            cout << vis[i] << " ";
+            ll a, x;
+            re(a, x);
+            update(arr, tree, 0, (2 * n) - 1, 1, intime[a], outtime[a], poww[x], lazy);
         }
-        cout << ln;
+        else
+        {
+            ll a;
+            cin >> a;
+            cout << popcount(query(arr, tree, 0, (2 * n) - 1, 1, intime[a], outtime[a], lazy)) << ln;
+        }
     }
 }
 
@@ -350,6 +426,10 @@ int main()
     //  freopen("revegetate.in", "r", stdin);
     // freopen("revegetate.out", "w", stdout);
     //#endif
+    forn(i, 62)
+    {
+        poww.pb(fastexpo(2, i));
+    }
     ll t = 1;
     // cin >> t;
     for (int it = 1; it <= t; it++)

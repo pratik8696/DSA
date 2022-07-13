@@ -83,7 +83,6 @@ typedef gp_hash_table<ll, ll, custom_hash> fm64;
 typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 
 #define ln "\n"
-#define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
 #define ie insert
 #define pb push_back
@@ -97,11 +96,24 @@ typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-
-// dsu functions
-// void make_set(int v) {
-//   parent[v] = v;
-//}
+#define dbg(a) cout << a << endl;
+#define dbg2(a) cout << a << ' ';
+using ld = long double;
+using db = double;
+using str = string; // yay python!
+// INPUT
+#define tcT template <class T
+#define tcTU tcT, class U
+#define tcTUU tcT, class... U
+tcT > void re(T &x)
+{
+    cin >> x;
+}
+tcTUU > void re(T &t, U &...u)
+{
+    re(t);
+    re(u...);
+}
 
 int find_set(int v, v64 &parent)
 {
@@ -152,32 +164,6 @@ ll sumofno(ll n)
         n = n / 10;
     }
     return sum;
-}
-
-// modular exponentiation
-long long modpow(long long x, long long n, long long p)
-{
-
-    if (n == 0)
-        return 1 % p;
-
-    ll ans = 1, base = x;
-    while (n > 0)
-    {
-        if (n % 2 == 1)
-        {
-            ans = (ans * base) % p;
-            n--;
-        }
-        else
-        {
-            base = (base * base) % p;
-            n /= 2;
-        }
-    }
-    if (ans < 0)
-        ans = (ans + p) % p;
-    return ans;
 }
 
 // const int N = 1e6 + 100;
@@ -273,74 +259,55 @@ bool isPrime(int x)
     return true;
 }
 
-void dfs(int v, v64 &vis, uvp64 &adj)
-{
-    vis[v] = 1;
-    for (auto t : adj[v])
-    {
-        auto child = t.fi;
-        if (vis[child] == 0)
-        {
-            dfs(child, vis, adj);
-        }
-    }
-}
-
 void solve()
 {
-    ll n;
+    ll n, s, t, c, w = 0, i;
     cin >> n;
-    vector<pair<p64, ll>> edges;
+    ll arr[n];
+    ll sum1 = 0, sum2 = 0;
     forn(i, n)
     {
-        ll a, b, wt;
-        cin >> a >> b >> wt;
-        edges.pb({{a, b}, wt});
+        cin >> arr[i];
+        sum1 += arr[i];
     }
-    // construct the graph
-    // 1 2 3 4 5 6 7
-    // 1->2
-    // 1->3
-    // 1->4
-    // 1->5
-    // 1->6
-    // 1->7
-    // 2->1
-    // 2->3
-    // 2->4
-    // 2->5
-    // 2->6
-    // 2->7
-    uvp64 adj;
-    forn(i, n)
+    ll m;
+    cin >> m;
+    ll brr[m];
+    forn(i, m)
     {
-        // i -> j
-        ll x1 = edges[i].fi.fi, y1 = edges[i].fi.se;
-        ll power = edges[i].se;
-        forn(j, n)
+        cin >> brr[i];
+        sum2 += brr[i];
+    }
+    ll k;
+    cin >> k;
+    k = n + m - k;
+    forn(j, k + 1)
+    {
+        if (j > n || k - j > m)
         {
-            ll x2 = edges[j].fi.fi, y2 = edges[j].fi.se;
-            if (i != j)
-            {
-                ll dist = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
-                if (dist <= power * power)
-                {
-                    adj[i].pb({j, power});
-                }
-            }
+            continue;
         }
-    }
-    forn(i, n)
-    {
-        v64 vis(n + 1, 0);
-        dfs(i, vis, adj);
-        cout << "FOR NODE -> " << i << ln;
-        forn(i, n)
+        for (i = 0, c = 0; i < j; i++)
         {
-            cout << vis[i] << " ";
+            c += arr[i];
         }
-        cout << ln;
+        s = c;
+        for (; i < n; i++)
+        {
+            c += arr[i] - arr[i - j], s = min(s, c);
+        }
+        for (i = 0, c = 0; i < k - j; i++)
+        {
+            c += brr[i];
+        }
+        t = c;
+        for (; i < m; i++)
+        {
+            c += brr[i] - brr[i - k + j], t = min(t, c);
+        }
+        w = max(w, sum1 - s + sum2 - t);
     }
+    cout << w << '\n';
 }
 
 int main()
@@ -351,9 +318,10 @@ int main()
     // freopen("revegetate.out", "w", stdout);
     //#endif
     ll t = 1;
-    // cin >> t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
+        cout << "Case #" << it << ": ";
         solve();
     }
     return 0;

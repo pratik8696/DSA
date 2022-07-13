@@ -273,76 +273,79 @@ bool isPrime(int x)
     return true;
 }
 
-void dfs(int v, v64 &vis, uvp64 &adj)
+struct DSU
 {
-    vis[v] = 1;
-    for (auto t : adj[v])
+    v64 e, sz;
+    DSU(ll n)
     {
-        auto child = t.fi;
-        if (vis[child] == 0)
+        e.assign(n + 1, -1);
+        sz.assign(n + 1, 1);
+    }
+    v64 get_par() { return e; }
+    bool same(ll a, ll b) { return find(a) == find(b); }
+    ll size(ll x) { return sz[find(x)]; }
+    ll find(ll x) { return e[x] < 0 ? x : e[x] = find(e[x]); }
+    void join(ll a, ll b)
+    {
+        a = find(a);
+        b = find(b);
+        if (a != b)
         {
-            dfs(child, vis, adj);
+            if (sz[a] < sz[b])
+            {
+                swap(a, b);
+            }
+            e[b] = a;
+            sz[a] += sz[b];
         }
     }
-}
+};
 
 void solve()
 {
     ll n;
     cin >> n;
-    vector<pair<p64, ll>> edges;
-    forn(i, n)
+    DSU d(n + 1);
+    vp64 edges;
+    forn(i, n - 1)
     {
-        ll a, b, wt;
-        cin >> a >> b >> wt;
-        edges.pb({{a, b}, wt});
-    }
-    // construct the graph
-    // 1 2 3 4 5 6 7
-    // 1->2
-    // 1->3
-    // 1->4
-    // 1->5
-    // 1->6
-    // 1->7
-    // 2->1
-    // 2->3
-    // 2->4
-    // 2->5
-    // 2->6
-    // 2->7
-    uvp64 adj;
-    forn(i, n)
-    {
-        // i -> j
-        ll x1 = edges[i].fi.fi, y1 = edges[i].fi.se;
-        ll power = edges[i].se;
-        forn(j, n)
+        ll a, b;
+        cin >> a >> b;
+        if (!d.same(a, b))
         {
-            ll x2 = edges[j].fi.fi, y2 = edges[j].fi.se;
-            if (i != j)
+            d.join(a, b);
+        }
+        else
+        {
+            edges.pb({a, b});
+        }
+    }
+    v64 par = d.get_par();
+    ll k = 0;
+    vector<pair<p64, p64>> ans;
+    if (edges.size())
+    {
+        forsn(i, 1, n + 1)
+        {
+            ll val = edges[k].fi;
+            if (!d.same(val, i))
             {
-                ll dist = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
-                if (dist <= power * power)
-                {
-                    adj[i].pb({j, power});
-                }
+                d.join(val, i);
+                ans.pb({edges[k], {val, i}});
+                k++;
+            }
+            if (k == edges.size())
+            {
+                break;
             }
         }
     }
-    forn(i, n)
+    cout << ans.size() << ln;
+    for (auto t : ans)
     {
-        v64 vis(n + 1, 0);
-        dfs(i, vis, adj);
-        cout << "FOR NODE -> " << i << ln;
-        forn(i, n)
-        {
-            cout << vis[i] << " ";
-        }
-        cout << ln;
+        cout << t.fi.fi << " " << t.fi.se << " " << t.se.fi << " " << t.se.se << ln;
     }
 }
-
 int main()
 {
     fast_cin();

@@ -52,7 +52,7 @@ typedef unordered_map<p64, ll> up64;
 typedef unordered_map<ll, vp64> uvp64;
 typedef priority_queue<ll> pq64;
 typedef priority_queue<ll, v64, greater<ll>> pqs64;
-const int MOD = 1000000007;
+ll MOD = 1000000007;
 double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
@@ -103,20 +103,18 @@ typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 //   parent[v] = v;
 //}
 
-int find_set(int v, v64 &parent)
-{
-    if (-1 == parent[v])
-        return v;
-    return parent[v] = find_set(parent[v], parent);
-}
+// int find_set(int v,v64 &parent) {
+//   if (-1 == parent[v])
+// return v;
+// return parent[v]=find_set(parent[v],parent);
+// }
 
-void union_sets(int a, int b, v64 &parent)
-{
-    a = find_set(a, parent);
-    b = find_set(b, parent);
-    if (a != b)
-        parent[b] = a;
-}
+// void union_sets(int a, int b,v64 &parent) {
+//   a = find_set(a,parent);
+// b = find_set(b,parent);
+// if (a != b)
+// parent[b] = a;
+// }
 
 // function for prime factorization
 vector<pair<ll, ll>> pf(ll n)
@@ -273,16 +271,36 @@ bool isPrime(int x)
     return true;
 }
 
-void dfs(int v, v64 &vis, uvp64 &adj)
+ll ans;
+void bfs(uv64 &adj, v64 &dist, ll src)
 {
-    vis[v] = 1;
-    for (auto t : adj[v])
+    queue<ll> q;
+    v64 vis(dist.size(), 0);
+    q.push(src);
+    dist[src] = 0;
+    vis[src] = 1;
+    while (!q.empty())
     {
-        auto child = t.fi;
-        if (vis[child] == 0)
+        ll curr = q.front();
+        q.pop();
+        ll val = 0;
+        for (auto child : adj[curr])
         {
-            dfs(child, vis, adj);
+            if (vis[child] == 0)
+            {
+                val++;
+                dist[child] = dist[curr] + 1;
+                q.push(child);
+                vis[child] = 1;
+            }
         }
+        ll currr = 0, po = 1;
+        while (po < val+1)
+        {
+            po *= 2;
+            currr++;
+        }
+        ans += currr;
     }
 }
 
@@ -290,66 +308,26 @@ void solve()
 {
     ll n;
     cin >> n;
-    vector<pair<p64, ll>> edges;
-    forn(i, n)
+    uv64 adj;
+    forn(i, n - 1)
     {
-        ll a, b, wt;
-        cin >> a >> b >> wt;
-        edges.pb({{a, b}, wt});
+        ll a, b;
+        cin >> a >> b;
+        adj[a].pb(b);
+        adj[b].pb(a);
     }
-    // construct the graph
-    // 1 2 3 4 5 6 7
-    // 1->2
-    // 1->3
-    // 1->4
-    // 1->5
-    // 1->6
-    // 1->7
-    // 2->1
-    // 2->3
-    // 2->4
-    // 2->5
-    // 2->6
-    // 2->7
-    uvp64 adj;
-    forn(i, n)
-    {
-        // i -> j
-        ll x1 = edges[i].fi.fi, y1 = edges[i].fi.se;
-        ll power = edges[i].se;
-        forn(j, n)
-        {
-            ll x2 = edges[j].fi.fi, y2 = edges[j].fi.se;
-            if (i != j)
-            {
-                ll dist = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
-                if (dist <= power * power)
-                {
-                    adj[i].pb({j, power});
-                }
-            }
-        }
-    }
-    forn(i, n)
-    {
-        v64 vis(n + 1, 0);
-        dfs(i, vis, adj);
-        cout << "FOR NODE -> " << i << ln;
-        forn(i, n)
-        {
-            cout << vis[i] << " ";
-        }
-        cout << ln;
-    }
+    v64 dist(n + 1, 0);
+    bfs(adj, dist, 1ll);
+    cout << ans + n - 1 << ln;
 }
 
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
+    // #ifndef ONLINE_JUDGE
     //  freopen("revegetate.in", "r", stdin);
     // freopen("revegetate.out", "w", stdout);
-    //#endif
+    // #endif
     ll t = 1;
     // cin >> t;
     for (int it = 1; it <= t; it++)

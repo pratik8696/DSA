@@ -83,7 +83,6 @@ typedef gp_hash_table<ll, ll, custom_hash> fm64;
 typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 
 #define ln "\n"
-#define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
 #define ie insert
 #define pb push_back
@@ -97,25 +96,23 @@ typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-
-// dsu functions
-// void make_set(int v) {
-//   parent[v] = v;
-//}
-
-int find_set(int v, v64 &parent)
+#define dbg(a) cout << a << endl;
+#define dbg2(a) cout << a << ' ';
+using ld = long double;
+using db = double;
+using str = string; // yay python!
+// INPUT
+#define tcT template <class T
+#define tcTU tcT, class U
+#define tcTUU tcT, class... U
+tcT > void re(T &x)
 {
-    if (-1 == parent[v])
-        return v;
-    return parent[v] = find_set(parent[v], parent);
+    cin >> x;
 }
-
-void union_sets(int a, int b, v64 &parent)
+tcTUU > void re(T &t, U &...u)
 {
-    a = find_set(a, parent);
-    b = find_set(b, parent);
-    if (a != b)
-        parent[b] = a;
+    re(t);
+    re(u...);
 }
 
 // function for prime factorization
@@ -273,74 +270,52 @@ bool isPrime(int x)
     return true;
 }
 
-void dfs(int v, v64 &vis, uvp64 &adj)
+ll sum(string &s, ll i, vector<int> &dp)
 {
-    vis[v] = 1;
-    for (auto t : adj[v])
+    ll n = s.size();
+    if (i == s.size())
     {
-        auto child = t.fi;
-        if (vis[child] == 0)
-        {
-            dfs(child, vis, adj);
-        }
+        return 1;
     }
+    if (dp[i] != -1)
+    {
+        return dp[i];
+    }
+    ll ans = 0;
+    if (s[i] >= '1' && s[i] <= '9')
+    {
+        ans += sum(s, i + 1, dp);
+    }
+    if (i < n - 1 && (s[i] == '1' || s[i] == '2' && s[i + 1] <= '6'))
+    {
+        ans += sum(s, i + 2, dp);
+    }
+    return dp[i] = ans;
 }
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    vector<pair<p64, ll>> edges;
-    forn(i, n)
+    string s;
+    cin >> s;
+    if (s == "0")
     {
-        ll a, b, wt;
-        cin >> a >> b >> wt;
-        edges.pb({{a, b}, wt});
+        exit(0);
     }
-    // construct the graph
-    // 1 2 3 4 5 6 7
-    // 1->2
-    // 1->3
-    // 1->4
-    // 1->5
-    // 1->6
-    // 1->7
-    // 2->1
-    // 2->3
-    // 2->4
-    // 2->5
-    // 2->6
-    // 2->7
-    uvp64 adj;
-    forn(i, n)
+    vector<int> dp(s.size() + 10, 0);
+    ll n = s.size();
+    dp[n + 1] = 1;
+    for (ll i = n; i >= 1; i--)
     {
-        // i -> j
-        ll x1 = edges[i].fi.fi, y1 = edges[i].fi.se;
-        ll power = edges[i].se;
-        forn(j, n)
+        if (s[i - 1] >= '1' && s[i - 1] <= '9')
         {
-            ll x2 = edges[j].fi.fi, y2 = edges[j].fi.se;
-            if (i != j)
-            {
-                ll dist = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
-                if (dist <= power * power)
-                {
-                    adj[i].pb({j, power});
-                }
-            }
+            dp[i] += dp[i + 1];
+        }
+        if (i <= n - 1 && (s[i - 1] == '1' || s[i - 1] == '2' && s[i - 2] <= '6'))
+        {
+            dp[i] += dp[i + 2];
         }
     }
-    forn(i, n)
-    {
-        v64 vis(n + 1, 0);
-        dfs(i, vis, adj);
-        cout << "FOR NODE -> " << i << ln;
-        forn(i, n)
-        {
-            cout << vis[i] << " ";
-        }
-        cout << ln;
-    }
+    cout << dp[1] << ln;
 }
 
 int main()
@@ -350,7 +325,7 @@ int main()
     //  freopen("revegetate.in", "r", stdin);
     // freopen("revegetate.out", "w", stdout);
     //#endif
-    ll t = 1;
+    ll t = INF;
     // cin >> t;
     for (int it = 1; it <= t; it++)
     {

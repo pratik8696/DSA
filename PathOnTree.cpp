@@ -273,98 +273,60 @@ bool isPrime(int x)
     return true;
 }
 
-void dfs(int v, v64 &vis, uvp64 &adj)
-{
-    vis[v] = 1;
-    for (auto t : adj[v])
-    {
-        auto child = t.fi;
-        if (vis[child] == 0)
-        {
-            dfs(child, vis, adj);
-        }
-    }
-}
+ll n, timer;
 
-void solve()
+void dfs_bridges(int v, int p, v64 &visited, v64 &low, v64 &tin, uv64 &adj)
 {
-    ll n;
-    cin >> n;
-    vector<pair<p64, ll>> edges;
-    forn(i, n)
+    visited[v] = true;
+    tin[v] = low[v] = timer++;
+    for (int to : adj[v])
     {
-        ll a, b, wt;
-        cin >> a >> b >> wt;
-        edges.pb({{a, b}, wt});
-    }
-    // construct the graph
-    // 1 2 3 4 5 6 7
-    // 1->2
-    // 1->3
-    // 1->4
-    // 1->5
-    // 1->6
-    // 1->7
-    // 2->1
-    // 2->3
-    // 2->4
-    // 2->5
-    // 2->6
-    // 2->7
-    uvp64 adj;
-    forn(i, n)
-    {
-        // i -> j
-        ll x1 = edges[i].fi.fi, y1 = edges[i].fi.se;
-        ll power = edges[i].se;
-        forn(j, n)
+        if (to == p)
+            continue;
+        if (visited[to])
         {
-            ll x2 = edges[j].fi.fi, y2 = edges[j].fi.se;
-            if (i != j)
+            low[v] = min(low[v], tin[to]);
+        }
+        else
+        {
+            dfs_bridges(to, v, visited, low, tin, adj);
+            low[v] = min(low[v], low[to]);
+            if (low[to] > tin[v])
             {
-                ll dist = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
-                if (dist <= power * power)
-                {
-                    adj[i].pb({j, power});
-                }
+                ans.pb({to, v});
             }
         }
     }
-    forn(i, n)
-    {
-        v64 vis(n + 1, 0);
-        dfs(i, vis, adj);
-        cout << "FOR NODE -> " << i << ln;
-        forn(i, n)
-        {
-            cout << vis[i] << " ";
-        }
-        cout << ln;
-    }
 }
 
-int main()
+void find_bridges(v64 &visited, v64 &low, v64 &tin, uv64 &adj)
 {
-    fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
-    ll t = 1;
-    // cin >> t;
-    for (int it = 1; it <= t; it++)
+    timer = 0;
+    for (int i = 1; i <= n; ++i)
     {
-        solve();
+        if (!visited[i])
+        {
+            dfs_bridges(i, -1, visited, low, tin, adj);
+        }
     }
-    return 0;
 }
 
-/*
-1. Check borderline constraints. Can a variable you are dividing by be 0?
-2. Use ll while using bitshifts
-3. Do not erase from set while iterating it
-4. Initialise everything
-5. Read the task carefully, is something unique, sorted, adjacent, guaranteed??
-6. DO NOT use if(!mp[x]) if you want to iterate the map later
-7. Are you using i in all loops? Are the i's conflicting?
-*/
+v64 visited(n + 1, 0);
+v64 tin(n + 1, -1), low(n + 1, -1);
+find_bridges(visited, low, tin, adj);
+
+class Solution
+{
+public:
+    vector<vector<int>> criticalConnections(int k, vector<vector<int>> &connections)
+    {
+        n = k;
+        for (auto t : connections)
+        {
+            adj[t[0]].pb(t[1]);
+            adj[t[1]].pb(t[0]);
+        }
+
+        return ans;
+    }
+};

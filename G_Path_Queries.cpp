@@ -273,76 +273,91 @@ bool isPrime(int x)
     return true;
 }
 
-void dfs(int v, v64 &vis, uvp64 &adj)
+ll result = 0;
+
+struct DSU
 {
-    vis[v] = 1;
-    for (auto t : adj[v])
+    v64 e, sz;
+    DSU(ll n)
     {
-        auto child = t.fi;
-        if (vis[child] == 0)
+        e.assign(n + 1, -1);
+        sz.assign(n + 1, 1);
+    }
+    bool same(ll a, ll b) { return find(a) == find(b); }
+    ll size(ll x) { return sz[find(x)]; }
+    ll find(ll x) { return e[x] < 0 ? x : e[x] = find(e[x]); }
+    void join(ll a, ll b)
+    {
+        a = find(a);
+        b = find(b);
+        if (a != b)
         {
-            dfs(child, vis, adj);
+            if (sz[a] < sz[b])
+            {
+                swap(a, b);
+            }
+            e[b] = a;
+            result -= (sz[a] * (sz[a] - 1)) / 2;
+            result -= (sz[b] * (sz[b] - 1)) / 2;
+            sz[a] += sz[b];
+            result += (sz[a] * (sz[a] - 1)) / 2;
         }
     }
-}
+};
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    vector<pair<p64, ll>> edges;
-    forn(i, n)
+    ll n, m;
+    cin >> n >> m;
+    vector<pair<ll, p64>> edges;
+    forn(i, n - 1)
     {
         ll a, b, wt;
         cin >> a >> b >> wt;
-        edges.pb({{a, b}, wt});
+        edges.pb({wt, {min(a, b), max(a, b)}});
     }
-    // construct the graph
-    // 1 2 3 4 5 6 7
-    // 1->2
-    // 1->3
-    // 1->4
-    // 1->5
-    // 1->6
-    // 1->7
-    // 2->1
-    // 2->3
-    // 2->4
-    // 2->5
-    // 2->6
-    // 2->7
-    uvp64 adj;
-    forn(i, n)
+    vp64 queries;
+    forn(i, m)
     {
-        // i -> j
-        ll x1 = edges[i].fi.fi, y1 = edges[i].fi.se;
-        ll power = edges[i].se;
-        forn(j, n)
+        ll x;
+        cin >> x;
+        queries.pb({x, i});
+    }
+    sort(all(queries));
+    sort(all(edges));
+    u64 ans;
+    DSU d(n + 1);
+    int i = 0;
+    u64 res;
+
+    for (auto t : queries)
+    {
+        // cout << t.fi << ln;
+        for (; i < edges.size(); i++)
         {
-            ll x2 = edges[j].fi.fi, y2 = edges[j].fi.se;
-            if (i != j)
+            ll wt = edges[i].first;
+            ll a = edges[i].se.fi;
+            ll b = edges[i].se.se;
+            if (wt <= t.fi)
             {
-                ll dist = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
-                if (dist <= power * power)
+                if (!d.same(a, b))
                 {
-                    adj[i].pb({j, power});
+                    d.join(a, b);
                 }
             }
+            else
+            {
+                break;
+            }
         }
+        res[t.se] = result;
     }
-    forn(i, n)
+    forn(i, m)
     {
-        v64 vis(n + 1, 0);
-        dfs(i, vis, adj);
-        cout << "FOR NODE -> " << i << ln;
-        forn(i, n)
-        {
-            cout << vis[i] << " ";
-        }
-        cout << ln;
+        cout << res[i] << " ";
     }
+    cout << ln;
 }
-
 int main()
 {
     fast_cin();

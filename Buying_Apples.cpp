@@ -273,74 +273,41 @@ bool isPrime(int x)
     return true;
 }
 
-void dfs(int v, v64 &vis, uvp64 &adj)
-{
-    vis[v] = 1;
-    for (auto t : adj[v])
-    {
-        auto child = t.fi;
-        if (vis[child] == 0)
-        {
-            dfs(child, vis, adj);
-        }
-    }
-}
-
 void solve()
 {
-    ll n;
-    cin >> n;
-    vector<pair<p64, ll>> edges;
-    forn(i, n)
+    ll n, k;
+    cin >> n >> k;
+    ll arr[k];
+    vv64 dp(k + 10, v64(k + 10, 1e10));
+    forn(i, k)
     {
-        ll a, b, wt;
-        cin >> a >> b >> wt;
-        edges.pb({{a, b}, wt});
+        cin >> arr[i];
     }
-    // construct the graph
-    // 1 2 3 4 5 6 7
-    // 1->2
-    // 1->3
-    // 1->4
-    // 1->5
-    // 1->6
-    // 1->7
-    // 2->1
-    // 2->3
-    // 2->4
-    // 2->5
-    // 2->6
-    // 2->7
-    uvp64 adj;
-    forn(i, n)
+    dp[0][0] = 0;
+    forsn(i, 1, k + 1)
     {
-        // i -> j
-        ll x1 = edges[i].fi.fi, y1 = edges[i].fi.se;
-        ll power = edges[i].se;
-        forn(j, n)
+        forsn(j, 0, k + 1)
         {
-            ll x2 = edges[j].fi.fi, y2 = edges[j].fi.se;
-            if (i != j)
+            if (arr[i - 1] == -1)
             {
-                ll dist = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
-                if (dist <= power * power)
-                {
-                    adj[i].pb({j, power});
-                }
+                dp[i][j] = min(dp[i - 1][j], dp[i][j]);
+            }
+            else if (i <= j)
+            {
+                dp[i][j] = min(dp[i - 1][j], dp[i][j - i] + arr[i - 1]);
+            }
+            else
+            {
+                dp[i][j] = min(dp[i - 1][j], dp[i][j]);
             }
         }
     }
-    forn(i, n)
+    if (dp[k][k] >= 1e10)
     {
-        v64 vis(n + 1, 0);
-        dfs(i, vis, adj);
-        cout << "FOR NODE -> " << i << ln;
-        forn(i, n)
-        {
-            cout << vis[i] << " ";
-        }
-        cout << ln;
+        cout << -1 << ln;
     }
+    else
+        cout << dp[k][k] << ln;
 }
 
 int main()
@@ -351,7 +318,7 @@ int main()
     // freopen("revegetate.out", "w", stdout);
     //#endif
     ll t = 1;
-    // cin >> t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

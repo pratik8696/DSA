@@ -273,83 +273,108 @@ bool isPrime(int x)
     return true;
 }
 
-void dfs(int v, v64 &vis, uvp64 &adj)
+char res[3] = {'H', 'P', 'S'};
+
+ll score(char a, ll idx)
 {
-    vis[v] = 1;
-    for (auto t : adj[v])
+    if (res[idx] == 'H' && a == 'S')
     {
-        auto child = t.fi;
-        if (vis[child] == 0)
-        {
-            dfs(child, vis, adj);
-        }
+        return 1;
     }
+    if (res[idx] == 'S' && a == 'P')
+    {
+        return 1;
+    }
+    if (res[idx] == 'P' && a == 'H')
+    {
+        return 1;
+    }
+    return 0;
 }
+
+ll dp[100001][21][3];
+
+// ll sum(char arr[], ll n, ll k, ll idx)
+// {
+//     if (n == 0)
+//     {
+//         return 0;
+//     }
+//     if (dp[n][k][idx] != -1)
+//     {
+//         return dp[n][k][idx];
+//     }
+//     ll val = 0;
+//     if (k)
+//     {
+//         val = max({
+//             val,
+//             sum(arr, n - 1, k, idx) + score(arr[n - 1], idx),
+//             sum(arr, n - 1, k - 1, (idx + 1) % 3) + score(arr[n - 1], (idx + 1) % 3),
+//             sum(arr, n - 1, k - 1, (idx + 2) % 3) + score(arr[n - 1], (idx + 2) % 3),
+//         });
+//     }
+//     else
+//     {
+//         val = max(val, sum(arr, n - 1, k, idx) + score(arr[n - 1], idx));
+//     }
+//     return dp[n][k][idx] = val;
+// }
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    vector<pair<p64, ll>> edges;
+    ll n, k;
+    cin >> n >> k;
+    char arr[n];
     forn(i, n)
     {
-        ll a, b, wt;
-        cin >> a >> b >> wt;
-        edges.pb({{a, b}, wt});
+        cin >> arr[i];
     }
-    // construct the graph
-    // 1 2 3 4 5 6 7
-    // 1->2
-    // 1->3
-    // 1->4
-    // 1->5
-    // 1->6
-    // 1->7
-    // 2->1
-    // 2->3
-    // 2->4
-    // 2->5
-    // 2->6
-    // 2->7
-    uvp64 adj;
-    forn(i, n)
+    for (ll i = n; i >= 1; i--)
     {
-        // i -> j
-        ll x1 = edges[i].fi.fi, y1 = edges[i].fi.se;
-        ll power = edges[i].se;
-        forn(j, n)
+        for (ll change = k; change >= 0; change--)
         {
-            ll x2 = edges[j].fi.fi, y2 = edges[j].fi.se;
-            if (i != j)
+            for (ll idx = 2; idx >= 0; idx--)
             {
-                ll dist = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
-                if (dist <= power * power)
+                ll val = 0;
+                if (change)
                 {
-                    adj[i].pb({j, power});
+                    val = max({
+                        val,
+                        dp[i - 1][change][idx] + score(arr[n - 1], idx),
+                        dp[i - 1][change - 1][(idx + 1) % 3] + score(arr[i - 1], (idx + 1) % 3),
+                        dp[i - 1][change - 1][(idx + 2) % 3] + score(arr[i - 1], (idx + 2) % 3),
+                    });
                 }
+                else
+                {
+                    val = max(val, dp[i - 1][change][idx] + score(arr[i - 1], idx));
+                }
+                dp[i][change][idx] = val;
             }
         }
     }
-    forn(i, n)
+    ll ans = 0;
+    for (ll i = n; i >= 1; i--)
     {
-        v64 vis(n + 1, 0);
-        dfs(i, vis, adj);
-        cout << "FOR NODE -> " << i << ln;
-        forn(i, n)
+        for (ll change = k; change >= 0; change--)
         {
-            cout << vis[i] << " ";
+            for (ll idx = 2; idx >= 0; idx--)
+            {
+                ans = max(ans, dp[i][change][idx]);
+            }
         }
-        cout << ln;
     }
+    cout<<ans<<ln;
 }
 
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
+    // #ifndef ONLINE_JUDGE
+    //     freopen("hps.in", "r", stdin);
+    //     freopen("hps.out", "w", stdout);
+    // #endif
     ll t = 1;
     // cin >> t;
     for (int it = 1; it <= t; it++)

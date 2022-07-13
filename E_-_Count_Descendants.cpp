@@ -115,185 +115,92 @@ tcTUU > void re(T &t, U &...u)
     re(u...);
 }
 
-
-int find_set(int v, v64 &parent)
+struct node
 {
-    if (-1 == parent[v])
-        return v;
-    return parent[v] = find_set(parent[v], parent);
+    v64 freq;
+};
+
+void build(v64 &arr, node *tree, ll s, ll e, ll tn)
+{
+    if (s == e)
+    {
+        tree[tn].freq.pb(arr[s]);
+        return;
+    }
+    ll mid = (s + e) / 2;
+    build(arr, tree, s, mid, 2 * tn);
+    build(arr, tree, mid + 1, e, (2 * tn) + 1);
+    auto &a = tree[tn].freq;
+    auto &b = tree[2 * tn].freq;
+    auto &c = tree[(2 * tn) + 1].freq;
+    merge(all(b), all(c), back_inserter(a));
 }
 
-void union_sets(int a, int b, v64 &parent)
+ll query(v64 &arr, node *tree, ll s, ll e, ll tn, ll l, ll r, ll val)
 {
-    a = find_set(a, parent);
-    b = find_set(b, parent);
-    if (a != b)
-        parent[b] = a;
-}
-
-// function for prime factorization
-vector<pair<ll, ll>> pf(ll n)
-{
-    vector<pair<ll, ll>> prime;
-    for (int i = 2; i <= sqrt(n); i++)
-    {
-        if (n % i == 0)
-        {
-            int count = 0;
-            while (n % i == 0)
-            {
-                count++;
-                n = n / i;
-            }
-            prime.pb(mp(i, count));
-        }
-    }
-    if (n > 1)
-    {
-        prime.pb(mp(n, 1));
-    }
-    return prime;
-}
-
-// sum of digits of a number
-ll sumofno(ll n)
-{
-    ll sum = 0;
-    while (n != 0)
-    {
-        sum += n % 10;
-        n = n / 10;
-    }
-    return sum;
-}
-
-// modular exponentiation
-long long modpow(long long x, long long n, long long p)
-{
-
-    if (n == 0)
-        return 1 % p;
-
-    ll ans = 1, base = x;
-    while (n > 0)
-    {
-        if (n % 2 == 1)
-        {
-            ans = (ans * base) % p;
-            n--;
-        }
-        else
-        {
-            base = (base * base) % p;
-            n /= 2;
-        }
-    }
-    if (ans < 0)
-        ans = (ans + p) % p;
-    return ans;
-}
-
-// const int N = 1e6 + 100;
-// long long fact[N];
-//  initialise the factorial
-// void initfact(){
-// fact[0] = 1;
-// for (int i = 1; i < N; i++)
-//{
-// fact[i] = (fact[i - 1] * i);
-// fact[i] %= MOD;
-// }}
-
-// formula for c
-// ll C(ll n, ll i)
-//{
-// ll res = fact[n];
-// ll div = fact[n - i] * fact[i];
-// div %= MOD;
-// div = modpow(div, MOD - 2, MOD);
-// return (res * div) % MOD;
-// }
-
-long long CW(ll n, ll m)
-{
-    if (m > n - m)
-        m = n - m;
-    long long ans = 1;
-    for (int i = 0; i < m; i++)
-    {
-        ans = ans * (n - i) / (i + 1);
-    }
-    return ans;
-}
-
-// function for fast expo
-ll fastexpo(ll a, ll b)
-{
-    if (b == 0)
-    {
-        return 1;
-    }
-    if (a == 0)
+    ll mid = (s + e) / 2;
+    // out
+    if (s > r || l > e)
     {
         return 0;
     }
-    ll y = fastexpo(a, b / 2);
-    if (b % 2 == 0)
+    // in
+    if (s >= l && r >= e)
     {
-        return y * y;
+        ll x = upper_bound(all(tree[tn].freq), val) - lower_bound(all(tree[tn].freq), val);
+        return x;
     }
-    else
-    {
-        return a * y * y;
-    }
+    ll ans1 = query(arr, tree, s, mid, 2 * tn, l, r, val);
+    ll ans2 = query(arr, tree, mid + 1, e, (2 * tn) + 1, l, r, val);
+    return ans1 + ans2;
 }
 
-ll popcount(ll n)
+ll timer = 0;
+u64 intime, outtime;
+void dfs(int v, v64 &vis, uv64 &adj, v64 &arr, ll dis)
 {
-    ll c = 0;
-    for (; n; ++c)
-        n &= n - 1;
-    return c;
-}
-
-ll ce(ll x, ll y)
-{
-    ll res = x / y;
-    if (x % y != 0)
+    vis[v] = 1;
+    intime[v] = timer;
+    arr[timer] = dis;
+    timer++;
+    for (auto child : adj[v])
     {
-        res++;
+        if (vis[child] == 0)
+        {
+            dfs(child, vis, adj, arr, dis + 1);
+        }
     }
-    return res;
-}
-
-bool pow2(ll x)
-{
-    ll res = x & (x - 1);
-    if (res == 0)
-    {
-        return true;
-    }
-    return false;
-}
-
-bool isPrime(int x)
-{
-    for (int d = 2; d * d <= x; d++)
-    {
-        if (x % d == 0)
-            return false;
-    }
-    return true;
+    outtime[v] = timer;
+    arr[timer] = dis;
+    timer++;
 }
 
 void solve()
 {
     ll n;
     cin >> n;
-    ll arr[n];
-    forn(i, n)
+    v64 arr(2 * n);
+    node tree[8 * n];
+    uv64 adj;
+    forsn(i, 2, n + 1)
     {
-        cin >> arr[i];
+        ll x;
+        cin >> x;
+        adj[i].pb(x);
+        adj[x].pb(i);
+    }
+    v64 vis(n + 1, 0);
+    dfs(1, vis, adj, arr, 0);
+    build(arr, tree, 0, (2 * n) - 1, 1);
+    ll q;
+    re(q);
+    while (q--)
+    {
+        ll a, b;
+        re(a, b);
+        ll left = intime[a];
+        ll right = outtime[a];
+        cout << query(arr, tree, 0, (2 * n) - 1, 1, left, right, b) / 2 << ln;
     }
 }
 
@@ -305,7 +212,7 @@ int main()
     // freopen("revegetate.out", "w", stdout);
     //#endif
     ll t = 1;
-    cin >> t;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

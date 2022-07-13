@@ -52,7 +52,7 @@ typedef unordered_map<p64, ll> up64;
 typedef unordered_map<ll, vp64> uvp64;
 typedef priority_queue<ll> pq64;
 typedef priority_queue<ll, v64, greater<ll>> pqs64;
-ll MOD = 1000000007;
+const int MOD = 1000000007;
 double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
@@ -83,7 +83,6 @@ typedef gp_hash_table<ll, ll, custom_hash> fm64;
 typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 
 #define ln "\n"
-#define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
 #define ie insert
 #define pb push_back
@@ -97,24 +96,39 @@ typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
+#define dbg(a) cout << a << endl;
+#define dbg2(a) cout << a << ' ';
+using ld = long double;
+using db = double;
+using str = string; // yay python!
+// INPUT
+#define tcT template <class T
+#define tcTU tcT, class U
+#define tcTUU tcT, class... U
+tcT > void re(T &x)
+{
+    cin >> x;
+}
+tcTUU > void re(T &t, U &...u)
+{
+    re(t);
+    re(u...);
+}
 
-// dsu functions
-// void make_set(int v) {
-//   parent[v] = v;
-//}
+int find_set(int v, v64 &parent)
+{
+    if (-1 == parent[v])
+        return v;
+    return parent[v] = find_set(parent[v], parent);
+}
 
-// int find_set(int v,v64 &parent) {
-//   if (-1 == parent[v])
-// return v;
-// return parent[v]=find_set(parent[v],parent);
-// }
-
-// void union_sets(int a, int b,v64 &parent) {
-//   a = find_set(a,parent);
-// b = find_set(b,parent);
-// if (a != b)
-// parent[b] = a;
-// }
+void union_sets(int a, int b, v64 &parent)
+{
+    a = find_set(a, parent);
+    b = find_set(b, parent);
+    if (a != b)
+        parent[b] = a;
+}
 
 // function for prime factorization
 vector<pair<ll, ll>> pf(ll n)
@@ -271,99 +285,39 @@ bool isPrime(int x)
     return true;
 }
 
-struct node
-{
-    fm64 freq;
-};
+u64 ans;
 
-void build(ll arr[], node *tree, ll s, ll e, ll tn)
-{
-    if (s == e)
-    {
-        tree[tn].freq[arr[s]]++;
-        return;
-    }
-    ll mid = (s + e) / 2;
-    build(arr, tree, s, mid, 2 * tn);
-    build(arr, tree, mid + 1, e, (2 * tn) + 1);
-    for (auto t : tree[2 * tn].freq)
-    {
-        tree[t].freq[t.fi] += t.se;
-    }
-    for (auto t : tree[(2 * tn) + 1].freq)
-    {
-        tree[t].freq[t.fi] += t.se;
-    }
-}
-
-ll query(ll arr[], ll tree[], ll s, ll e, ll tn, ll l, ll r)
-{
-    ll mid = (s + e) / 2;
-    // out
-    if (s > r || l > e)
-    {
-        return 0;
-    }
-    // in
-    if (s >= l && r >= e)
-    {
-        return tree[tn].freq.size();
-    }
-
-    ll ans1 = query(arr, tree, s, mid, 2 * tn, l, r);
-    ll ans2 = query(arr, tree, mid + 1, e, (2 * tn) + 1, l, r);
-    return ans1 + ans2;
-}
-
-void update(ll arr[], ll tree[], ll s, ll e, ll tn, ll idx, ll val)
-{
-    if (s == e)
-    {
-        arr[idx] = val;
-        tree[tn] = val;
-        return;
-    }
-    ll mid = (s + e) / 2;
-    if (idx > mid)
-    {
-        update(arr, tree, mid + 1, e, (2 * tn) + 1, idx, val);
-    }
-    else
-    {
-        update(arr, tree, s, mid, 2 * tn, idx, val);
-    }
-    tree[tn] = tree[2 * tn] + tree[(2 * tn) + 1];
-}
-
-ll timer;
-u64 intime, outtime;
-
-void dfs(int v, v64 &vis, uv64 &adj, v64 &val, ll arr[])
+void dfs(int v, v64 &vis, uv64 &adj, unordered_map<ll, s64> &sx)
 {
     vis[v] = 1;
-    arr[timer] = val[v];
-    intime[v] = timer;
-    timer++;
     for (auto child : adj[v])
     {
         if (vis[child] == 0)
         {
-            dfs(child, vis, adj, val, arr);
+            dfs(child, vis, adj, sx);
+            if (sx[v].size() < sx[child].size())
+            {
+                swap(sx[v], sx[child]);
+            }
+            for (auto t : sx[child])
+            {
+                sx[v].ie(t);
+            }
         }
     }
-    arr[timer] = val[v];
-    outtime[v] = timer;
-    timer++;
+    ans[v] = sx[v].size();
 }
 
 void solve()
 {
     ll n;
     cin >> n;
-    v64 val(n + 1, 0);
+    unordered_map<ll, s64> sx;
     forn(i, n)
     {
-        cin >> val[i + 1];
+        ll x;
+        re(x);
+        sx[i + 1].ie(x);
     }
     uv64 adj;
     forn(i, n - 1)
@@ -374,15 +328,14 @@ void solve()
         adj[b].pb(a);
     }
     v64 vis(n + 1, 0);
-    ll arr[2 * n];
-    node tree[8 * n];
-    dfs(1, vis, adj, val, arr);
-    forn(i, 2 * n)
+    dfs(1, vis, adj, sx);
+    forsn(i, 1, n + 1)
     {
-        cout << arr[i] << " ";
+        dbg2(ans[i]);
     }
     cout << ln;
 }
+
 int main()
 {
     fast_cin();

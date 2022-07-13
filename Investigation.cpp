@@ -58,6 +58,30 @@ double eps = 1e-12;
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
 #define rforn(i, s) for (ll i = s; i >= 0; i--)
 #define rforsn(i, s, e) for (ll i = s; i >= e; i--)
+struct custom_hash
+{
+    static uint64_t splitmix64(uint64_t x)
+    {
+        x += 0x9e3779b97f4a7c15;
+        x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
+        x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
+        return x ^ (x >> 31);
+    }
+
+    size_t operator()(p64 x) const
+    {
+        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+        return splitmix64(x.first + FIXED_RANDOM) ^ splitmix64(x.second + FIXED_RANDOM);
+    }
+    size_t operator()(ll x) const
+    {
+        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+        return splitmix64(x + FIXED_RANDOM);
+    }
+};
+typedef gp_hash_table<ll, ll, custom_hash> fm64;
+typedef gp_hash_table<p64, ll, custom_hash> fmp64;
+
 #define ln "\n"
 #define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
@@ -251,72 +275,50 @@ void solve()
 {
     ll n, m;
     cin >> n >> m;
-    vp64 adj[n + 10];
+    uvp64 adj;
     forn(i, m)
     {
-        ll a, b, c;
-        cin >> a >> b >> c;
-        adj[a].pb({b, c});
+        ll a, b, w;
+        cin >> a >> b >> w;
+        adj[a].pb({b, w});
     }
-    v64 dist(n + 1, INF), routes(n + 1, 0), mini(n + 1, INF), maxi(n + 1, 0);
+
     multiset<p64> s;
+    v64 dist(n + 1, 1e15);
+    u64 minroutes, maxroutes, routes;
     s.ie({0, 1});
-    dist[1] = 0;
+    minroutes[1] = 0, maxroutes[1] = 0;
     routes[1] = 1;
-    maxi[1] = 0;
-    mini[1] = 0;
+    dist[1] = 0;
     while (s.size())
     {
-        p64 curr = *s.begin();
-        ll node = curr.se;
-        s.erase(s.begin());
-        for (auto t : adj[node])
+        auto it = s.begin();
+        ll curr = it->second;
+        s.erase(it);
+        for (auto t : adj[curr])
         {
-            ll child = t.fi;
-            ll wt = t.se;
-            if (dist[node] + wt < dist[child])
+            ll child = t.first;
+            ll wt = t.second;
+            if (dist[child] == dist[curr] + wt && dist[curr] != 1e15)
             {
-                auto it = s.find({dist[child], child});
-                if (it != s.end())
-                {
-                    s.erase(it);
-                }
-                dist[child] = dist[node] + wt;
-                routes[child] = routes[node];
-                s.ie({dist[child], child});
-                mini[child] = mini[node] + 1;
-                maxi[child] = maxi[node] + 1;
-            }
-            else if (dist[node] + wt == dist[child])
-            {
-                routes[child] += routes[node];
+                routes[child] += routes[curr];
                 routes[child] %= MOD;
-                mini[child] = min(mini[node] + 1, mini[node]);
-                maxi[child] = max(mini[node] + 1, maxi[node]);
+                minroutes[child] = min(minroutes[curr] + 1, minroutes[child]);
+                maxroutes[child] = max(maxroutes[curr] + 1, maxroutes[child]);
+            }
+            if (dist[child] > dist[curr] + wt && dist[curr] != 1e15)
+            {
+                s.erase({dist[child], child});
+                dist[child] = dist[curr] + wt;
+                s.ie({dist[child], child});
+                minroutes[child] = minroutes[curr] + 1;
+                maxroutes[child] = maxroutes[curr] + 1;
+                routes[child] = routes[curr];
+                routes[child] %= MOD;
             }
         }
     }
-    // forsn(i, 1, n + 1)
-    // {
-    //     cout << dist[i] << " ";
-    // }
-    // cout << ln;
-    // forsn(i, 1, n + 1)
-    // {
-    //     cout << routes[i] << " ";
-    // }
-    // cout << ln;
-    // forsn(i, 1, n + 1)
-    // {
-    //     cout << mini[i] << " ";
-    // }
-    // cout << ln;
-    // forsn(i, 1, n + 1)
-    // {
-    //     cout << maxi[i] << " ";
-    // }
-    // cout << ln;
-    cout << dist[n] << " " << routes[n] << " " << mini[n] << " " << maxi[n] << ln;
+    cout << dist[n] << " " << routes[n] << " " << minroutes[n] << " " << maxroutes[n] << ln;
 }
 
 int main()

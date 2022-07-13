@@ -52,7 +52,7 @@ typedef unordered_map<p64, ll> up64;
 typedef unordered_map<ll, vp64> uvp64;
 typedef priority_queue<ll> pq64;
 typedef priority_queue<ll, v64, greater<ll>> pqs64;
-const int MOD = 1000000007;
+ll MOD = 1000000007;
 double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
@@ -83,6 +83,7 @@ typedef gp_hash_table<ll, ll, custom_hash> fm64;
 typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 
 #define ln "\n"
+#define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
 #define ie insert
 #define pb push_back
@@ -96,205 +97,126 @@ typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define dbg(a) cout << a << endl;
-#define dbg2(a) cout << a << ' ';
-using ld = long double;
-using db = double;
-using str = string; // yay python!
-// INPUT
-#define tcT template <class T
-#define tcTU tcT, class U
-#define tcTUU tcT, class... U
-tcT > void re(T &x)
-{
-    cin >> x;
-}
-tcTUU > void re(T &t, U &...u)
-{
-    re(t);
-    re(u...);
-}
 
-
-int find_set(int v, v64 &parent)
+void bfs(uvp64 &adj, v64 &dist, ll src, v64 &parent, v64 &lvl)
 {
-    if (-1 == parent[v])
-        return v;
-    return parent[v] = find_set(parent[v], parent);
-}
-
-void union_sets(int a, int b, v64 &parent)
-{
-    a = find_set(a, parent);
-    b = find_set(b, parent);
-    if (a != b)
-        parent[b] = a;
-}
-
-// function for prime factorization
-vector<pair<ll, ll>> pf(ll n)
-{
-    vector<pair<ll, ll>> prime;
-    for (int i = 2; i <= sqrt(n); i++)
+    set<p64> q;
+    q.ie({0, src});
+    dist[src] = 0;
+    lvl[src] = 0;
+    parent[src] = src;
+    while (!q.empty())
     {
-        if (n % i == 0)
+        auto it = q.begin();
+        ll curr = it->second;
+        q.erase(it);
+        for (auto t : adj[curr])
         {
-            int count = 0;
-            while (n % i == 0)
+            auto child = t.se;
+            auto wt = t.fi;
+            if (dist[child] > dist[curr] + wt)
             {
-                count++;
-                n = n / i;
+                q.erase({dist[child], child});
+                dist[child] = dist[curr] + wt;
+                q.ie({dist[child], child});
+                parent[child] = curr;
+                lvl[child] = lvl[curr] + 1;
             }
-            prime.pb(mp(i, count));
         }
     }
-    if (n > 1)
-    {
-        prime.pb(mp(n, 1));
-    }
-    return prime;
 }
 
-// sum of digits of a number
-ll sumofno(ll n)
+ll lca(ll a, ll b, v64 &lvl, v64 &dist, ll sparse[][30])
 {
-    ll sum = 0;
-    while (n != 0)
+    ll oa, ob;
+    oa = a, ob = b;
+    ll rem = lvl[a] - lvl[b];
+    if (rem < 0)
     {
-        sum += n % 10;
-        n = n / 10;
+        swap(a, b);
     }
-    return sum;
-}
-
-// modular exponentiation
-long long modpow(long long x, long long n, long long p)
-{
-
-    if (n == 0)
-        return 1 % p;
-
-    ll ans = 1, base = x;
-    while (n > 0)
+    ll steps = abs(rem);
+    while (steps)
     {
-        if (n % 2 == 1)
-        {
-            ans = (ans * base) % p;
-            n--;
-        }
-        else
-        {
-            base = (base * base) % p;
-            n /= 2;
-        }
+        // a needs to come up
+        a = sparse[a][__lg(steps)];
+        steps -= fastexpo(2, __lg(steps));
     }
-    if (ans < 0)
-        ans = (ans + p) % p;
-    return ans;
-}
-
-// const int N = 1e6 + 100;
-// long long fact[N];
-//  initialise the factorial
-// void initfact(){
-// fact[0] = 1;
-// for (int i = 1; i < N; i++)
-//{
-// fact[i] = (fact[i - 1] * i);
-// fact[i] %= MOD;
-// }}
-
-// formula for c
-// ll C(ll n, ll i)
-//{
-// ll res = fact[n];
-// ll div = fact[n - i] * fact[i];
-// div %= MOD;
-// div = modpow(div, MOD - 2, MOD);
-// return (res * div) % MOD;
-// }
-
-long long CW(ll n, ll m)
-{
-    if (m > n - m)
-        m = n - m;
-    long long ans = 1;
-    for (int i = 0; i < m; i++)
+    // cout << a << " " << b << ln;
+    ll lca = 0;
+    if (a == b)
     {
-        ans = ans * (n - i) / (i + 1);
-    }
-    return ans;
-}
-
-// function for fast expo
-ll fastexpo(ll a, ll b)
-{
-    if (b == 0)
-    {
-        return 1;
-    }
-    if (a == 0)
-    {
-        return 0;
-    }
-    ll y = fastexpo(a, b / 2);
-    if (b % 2 == 0)
-    {
-        return y * y;
+        lca = a;
     }
     else
     {
-        return a * y * y;
+        for (ll i = 30 - 1; i >= 0; i--)
+        {
+            if (sparse[a][i] != sparse[b][i])
+            {
+                a = sparse[a][i];
+                b = sparse[b][i];
+            }
+        }
+        lca = sparse[a][0];
     }
+    a = oa, b = ob;
+    return dist[a] + dist[b] - 2 * dist[lca];
 }
 
-ll popcount(ll n)
+ll p, q, r;
+ll node, diss = INF;
+void dfs(int v, v64 &vis, uvp64 &adj, v64 &lvl, v64 &dist, ll sparse[][30])
 {
-    ll c = 0;
-    for (; n; ++c)
-        n &= n - 1;
-    return c;
-}
-
-ll ce(ll x, ll y)
-{
-    ll res = x / y;
-    if (x % y != 0)
+    vis[v] = 1;
+    ll curr_dis = lca(v, p, lvl, dist, sparse) + lca(v, q, lvl, dist, sparse) + lca(v, r, lvl, dist, sparse);
+    if (curr_dis < diss)
     {
-        res++;
+        diss = curr_dis;
+        node = v;
     }
-    return res;
-}
-
-bool pow2(ll x)
-{
-    ll res = x & (x - 1);
-    if (res == 0)
+    for (auto t : adj[v])
     {
-        return true;
+        auto child = t.se;
+        if (vis[child] == 0)
+        {
+            dfs(child, vis, adj, lvl, dist, sparse);
+        }
     }
-    return false;
-}
-
-bool isPrime(int x)
-{
-    for (int d = 2; d * d <= x; d++)
-    {
-        if (x % d == 0)
-            return false;
-    }
-    return true;
 }
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    ll arr[n];
-    forn(i, n)
+    ll n, m;
+    cin >> n >> m;
+    uvp64 adj;
+    forn(i, m)
     {
-        cin >> arr[i];
+        ll a, b, c;
+        cin >> a >> b >> c;
+        adj[a].pb({c, b});
+        adj[b].pb({c, a});
     }
+    cin >> p >> q >> r;
+    v64 par(n + 1, -1);
+    v64 parent(n + 1, 0);
+    ll sparse[n + 1][30];
+    v64 lvl(n + 1, 0), dist(n + 1, INF);
+    bfs(adj, dist, 1, parent, lvl);
+    forsn(i, 1, n + 1)
+    {
+        sparse[i][0] = parent[i];
+    }
+    for (ll j = 1; j < 30; j++)
+    {
+        for (ll i = 1; i <= n; i++)
+        {
+            sparse[i][j] = sparse[sparse[i][j - 1]][j - 1];
+        }
+    }
+    v64 vis(n + 1, 0);
+    dfs(1, vis, adj, lvl, dist, sparse);
+    cout << node << ln;
 }
 
 int main()
@@ -305,7 +227,7 @@ int main()
     // freopen("revegetate.out", "w", stdout);
     //#endif
     ll t = 1;
-    cin >> t;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();
@@ -313,12 +235,3 @@ int main()
     return 0;
 }
 
-/*
-1. Check borderline constraints. Can a variable you are dividing by be 0?
-2. Use ll while using bitshifts
-3. Do not erase from set while iterating it
-4. Initialise everything
-5. Read the task carefully, is something unique, sorted, adjacent, guaranteed??
-6. DO NOT use if(!mp[x]) if you want to iterate the map later
-7. Are you using i in all loops? Are the i's conflicting?
-*/

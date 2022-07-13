@@ -52,7 +52,7 @@ typedef unordered_map<p64, ll> up64;
 typedef unordered_map<ll, vp64> uvp64;
 typedef priority_queue<ll> pq64;
 typedef priority_queue<ll, v64, greater<ll>> pqs64;
-const int MOD = 1000000007;
+ll MOD = 1000000007;
 double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
@@ -273,83 +273,77 @@ bool isPrime(int x)
     return true;
 }
 
-void dfs(int v, v64 &vis, uvp64 &adj)
+void dfs(int v, v64 &vis, uv64 &adj, int col, v64 &type, string &s)
 {
     vis[v] = 1;
-    for (auto t : adj[v])
+    type[v] = col;
+    for (auto child : adj[v])
     {
-        auto child = t.fi;
-        if (vis[child] == 0)
+        if (vis[child] == 0 && s[child - 1] == s[v - 1])
         {
-            dfs(child, vis, adj);
+            dfs(child, vis, adj, col, type, s);
         }
     }
 }
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    vector<pair<p64, ll>> edges;
-    forn(i, n)
+    ll n, m;
+    cin >> n >> m;
+    string s;
+    cin >> s;
+    uv64 adj;
+    forn(i, n - 1)
     {
-        ll a, b, wt;
-        cin >> a >> b >> wt;
-        edges.pb({{a, b}, wt});
+        ll a, b;
+        cin >> a >> b;
+        adj[a].pb(b);
+        adj[b].pb(a);
     }
-    // construct the graph
-    // 1 2 3 4 5 6 7
-    // 1->2
-    // 1->3
-    // 1->4
-    // 1->5
-    // 1->6
-    // 1->7
-    // 2->1
-    // 2->3
-    // 2->4
-    // 2->5
-    // 2->6
-    // 2->7
-    uvp64 adj;
-    forn(i, n)
+    v64 vis(n + 1, 0), type(n + 1, 0);
+    ll col = 0;
+    map<ll, char> store;
+    forsn(i, 1, n + 1)
     {
-        // i -> j
-        ll x1 = edges[i].fi.fi, y1 = edges[i].fi.se;
-        ll power = edges[i].se;
-        forn(j, n)
+        if (vis[i] == 0)
         {
-            ll x2 = edges[j].fi.fi, y2 = edges[j].fi.se;
-            if (i != j)
-            {
-                ll dist = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
-                if (dist <= power * power)
-                {
-                    adj[i].pb({j, power});
-                }
-            }
+            col++;
+            store[col] = s[i - 1];
+            dfs(i, vis, adj, col, type, s);
         }
     }
-    forn(i, n)
+    while (m--)
     {
-        v64 vis(n + 1, 0);
-        dfs(i, vis, adj);
-        cout << "FOR NODE -> " << i << ln;
-        forn(i, n)
+        ll a, b;
+        char x;
+        cin >> a >> b >> x;
+        if (store[type[a]] != store[type[b]])
         {
-            cout << vis[i] << " ";
+            cout << 1;
         }
-        cout << ln;
+        else if (store[type[a]] == store[type[b]] && store[type[a]] == x)
+        {
+            cout << 1;
+        }
+        else if (type[a] != type[b])
+        {
+            cout << 1;
+        }
+        else
+        {
+            cout << 0;
+        }
+        // cout << store[type[a]] << " " << store[type[b]] << " " << x << ln;
     }
 }
 
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
+#ifndef ONLINE_JUDGE
+    freopen("milkvisits.in", "r", stdin);
+    freopen("milkvisits.out", "w", stdout);
+#endif
     ll t = 1;
     // cin >> t;
     for (int it = 1; it <= t; it++)

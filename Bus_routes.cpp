@@ -115,210 +115,85 @@ tcTUU > void re(T &t, U &...u)
     re(u...);
 }
 
-
-int find_set(int v, v64 &parent)
+ll n;
+ll bfs(uv64 &adj, v64 &start, u64 &end)
 {
-    if (-1 == parent[v])
-        return v;
-    return parent[v] = find_set(parent[v], parent);
-}
-
-void union_sets(int a, int b, v64 &parent)
-{
-    a = find_set(a, parent);
-    b = find_set(b, parent);
-    if (a != b)
-        parent[b] = a;
-}
-
-// function for prime factorization
-vector<pair<ll, ll>> pf(ll n)
-{
-    vector<pair<ll, ll>> prime;
-    for (int i = 2; i <= sqrt(n); i++)
+    queue<ll> q;
+    v64 vis(n + 1, 0), dist(n + 1, INF);
+    for (auto t : start)
     {
-        if (n % i == 0)
+        q.push(t);
+        dist[t] = 0;
+        vis[t] = 1;
+    }
+    while (!q.empty())
+    {
+        ll curr = q.front();
+        q.pop();
+        for (auto child : adj[curr])
         {
-            int count = 0;
-            while (n % i == 0)
+            if (vis[child] == 0)
             {
-                count++;
-                n = n / i;
+                dist[child] = dist[curr] + 1;
+                q.push(child);
+                vis[child] = 1;
             }
-            prime.pb(mp(i, count));
         }
     }
-    if (n > 1)
+    ll ans = INF;
+    forsn(i, 1, n + 1)
     {
-        prime.pb(mp(n, 1));
-    }
-    return prime;
-}
-
-// sum of digits of a number
-ll sumofno(ll n)
-{
-    ll sum = 0;
-    while (n != 0)
-    {
-        sum += n % 10;
-        n = n / 10;
-    }
-    return sum;
-}
-
-// modular exponentiation
-long long modpow(long long x, long long n, long long p)
-{
-
-    if (n == 0)
-        return 1 % p;
-
-    ll ans = 1, base = x;
-    while (n > 0)
-    {
-        if (n % 2 == 1)
+        if (end[i])
         {
-            ans = (ans * base) % p;
-            n--;
+            ans = min(ans, dist[i]);
         }
-        else
-        {
-            base = (base * base) % p;
-            n /= 2;
-        }
-    }
-    if (ans < 0)
-        ans = (ans + p) % p;
-    return ans;
-}
-
-// const int N = 1e6 + 100;
-// long long fact[N];
-//  initialise the factorial
-// void initfact(){
-// fact[0] = 1;
-// for (int i = 1; i < N; i++)
-//{
-// fact[i] = (fact[i - 1] * i);
-// fact[i] %= MOD;
-// }}
-
-// formula for c
-// ll C(ll n, ll i)
-//{
-// ll res = fact[n];
-// ll div = fact[n - i] * fact[i];
-// div %= MOD;
-// div = modpow(div, MOD - 2, MOD);
-// return (res * div) % MOD;
-// }
-
-long long CW(ll n, ll m)
-{
-    if (m > n - m)
-        m = n - m;
-    long long ans = 1;
-    for (int i = 0; i < m; i++)
-    {
-        ans = ans * (n - i) / (i + 1);
     }
     return ans;
 }
 
-// function for fast expo
-ll fastexpo(ll a, ll b)
+class Solution
 {
-    if (b == 0)
+public:
+    int numBusesToDestination(vector<vector<int>> &routes, int source, int target)
     {
-        return 1;
+        n = 0;
+        uv64 mark;
+        forn(i, routes.size())
+        {
+            auto &t = routes[i];
+            for (auto x : t)
+            {
+                n = max(n, x);
+                mark[x].pb(i);
+            }
+        }
+        uv64 adj;
+        for (auto &t : mark)
+        {
+            if (t.size() > 1)
+            {
+                forn(i, t.size() - 1)
+                {
+                    adj[t[i]].pb(t[i + 1]);
+                }
+                adj[t.back()].pb(1);
+            }
+        }
+        v64 start;
+        u64 end;
+        for (auto t : mark[source])
+        {
+            start.pb(t);
+        }
+        for (auto t : mark[target])
+        {
+            end.pb[t]++;
+        }
+        ll val = bfs(adj, start, end);
+        if (val == INF)
+        {
+            return -1;
+        }
+        return val;
     }
-    if (a == 0)
-    {
-        return 0;
-    }
-    ll y = fastexpo(a, b / 2);
-    if (b % 2 == 0)
-    {
-        return y * y;
-    }
-    else
-    {
-        return a * y * y;
-    }
-}
-
-ll popcount(ll n)
-{
-    ll c = 0;
-    for (; n; ++c)
-        n &= n - 1;
-    return c;
-}
-
-ll ce(ll x, ll y)
-{
-    ll res = x / y;
-    if (x % y != 0)
-    {
-        res++;
-    }
-    return res;
-}
-
-bool pow2(ll x)
-{
-    ll res = x & (x - 1);
-    if (res == 0)
-    {
-        return true;
-    }
-    return false;
-}
-
-bool isPrime(int x)
-{
-    for (int d = 2; d * d <= x; d++)
-    {
-        if (x % d == 0)
-            return false;
-    }
-    return true;
-}
-
-void solve()
-{
-    ll n;
-    cin >> n;
-    ll arr[n];
-    forn(i, n)
-    {
-        cin >> arr[i];
-    }
-}
-
-int main()
-{
-    fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
-    ll t = 1;
-    cin >> t;
-    for (int it = 1; it <= t; it++)
-    {
-        solve();
-    }
-    return 0;
-}
-
-/*
-1. Check borderline constraints. Can a variable you are dividing by be 0?
-2. Use ll while using bitshifts
-3. Do not erase from set while iterating it
-4. Initialise everything
-5. Read the task carefully, is something unique, sorted, adjacent, guaranteed??
-6. DO NOT use if(!mp[x]) if you want to iterate the map later
-7. Are you using i in all loops? Are the i's conflicting?
-*/
+};

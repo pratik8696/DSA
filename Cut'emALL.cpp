@@ -273,98 +273,54 @@ bool isPrime(int x)
     return true;
 }
 
-void dfs(int v, v64 &vis, uvp64 &adj)
+ll dfs(int v, v64 &vis, uv64 &adj, fmp64 &mark)
 {
     vis[v] = 1;
-    for (auto t : adj[v])
+    ll cc = 1;
+    v64 vx;
+    for (auto child : adj[v])
     {
-        auto child = t.fi;
         if (vis[child] == 0)
         {
-            dfs(child, vis, adj);
-        }
-    }
-}
-
-void solve()
-{
-    ll n;
-    cin >> n;
-    vector<pair<p64, ll>> edges;
-    forn(i, n)
-    {
-        ll a, b, wt;
-        cin >> a >> b >> wt;
-        edges.pb({{a, b}, wt});
-    }
-    // construct the graph
-    // 1 2 3 4 5 6 7
-    // 1->2
-    // 1->3
-    // 1->4
-    // 1->5
-    // 1->6
-    // 1->7
-    // 2->1
-    // 2->3
-    // 2->4
-    // 2->5
-    // 2->6
-    // 2->7
-    uvp64 adj;
-    forn(i, n)
-    {
-        // i -> j
-        ll x1 = edges[i].fi.fi, y1 = edges[i].fi.se;
-        ll power = edges[i].se;
-        forn(j, n)
-        {
-            ll x2 = edges[j].fi.fi, y2 = edges[j].fi.se;
-            if (i != j)
+            ll curr = dfs(child, vis, adj, mark);
+            if (curr != 0)
             {
-                ll dist = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
-                if (dist <= power * power)
-                {
-                    adj[i].pb({j, power});
-                }
+                vx.pb(child);
+                cc += vx;
             }
         }
     }
-    forn(i, n)
+    if (cc % 2 == 0)
     {
-        v64 vis(n + 1, 0);
-        dfs(i, vis, adj);
-        cout << "FOR NODE -> " << i << ln;
-        forn(i, n)
+        // mark all as used and keep them
+        for (auto t : vx)
         {
-            cout << vis[i] << " ";
+            mark[{t, v}]++;
+            mark[{v, t}]++;
         }
-        cout << ln;
+        return 0;
     }
+    return cc;
 }
 
-int main()
+int solve(int n, vector<vector<int>> edges)
 {
-    fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
-    ll t = 1;
-    // cin >> t;
-    for (int it = 1; it <= t; it++)
+    uv64 adj;
+    for (auto t : edges)
     {
-        solve();
+        adj[t[0]].pb(t[1]);
+        adj[t[1]].pb(t[0]);
     }
-    return 0;
+    v64 vis(n + 1, 0);
+    fmp64 mark;
+    dfs(1, vis, adj, mark);
+    ll cc=0;
+    for (auto t : edges)
+    {
+        if (mark[{t[0], t[1]}] == 0)
+        {
+            cc++;
+        }
+    }
+    return cc;
 }
-
-/*
-1. Check borderline constraints. Can a variable you are dividing by be 0?
-2. Use ll while using bitshifts
-3. Do not erase from set while iterating it
-4. Initialise everything
-5. Read the task carefully, is something unique, sorted, adjacent, guaranteed??
-6. DO NOT use if(!mp[x]) if you want to iterate the map later
-7. Are you using i in all loops? Are the i's conflicting?
-*/

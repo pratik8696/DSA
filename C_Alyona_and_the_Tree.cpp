@@ -52,7 +52,7 @@ typedef unordered_map<p64, ll> up64;
 typedef unordered_map<ll, vp64> uvp64;
 typedef priority_queue<ll> pq64;
 typedef priority_queue<ll, v64, greater<ll>> pqs64;
-const int MOD = 1000000007;
+ll MOD = 1000000007;
 double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
@@ -103,20 +103,18 @@ typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 //   parent[v] = v;
 //}
 
-int find_set(int v, v64 &parent)
-{
-    if (-1 == parent[v])
-        return v;
-    return parent[v] = find_set(parent[v], parent);
-}
+// int find_set(int v,v64 &parent) {
+//   if (-1 == parent[v])
+// return v;
+// return parent[v]=find_set(parent[v],parent);
+// }
 
-void union_sets(int a, int b, v64 &parent)
-{
-    a = find_set(a, parent);
-    b = find_set(b, parent);
-    if (a != b)
-        parent[b] = a;
-}
+// void union_sets(int a, int b,v64 &parent) {
+//   a = find_set(a,parent);
+// b = find_set(b,parent);
+// if (a != b)
+// parent[b] = a;
+// }
 
 // function for prime factorization
 vector<pair<ll, ll>> pf(ll n)
@@ -273,15 +271,44 @@ bool isPrime(int x)
     return true;
 }
 
-void dfs(int v, v64 &vis, uvp64 &adj)
+ll dfs_sub(int v, v64 &vis, uvp64 &adj, v64 &sub)
 {
     vis[v] = 1;
+    ll size = 1;
     for (auto t : adj[v])
     {
-        auto child = t.fi;
+        ll child = t.fi;
+        ll wt = t.se;
         if (vis[child] == 0)
         {
-            dfs(child, vis, adj);
+            size += dfs_sub(child, vis, adj, sub);
+        }
+    }
+    sub[v] = size;
+    return size;
+}
+
+ll cc;
+void dfs(int v, v64 &vis, uvp64 &adj, v64 &ans, ll dis, ll arr[], v64 &sub)
+{
+    vis[v] = 1;
+    ll curr_dist = 0;
+    for (auto t : adj[v])
+    {
+        ll child = t.fi;
+        ll wt = t.se;
+        if (vis[child] == 0)
+        {
+            ll maxx = max(wt, dis + wt);
+            ans[child] = maxx;
+            if (maxx > arr[child])
+            {
+                cc += sub[child];
+            }
+            else
+            {
+                dfs(child, vis, adj, ans, maxx, arr, sub);
+            }
         }
     }
 }
@@ -290,59 +317,25 @@ void solve()
 {
     ll n;
     cin >> n;
-    vector<pair<p64, ll>> edges;
+    ll arr[n + 1];
     forn(i, n)
     {
-        ll a, b, wt;
-        cin >> a >> b >> wt;
-        edges.pb({{a, b}, wt});
+        cin >> arr[i + 1];
     }
-    // construct the graph
-    // 1 2 3 4 5 6 7
-    // 1->2
-    // 1->3
-    // 1->4
-    // 1->5
-    // 1->6
-    // 1->7
-    // 2->1
-    // 2->3
-    // 2->4
-    // 2->5
-    // 2->6
-    // 2->7
     uvp64 adj;
-    forn(i, n)
+    forn(i, n - 1)
     {
-        // i -> j
-        ll x1 = edges[i].fi.fi, y1 = edges[i].fi.se;
-        ll power = edges[i].se;
-        forn(j, n)
-        {
-            ll x2 = edges[j].fi.fi, y2 = edges[j].fi.se;
-            if (i != j)
-            {
-                ll dist = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
-                if (dist <= power * power)
-                {
-                    adj[i].pb({j, power});
-                }
-            }
-        }
+        ll a, b;
+        cin >> a >> b;
+        adj[i + 2].pb({a, b});
+        adj[a].pb({i + 2, b});
     }
-    forn(i, n)
-    {
-        v64 vis(n + 1, 0);
-        dfs(i, vis, adj);
-        cout << "FOR NODE -> " << i << ln;
-        forn(i, n)
-        {
-            cout << vis[i] << " ";
-        }
-        cout << ln;
-    }
+    v64 vis(n + 1, 0), ans(n + 1, 0), sub(n + 1, 0);
+    ll val = dfs_sub(1, vis, adj, sub);
+    fill(all(vis), 0);
+    dfs(1, vis, adj, ans, 0, arr, sub);
+    cout << cc << ln;
 }
-
 int main()
 {
     fast_cin();

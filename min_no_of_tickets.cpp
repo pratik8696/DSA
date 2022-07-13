@@ -273,74 +273,54 @@ bool isPrime(int x)
     return true;
 }
 
-void dfs(int v, v64 &vis, uvp64 &adj)
+ll n;
+ll dp[400][400];
+ll sum(ll arr[], ll i, ll valid, ll cost[])
 {
-    vis[v] = 1;
-    for (auto t : adj[v])
+    if (i == 0)
     {
-        auto child = t.fi;
-        if (vis[child] == 0)
-        {
-            dfs(child, vis, adj);
-        }
+        return 0;
     }
+    if (dp[i][valid] != -1)
+    {
+        return dp[i][valid];
+    }
+    ll ans = INF;
+    if (arr[i - 1] > valid)
+    {
+        ans = min({ans, sum(arr, i - 1, arr[i - 1] + 1 - 1, cost) + cost[0],
+                   sum(arr, i - 1, arr[i - 1] + 7 - 1, cost) + cost[1],
+                   sum(arr, i - 1, arr[i - 1] + 30 - 1, cost) + cost[2]});
+    }
+    else
+    {
+        // else buy and don't buy
+        ans = min({ans, sum(arr, i - 1, arr[i - 1] + 1 - 1, cost) + cost[0],
+                   sum(arr, i - 1, arr[i - 1] + 7 - 1, cost) + cost[1],
+                   sum(arr, i - 1, arr[i - 1] + 30 - 1, cost) + cost[2],
+                   sum(arr, i - 1, valid, cost)});
+    }
+    return dp[i][valid] = ans;
 }
 
 void solve()
 {
-    ll n;
     cin >> n;
-    vector<pair<p64, ll>> edges;
+    ll arr[n];
+    ll cost[3];
+    ll k = 0;
     forn(i, n)
     {
-        ll a, b, wt;
-        cin >> a >> b >> wt;
-        edges.pb({{a, b}, wt});
+        cin >> arr[i];
     }
-    // construct the graph
-    // 1 2 3 4 5 6 7
-    // 1->2
-    // 1->3
-    // 1->4
-    // 1->5
-    // 1->6
-    // 1->7
-    // 2->1
-    // 2->3
-    // 2->4
-    // 2->5
-    // 2->6
-    // 2->7
-    uvp64 adj;
-    forn(i, n)
+    memset(dp, -1, sizeof(dp));
+    forn(i, 3)
     {
-        // i -> j
-        ll x1 = edges[i].fi.fi, y1 = edges[i].fi.se;
-        ll power = edges[i].se;
-        forn(j, n)
-        {
-            ll x2 = edges[j].fi.fi, y2 = edges[j].fi.se;
-            if (i != j)
-            {
-                ll dist = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
-                if (dist <= power * power)
-                {
-                    adj[i].pb({j, power});
-                }
-            }
-        }
+        cin >> cost[i];
     }
-    forn(i, n)
-    {
-        v64 vis(n + 1, 0);
-        dfs(i, vis, adj);
-        cout << "FOR NODE -> " << i << ln;
-        forn(i, n)
-        {
-            cout << vis[i] << " ";
-        }
-        cout << ln;
-    }
+    reverse(al(arr, n));
+    cout << ln;
+    cout << sum(arr, n, 0, cost) << ln;
 }
 
 int main()

@@ -273,76 +273,101 @@ bool isPrime(int x)
     return true;
 }
 
-void dfs(int v, v64 &vis, uvp64 &adj)
-{
-    vis[v] = 1;
-    for (auto t : adj[v])
-    {
-        auto child = t.fi;
-        if (vis[child] == 0)
-        {
-            dfs(child, vis, adj);
-        }
-    }
-}
-
 void solve()
 {
-    ll n;
-    cin >> n;
-    vector<pair<p64, ll>> edges;
-    forn(i, n)
+    ll n, m;
+    cin >> n >> m;
+    ll row[n + 1], col[m + 1];
+    forsn(i, 1, n + 1)
     {
-        ll a, b, wt;
-        cin >> a >> b >> wt;
-        edges.pb({{a, b}, wt});
+        cin >> row[i];
     }
-    // construct the graph
-    // 1 2 3 4 5 6 7
-    // 1->2
-    // 1->3
-    // 1->4
-    // 1->5
-    // 1->6
-    // 1->7
-    // 2->1
-    // 2->3
-    // 2->4
-    // 2->5
-    // 2->6
-    // 2->7
-    uvp64 adj;
-    forn(i, n)
+    forsn(i, 1, m + 1)
     {
-        // i -> j
-        ll x1 = edges[i].fi.fi, y1 = edges[i].fi.se;
-        ll power = edges[i].se;
-        forn(j, n)
+        cin >> col[i];
+    }
+    vv64 arr(n + 10, v64(m + 10));
+    forsn(i, 1, n + 1)
+    {
+        forsn(j, 1, row[i] + 1)
         {
-            ll x2 = edges[j].fi.fi, y2 = edges[j].fi.se;
-            if (i != j)
+            arr[i][j] = 1;
+        }
+    }
+    forsn(j, 1, m + 1)
+    {
+        forsn(i, 1, col[j] + 1)
+        {
+            arr[i][j] = 1;
+        }
+    }
+    forsn(i, 1, n + 1)
+    {
+        ll cc = 0;
+        forsn(j, 1, m + 1)
+        {
+            if (arr[i][j] == 0)
             {
-                ll dist = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
-                if (dist <= power * power)
-                {
-                    adj[i].pb({j, power});
-                }
+                break;
+            }
+            else
+            {
+                cc++;
+            }
+        }
+        if (row[i] != cc)
+        {
+            cout << 0 << ln;
+            return;
+        }
+    }
+    forsn(j, 1, m + 1)
+    {
+        ll cc = 0;
+        forsn(i, 1, n + 1)
+        {
+            if (arr[i][j] == 0)
+            {
+                break;
+            }
+            else
+            {
+                cc++;
+            }
+        }
+        if (col[j] != cc)
+        {
+            cout << 0 << ln;
+            return;
+        }
+    }
+    forsn(i, 1, n + 1)
+    {
+        forsn(j, 1, row[i] + 2)
+        {
+            arr[i][j]++;
+        }
+    }
+    forsn(j, 1, m + 1)
+    {
+        forsn(i, 1, col[j] + 2)
+        {
+            arr[i][j]++;
+        }
+    }
+    ll val = 0;
+    forsn(i, 1, n + 1)
+    {
+        forsn(j, 1, m + 1)
+        {
+            if (arr[i][j] == 0)
+            {
+                val++;
             }
         }
     }
-    forn(i, n)
-    {
-        v64 vis(n + 1, 0);
-        dfs(i, vis, adj);
-        cout << "FOR NODE -> " << i << ln;
-        forn(i, n)
-        {
-            cout << vis[i] << " ";
-        }
-        cout << ln;
-    }
+    cout << modpow(2, val, MOD) << ln;
 }
-
 int main()
 {
     fast_cin();

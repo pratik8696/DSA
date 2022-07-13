@@ -52,7 +52,7 @@ typedef unordered_map<p64, ll> up64;
 typedef unordered_map<ll, vp64> uvp64;
 typedef priority_queue<ll> pq64;
 typedef priority_queue<ll, v64, greater<ll>> pqs64;
-const int MOD = 1000000007;
+const int MOD = 998244353;
 double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
@@ -83,7 +83,6 @@ typedef gp_hash_table<ll, ll, custom_hash> fm64;
 typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 
 #define ln "\n"
-#define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
 #define ie insert
 #define pb push_back
@@ -97,11 +96,24 @@ typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-
-// dsu functions
-// void make_set(int v) {
-//   parent[v] = v;
-//}
+#define dbg(a) cout << a << endl;
+#define dbg2(a) cout << a << ' ';
+using ld = long double;
+using db = double;
+using str = string; // yay python!
+// INPUT
+#define tcT template <class T
+#define tcTU tcT, class U
+#define tcTUU tcT, class... U
+tcT > void re(T &x)
+{
+    cin >> x;
+}
+tcTUU > void re(T &t, U &...u)
+{
+    re(t);
+    re(u...);
+}
 
 int find_set(int v, v64 &parent)
 {
@@ -180,16 +192,18 @@ long long modpow(long long x, long long n, long long p)
     return ans;
 }
 
-// const int N = 1e6 + 100;
-// long long fact[N];
+const int N = 1e6 + 100;
+long long fact[N];
 //  initialise the factorial
-// void initfact(){
-// fact[0] = 1;
-// for (int i = 1; i < N; i++)
-//{
-// fact[i] = (fact[i - 1] * i);
-// fact[i] %= MOD;
-// }}
+void initfact()
+{
+    fact[0] = 1;
+    for (int i = 1; i < N; i++)
+    {
+        fact[i] = (fact[i - 1] * i);
+        fact[i] %= MOD;
+    }
+}
 
 // formula for c
 // ll C(ll n, ll i)
@@ -273,74 +287,57 @@ bool isPrime(int x)
     return true;
 }
 
-void dfs(int v, v64 &vis, uvp64 &adj)
+struct mi
 {
-    vis[v] = 1;
-    for (auto t : adj[v])
-    {
-        auto child = t.fi;
-        if (vis[child] == 0)
-        {
-            dfs(child, vis, adj);
-        }
-    }
+    int v;
+    explicit operator int() const { return v; }
+    mi() { v = 0; }
+    mi(long long _v) : v(_v % MOD) { v += (v < 0) * MOD; }
+};
+mi &operator+=(mi &a, mi b)
+{
+    if ((a.v += b.v) >= MOD)
+        a.v -= MOD;
+    return a;
 }
+mi &operator-=(mi &a, mi b)
+{
+    if ((a.v -= b.v) < 0)
+        a.v += MOD;
+    return a;
+}
+mi operator+(mi a, mi b) { return a += b; }
+mi operator-(mi a, mi b) { return a -= b; }
+mi operator*(mi a, mi b) { return mi((long long)a.v * b.v); }
+mi &operator*=(mi &a, mi b) { return a = a * b; }
+mi pow(mi a, long long p)
+{
+    assert(p >= 0);
+    return p == 0 ? 1 : pow(a * a, p / 2) * (p & 1 ? a : 1);
+}
+mi inv(mi a)
+{
+    assert(a.v != 0);
+    return pow(a, MOD - 2);
+}
+mi operator/(mi a, mi b) { return a * inv(b); }
+// cout << a * b * c << "\n";  // errors out- we have to convert it to an int
 
 void solve()
 {
     ll n;
     cin >> n;
-    vector<pair<p64, ll>> edges;
-    forn(i, n)
+    mi ans;
+    ans = n * fact[n];
+    forsn(i, 1, n + 1)
     {
-        ll a, b, wt;
-        cin >> a >> b >> wt;
-        edges.pb({{a, b}, wt});
+        mi num = fact[n];
+        mi denom = fact[i];
+        mi curr = num / denom;
+        ans -= curr;
     }
-    // construct the graph
-    // 1 2 3 4 5 6 7
-    // 1->2
-    // 1->3
-    // 1->4
-    // 1->5
-    // 1->6
-    // 1->7
-    // 2->1
-    // 2->3
-    // 2->4
-    // 2->5
-    // 2->6
-    // 2->7
-    uvp64 adj;
-    forn(i, n)
-    {
-        // i -> j
-        ll x1 = edges[i].fi.fi, y1 = edges[i].fi.se;
-        ll power = edges[i].se;
-        forn(j, n)
-        {
-            ll x2 = edges[j].fi.fi, y2 = edges[j].fi.se;
-            if (i != j)
-            {
-                ll dist = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
-                if (dist <= power * power)
-                {
-                    adj[i].pb({j, power});
-                }
-            }
-        }
-    }
-    forn(i, n)
-    {
-        v64 vis(n + 1, 0);
-        dfs(i, vis, adj);
-        cout << "FOR NODE -> " << i << ln;
-        forn(i, n)
-        {
-            cout << vis[i] << " ";
-        }
-        cout << ln;
-    }
+    ans += 1;
+    cout << (int)ans << ln;
 }
 
 int main()
@@ -351,6 +348,7 @@ int main()
     // freopen("revegetate.out", "w", stdout);
     //#endif
     ll t = 1;
+    initfact();
     // cin >> t;
     for (int it = 1; it <= t; it++)
     {

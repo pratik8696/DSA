@@ -73,17 +73,265 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-// gp_hash_table<ll, ll> table;
-struct chash
+
+// dsu functions
+// void make_set(int v) {
+//   parent[v] = v;
+//}
+
+// int find_set(int v,v64 &parent) {
+//   if (-1 == parent[v])
+// return v;
+// return parent[v]=find_set(parent[v],parent);
+// }
+
+// void union_sets(int a, int b,v64 &parent) {
+//   a = find_set(a,parent);
+// b = find_set(b,parent);
+// if (a != b)
+// parent[b] = a;
+// }
+
+// function for prime factorization
+vector<pair<ll, ll>> pf(ll n)
 {
-    ll operator()(p64 x) const { return x.first * 31 + x.second; }
-};
-gp_hash_table<p64, ll, chash> table;
+    vector<pair<ll, ll>> prime;
+    for (int i = 2; i <= sqrt(n); i++)
+    {
+        if (n % i == 0)
+        {
+            int count = 0;
+            while (n % i == 0)
+            {
+                count++;
+                n = n / i;
+            }
+            prime.pb(mp(i, count));
+        }
+    }
+    if (n > 1)
+    {
+        prime.pb(mp(n, 1));
+    }
+    return prime;
+}
+
+// sum of digits of a number
+ll sumofno(ll n)
+{
+    ll sum = 0;
+    while (n != 0)
+    {
+        sum += n % 10;
+        n = n / 10;
+    }
+    return sum;
+}
+
+// modular exponentiation
+long long modpow(long long x, long long n, long long p)
+{
+
+    if (n == 0)
+        return 1 % p;
+
+    ll ans = 1, base = x;
+    while (n > 0)
+    {
+        if (n % 2 == 1)
+        {
+            ans = (ans * base) % p;
+            n--;
+        }
+        else
+        {
+            base = (base * base) % p;
+            n /= 2;
+        }
+    }
+    if (ans < 0)
+        ans = (ans + p) % p;
+    return ans;
+}
+
+// const int N = 1e6 + 100;
+// long long fact[N];
+//  initialise the factorial
+// void initfact(){
+// fact[0] = 1;
+// for (int i = 1; i < N; i++)
+//{
+// fact[i] = (fact[i - 1] * i);
+// fact[i] %= MOD;
+// }}
+
+// formula for c
+// ll C(ll n, ll i)
+//{
+// ll res = fact[n];
+// ll div = fact[n - i] * fact[i];
+// div %= MOD;
+// div = modpow(div, MOD - 2, MOD);
+// return (res * div) % MOD;
+// }
+
+long long CW(ll n, ll m)
+{
+    if (m > n - m)
+        m = n - m;
+    long long ans = 1;
+    for (int i = 0; i < m; i++)
+    {
+        ans = ans * (n - i) / (i + 1);
+    }
+    return ans;
+}
+
+// function for fast expo
+ll fastexpo(ll a, ll b)
+{
+    if (b == 0)
+    {
+        return 1;
+    }
+    if (a == 0)
+    {
+        return 0;
+    }
+    ll y = fastexpo(a, b / 2);
+    if (b % 2 == 0)
+    {
+        return y * y;
+    }
+    else
+    {
+        return a * y * y;
+    }
+}
+
+ll popcount(ll n)
+{
+    ll c = 0;
+    for (; n; ++c)
+        n &= n - 1;
+    return c;
+}
+
+ll ce(ll x, ll y)
+{
+    ll res = x / y;
+    if (x % y != 0)
+    {
+        res++;
+    }
+    return res;
+}
+
+bool pow2(ll x)
+{
+    ll res = x & (x - 1);
+    if (res == 0)
+    {
+        return true;
+    }
+    return false;
+}
+
+bool isPrime(int x)
+{
+    for (int d = 2; d * d <= x; d++)
+    {
+        if (x % d == 0)
+            return false;
+    }
+    return true;
+}
+
+void bfs(uv64 &adj, v64 &dist, ll src, v64 &parent)
+{
+    queue<ll> q;
+    v64 vis(dist.size(), 0);
+    q.push(src);
+    dist[src] = 1;
+    vis[src] = 1;
+    parent[src] = 1;
+    while (!q.empty())
+    {
+        ll curr = q.front();
+        q.pop();
+        for (auto child : adj[curr])
+        {
+            if (vis[child] == 0)
+            {
+                parent[child] = curr;
+                dist[child] = dist[curr] + 1;
+                q.push(child);
+                vis[child] = 1;
+            }
+        }
+    }
+}
 
 void solve()
 {
-    table[{1, 2}] = 1;
-    cout << table[{1, 2}] << ln;
+    ll n, m;
+    cin >> n >> m;
+    uv64 adj;
+    forsn(i, 2, n + 1)
+    {
+        ll x;
+        cin >> x;
+        adj[x].pb(i);
+    }
+    v64 parent(n + 1, 0);
+    vv64 sparse(n + 1, v64(31, -1));
+    v64 lvl(n + 1, 0);
+    bfs(adj, lvl, 1, parent);
+    forsn(i, 1, n + 1)
+    {
+        sparse[i][0] = parent[i];
+    }
+    for (ll j = 1; j < 30; j++)
+    {
+        for (ll i = 1; i <= n; i++)
+        {
+            sparse[i][j] = sparse[sparse[i][j - 1]][j - 1];
+        }
+    }
+    while (m--)
+    {
+        ll a, b;
+        cin >> a >> b;
+        ll rem = lvl[a] - lvl[b];
+        if (rem < 0)
+        {
+            swap(a, b);
+        }
+        ll steps = abs(rem);
+        while (steps)
+        {
+            // a needs to come up
+            a = sparse[a][__lg(steps)];
+            steps -= fastexpo(2, __lg(steps));
+        }
+        // cout << a << " " << b << ln;
+        if (a == b)
+        {
+            cout << a << ln;
+        }
+        else
+        {
+            for (ll i = 30 - 1; i >= 0; i--)
+            {
+                if (sparse[a][i] != sparse[b][i])
+                {
+                    a = sparse[a][i];
+                    b = sparse[b][i];
+                }
+            }
+            cout << sparse[a][0] << ln;
+        }
+    }
 }
 
 int main()

@@ -273,74 +273,48 @@ bool isPrime(int x)
     return true;
 }
 
-void dfs(int v, v64 &vis, uvp64 &adj)
-{
-    vis[v] = 1;
-    for (auto t : adj[v])
-    {
-        auto child = t.fi;
-        if (vis[child] == 0)
-        {
-            dfs(child, vis, adj);
-        }
-    }
-}
+ll n;
 
 void solve()
 {
-    ll n;
     cin >> n;
-    vector<pair<p64, ll>> edges;
-    forn(i, n)
+    vv64 arr(n + 10, v64(n + 10));
+    forsn(i, 1, n + 1)
     {
-        ll a, b, wt;
-        cin >> a >> b >> wt;
-        edges.pb({{a, b}, wt});
-    }
-    // construct the graph
-    // 1 2 3 4 5 6 7
-    // 1->2
-    // 1->3
-    // 1->4
-    // 1->5
-    // 1->6
-    // 1->7
-    // 2->1
-    // 2->3
-    // 2->4
-    // 2->5
-    // 2->6
-    // 2->7
-    uvp64 adj;
-    forn(i, n)
-    {
-        // i -> j
-        ll x1 = edges[i].fi.fi, y1 = edges[i].fi.se;
-        ll power = edges[i].se;
-        forn(j, n)
+        forsn(j, 1, n + 1)
         {
-            ll x2 = edges[j].fi.fi, y2 = edges[j].fi.se;
-            if (i != j)
+            cin >> arr[i][j];
+        }
+    }
+    vv64 dp(n + 1, v64(n + 10, INF));
+    forsn(i, 1, n + 1)
+    {
+        dp[n][i] = arr[n][i];
+    }
+    for (ll i = n - 1; i >= 1; i--)
+    {
+        for (ll j = n; j >= 1; j--)
+        {
+            ll left = INF, down = INF, right = INF;
+            if (j < n)
             {
-                ll dist = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
-                if (dist <= power * power)
-                {
-                    adj[i].pb({j, power});
-                }
+                right = dp[i + 1][j + 1];
             }
+            if (j > 1)
+            {
+                left = dp[i + 1][j - 1];
+            }
+            down = dp[i + 1][j];
+            dp[i][j] = min({left, down, right}) + arr[i][j];
         }
     }
-    forn(i, n)
+
+    ll ans = INF;
+    forsn(j, 1, n + 1)
     {
-        v64 vis(n + 1, 0);
-        dfs(i, vis, adj);
-        cout << "FOR NODE -> " << i << ln;
-        forn(i, n)
-        {
-            cout << vis[i] << " ";
-        }
-        cout << ln;
+        ans = min(dp[1][j], ans);
     }
+    cout << ans << ln;
 }
 
 int main()

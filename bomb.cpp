@@ -83,7 +83,6 @@ typedef gp_hash_table<ll, ll, custom_hash> fm64;
 typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 
 #define ln "\n"
-#define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
 #define ie insert
 #define pb push_back
@@ -97,25 +96,23 @@ typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-
-// dsu functions
-// void make_set(int v) {
-//   parent[v] = v;
-//}
-
-int find_set(int v, v64 &parent)
+#define dbg(a) cout << a << endl;
+#define dbg2(a) cout << a << ' ';
+using ld = long double;
+using db = double;
+using str = string; // yay python!
+// INPUT
+#define tcT template <class T
+#define tcTU tcT, class U
+#define tcTUU tcT, class... U
+tcT > void re(T &x)
 {
-    if (-1 == parent[v])
-        return v;
-    return parent[v] = find_set(parent[v], parent);
+    cin >> x;
 }
-
-void union_sets(int a, int b, v64 &parent)
+tcTUU > void re(T &t, U &...u)
 {
-    a = find_set(a, parent);
-    b = find_set(b, parent);
-    if (a != b)
-        parent[b] = a;
+    re(t);
+    re(u...);
 }
 
 // function for prime factorization
@@ -273,12 +270,13 @@ bool isPrime(int x)
     return true;
 }
 
-void dfs(int v, v64 &vis, uvp64 &adj)
+ll curr = 0;
+void dfs(int v, v64 &vis, uv64 &adj)
 {
     vis[v] = 1;
-    for (auto t : adj[v])
+    curr++;
+    for (auto child : adj[v])
     {
-        auto child = t.fi;
         if (vis[child] == 0)
         {
             dfs(child, vis, adj);
@@ -286,85 +284,41 @@ void dfs(int v, v64 &vis, uvp64 &adj)
     }
 }
 
-void solve()
+class Solution
 {
-    ll n;
-    cin >> n;
-    vector<pair<p64, ll>> edges;
-    forn(i, n)
+public:
+    int maximumDetonation(vector<vector<int>> &bombs)
     {
-        ll a, b, wt;
-        cin >> a >> b >> wt;
-        edges.pb({{a, b}, wt});
-    }
-    // construct the graph
-    // 1 2 3 4 5 6 7
-    // 1->2
-    // 1->3
-    // 1->4
-    // 1->5
-    // 1->6
-    // 1->7
-    // 2->1
-    // 2->3
-    // 2->4
-    // 2->5
-    // 2->6
-    // 2->7
-    uvp64 adj;
-    forn(i, n)
-    {
-        // i -> j
-        ll x1 = edges[i].fi.fi, y1 = edges[i].fi.se;
-        ll power = edges[i].se;
-        forn(j, n)
+        ll size = bombs.size();
+        uv64 adj;
+        forn(i, size)
         {
-            ll x2 = edges[j].fi.fi, y2 = edges[j].fi.se;
-            if (i != j)
+            // i --> j
+            ll x1 = bombs[i][0], y1 = bombs[i][1], radius = bombs[i][2];
+            forn(j, size())
             {
-                ll dist = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
-                if (dist <= power * power)
+                if (i != j)
                 {
-                    adj[i].pb({j, power});
+                    ll x2 = bombs[j][0], y2 = bombs[j][1];
+                    ll dist = abs(fastexpo((x1 - x2), 2)) + abs(fastexpo((y1 - y2), 2));
+                    if (dist <= radius * radius)
+                    {
+                        adj[i].pb(j);
+                    }
                 }
             }
         }
-    }
-    forn(i, n)
-    {
+        ll ans = 0;
         v64 vis(n + 1, 0);
-        dfs(i, vis, adj);
-        cout << "FOR NODE -> " << i << ln;
-        forn(i, n)
+        forn(i, size())
         {
-            cout << vis[i] << " ";
+            if (vis[i] == 0)
+            {
+                curr = 0;
+                dfs(i, vis, adj);
+                ans = max(curr, ans);
+            }
         }
-        cout << ln;
+        return ans;
     }
-}
-
-int main()
-{
-    fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
-    ll t = 1;
-    // cin >> t;
-    for (int it = 1; it <= t; it++)
-    {
-        solve();
-    }
-    return 0;
-}
-
-/*
-1. Check borderline constraints. Can a variable you are dividing by be 0?
-2. Use ll while using bitshifts
-3. Do not erase from set while iterating it
-4. Initialise everything
-5. Read the task carefully, is something unique, sorted, adjacent, guaranteed??
-6. DO NOT use if(!mp[x]) if you want to iterate the map later
-7. Are you using i in all loops? Are the i's conflicting?
-*/
+};

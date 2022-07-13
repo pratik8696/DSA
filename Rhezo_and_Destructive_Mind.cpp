@@ -273,73 +273,80 @@ bool isPrime(int x)
     return true;
 }
 
-void dfs(int v, v64 &vis, uvp64 &adj)
+ll timer;
+u64 edges;
+
+void dfs_bridges(int v, int p, v64 &visited, v64 &low, v64 &tin, uv64 &adj)
 {
-    vis[v] = 1;
-    for (auto t : adj[v])
+    visited[v] = true;
+    tin[v] = low[v] = timer++;
+    int children = 0;
+    for (int to : adj[v])
     {
-        auto child = t.fi;
-        if (vis[child] == 0)
+        if (to == p)
+            continue;
+        if (visited[to])
         {
-            dfs(child, vis, adj);
+            low[v] = min(low[v], tin[to]);
+        }
+        else
+        {
+            dfs_bridges(to, v, visited, low, tin, adj);
+            low[v] = min(low[v], low[to]);
+            if (low[to] >= tin[v] && p != -1)
+            {
+                edges[v]++;
+            }
+            ++children;
+        }
+    }
+    if (p == -1 && children > 1)
+    {
+        edges[v]++;
+    }
+}
+
+void find_bridges(v64 &visited, v64 &low, v64 &tin, uv64 &adj)
+{
+    timer = 0;
+    for (int i = 1; i <= visited.size(); ++i)
+    {
+        if (!visited[i])
+        {
+            dfs_bridges(i, -1, visited, low, tin, adj);
         }
     }
 }
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    vector<pair<p64, ll>> edges;
-    forn(i, n)
+    ll n, m;
+    cin >> n >> m;
+    uv64 adj;
+    forn(i, m)
     {
-        ll a, b, wt;
-        cin >> a >> b >> wt;
-        edges.pb({{a, b}, wt});
+        ll a, b;
+        cin >> a >> b;
+        adj[a].pb(b);
+        adj[b].pb(a);
     }
-    // construct the graph
-    // 1 2 3 4 5 6 7
-    // 1->2
-    // 1->3
-    // 1->4
-    // 1->5
-    // 1->6
-    // 1->7
-    // 2->1
-    // 2->3
-    // 2->4
-    // 2->5
-    // 2->6
-    // 2->7
-    uvp64 adj;
-    forn(i, n)
+    v64 visited(n + 1, 0);
+    v64 tin(n + 1, -1), low(n + 1, -1);
+    find_bridges(visited, low, tin, adj);
+    ll q;
+    cin >> q;
+    while (q--)
     {
-        // i -> j
-        ll x1 = edges[i].fi.fi, y1 = edges[i].fi.se;
-        ll power = edges[i].se;
-        forn(j, n)
+        ll x;
+        cin >> x;
+        if (edges[x])
         {
-            ll x2 = edges[j].fi.fi, y2 = edges[j].fi.se;
-            if (i != j)
-            {
-                ll dist = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
-                if (dist <= power * power)
-                {
-                    adj[i].pb({j, power});
-                }
-            }
+            cout << "Satisfied " << adj[x].size() << ln;
         }
-    }
-    forn(i, n)
-    {
-        v64 vis(n + 1, 0);
-        dfs(i, vis, adj);
-        cout << "FOR NODE -> " << i << ln;
-        forn(i, n)
+        else
         {
-            cout << vis[i] << " ";
+            cout << "Not Satisfied" << ln;
         }
-        cout << ln;
     }
 }
 

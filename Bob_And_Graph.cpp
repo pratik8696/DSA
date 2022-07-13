@@ -29,6 +29,7 @@ typedef long long ll;
 typedef tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update> pbds;
 typedef unsigned long long ull;
 typedef long double ld;
+
 typedef pair<int, int> p32;
 typedef pair<ll, ll> p64;
 typedef pair<double, double> pdd;
@@ -58,6 +59,7 @@ double eps = 1e-12;
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
 #define rforn(i, s) for (ll i = s; i >= 0; i--)
 #define rforsn(i, s, e) for (ll i = s; i >= e; i--)
+#define trav(a, x) for (auto &a : x)
 struct custom_hash
 {
     static uint64_t splitmix64(uint64_t x)
@@ -97,6 +99,23 @@ typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
+using ld = long double;
+using db = double;
+using str = string; // yay python!
+// INPUT
+#define tcT template <class T
+#define tcTU tcT, class U
+#define tcTUU tcT, class... U
+tcT > void re(T &x)
+{
+    cin >> x;
+}
+tcTUU > void re(T &t, U &...u)
+{
+    re(t);
+    re(u...);
+}
+
 
 // dsu functions
 // void make_set(int v) {
@@ -273,74 +292,63 @@ bool isPrime(int x)
     return true;
 }
 
-void dfs(int v, v64 &vis, uvp64 &adj)
+struct DSU
 {
-    vis[v] = 1;
-    for (auto t : adj[v])
+    v64 e, sz;
+    DSU(ll n)
     {
-        auto child = t.fi;
-        if (vis[child] == 0)
+        e.assign(n + 1, -1);
+        sz.assign(n + 1, 1);
+    }
+    bool same(ll a, ll b) { return find(a) == find(b); }
+    ll size(ll x) { return sz[find(x)]; }
+    ll find(ll x) { return e[x] < 0 ? x : e[x] = find(e[x]); }
+    void join(ll a, ll b)
+    {
+        a = find(a);
+        b = find(b);
+        if (a != b)
         {
-            dfs(child, vis, adj);
+            if (sz[a] < sz[b])
+            {
+                swap(a, b);
+            }
+            e[b] = a;
+            sz[a] += sz[b];
         }
     }
-}
+};
 
 void solve()
 {
     ll n;
-    cin >> n;
-    vector<pair<p64, ll>> edges;
-    forn(i, n)
+    re(n);
+    vector<pair<ll, p64>> edges;
+    forn(i, n - 1)
     {
         ll a, b, wt;
-        cin >> a >> b >> wt;
-        edges.pb({{a, b}, wt});
+        re(a, b, wt);
+        edges.pb({wt, {a, b}});
     }
-    // construct the graph
-    // 1 2 3 4 5 6 7
-    // 1->2
-    // 1->3
-    // 1->4
-    // 1->5
-    // 1->6
-    // 1->7
-    // 2->1
-    // 2->3
-    // 2->4
-    // 2->5
-    // 2->6
-    // 2->7
-    uvp64 adj;
-    forn(i, n)
+    sort(all(edges));
+    DSU d(n + 1);
+    ll ans = 0;
+    if (edges.size())
     {
-        // i -> j
-        ll x1 = edges[i].fi.fi, y1 = edges[i].fi.se;
-        ll power = edges[i].se;
-        forn(j, n)
+        for (auto t : edges)
         {
-            ll x2 = edges[j].fi.fi, y2 = edges[j].fi.se;
-            if (i != j)
+            ll a = t.se.fi, b = t.se.se, wt = t.fi;
+            if (!d.same(a, b))
             {
-                ll dist = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
-                if (dist <= power * power)
-                {
-                    adj[i].pb({j, power});
-                }
+                ll sza = d.size(a);
+                ll szb = d.size(b);
+                ans += sza * szb * wt;
+                d.join(a, b);
+                ans %= MOD;
             }
         }
     }
-    forn(i, n)
-    {
-        v64 vis(n + 1, 0);
-        dfs(i, vis, adj);
-        cout << "FOR NODE -> " << i << ln;
-        forn(i, n)
-        {
-            cout << vis[i] << " ";
-        }
-        cout << ln;
-    }
+    cout << ans << ln;
 }
 
 int main()
@@ -351,7 +359,7 @@ int main()
     // freopen("revegetate.out", "w", stdout);
     //#endif
     ll t = 1;
-    // cin >> t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

@@ -52,7 +52,7 @@ typedef unordered_map<p64, ll> up64;
 typedef unordered_map<ll, vp64> uvp64;
 typedef priority_queue<ll> pq64;
 typedef priority_queue<ll, v64, greater<ll>> pqs64;
-const int MOD = 1000000007;
+ll MOD = 1000000007;
 double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
@@ -273,76 +273,114 @@ bool isPrime(int x)
     return true;
 }
 
-void dfs(int v, v64 &vis, uvp64 &adj)
+void bfs(uvp64 &adj, v64 &dist, ll src, vp64 &parent)
 {
-    vis[v] = 1;
-    for (auto t : adj[v])
+    queue<ll> q;
+    v64 vis(dist.size(), 0);
+    q.push(src);
+    dist[src] = 0;
+    vis[src] = 1;
+    parent[src] = {src, 0};
+    while (!q.empty())
     {
-        auto child = t.fi;
-        if (vis[child] == 0)
+        ll curr = q.front();
+        q.pop();
+        for (auto t : adj[curr])
         {
-            dfs(child, vis, adj);
+            auto child = t.fi;
+            if (dist[child] == dist[curr] + 1)
+            {
+                
+            }
+            else if (vis[child] == 0)
+            {
+                dist[child] = dist[curr] + 1;
+                q.push(child);
+                vis[child] = 1;
+                parent[child].fi = curr;
+                parent[child].se = t.se;
+            }
         }
     }
 }
 
 void solve()
 {
-    ll n;
-    cin >> n;
-    vector<pair<p64, ll>> edges;
-    forn(i, n)
-    {
-        ll a, b, wt;
-        cin >> a >> b >> wt;
-        edges.pb({{a, b}, wt});
-    }
-    // construct the graph
-    // 1 2 3 4 5 6 7
-    // 1->2
-    // 1->3
-    // 1->4
-    // 1->5
-    // 1->6
-    // 1->7
-    // 2->1
-    // 2->3
-    // 2->4
-    // 2->5
-    // 2->6
-    // 2->7
+    ll n, m, q;
+    cin >> n >> m >> q;
     uvp64 adj;
-    forn(i, n)
+    forn(i, m)
     {
-        // i -> j
-        ll x1 = edges[i].fi.fi, y1 = edges[i].fi.se;
-        ll power = edges[i].se;
-        forn(j, n)
+        ll a, b;
+        cin >> a >> b;
+        adj[a].pb({b, i + 2});
+        adj[b].pb({a, i + 2});
+    }
+    vp64 parent(n + 1);
+    vector<vp64> sparse(n + 10, vp64(30));
+    v64 lvl(n + 1, 0);
+    bfs(adj, lvl, 1, parent);
+    forsn(i, 1, n + 1)
+    {
+        sparse[i][0] = parent[i];
+    }
+    for (ll j = 1; j < 30; j++)
+    {
+        for (ll i = 1; i <= n; i++)
         {
-            ll x2 = edges[j].fi.fi, y2 = edges[j].fi.se;
-            if (i != j)
+            ll par = sparse[i][j - 1].fi;
+            if (par != -1)
             {
-                ll dist = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
-                if (dist <= power * power)
-                {
-                    adj[i].pb({j, power});
-                }
+                sparse[i][j].fi = sparse[par][j - 1].fi;
+                sparse[i][j].se = max(sparse[sparse[i][j - 1].fi][j - 1].se, sparse[i][j - 1].se);
             }
         }
     }
-    forn(i, n)
+    for (ll i = 0; i <= n; i++)
     {
-        v64 vis(n + 1, 0);
-        dfs(i, vis, adj);
-        cout << "FOR NODE -> " << i << ln;
-        forn(i, n)
+        for (ll j = 1; j < 5; j++)
         {
-            cout << vis[i] << " ";
+            cout << sparse[i][j].fi << "," << sparse[i][j].se << "  --  ";
         }
         cout << ln;
     }
+    // while (q--)
+    // {
+    //     ll a, b;
+    //     cin >> a >> b;
+    //     ll rem = lvl[a] - lvl[b];
+    //     if (rem < 0)
+    //     {
+    //         swap(a, b);
+    //     }
+    //     ll steps = abs(rem);
+    //     ll wt = 0;
+    //     while (steps)
+    //     {
+    //         // a needs to come
+    //         wt = max(sparse[a][__lg(steps)].se, wt);
+    //         a = sparse[a][__lg(steps)].fi;
+    //         steps -= fastexpo(2, __lg(steps));
+    //     }
+    //     // cout << a << " " << b << ln;
+    //     if (a == b)
+    //     {
+    //         cout << wt << ln;
+    //     }
+    //     else
+    //     {
+    //         for (ll i = 30 - 1; i >= 0; i--)
+    //         {
+    //             if (sparse[a][i] != sparse[b][i])
+    //             {
+    //                 a = sparse[a][i];
+    //                 b = sparse[b][i];
+    //             }
+    //         }
+    //         cout << sparse[a][0] << ln;
+    //     }
+    // }
 }
-
 int main()
 {
     fast_cin();

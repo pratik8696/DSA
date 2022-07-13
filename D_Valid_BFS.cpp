@@ -83,7 +83,6 @@ typedef gp_hash_table<ll, ll, custom_hash> fm64;
 typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 
 #define ln "\n"
-#define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
 #define ie insert
 #define pb push_back
@@ -97,11 +96,24 @@ typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-
-// dsu functions
-// void make_set(int v) {
-//   parent[v] = v;
-//}
+#define dbg(a) cout << a << endl;
+#define dbg2(a) cout << a << ' ';
+using ld = long double;
+using db = double;
+using str = string; // yay python!
+// INPUT
+#define tcT template <class T
+#define tcTU tcT, class U
+#define tcTUU tcT, class... U
+tcT > void re(T &x)
+{
+    cin >> x;
+}
+tcTUU > void re(T &t, U &...u)
+{
+    re(t);
+    re(u...);
+}
 
 int find_set(int v, v64 &parent)
 {
@@ -273,15 +285,27 @@ bool isPrime(int x)
     return true;
 }
 
-void dfs(int v, v64 &vis, uvp64 &adj)
+void bfs(uv64 &adj, v64 &dist, ll src, v64 &parent)
 {
-    vis[v] = 1;
-    for (auto t : adj[v])
+    queue<ll> q;
+    v64 vis(dist.size(), 0);
+    q.push(src);
+    dist[src] = 0;
+    vis[src] = 1;
+    parent[src] = 1;
+    while (!q.empty())
     {
-        auto child = t.fi;
-        if (vis[child] == 0)
+        ll curr = q.front();
+        q.pop();
+        for (auto child : adj[curr])
         {
-            dfs(child, vis, adj);
+            if (vis[child] == 0)
+            {
+                dist[child] = dist[curr] + 1;
+                q.push(child);
+                vis[child] = 1;
+                parent[child] = curr;
+            }
         }
     }
 }
@@ -290,57 +314,59 @@ void solve()
 {
     ll n;
     cin >> n;
-    vector<pair<p64, ll>> edges;
-    forn(i, n)
+    uv64 adj;
+    forn(i, n - 1)
     {
-        ll a, b, wt;
-        cin >> a >> b >> wt;
-        edges.pb({{a, b}, wt});
+        ll a, b;
+        re(a, b);
+        adj[a].pb(b);
+        adj[b].pb(a);
     }
-    // construct the graph
-    // 1 2 3 4 5 6 7
-    // 1->2
-    // 1->3
-    // 1->4
-    // 1->5
-    // 1->6
-    // 1->7
-    // 2->1
-    // 2->3
-    // 2->4
-    // 2->5
-    // 2->6
-    // 2->7
-    uvp64 adj;
+    // now construct dist and parent
+    v64 dist(n + 1, INF), parent(n + 1, 0);
+    bfs(adj, dist, 1, parent);
+    ll limit = 0;
+    forsn(i, 1, n + 1)
+    {
+        limit = max(dist[i], limit);
+    }
+    limit++;
+    uv64 check;
+    u64 idx;
+    v64 v(n);
     forn(i, n)
     {
-        // i -> j
-        ll x1 = edges[i].fi.fi, y1 = edges[i].fi.se;
-        ll power = edges[i].se;
-        forn(j, n)
+        cin >> v[i];
+        check[dist[v[i]]].pb(v[i]);
+    }
+    forn(i, n - 1)
+    {
+        if (dist[v[i]] > dist[v[i + 1]])
         {
-            ll x2 = edges[j].fi.fi, y2 = edges[j].fi.se;
-            if (i != j)
-            {
-                ll dist = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
-                if (dist <= power * power)
-                {
-                    adj[i].pb({j, power});
-                }
-            }
+            cout << "No" << ln;
+            return;
         }
     }
-    forn(i, n)
+    uv64 final;
+    forn(i, limit)
     {
-        v64 vis(n + 1, 0);
-        dfs(i, vis, adj);
-        cout << "FOR NODE -> " << i << ln;
-        forn(i, n)
+        forn(j, check[i].size())
         {
-            cout << vis[i] << " ";
+            ll node = check[i][j];
+            ll node_par = parent[node];
+            idx[check[i][j]] = j;
+            final[dist[node]].pb(idx[node_par]);
         }
-        cout << ln;
     }
+    forn(i, limit)
+    {
+        if (!is_sorted(all(final[i])))
+        {
+            cout << "No" << ln;
+            return;
+        }
+    }
+    cout << "Yes" << ln;
 }
 
 int main()

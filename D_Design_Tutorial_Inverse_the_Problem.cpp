@@ -52,7 +52,7 @@ typedef unordered_map<p64, ll> up64;
 typedef unordered_map<ll, vp64> uvp64;
 typedef priority_queue<ll> pq64;
 typedef priority_queue<ll, v64, greater<ll>> pqs64;
-const int MOD = 1000000007;
+ll MOD = 1000000007;
 double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
@@ -273,74 +273,143 @@ bool isPrime(int x)
     return true;
 }
 
-void dfs(int v, v64 &vis, uvp64 &adj)
+void bfs(uvp64 &adj, v64 &dist, ll src, v64 &parent, v64 &lvl)
 {
-    vis[v] = 1;
-    for (auto t : adj[v])
+    set<p64> q;
+    q.ie({0, src});
+    dist[src] = 0;
+    lvl[src] = 0;
+    parent[src] = src;
+    while (!q.empty())
     {
-        auto child = t.fi;
-        if (vis[child] == 0)
+        auto it = q.begin();
+        ll curr = it->second;
+        q.erase(it);
+        for (auto t : adj[curr])
         {
-            dfs(child, vis, adj);
+            auto child = t.se;
+            auto wt = t.fi;
+            if (dist[child] > dist[curr] + wt)
+            {
+                q.erase({dist[child], child});
+                dist[child] = dist[curr] + wt;
+                q.ie({dist[child], child});
+                parent[child] = curr;
+                lvl[child] = lvl[curr] + 1;
+            }
         }
     }
+}
+
+ll lca(ll a, ll b, v64 &lvl, v64 &dist, ll sparse[][30])
+{
+    ll oa, ob;
+    oa = a, ob = b;
+    ll rem = lvl[a] - lvl[b];
+    if (rem < 0)
+    {
+        swap(a, b);
+    }
+    ll steps = abs(rem);
+    while (steps)
+    {
+        // a needs to come up
+        a = sparse[a][__lg(steps)];
+        steps -= fastexpo(2, __lg(steps));
+    }
+    // cout << a << " " << b << ln;
+    ll lca = 0;
+    if (a == b)
+    {
+        lca = a;
+    }
+    else
+    {
+        for (ll i = 30 - 1; i >= 0; i--)
+        {
+            if (sparse[a][i] != sparse[b][i])
+            {
+                a = sparse[a][i];
+                b = sparse[b][i];
+            }
+        }
+        lca = sparse[a][0];
+    }
+    a = oa, b = ob;
+    return dist[a] + dist[b] - 2 * dist[lca];
 }
 
 void solve()
 {
     ll n;
     cin >> n;
-    vector<pair<p64, ll>> edges;
-    forn(i, n)
+    vv64 arr(n + 10, v64(n + 10, 0));
+    forsn(i, 1, n + 1)
     {
-        ll a, b, wt;
-        cin >> a >> b >> wt;
-        edges.pb({{a, b}, wt});
-    }
-    // construct the graph
-    // 1 2 3 4 5 6 7
-    // 1->2
-    // 1->3
-    // 1->4
-    // 1->5
-    // 1->6
-    // 1->7
-    // 2->1
-    // 2->3
-    // 2->4
-    // 2->5
-    // 2->6
-    // 2->7
-    uvp64 adj;
-    forn(i, n)
-    {
-        // i -> j
-        ll x1 = edges[i].fi.fi, y1 = edges[i].fi.se;
-        ll power = edges[i].se;
-        forn(j, n)
+        forsn(j, 1, n + 1)
         {
-            ll x2 = edges[j].fi.fi, y2 = edges[j].fi.se;
-            if (i != j)
+            cin >> arr[i][j];
+        }
+    }
+    vector<pair<ll, p64>> edges;
+    ll ans = 0;
+    forsn(i, 1, n + 1)
+    {
+        forsn(j, 1, n + 1)
+        {
+            if (i == j && arr[i][j] != 0)
             {
-                ll dist = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
-                if (dist <= power * power)
-                {
-                    adj[i].pb({j, power});
-                }
+                cout << "NO" << ln;
+                return;
+            }
+            if (i != j && arr[i][j] == 0)
+            {
+                cout << "NO" << ln;
+                return;
+            }
+            edges.pb({arr[i][j], {i, j}});
+        }
+    }
+    sort(all(edges));
+    v64 par(n + 1, -1);
+    // final tree kaisa bnega idhar pta chlega
+    uvp64 adj;
+    for (auto t : edges)
+    {
+        if (find_set(t.se.fi, par) != find_set(t.se.se, par))
+        {
+            adj[t.se.fi].pb({t.fi, t.se.se});
+            adj[t.se.se].pb({t.fi, t.se.fi});
+            union_sets(t.se.fi, t.se.se, par);
+        }
+    }
+    v64 parent(n + 1, 0);
+    ll sparse[n + 1][30];
+    v64 lvl(n + 1, 0), dist(n + 1, INF);
+    bfs(adj, dist, 1, parent, lvl);
+    forsn(i, 1, n + 1)
+    {
+        sparse[i][0] = parent[i];
+    }
+    for (ll j = 1; j < 30; j++)
+    {
+        for (ll i = 1; i <= n; i++)
+        {
+            sparse[i][j] = sparse[sparse[i][j - 1]][j - 1];
+        }
+    }
+    forsn(i, 1, n + 1)
+    {
+        forsn(j, 1, n + 1)
+        {
+            if (lca(i, j, lvl, dist, sparse) != arr[i][j])
+            {
+                cout << "NO" << ln;
+                return;
             }
         }
     }
-    forn(i, n)
-    {
-        v64 vis(n + 1, 0);
-        dfs(i, vis, adj);
-        cout << "FOR NODE -> " << i << ln;
-        forn(i, n)
-        {
-            cout << vis[i] << " ";
-        }
-        cout << ln;
-    }
+    cout << "YES" << ln;
 }
 
 int main()
