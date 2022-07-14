@@ -285,45 +285,47 @@ bool isPrime(int x)
     return true;
 }
 
-string s;
-ll sum(string &s, ll i, v64 &dp)
-{
-    if (i == s.length())
-    {
-        return 1;
-    }
-    if (dp[i] != -1)
-    {
-        return dp[i];
-    }
-    ll ans = 0;
-    if (s[i] >= '1' && s[i] <= '9')
-    {
-        ans += sum(s, i + 1, dp);
-    }
-    if (i < s.length() - 1)
-    {
-        if (s[i] == '2' && s[i + 1] <= '6')
-        {
-            ans += sum(s, i + 2, dp);
-        }
-        if (s[i] == '1')
-        {
-            ans += sum(s, i + 2, dp);
-        }
-    }
-    return dp[i] = ans;
-}
-
 void solve()
 {
+    ll n;
+    cin >> n;
+    string s;
     cin >> s;
-    if (s == "0")
+    if (n == 1)
     {
-        exit(0);
+        cout << "YES" << ln;
+        return;
     }
-    v64 dp(s.length() + 1, -1);
-    cout << sum(s, 0, dp) << ln;
+    while (n)
+    {
+        string s1 = "", s2 = "";
+        if (n % 2 == 0)
+        {
+            s1.clear();
+            s2.clear();
+            forn(i, n / 2)
+            {
+                s1.pb(s[i]);
+            }
+            forsn(i, n / 2, n)
+            {
+                s2.pb(s[i]);
+            }
+            if (s1 != s2)
+            {
+                cout << "NO" << ln;
+                return;
+            }
+            n = n / 2;
+            s = s1;
+        }
+        else
+        {
+            n--;
+            s.pop_back();
+        }
+    }
+    cout << "YES" << ln;
 }
 
 int main()
@@ -333,8 +335,8 @@ int main()
     //  freopen("revegetate.in", "r", stdin);
     // freopen("revegetate.out", "w", stdout);
     //#endif
-    ll t = INF;
-    // cin >> t;
+    ll t = 1;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

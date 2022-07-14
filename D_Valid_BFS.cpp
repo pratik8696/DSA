@@ -393,4 +393,3 @@ int main()
 5. Read the task carefully, is something unique, sorted, adjacent, guaranteed??
 6. DO NOT use if(!mp[x]) if you want to iterate the map later
 7. Are you using i in all loops? Are the i's conflicting?
-*/

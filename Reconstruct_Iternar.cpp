@@ -115,21 +115,6 @@ tcTUU > void re(T &t, U &...u)
     re(u...);
 }
 
-int find_set(int v, v64 &parent)
-{
-    if (-1 == parent[v])
-        return v;
-    return parent[v] = find_set(parent[v], parent);
-}
-
-void union_sets(int a, int b, v64 &parent)
-{
-    a = find_set(a, parent);
-    b = find_set(b, parent);
-    if (a != b)
-        parent[b] = a;
-}
-
 // function for prime factorization
 vector<pair<ll, ll>> pf(ll n)
 {
@@ -285,69 +270,56 @@ bool isPrime(int x)
     return true;
 }
 
-string s;
-ll sum(string &s, ll i, v64 &dp)
+v64 path;
+void dfs(int v, uv64 &adj)
 {
-    if (i == s.length())
+    path.pb(v);
+    auto &s = adj[v];
+    if (s.size())
     {
-        return 1;
+        ll child = *s.begin();
+        s.erase(s.begin());
+        dfs(child, adj);
     }
-    if (dp[i] != -1)
+}
+
+class Solution
+{
+public:
+    vector<string> findItinerary(vector<vector<string>> &tickets)
     {
-        return dp[i];
-    }
-    ll ans = 0;
-    if (s[i] >= '1' && s[i] <= '9')
-    {
-        ans += sum(s, i + 1, dp);
-    }
-    if (i < s.length() - 1)
-    {
-        if (s[i] == '2' && s[i + 1] <= '6')
+        path.clear();
+        // creating list of strings
+        set<string> s;
+        for (auto &t : tickets)
         {
-            ans += sum(s, i + 2, dp);
+            s.ie(t[0]);
+            s.ie(t[1]);
         }
-        if (s[i] == '1')
+        map<string, ll> hsh;
+        map<ll, string> inttostring;
+        ll cc = 1;
+        // assigning value to strings
+        for (auto t : s)
         {
-            ans += sum(s, i + 2, dp);
+            hsh[t] = cc;
+            inttostring[cc] = t;
+            cc++;
         }
+        // creating adj list
+        unordered_map<ll, multiset<ll>> adj;
+        for (auto &t : tickets)
+        {
+            ll u = hsh[t[0]];
+            ll v = hsh[t[1]];
+            adj[u].ie(v);
+        }
+        // convert hsh to string
+        vector<string> ans;
+        for (auto t : path)
+        {
+            ans.pb(intostring[t]);
+        }
+        return ans;
     }
-    return dp[i] = ans;
-}
-
-void solve()
-{
-    cin >> s;
-    if (s == "0")
-    {
-        exit(0);
-    }
-    v64 dp(s.length() + 1, -1);
-    cout << sum(s, 0, dp) << ln;
-}
-
-int main()
-{
-    fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
-    ll t = INF;
-    // cin >> t;
-    for (int it = 1; it <= t; it++)
-    {
-        solve();
-    }
-    return 0;
-}
-
-/*
-1. Check borderline constraints. Can a variable you are dividing by be 0?
-2. Use ll while using bitshifts
-3. Do not erase from set while iterating it
-4. Initialise everything
-5. Read the task carefully, is something unique, sorted, adjacent, guaranteed??
-6. DO NOT use if(!mp[x]) if you want to iterate the map later
-7. Are you using i in all loops? Are the i's conflicting?
-*/
+};

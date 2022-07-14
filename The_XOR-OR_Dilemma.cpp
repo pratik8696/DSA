@@ -115,21 +115,6 @@ tcTUU > void re(T &t, U &...u)
     re(u...);
 }
 
-int find_set(int v, v64 &parent)
-{
-    if (-1 == parent[v])
-        return v;
-    return parent[v] = find_set(parent[v], parent);
-}
-
-void union_sets(int a, int b, v64 &parent)
-{
-    a = find_set(a, parent);
-    b = find_set(b, parent);
-    if (a != b)
-        parent[b] = a;
-}
-
 // function for prime factorization
 vector<pair<ll, ll>> pf(ll n)
 {
@@ -285,47 +270,52 @@ bool isPrime(int x)
     return true;
 }
 
-string s;
-ll sum(string &s, ll i, v64 &dp)
+void sum(v64 arr)
 {
-    if (i == s.length())
+    if (arr.size() == 1)
     {
-        return 1;
+        cout << arr.back() << ln;
+        return;
     }
-    if (dp[i] != -1)
+    forn(i, arr.size() - 1)
     {
-        return dp[i];
-    }
-    ll ans = 0;
-    if (s[i] >= '1' && s[i] <= '9')
-    {
-        ans += sum(s, i + 1, dp);
-    }
-    if (i < s.length() - 1)
-    {
-        if (s[i] == '2' && s[i + 1] <= '6')
+        forsn(j, i + 1, arr.size())
         {
-            ans += sum(s, i + 2, dp);
-        }
-        if (s[i] == '1')
-        {
-            ans += sum(s, i + 2, dp);
+            if (i != j)
+            {
+                v64 temp1 = arr;
+                ll res1 = arr[i];
+                ll res2 = arr[j];
+                temp1.erase(temp1.begin() + i - 1);
+                temp1.erase(temp1.begin() + j - 2);
+                for (auto t : temp1)
+                {
+                    cout << t << " ";
+                }
+                cout << ln;
+                ll val1 = res1 | res2;
+                ll val2 = res1 ^ res2;
+                temp1.pb(val1);
+                v64 temp2(all(temp1));
+                temp2.pb(val2);
+                sum(temp2);
+                sum(temp1);
+            }
         }
     }
-    return dp[i] = ans;
 }
 
 void solve()
 {
-    cin >> s;
-    if (s == "0")
+    ll n, m;
+    cin >> n >> m;
+    v64 arr(n);
+    forn(i, n)
     {
-        exit(0);
+        arr[i] = i + 1;
     }
-    v64 dp(s.length() + 1, -1);
-    cout << sum(s, 0, dp) << ln;
+    sum(arr);
 }
-
 int main()
 {
     fast_cin();
@@ -333,8 +323,8 @@ int main()
     //  freopen("revegetate.in", "r", stdin);
     // freopen("revegetate.out", "w", stdout);
     //#endif
-    ll t = INF;
-    // cin >> t;
+    ll t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

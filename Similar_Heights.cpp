@@ -285,45 +285,64 @@ bool isPrime(int x)
     return true;
 }
 
-string s;
-ll sum(string &s, ll i, v64 &dp)
-{
-    if (i == s.length())
-    {
-        return 1;
-    }
-    if (dp[i] != -1)
-    {
-        return dp[i];
-    }
-    ll ans = 0;
-    if (s[i] >= '1' && s[i] <= '9')
-    {
-        ans += sum(s, i + 1, dp);
-    }
-    if (i < s.length() - 1)
-    {
-        if (s[i] == '2' && s[i + 1] <= '6')
-        {
-            ans += sum(s, i + 2, dp);
-        }
-        if (s[i] == '1')
-        {
-            ans += sum(s, i + 2, dp);
-        }
-    }
-    return dp[i] = ans;
-}
-
 void solve()
 {
-    cin >> s;
-    if (s == "0")
+    ll n;
+    ll cnt = 0;
+    cin >> n;
+    ll arr[n];
+    v64 v;
+    m64 m;
+    forn(i, n)
     {
-        exit(0);
+        cin >> arr[i];
+        m[arr[i]]++;
     }
-    v64 dp(s.length() + 1, -1);
-    cout << sum(s, 0, dp) << ln;
+    ll r = 0;
+    if (n == 1)
+    {
+        cout << "0" << endl;
+        return;
+    }
+    for (auto t : m)
+    {
+        if (t.se == 1)
+        {
+            cnt++;
+        }
+        v.pb(t.se);
+    }
+    if (cnt == 1)
+    {
+        if (v.back() == 1)
+        {
+            cout << "1" << endl;
+            return;
+        }
+    }
+    if (cnt == 1 && v.back() == 1)
+    {
+        ll x = -INF;
+        forn(i, v.size())
+        {
+            if (v[i] == 1)
+            {
+                break;
+            }
+            else
+            {
+                x = max(x, v[i]);
+            }
+        }
+        if (x == 2)
+        {
+            dbg(2);
+            return;
+        }
+        dbg(1);
+        return;
+    }
+    cout << ce(cnt, 2) << ln;
 }
 
 int main()
@@ -333,8 +352,8 @@ int main()
     //  freopen("revegetate.in", "r", stdin);
     // freopen("revegetate.out", "w", stdout);
     //#endif
-    ll t = INF;
-    // cin >> t;
+    ll t = 1;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();
