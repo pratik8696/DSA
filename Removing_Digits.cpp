@@ -83,7 +83,6 @@ typedef gp_hash_table<ll, ll, custom_hash> fm64;
 typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 
 #define ln "\n"
-#define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
 #define ie insert
 #define pb push_back
@@ -97,11 +96,24 @@ typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-
-// dsu functions
-// void make_set(int v) {
-//   parent[v] = v;
-//}
+#define dbg(a) cout << a << endl;
+#define dbg2(a) cout << a << ' ';
+using ld = long double;
+using db = double;
+using str = string; // yay python!
+// INPUT
+#define tcT template <class T
+#define tcTU tcT, class U
+#define tcTUU tcT, class... U
+tcT > void re(T &x)
+{
+    cin >> x;
+}
+tcTUU > void re(T &t, U &...u)
+{
+    re(t);
+    re(u...);
+}
 
 int find_set(int v, v64 &parent)
 {
@@ -273,43 +285,27 @@ bool isPrime(int x)
     return true;
 }
 
-ll sum(ll x)
-{
-    if (x == 0)
-    {
-        return 0;
-    }
-    ll org = x, ans = INF;
-    while (org)
-    {
-        ll val = org % 10;
-        if (val > 0)
-            ans = min(ans, sum(x - val) + 1);
-        org /= 10;
-    }
-    return ans;
-}
-
 void solve()
 {
     ll n;
     cin >> n;
-    v64 dp(n + 10, INF);
-    dp[0] = 0;
+    v64 dp(n + 1);
     forsn(i, 1, n + 1)
     {
         ll org = i;
+        ll ans = INF;
         while (org)
         {
             ll val = org % 10;
-            if (val > 0)
+            org = org / 10;
+            if (val)
             {
-                dp[i] = min(dp[i], dp[i - val] + 1);
+                ans = min(ans, dp[i - val]);
             }
-            org /= 10;
         }
+        dp[i] = ans + 1;
     }
-    cout << dp[n] << ln;
+    dbg(dp[n]);
 }
 
 int main()

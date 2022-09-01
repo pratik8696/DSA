@@ -46,15 +46,43 @@ typedef multiset<ll> ms64;
 typedef multiset<p64> msp64;
 typedef map<ll, ll> m64;
 typedef map<ll, v64> mv64;
+typedef unordered_map<ll, v64> uv64;
+typedef unordered_map<ll, ll> u64;
+typedef unordered_map<p64, ll> up64;
+typedef unordered_map<ll, vp64> uvp64;
 typedef priority_queue<ll> pq64;
-ll MOD = 1000000007;
+typedef priority_queue<ll, v64, greater<ll>> pqs64;
+const int MOD = 1000000007;
 double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
 #define rforn(i, s) for (ll i = s; i >= 0; i--)
 #define rforsn(i, s, e) for (ll i = s; i >= e; i--)
+struct custom_hash
+{
+    static uint64_t splitmix64(uint64_t x)
+    {
+        x += 0x9e3779b97f4a7c15;
+        x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
+        x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
+        return x ^ (x >> 31);
+    }
+
+    size_t operator()(p64 x) const
+    {
+        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+        return splitmix64(x.first + FIXED_RANDOM) ^ splitmix64(x.second + FIXED_RANDOM);
+    }
+    size_t operator()(ll x) const
+    {
+        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+        return splitmix64(x + FIXED_RANDOM);
+    }
+};
+typedef gp_hash_table<ll, ll, custom_hash> fm64;
+typedef gp_hash_table<p64, p64, custom_hash> fmp64;
+
 #define ln "\n"
-#define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
 #define ie insert
 #define pb push_back
@@ -68,24 +96,39 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
+#define dbg(a) cout << a << endl;
+#define dbg2(a) cout << a << ' ';
+using ld = long double;
+using db = double;
+using str = string; // yay python!
+// INPUT
+#define tcT template <class T
+#define tcTU tcT, class U
+#define tcTUU tcT, class... U
+tcT > void re(T &x)
+{
+    cin >> x;
+}
+tcTUU > void re(T &t, U &...u)
+{
+    re(t);
+    re(u...);
+}
 
-// dsu functions
-// void make_set(int v) {
-//   parent[v] = v;
-//}
+int find_set(int v, v64 &parent)
+{
+    if (-1 == parent[v])
+        return v;
+    return parent[v] = find_set(parent[v], parent);
+}
 
-// int find_set(int v,v64 &parent) {
-//   if (-1 == parent[v])
-// return v;
-// return find_set(parent[v]);
-// }
-
-// void union_sets(int a, int b,v64 &parent) {
-//   a = find_set(a,parent);
-// b = find_set(b,parent);
-// if (a != b)
-// parent[b] = a;
-// }
+void union_sets(int a, int b, v64 &parent)
+{
+    a = find_set(a, parent);
+    b = find_set(b, parent);
+    if (a != b)
+        parent[b] = a;
+}
 
 // function for prime factorization
 vector<pair<ll, ll>> pf(ll n)
@@ -242,11 +285,9 @@ bool isPrime(int x)
     return true;
 }
 
-ll n, m;
+int n, m;
 int dx[] = {-1, 0, 1, 0};
 int dy[] = {0, 1, 0, -1};
-ll sx, sy;
-ll ex, ey;
 
 bool isvalid(int x, int y)
 {
@@ -257,10 +298,13 @@ bool isvalid(int x, int y)
     return true;
 }
 
-void bfson2d(int x, int y, vector<vector<char>> &arr, vv64 &vis, map<p64, p64> &path)
+fmp64 path;
+
+void bfson2d(int x, int y, vv64 &vis, vv64 &dist, vector<vector<char>> &arr)
 {
     queue<pair<int, int>> q;
     vis[x][y] = 1;
+    dist[x][y] = 0;
     q.push(mp(x, y));
     path[{x, y}] = {x, y};
     while (!q.empty())
@@ -270,47 +314,80 @@ void bfson2d(int x, int y, vector<vector<char>> &arr, vv64 &vis, map<p64, p64> &
         q.pop();
         for (int i = 0; i < 4; i++)
         {
-            int x1 = currx + dx[i];
-            int y1 = curry + dy[i];
-            if (isvalid(currx + dx[i], curry + dy[i]) && vis[x1][y1] == 0 && arr[x1][y1] != '#')
+            if (isvalid(currx + dx[i], curry + dy[i]))
             {
-                vis[x1][y1] = 1;
-                q.push(mp(x1, y1));
-                path[{x1, y1}] = {currx, curry};
-                if (x1 == ex && y1 == ey)
+                if (arr[currx + dx[i]][curry + dy[i]] != '#' && vis[currx + dx[i]][curry + dy[i]] == 0)
                 {
-                    return;
+                    int x1 = currx + dx[i];
+                    int y1 = curry + dy[i];
+                    dist[x1][y1] = dist[currx][curry] + 1;
+                    vis[x1][y1] = 1;
+                    q.push(mp(x1, y1));
+                    path[{x1, y1}] = {currx, curry};
+                    // if (x1 == targetx && y1 == targety)
+                    // {
+                    //     return;
+                    // }
                 }
             }
         }
     }
 }
 
-char action(p64 prev, p64 next)
+vp64 total;
+void get_path(ll x1, ll y1, ll x2, ll y2)
 {
-    ll x1 = prev.fi, y1 = prev.se;
-    ll x2 = next.fi, y2 = next.se;
-    if (y2 - y1 < 0)
+    ll prevx = x2, prevy = y2;
+    while (prevx != x1 || prevy != y1)
     {
-        return 'L';
+        total.pb({prevx, prevy});
+        auto t = path[{prevx, prevy}];
+        prevx = t.first, prevy = t.second;
     }
-    if (y2 - y1 > 0)
+    total.pb({prevx, prevy});
+}
+
+string get_string()
+{
+    string res = "";
+    forsn(i, 1, total.size())
     {
-        return 'R';
+        ll prevx = total[i - 1].first, prevy = total[i - 1].second;
+        ll nextx = total[i].first, nexty = total[i].second;
+        if (abs(nextx - prevx) != 0)
+        {
+            if (nextx - prevx == 1)
+            {
+                res.pb('U');
+            }
+            else
+            {
+                res.pb('D');
+            }
+        }
+        if (abs(nexty - prevy) != 0)
+        {
+            if (nexty - prevy == 1)
+            {
+                res.pb('L');
+            }
+            else
+            {
+                res.pb('R');
+            }
+        }
     }
-    if (x2 - x1 > 0)
-    {
-        return 'D';
-    }
-    return 'U';
+    reverse(all(res));
+    return res;
 }
 
 void solve()
 {
-    cin >> n >> m;
-    vector<vector<char>> arr(n + 10, vector<char>(m + 10, '#'));
-    vector<vector<ll>> vis(n + 10, vector<ll>(m + 10, 0));
-    map<p64, p64> path;
+    re(n, m);
+    vector<vector<char>> arr(n + 1, vector<char>(m + 1, '#'));
+    vv64 vis(n + 1, v64(m + 1, 0));
+    ll x1 = -1, y1 = -1, x2 = -1, y2 = -1;
+    vv64 dist(n + 1, v64(m + 1, INT_MAX));
     forsn(i, 1, n + 1)
     {
         forsn(j, 1, m + 1)
@@ -318,40 +395,29 @@ void solve()
             cin >> arr[i][j];
             if (arr[i][j] == 'A')
             {
-                sx = i;
-                sy = j;
+                x1 = i, y1 = j;
             }
             if (arr[i][j] == 'B')
             {
-                ex = i;
-                ey = j;
+                x2 = i, y2 = j;
             }
         }
     }
-    bfson2d(sx, sy, arr, vis, path);
-    if (!vis[ex][ey])
+    if (x1 < 0 || y1 < 0 || x2 < 0 || y2 < 0)
     {
-        cout << "NO" << ln;
+        dbg("NO");
         return;
     }
-    cout << "YES" << ln;
-    p64 prev = {ex, ey};
-    p64 source = {sx, sy};
-    string s = "";
-    vp64 res;
-    while (prev != source)
+    bfson2d(x1, y1, vis, dist, arr);
+    if (dist[x2][y2] >= INT_MAX)
     {
-        res.pb(prev);
-        prev = path[prev];
+        cout << "NO" << endl;
+        return;
     }
-    res.pb(prev);
-    reverse(all(res));
-    forn(i, res.size() - 1)
-    {
-        s.pb(action(res[i], res[i + 1]));
-    }
-    cout << s.length() << ln;
-    cout << s << ln;
+    dbg("YES");
+    dbg(dist[x2][y2]);
+    get_path(x1, y1, x2, y2);
+    dbg(get_string());
 }
 
 int main()

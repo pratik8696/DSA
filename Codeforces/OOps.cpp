@@ -222,9 +222,7 @@ class parent
 {
 public:
     string parent = "HEHEEEEEEEEEEEEEEEEEEEEE";
-}
-
-;
+};
 
 class student
 {

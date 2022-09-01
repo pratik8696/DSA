@@ -52,14 +52,37 @@ typedef unordered_map<p64, ll> up64;
 typedef unordered_map<ll, vp64> uvp64;
 typedef priority_queue<ll> pq64;
 typedef priority_queue<ll, v64, greater<ll>> pqs64;
-ll MOD = 1000000007;
+const int MOD = 1000000007;
 double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
 #define rforn(i, s) for (ll i = s; i >= 0; i--)
 #define rforsn(i, s, e) for (ll i = s; i >= e; i--)
+struct custom_hash
+{
+    static uint64_t splitmix64(uint64_t x)
+    {
+        x += 0x9e3779b97f4a7c15;
+        x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
+        x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
+        return x ^ (x >> 31);
+    }
+
+    size_t operator()(p64 x) const
+    {
+        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+        return splitmix64(x.first + FIXED_RANDOM) ^ splitmix64(x.second + FIXED_RANDOM);
+    }
+    size_t operator()(ll x) const
+    {
+        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+        return splitmix64(x + FIXED_RANDOM);
+    }
+};
+typedef gp_hash_table<ll, ll, custom_hash> fm64;
+typedef gp_hash_table<p64, ll, custom_hash> fmp64;
+
 #define ln "\n"
-#define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
 #define ie insert
 #define pb push_back
@@ -73,24 +96,39 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
+#define dbg(a) cout << a << endl;
+#define dbg2(a) cout << a << ' ';
+using ld = long double;
+using db = double;
+using str = string; // yay python!
+// INPUT
+#define tcT template <class T
+#define tcTU tcT, class U
+#define tcTUU tcT, class... U
+tcT > void re(T &x)
+{
+    cin >> x;
+}
+tcTUU > void re(T &t, U &...u)
+{
+    re(t);
+    re(u...);
+}
 
-// dsu functions
-// void make_set(int v) {
-//   parent[v] = v;
-//}
+int find_set(int v, v64 &parent)
+{
+    if (-1 == parent[v])
+        return v;
+    return parent[v] = find_set(parent[v], parent);
+}
 
-// int find_set(int v,v64 &parent) {
-//   if (-1 == parent[v])
-// return v;
-// return find_set(parent[v]);
-// }
-
-// void union_sets(int a, int b,v64 &parent) {
-//   a = find_set(a,parent);
-// b = find_set(b,parent);
-// if (a != b)
-// parent[b] = a;
-// }
+void union_sets(int a, int b, v64 &parent)
+{
+    a = find_set(a, parent);
+    b = find_set(b, parent);
+    if (a != b)
+        parent[b] = a;
+}
 
 // function for prime factorization
 vector<pair<ll, ll>> pf(ll n)
@@ -247,134 +285,42 @@ bool isPrime(int x)
     return true;
 }
 
-ll dfsheight(ll v, v64 &vis, uv64 &adj, v64 &height)
+u64 in, out;
+void dfs(int v, v64 &vis, uv64 &adj)
 {
     vis[v] = 1;
-    ll val = 0;
+    in[v] = 1;
+    out[v] = 0;
+    ll temp = 0;
     for (auto child : adj[v])
     {
         if (vis[child] == 0)
         {
-            val = max(dfsheight(child, vis, adj, height), val);
+            dfs(child, vis, adj);
+            temp = max(temp, out[v]);
+            in[v] += in[child];
         }
     }
-    val++;
-    height[v] = val;
-    return val;
-}
-
-ll dfssub(ll v, v64 &vis, uv64 &adj, v64 &sub)
-{
-    vis[v] = 1;
-    ll val = 1;
-    for (auto child : adj[v])
-    {
-        if (vis[child] == 0)
-        {
-            val += dfssub(child, vis, adj, sub);
-        }
-    }
-    sub[v] = val;
-    return val;
-}
-
-ll dfs(ll v, v64 &vis, uv64 &adj, v64 &sub, v64 &height)
-{
-    vis[v] = 1;
-    // condition to traverse left or right
-    v64 res;
-    for (auto child : adj[v])
-    {
-        if (vis[child] == 0)
-        {
-            res.pb(child);
-        }
-    }
-    if (res.size() == 0)
-    {
-        return 0;
-    }
-    if (res.size() == 2)
-    {
-        ll a = res[0], b = res[1];
-        if (sub[a] > sub[b])
-        {
-            // dfs b and save a;
-            // ans += sub[a] - 1;
-            return dfs(b, vis, adj, sub, height) + sub[a] - 1;
-        }
-        else if (sub[a] < sub[b])
-        {
-            // dfs a ans save b
-            // ans += sub[b] - 1;
-            return dfs(a, vis, adj, sub, height) + sub[b] - 1;
-        }
-        else if (sub[a] == sub[b])
-        {
-            if (height[a] > height[b])
-            {
-                // dfs the larger one save the smaller one
-                // ans += sub[b] - 1;
-                return dfs(a, vis, adj, sub, height) + sub[b] - 1;
-            }
-            else if (height[a] < height[b])
-            {
-                // dfs the larger one save the smaller one
-                // ans += sub[a] - 1;
-                return dfs(b, vis, adj, sub, height) + sub[a] - 1;
-            }
-            else if (height[a] == height[b])
-            {
-                // dfs anyone and save the other one
-                // ans += sub[a] - 1;
-                return max((dfs(b, vis, adj, sub, height) + sub[a] - 1), (dfs(a, vis, adj, sub, height) + sub[b] - 1));
-            }
-        }
-    }
-    ll a = res[0];
-    // ans += sub[a] - 1;
-    return sub[a] - 1;
+    out[v] = temp + 1;
 }
 
 void solve()
 {
+    in.clear();
+    out.clear();
     ll n;
     cin >> n;
     uv64 adj;
     forn(i, n - 1)
     {
         ll a, b;
-        cin >> a >> b;
+        re(a, b);
         adj[a].pb(b);
         adj[b].pb(a);
     }
-    v64 vis(n + 1, 0), height(n + 1, 0), sub(n + 1, 0);
-    ll q = dfsheight(1, vis, adj, height);
-    fill(all(vis), 0);
-    q = dfssub(1, vis, adj, sub);
-    // forsn(i, 1, n + 1)
-    // {
-    //     cout << height[i] << " ";
-    // }
-    // cout << ln;
-    // forsn(i, 1, n + 1)
-    // {
-    //     cout << sub[i] << " ";
-    // }
-    // cout << ln;
-    fill(all(vis), 0);
-    q = dfs(1, vis, adj, sub, height);
-    // forsn(i, 1, n + 1)
-    // {
-    //     cout << vis[i] << " ";
-    // }
-    // cout << ln;
-    cout << q << ln;
-    // forsn(i, 1, n + 1)
-    // {
-    //     cout << height[i] << " ";
-    // }
-    // cout << ln;
+    v64 vis(n + 1, 0);
+    dfs(1, vis, adj);
+    dbg(max({in[adj[1][0]], in[adj[1][1]], out[adj[1][0]], out[adj[1][1]]}) - 1);
 }
 
 int main()

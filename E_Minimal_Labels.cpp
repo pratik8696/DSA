@@ -52,7 +52,7 @@ typedef unordered_map<p64, ll> up64;
 typedef unordered_map<ll, vp64> uvp64;
 typedef priority_queue<ll> pq64;
 typedef priority_queue<ll, v64, greater<ll>> pqs64;
-ll MOD = 1000000007;
+const int MOD = 1000000007;
 double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
@@ -83,7 +83,6 @@ typedef gp_hash_table<ll, ll, custom_hash> fm64;
 typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 
 #define ln "\n"
-#define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
 #define ie insert
 #define pb push_back
@@ -97,11 +96,24 @@ typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-
-// dsu functions
-// void make_set(int v) {
-//   parent[v] = v;
-//}
+#define dbg(a) cout << a << endl;
+#define dbg2(a) cout << a << ' ';
+using ld = long double;
+using db = double;
+using str = string; // yay python!
+// INPUT
+#define tcT template <class T
+#define tcTU tcT, class U
+#define tcTUU tcT, class... U
+tcT > void re(T &x)
+{
+    cin >> x;
+}
+tcTUU > void re(T &t, U &...u)
+{
+    re(t);
+    re(u...);
+}
 
 int find_set(int v, v64 &parent)
 {
@@ -273,72 +285,61 @@ bool isPrime(int x)
     return true;
 }
 
-void solve()
+class Solution
 {
-    ll n, m;
-    cin >> n >> m;
-    uv64 adj;
-    u64 out;
-    forn(i, m)
+public:
+    int largestPathValue(string colors, vector<vector<int>> &edges)
     {
-        ll a, b;
-        cin >> a >> b;
-        adj[b].pb(a);
-        out[a]++;
-    }
-    pq64 q;
-    s64 vals;
-    forsn(i, 1, n + 1)
-    {
-        vals.ie(i);
-        if (out[i] == 0)
+        int n = colors.size();
+        uv64 adj;
+        unordered_map<ll, unordered_map<char, ll>> col;
+        u64 in;
+        for (auto t : edges)
         {
-            q.push(i);
+            adj[t[0]].pb(t[1]);
+            in[t[1]]++;
         }
-    }
-    u64 ans;
-    while (q.size())
-    {
-        ll curr = q.top();
-        ans[curr] = *vals.rbegin();
-        vals.erase(ans[curr]);
-        q.pop();
-        for (auto child : adj[curr])
+        queue<ll> q;
+        forn(i, n)
         {
-            out[child]--;
-            if (out[child] == 0)
+            if (in[i] == 0)
             {
-                q.push(child);
+                q.push(i);
+            }
+            auto &v = col[i];
+            v[s[i - 1]]++;
+        }
+        ll ans = 0;
+        while (!q.empty())
+        {
+            ll curr = q.front();
+            auto &u = col[curr];
+            for (char x = 'a'; x <= 'z'; x++)
+            {
+                ans = max(ans, u[x]);
+            }
+            q.pop();
+            for (auto child : adj[curr])
+            {
+                auto &v = col[child];
+                --in[child];
+                for (char x = 'a'; x <= 'z'; x++)
+                {
+                    if (x != s[child - 1])
+                    {
+                        v[x] = max(v[x], u[x]);
+                    }
+                    else
+                    {
+                        v[x] = max(v[x], u[x] + 1);
+                    }
+                }
+                if (in[child] == 0)
+                {
+                    q.push(child);
+                }
             }
         }
+        return ans;
     }
-    forsn(i,1,n+1)
-    {
-        cout<<ans[i]<<" ";
-    }
-}
-int main()
-{
-    fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
-    ll t = 1;
-    // cin >> t;
-    for (int it = 1; it <= t; it++)
-    {
-        solve();
-    }
-    return 0;
-}
-
-/*
-1. Check borderline constraints. Can a variable you are dividing by be 0?
-2. Use ll while using bitshifts
-3. Do not erase from set while iterating it
-4. Initialise everything
-5. Read the task carefully, is something unique, sorted, adjacent, guaranteed??
-6. DO NOT use if(!mp[x]) if you want to iterate the map later
-7. Are you using i in all loops? Are the i's conflicting?
-*/
+};

@@ -52,7 +52,7 @@ typedef unordered_map<p64, ll> up64;
 typedef unordered_map<ll, vp64> uvp64;
 typedef priority_queue<ll> pq64;
 typedef priority_queue<ll, v64, greater<ll>> pqs64;
-ll MOD = 1000000007;
+const int MOD = 1000000007;
 double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
@@ -83,7 +83,6 @@ typedef gp_hash_table<ll, ll, custom_hash> fm64;
 typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 
 #define ln "\n"
-#define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
 #define ie insert
 #define pb push_back
@@ -97,24 +96,39 @@ typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
+#define dbg(a) cout << a << endl;
+#define dbg2(a) cout << a << ' ';
+using ld = long double;
+using db = double;
+using str = string; // yay python!
+// INPUT
+#define tcT template <class T
+#define tcTU tcT, class U
+#define tcTUU tcT, class... U
+tcT > void re(T &x)
+{
+    cin >> x;
+}
+tcTUU > void re(T &t, U &...u)
+{
+    re(t);
+    re(u...);
+}
 
-// dsu functions
-// void make_set(int v) {
-//   parent[v] = v;
-//}
+int find_set(int v, v64 &parent)
+{
+    if (-1 == parent[v])
+        return v;
+    return parent[v] = find_set(parent[v], parent);
+}
 
-// int find_set(int v,v64 &parent) {
-//   if (-1 == parent[v])
-// return v;
-// return parent[v]=find_set(parent[v],parent);
-// }
-
-// void union_sets(int a, int b,v64 &parent) {
-//   a = find_set(a,parent);
-// b = find_set(b,parent);
-// if (a != b)
-// parent[b] = a;
-// }
+void union_sets(int a, int b, v64 &parent)
+{
+    a = find_set(a, parent);
+    b = find_set(b, parent);
+    if (a != b)
+        parent[b] = a;
+}
 
 // function for prime factorization
 vector<pair<ll, ll>> pf(ll n)
@@ -271,43 +285,43 @@ bool isPrime(int x)
     return true;
 }
 
-ll dfs_sub(int v, v64 &vis, uvp64 &adj, v64 &sub)
+u64 sub_tree;
+ll dfs0(int v, v64 &vis, uvp64 &adj)
 {
     vis[v] = 1;
-    ll size = 1;
+    ll sub = 1;
     for (auto t : adj[v])
     {
-        ll child = t.fi;
-        ll wt = t.se;
+        auto child = t.first;
         if (vis[child] == 0)
         {
-            size += dfs_sub(child, vis, adj, sub);
+            sub += dfs0(child, vis, adj);
         }
     }
-    sub[v] = size;
-    return size;
+    sub_tree[v] = sub;
+    return sub;
 }
 
-ll cc;
-void dfs(int v, v64 &vis, uvp64 &adj, v64 &ans, ll dis, ll arr[], v64 &sub)
+ll ans = 0;
+void dfs(int v, v64 &vis, uvp64 &adj, ll val_till_now, v64 &val)
 {
     vis[v] = 1;
-    ll curr_dist = 0;
     for (auto t : adj[v])
     {
-        ll child = t.fi;
-        ll wt = t.se;
+        ll wt = t.second;
+        auto child = t.first;
         if (vis[child] == 0)
         {
-            ll maxx = max(wt, dis + wt);
-            ans[child] = maxx;
-            if (maxx > arr[child])
+            // yhi pr check kr lena
+            ll temp = max(val_till_now + wt, wt);
+            if (temp > val[child])
             {
-                cc += sub[child];
+                vis[child] = 1;
+                ans += sub_tree[child];
             }
             else
             {
-                dfs(child, vis, adj, ans, maxx, arr, sub);
+                dfs(child, vis, adj, temp, val);
             }
         }
     }
@@ -317,25 +331,25 @@ void solve()
 {
     ll n;
     cin >> n;
-    ll arr[n + 1];
-    forn(i, n)
+    v64 val(n + 1);
+    forsn(i, 1, n + 1)
     {
-        cin >> arr[i + 1];
+        cin >> val[i];
     }
     uvp64 adj;
-    forn(i, n - 1)
+    forsn(i, 2, n + 1)
     {
-        ll a, b;
-        cin >> a >> b;
-        adj[i + 2].pb({a, b});
-        adj[a].pb({i + 2, b});
+        ll a, wt;
+        cin >> a >> wt;
+        adj[a].pb({i, wt});
+        adj[i].pb({a, wt});
     }
-    v64 vis(n + 1, 0), ans(n + 1, 0), sub(n + 1, 0);
-    ll val = dfs_sub(1, vis, adj, sub);
-    fill(all(vis), 0);
-    dfs(1, vis, adj, ans, 0, arr, sub);
-    cout << cc << ln;
+    v64 vis(n + 1, 0), visi(n + 1, 0);
+    dfs0(1, vis, adj);
+    dfs(1, visi, adj, 0, val);
+    dbg(ans);
 }
+
 int main()
 {
     fast_cin();

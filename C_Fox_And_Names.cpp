@@ -24,10 +24,10 @@
 
 using namespace std;
 using namespace __gnu_pbds;
-// use less_equal to make it multiset
-typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> pbds;
-typedef unsigned long long ull;
 typedef long long ll;
+// use less_equal to make it multiset
+typedef tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update> pbds;
+typedef unsigned long long ull;
 typedef long double ld;
 typedef pair<int, int> p32;
 typedef pair<ll, ll> p64;
@@ -46,15 +46,43 @@ typedef multiset<ll> ms64;
 typedef multiset<p64> msp64;
 typedef map<ll, ll> m64;
 typedef map<ll, v64> mv64;
+typedef unordered_map<ll, v64> uv64;
+typedef unordered_map<ll, ll> u64;
+typedef unordered_map<p64, ll> up64;
+typedef unordered_map<ll, vp64> uvp64;
 typedef priority_queue<ll> pq64;
-ll MOD = 1000000007;
+typedef priority_queue<ll, v64, greater<ll>> pqs64;
+const int MOD = 1000000007;
 double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
 #define rforn(i, s) for (ll i = s; i >= 0; i--)
 #define rforsn(i, s, e) for (ll i = s; i >= e; i--)
+struct custom_hash
+{
+    static uint64_t splitmix64(uint64_t x)
+    {
+        x += 0x9e3779b97f4a7c15;
+        x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
+        x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
+        return x ^ (x >> 31);
+    }
+
+    size_t operator()(p64 x) const
+    {
+        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+        return splitmix64(x.first + FIXED_RANDOM) ^ splitmix64(x.second + FIXED_RANDOM);
+    }
+    size_t operator()(ll x) const
+    {
+        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+        return splitmix64(x + FIXED_RANDOM);
+    }
+};
+typedef gp_hash_table<ll, ll, custom_hash> fm64;
+typedef gp_hash_table<p64, ll, custom_hash> fmp64;
+
 #define ln "\n"
-#define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
 #define ie insert
 #define pb push_back
@@ -68,248 +96,216 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-
-class Graph
+#define dbg(a) cout << a << endl;
+#define dbg2(a) cout << a << ' ';
+using ld = long double;
+using db = double;
+using str = string; // yay python!
+// INPUT
+#define tcT template <class T
+#define tcTU tcT, class U
+#define tcTUU tcT, class... U
+tcT > void re(T &x)
 {
-public:
-    ll v;
-    vector<ll> *adj;
-    Graph(ll x)
-    {
-        v = x;
-        adj = new vector<ll>[v + 1];
-    }
+    cin >> x;
+}
+tcTUU > void re(T &t, U &...u)
+{
+    re(t);
+    re(u...);
+}
 
-    void addEdge(ll i, ll j, bool undir = true)
+
+int find_set(int v, v64 &parent)
+{
+    if (-1 == parent[v])
+        return v;
+    return parent[v] = find_set(parent[v], parent);
+}
+
+void union_sets(int a, int b, v64 &parent)
+{
+    a = find_set(a, parent);
+    b = find_set(b, parent);
+    if (a != b)
+        parent[b] = a;
+}
+
+// function for prime factorization
+vector<pair<ll, ll>> pf(ll n)
+{
+    vector<pair<ll, ll>> prime;
+    for (int i = 2; i <= sqrt(n); i++)
     {
-        adj[i].push_back(j);
-        if (undir)
+        if (n % i == 0)
         {
-            adj[j].push_back(i);
+            int count = 0;
+            while (n % i == 0)
+            {
+                count++;
+                n = n / i;
+            }
+            prime.pb(mp(i, count));
         }
     }
-
-    void print()
+    if (n > 1)
     {
-        for (ll i = 0; i <= v; i++)
+        prime.pb(mp(n, 1));
+    }
+    return prime;
+}
+
+// sum of digits of a number
+ll sumofno(ll n)
+{
+    ll sum = 0;
+    while (n != 0)
+    {
+        sum += n % 10;
+        n = n / 10;
+    }
+    return sum;
+}
+
+// modular exponentiation
+long long modpow(long long x, long long n, long long p)
+{
+
+    if (n == 0)
+        return 1 % p;
+
+    ll ans = 1, base = x;
+    while (n > 0)
+    {
+        if (n % 2 == 1)
         {
-            cout << i << " --> ";
-            for (auto t : adj[i])
-            {
-                cout << t << " ";
-            }
-            cout << endl;
+            ans = (ans * base) % p;
+            n--;
+        }
+        else
+        {
+            base = (base * base) % p;
+            n /= 2;
         }
     }
+    if (ans < 0)
+        ans = (ans + p) % p;
+    return ans;
+}
 
-    void bfs(ll source, ll end)
+// const int N = 1e6 + 100;
+// long long fact[N];
+//  initialise the factorial
+// void initfact(){
+// fact[0] = 1;
+// for (int i = 1; i < N; i++)
+//{
+// fact[i] = (fact[i - 1] * i);
+// fact[i] %= MOD;
+// }}
+
+// formula for c
+// ll C(ll n, ll i)
+//{
+// ll res = fact[n];
+// ll div = fact[n - i] * fact[i];
+// div %= MOD;
+// div = modpow(div, MOD - 2, MOD);
+// return (res * div) % MOD;
+// }
+
+long long CW(ll n, ll m)
+{
+    if (m > n - m)
+        m = n - m;
+    long long ans = 1;
+    for (int i = 0; i < m; i++)
     {
-        vector<ll> dist(v + 1, INT_MAX), parent(v + 1, -1), vis(v + 1, 0);
-        queue<ll> q;
-        q.push(source);
-        vis[source] = 1;
-        dist[source] = 1;
-        parent[source] = source;
-        while (!q.empty())
-        {
-            ll curr = q.front();
-            q.pop();
-            for (auto t : adj[curr])
-            {
-                if (!vis[t])
-                {
-                    parent[t] = curr;
-                    vis[t] = 1;
-                    dist[t] = dist[curr] + 1;
-                    q.push(t);
-                }
-            }
-        }
-        // this will give path from dest--->source
-        if (end != -1)
-        {
-            ll temp = end;
-            while (temp != source)
-            {
-                cout << temp << " --> ";
-                temp = parent[temp];
-            }
-            cout << source << endl;
-        }
+        ans = ans * (n - i) / (i + 1);
     }
+    return ans;
+}
 
-    bool dfshelper(ll v, vector<bool> &vis, vector<bool> &stack)
+// function for fast expo
+ll fastexpo(ll a, ll b)
+{
+    if (b == 0)
     {
-        vis[v] = 1;
-        stack[v] = 1;
-
-        // we will find the backedge here
-        for (auto child : adj[v])
-        {
-            // if backedge is found
-            if (stack[child])
-            {
-                return true;
-            }
-            else if (vis[child] == 0)
-            {
-                // recursively returning the true val
-                bool temp = dfshelper(child, vis, stack);
-                if (temp)
-                {
-                    return true;
-                }
-            }
-        }
-        // if nothing is found then here
-        // removing elements from path
-        stack[v] = 0;
-        return false;
+        return 1;
     }
-
-    bool dfs()
+    if (a == 0)
     {
-        vector<bool> vis(v + 1, false), stack(v + 1, false);
-        for (ll i = 1; i <= v; i++)
-        {
-            if (vis[i] == 0)
-            {
-                if (dfshelper(i, vis, stack))
-                {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return 0;
     }
-};
+    ll y = fastexpo(a, b / 2);
+    if (b % 2 == 0)
+    {
+        return y * y;
+    }
+    else
+    {
+        return a * y * y;
+    }
+}
+
+ll popcount(ll n)
+{
+    ll c = 0;
+    for (; n; ++c)
+        n &= n - 1;
+    return c;
+}
+
+ll ce(ll x, ll y)
+{
+    ll res = x / y;
+    if (x % y != 0)
+    {
+        res++;
+    }
+    return res;
+}
+
+bool pow2(ll x)
+{
+    ll res = x & (x - 1);
+    if (res == 0)
+    {
+        return true;
+    }
+    return false;
+}
+
+bool isPrime(int x)
+{
+    for (int d = 2; d * d <= x; d++)
+    {
+        if (x % d == 0)
+            return false;
+    }
+    return true;
+}
 
 void solve()
 {
     ll n;
     cin >> n;
-    vector<string> s;
+    ll arr[n];
     forn(i, n)
     {
-        string t;
-        cin >> t;
-        s.pb(t);
+        cin >> arr[i];
     }
-    vector<pair<char, char>> res;
-    forn(j, n - 1)
-    {
-        string a = s[j];
-        string b = s[j + 1];
-        if (a.length() <= b.length())
-        {
-            for (ll i = 0; i < a.length(); i++)
-            {
-                if (a[i] < b[i])
-                {
-                    res.pb({a[i], b[i]});
-                    break;
-                }
-                else if (a[i] == b[i])
-                {
-                    continue;
-                }
-                else
-                {
-                    res.pb({a[i], b[i]});
-                    break;
-                }
-            }
-        }
-        else
-        {
-            bool valid = false;
-            forn(i, b.length())
-            {
-                if (a[i] < b[i])
-                {
-                    res.pb({a[i], b[i]});
-                    valid=1;
-                    break;
-                }
-                else if (a[i] == b[i])
-                {
-                    continue;
-                }
-                else
-                {
-                    res.pb({a[i], b[i]});
-                    valid=1;
-                    break;
-                }
-            }
-            if (!valid)
-            {
-                cout << "Impossible" << ln;
-                return;
-            }
-        }
-    }
-    Graph g(27);
-    map<ll, ll> indegree;
-    map<ll, v64> ss;
-    s64 vals;
-    for (auto t : res)
-    {
-        ll x = t.fi - '0' - 48, y = t.se - '0' - 48;
-        g.addEdge(x, y, false);
-        ss[x].pb(y);
-        vals.ie(x);
-        vals.ie(y);
-        indegree[y]++;
-    }
-    if (g.dfs())
-    {
-        cout << "Impossible" << ln;
-        return;
-    }
-
-    // bfs way to get topo
-    queue<int> q;
-    for (auto t : vals)
-    {
-        if (indegree[t] == 0)
-        {
-            q.push(t);
-        }
-    }
-    string ans = "";
-    s64 rep;
-    while (!q.empty())
-    {
-        ll curr = q.front();
-        q.pop();
-        char xx = curr + 'a' - 1;
-        ans.pb(xx);
-        rep.ie(xx);
-        for (auto t : ss[curr])
-        {
-            indegree[t]--;
-            if (indegree[t] == 0)
-            {
-                q.push(t);
-            }
-        }
-    }
-    for (char z = 'a'; z <= 'z'; z++)
-    {
-        if (rep.count(z) == 0)
-        {
-            ans.pb(z);
-        }
-    }
-    cout << ans << ln;
 }
 
 int main()
 {
     fast_cin();
+    //#ifndef ONLINE_JUDGE
+    //  freopen("revegetate.in", "r", stdin);
+    // freopen("revegetate.out", "w", stdout);
+    //#endif
     ll t = 1;
-    // cin >> t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

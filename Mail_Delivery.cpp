@@ -52,7 +52,7 @@ typedef unordered_map<p64, ll> up64;
 typedef unordered_map<ll, vp64> uvp64;
 typedef priority_queue<ll> pq64;
 typedef priority_queue<ll, v64, greater<ll>> pqs64;
-ll MOD = 1000000007;
+const int MOD = 1000000007;
 double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
@@ -83,7 +83,6 @@ typedef gp_hash_table<ll, ll, custom_hash> fm64;
 typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 
 #define ln "\n"
-#define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
 #define ie insert
 #define pb push_back
@@ -97,24 +96,39 @@ typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
+#define dbg(a) cout << a << endl;
+#define dbg2(a) cout << a << ' ';
+using ld = long double;
+using db = double;
+using str = string; // yay python!
+// INPUT
+#define tcT template <class T
+#define tcTU tcT, class U
+#define tcTUU tcT, class... U
+tcT > void re(T &x)
+{
+    cin >> x;
+}
+tcTUU > void re(T &t, U &...u)
+{
+    re(t);
+    re(u...);
+}
 
-// dsu functions
-// void make_set(int v) {
-//   parent[v] = v;
-//}
+int find_set(int v, v64 &parent)
+{
+    if (-1 == parent[v])
+        return v;
+    return parent[v] = find_set(parent[v], parent);
+}
 
-// int find_set(int v,v64 &parent) {
-//   if (-1 == parent[v])
-// return v;
-// return parent[v]=find_set(parent[v],parent);
-// }
-
-// void union_sets(int a, int b,v64 &parent) {
-//   a = find_set(a,parent);
-// b = find_set(b,parent);
-// if (a != b)
-// parent[b] = a;
-// }
+void union_sets(int a, int b, v64 &parent)
+{
+    a = find_set(a, parent);
+    b = find_set(b, parent);
+    if (a != b)
+        parent[b] = a;
+}
 
 // function for prime factorization
 vector<pair<ll, ll>> pf(ll n)
@@ -271,32 +285,75 @@ bool isPrime(int x)
     return true;
 }
 
-void dfs(int v, v64 &vis, uv64 &adj)
+
+void dfs(int v, v64 &path, unordered_map<ll, multiset<ll>> &adj)
+{
+    auto &x = adj[v];
+    while (x.size())
+    {
+        ll child = *x.begin();
+        x.erase(x.lower_bound(child));
+        auto &y = adj[child];
+        y.erase(y.lower_bound(v));
+        dfs(child, path, adj);
+    }
+    path.pb(v);
+}
+
+void dfs0(int v, v64 &vis, unordered_map<ll, multiset<ll>> &adj)
 {
     vis[v] = 1;
-    while (!adj[v].empty())
+    for (auto child : adj[v])
     {
-        ll child = adj[v].back();
-        adj[v].pop_back();
-        dfs(child, vis, adj);
+        if (vis[child] == 0)
+        {
+            dfs0(child, vis, adj);
+        }
     }
-    cout << v << " ";
 }
 
 void solve()
 {
     ll n, m;
     cin >> n >> m;
-    uv64 adj;
-    v64 vis(n + 1, 0);
+    unordered_map<ll, multiset<ll>> adj;
+    u64 deg;
     forn(i, m)
     {
         ll a, b;
-        cin >> a >> b;
-        adj[a].pb(b);
+        re(a, b);
+        adj[a].ie(b);
+        adj[b].ie(a);
+        deg[a]++, deg[b]++;
     }
-    dfs(1, vis, adj);
+    v64 vis(n+1,0);
+    dfs0(1,vis,adj);
+    forsn(i, 1, n + 1)
+    {
+        if (vis[i]==0&&adj[i].size()>0)
+        {
+            cout << "IMPOSSIBLE" << endl;
+            return;
+        }
+    }
+    forsn(i, 1, n + 1)
+    {
+        if (deg[i] % 2)
+        {
+            cout << "IMPOSSIBLE" << endl;
+            return;
+        }
+    }
+    v64 path;
+    // now we will find the path
+    dfs(1, path, adj);
+    for (auto t : path)
+    {
+        cout << t << " ";
+    }
+    cout << endl;
 }
+
 int main()
 {
     fast_cin();

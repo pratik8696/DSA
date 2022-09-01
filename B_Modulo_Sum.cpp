@@ -289,32 +289,32 @@ void solve()
 {
     ll n, k;
     cin >> n >> k;
-    ll arr[n], flag = 0;
+    ll arr[n];
     forn(i, n)
     {
         cin >> arr[i];
         arr[i] %= k;
-        if (arr[i] == 0)
-        {
-            flag = 1;
-        }
     }
-    if (k <= n || flag)
+    if (n >= k)
     {
         cout << "YES" << ln;
         return;
     }
-    v64 dp(k + 10);
+    v64 dp(k + 10), prev(k + 10);
     forsn(i, 1, n + 1)
     {
-        for (ll j = k; j >= 0; j--)
+        forsn(j, 0, k + 1)
         {
-            if (dp[j])
+            if (arr[i - 1] == j)
             {
-                dp[(j + arr[i - 1]) % k] += 1;
+                dp[j] = 1;
+            }
+            if (prev[j] == 1)
+            {
+                dp[(arr[i - 1] + j) % k]++;
             }
         }
-        dp[arr[i - 1]] = 1;
+        prev = dp;
     }
     if (dp[0])
     {

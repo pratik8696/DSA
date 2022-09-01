@@ -1,16 +1,13 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-void lastCandy(vector<int> candies, int k, int index)
+long long magicalNumber(long long int a, long long int b)
 {
-    if (candies.size() == 2)
+    if (a == 0)
     {
-        cout << candies[0] << " " << candies[1] << endl;
-        return;
+        return b;
     }
-    index = ((index + k) % candies.size());
-    candies.erase(candies.begin() + index);
-    lastCandy(candies, k, index);
+    return magicalNumber(b % a, a);
 }
 
 int main()
@@ -19,16 +16,16 @@ int main()
     cin >> t;
     while (t--)
     {
-        int n;
-        cin >> n;
-        vector<int> candies;
-        for (int i = 1; i <= n; i++)
+        long long int a;
+        string b;
+        cin >> a >> b;
+        // reduce b
+        long long int temp = 0;
+        for (int i = 0; i < b.length(); i++)
         {
-            candies.push_back(i);
+            temp = (temp * 10 + b[i] - '0') % a;
         }
-        cout << n << " --> ";
-        lastCandy(candies, 1, 0);
-        cout<<endl;
+        cout << magicalNumber(a, temp) << endl;
     }
     return 0;
 }

@@ -228,7 +228,6 @@ class Point
 {
     ll x;
     ll y;
-
 public:
     // when u define only one constructor then u can get an error as i have defined only parametrised constrcutor and i got an error but when i defined one more constructor which was default constructor then AC .
     // so always define 2 constructors

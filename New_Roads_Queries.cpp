@@ -52,7 +52,7 @@ typedef unordered_map<p64, ll> up64;
 typedef unordered_map<ll, vp64> uvp64;
 typedef priority_queue<ll> pq64;
 typedef priority_queue<ll, v64, greater<ll>> pqs64;
-ll MOD = 1000000007;
+const int MOD = 1000000007;
 double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
@@ -83,7 +83,6 @@ typedef gp_hash_table<ll, ll, custom_hash> fm64;
 typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 
 #define ln "\n"
-#define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
 #define ie insert
 #define pb push_back
@@ -97,11 +96,24 @@ typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-
-// dsu functions
-// void make_set(int v) {
-//   parent[v] = v;
-//}
+#define dbg(a) cout << a << endl;
+#define dbg2(a) cout << a << ' ';
+using ld = long double;
+using db = double;
+using str = string; // yay python!
+// INPUT
+#define tcT template <class T
+#define tcTU tcT, class U
+#define tcTUU tcT, class... U
+tcT > void re(T &x)
+{
+    cin >> x;
+}
+tcTUU > void re(T &t, U &...u)
+{
+    re(t);
+    re(u...);
+}
 
 int find_set(int v, v64 &parent)
 {
@@ -273,114 +285,180 @@ bool isPrime(int x)
     return true;
 }
 
-void bfs(uvp64 &adj, v64 &dist, ll src, vp64 &parent)
+void bfs(uvp64 &adj, v64 &dist, ll src, v64 &parent, v64 &wt, v64 &vis)
 {
     queue<ll> q;
-    v64 vis(dist.size(), 0);
     q.push(src);
     dist[src] = 0;
     vis[src] = 1;
-    parent[src] = {src, 0};
+    parent[src] = src;
+    wt[src] = 0;
     while (!q.empty())
     {
         ll curr = q.front();
         q.pop();
         for (auto t : adj[curr])
         {
-            auto child = t.fi;
-            if (dist[child] == dist[curr] + 1)
-            {
-                
-            }
-            else if (vis[child] == 0)
+            auto child = t.first;
+            auto wts = t.second;
+            if (vis[child] == 0)
             {
                 dist[child] = dist[curr] + 1;
                 q.push(child);
                 vis[child] = 1;
-                parent[child].fi = curr;
-                parent[child].se = t.se;
+                parent[child] = curr;
+                wt[child] = wts;
             }
         }
     }
 }
+
+ll get_lca(ll a, ll b, v64 &lvl, ll sparse[][30], ll wt[][30])
+{
+    ll oa = a, ob = b, lca = 0, ans = 0;
+    ll rem = lvl[a] - lvl[b];
+    if (rem < 0)
+    {
+        swap(a, b);
+    }
+    ll steps = abs(rem);
+    while (steps)
+    {
+        // a needs to come up
+        ans = max(ans, wt[a][__lg(steps)]);
+        a = sparse[a][__lg(steps)];
+        steps -= fastexpo(2, __lg(steps));
+    }
+    // yha pr use ans to store the value
+    if (a == b)
+    {
+        lca = a;
+        // yhi pr weight jo aya vo final
+    }
+    else
+    {
+        // else calculate here
+        for (ll i = 30 - 1; i >= 0; i--)
+        {
+            if (sparse[a][i] != sparse[b][i])
+            {
+                ans = max({ans, wt[a][i], wt[b][i]});
+                a = sparse[a][i];
+                b = sparse[b][i];
+            }
+        }
+        lca = sparse[a][0];
+        ans = max({ans, wt[a][0], wt[b][0]});
+    }
+    a = oa, b = ob;
+    return ans;
+}
+
+struct DSU
+{
+    v64 e, sz;
+    DSU(ll n)
+    {
+        e.assign(n + 1, -1);
+        sz.assign(n + 1, 1);
+    }
+    bool same(ll a, ll b) { return find(a) == find(b); }
+    ll size(ll x) { return sz[find(x)]; }
+    ll find(ll x) { return e[x] < 0 ? x : e[x] = find(e[x]); }
+    void join(ll a, ll b)
+    {
+        a = find(a);
+        b = find(b);
+        if (a != b)
+        {
+            if (sz[a] < sz[b])
+            {
+                swap(a, b);
+            }
+            e[b] = a;
+            sz[a] += sz[b];
+        }
+    }
+};
 
 void solve()
 {
     ll n, m, q;
     cin >> n >> m >> q;
     uvp64 adj;
+    DSU d(n);
     forn(i, m)
     {
-        ll a, b;
-        cin >> a >> b;
-        adj[a].pb({b, i + 2});
-        adj[b].pb({a, i + 2});
+        ll a, b, c = i + 1;
+        re(a, b);
+        if (!d.same(a, b))
+        {
+            d.join(a, b);
+            adj[a].pb({b, c});
+            adj[b].pb({a, c});
+        }
     }
-    vp64 parent(n + 1);
-    vector<vp64> sparse(n + 10, vp64(30));
-    v64 lvl(n + 1, 0);
-    bfs(adj, lvl, 1, parent);
+    v64 parent(n + 1, 0), wts(n + 1, 0), lvl(n + 1, 0), vis(n + 1, 0);
+    ll sparse[n + 1][30], wt[n + 1][30];
+    forsn(i, 1, n + 1)
+    {
+        if (vis[i] == 0)
+        {
+            bfs(adj, lvl, i, parent, wts, vis);
+        }
+    }
+
+    // forsn(i, 1, n + 1)
+    // {
+    //     dbg2(parent[i]);
+    // }
+    // cout << ln;
+    // forsn(i, 1, n + 1)
+    // {
+    //     dbg2(wts[i]);
+    // }
+    // cout << ln;
+
     forsn(i, 1, n + 1)
     {
         sparse[i][0] = parent[i];
+        wt[i][0] = wts[i];
     }
+
     for (ll j = 1; j < 30; j++)
     {
         for (ll i = 1; i <= n; i++)
         {
-            ll par = sparse[i][j - 1].fi;
-            if (par != -1)
-            {
-                sparse[i][j].fi = sparse[par][j - 1].fi;
-                sparse[i][j].se = max(sparse[sparse[i][j - 1].fi][j - 1].se, sparse[i][j - 1].se);
-            }
+            ll par = sparse[i][j - 1];
+            sparse[i][j] = sparse[par][j - 1];
+            wt[i][j] = max(wt[par][j - 1], wt[i][j - 1]);
         }
     }
-    for (ll i = 0; i <= n; i++)
-    {
-        for (ll j = 1; j < 5; j++)
-        {
-            cout << sparse[i][j].fi << "," << sparse[i][j].se << "  --  ";
-        }
-        cout << ln;
-    }
-    // while (q--)
+
+    // for (ll i = 1; i <= n; i++)
     // {
-    //     ll a, b;
-    //     cin >> a >> b;
-    //     ll rem = lvl[a] - lvl[b];
-    //     if (rem < 0)
+    //     for (ll j = 0; j < 5; j++)
     //     {
-    //         swap(a, b);
+    //         cout << wt[i][j] << " ";
     //     }
-    //     ll steps = abs(rem);
-    //     ll wt = 0;
-    //     while (steps)
-    //     {
-    //         // a needs to come
-    //         wt = max(sparse[a][__lg(steps)].se, wt);
-    //         a = sparse[a][__lg(steps)].fi;
-    //         steps -= fastexpo(2, __lg(steps));
-    //     }
-    //     // cout << a << " " << b << ln;
-    //     if (a == b)
-    //     {
-    //         cout << wt << ln;
-    //     }
-    //     else
-    //     {
-    //         for (ll i = 30 - 1; i >= 0; i--)
-    //         {
-    //             if (sparse[a][i] != sparse[b][i])
-    //             {
-    //                 a = sparse[a][i];
-    //                 b = sparse[b][i];
-    //             }
-    //         }
-    //         cout << sparse[a][0] << ln;
-    //     }
+    //     cout << ln;
     // }
+
+    while (q--)
+    {
+        ll a, b;
+        re(a, b);
+        if (d.same(a, b))
+        {
+            dbg(get_lca(a, b, lvl, sparse, wt));
+        }
+        else
+        {
+            dbg(-1);
+        }
+    }
 }
+
 int main()
 {
     fast_cin();

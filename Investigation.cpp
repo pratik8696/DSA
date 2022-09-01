@@ -52,7 +52,7 @@ typedef unordered_map<p64, ll> up64;
 typedef unordered_map<ll, vp64> uvp64;
 typedef priority_queue<ll> pq64;
 typedef priority_queue<ll, v64, greater<ll>> pqs64;
-ll MOD = 1000000007;
+const int MOD = 1000000007;
 double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
@@ -83,7 +83,6 @@ typedef gp_hash_table<ll, ll, custom_hash> fm64;
 typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 
 #define ln "\n"
-#define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
 #define ie insert
 #define pb push_back
@@ -97,24 +96,39 @@ typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
+#define dbg(a) cout << a << endl;
+#define dbg2(a) cout << a << ' ';
+using ld = long double;
+using db = double;
+using str = string; // yay python!
+// INPUT
+#define tcT template <class T
+#define tcTU tcT, class U
+#define tcTUU tcT, class... U
+tcT > void re(T &x)
+{
+    cin >> x;
+}
+tcTUU > void re(T &t, U &...u)
+{
+    re(t);
+    re(u...);
+}
 
-// dsu functions
-// void make_set(int v) {
-//   parent[v] = v;
-//}
+int find_set(int v, v64 &parent)
+{
+    if (-1 == parent[v])
+        return v;
+    return parent[v] = find_set(parent[v], parent);
+}
 
-// int find_set(int v,v64 &parent) {
-//   if (-1 == parent[v])
-// return v;
-// return parent[v]=find_set(parent[v],parent);
-// }
-
-// void union_sets(int a, int b,v64 &parent) {
-//   a = find_set(a,parent);
-// b = find_set(b,parent);
-// if (a != b)
-// parent[b] = a;
-// }
+void union_sets(int a, int b, v64 &parent)
+{
+    a = find_set(a, parent);
+    b = find_set(b, parent);
+    if (a != b)
+        parent[b] = a;
+}
 
 // function for prime factorization
 vector<pair<ll, ll>> pf(ll n)
@@ -271,54 +285,47 @@ bool isPrime(int x)
     return true;
 }
 
+ll dp[11][2][90][90];
+string s;
+ll k;
+ll sum(ll idx, bool flag, ll summ, ll num)
+{
+    if (idx == s.length())
+    {
+        return (summ == 0 && num == 0);
+    }
+    if (dp[idx][flag][summ][num] != -1)
+    {
+        return dp[idx][flag][summ][num];
+    }
+    ll till = flag ? s[idx] - '0' : 9;
+    ll ans = 0;
+    forn(i, till + 1)
+    {
+        ans += sum(idx + 1, flag & (i == till), (summ + i) % k, (num * 10 + i) % k);
+    }
+    return dp[idx][flag][summ][num] = ans;
+}
+
+ll f(string &x)
+{
+    s = x;
+    memset(dp, -1, sizeof(dp));
+    return sum(0, 1, 0, 0);
+}
+
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    uvp64 adj;
-    forn(i, m)
+    string a, b;
+    cin >> a >> b >> k;
+    ll i = a.length() - 1;
+    while (i >= 0 && a[i] == '0')
     {
-        ll a, b, w;
-        cin >> a >> b >> w;
-        adj[a].pb({b, w});
+        a[i--] = '9';
     }
-
-    multiset<p64> s;
-    v64 dist(n + 1, 1e15);
-    u64 minroutes, maxroutes, routes;
-    s.ie({0, 1});
-    minroutes[1] = 0, maxroutes[1] = 0;
-    routes[1] = 1;
-    dist[1] = 0;
-    while (s.size())
-    {
-        auto it = s.begin();
-        ll curr = it->second;
-        s.erase(it);
-        for (auto t : adj[curr])
-        {
-            ll child = t.first;
-            ll wt = t.second;
-            if (dist[child] == dist[curr] + wt && dist[curr] != 1e15)
-            {
-                routes[child] += routes[curr];
-                routes[child] %= MOD;
-                minroutes[child] = min(minroutes[curr] + 1, minroutes[child]);
-                maxroutes[child] = max(maxroutes[curr] + 1, maxroutes[child]);
-            }
-            if (dist[child] > dist[curr] + wt && dist[curr] != 1e15)
-            {
-                s.erase({dist[child], child});
-                dist[child] = dist[curr] + wt;
-                s.ie({dist[child], child});
-                minroutes[child] = minroutes[curr] + 1;
-                maxroutes[child] = maxroutes[curr] + 1;
-                routes[child] = routes[curr];
-                routes[child] %= MOD;
-            }
-        }
-    }
-    cout << dist[n] << " " << routes[n] << " " << minroutes[n] << " " << maxroutes[n] << ln;
+    a[i]--;
+    // dbg(f(a));
+    dbg(f(b) - f(a));
 }
 
 int main()
@@ -329,9 +336,10 @@ int main()
     // freopen("revegetate.out", "w", stdout);
     //#endif
     ll t = 1;
-    // cin >> t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
+        cout << "Case " << it << ": ";
         solve();
     }
     return 0;
