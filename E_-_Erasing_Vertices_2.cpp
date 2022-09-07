@@ -285,36 +285,62 @@ bool isPrime(int x)
     return true;
 }
 
-ll n, key;
-v64 arr;
-
-ll sum(ll idx, ll k, vv64 &dp)
-{
-    if (idx == n || k >= 30)
-    {
-        return 0;
-    }
-    if (dp[idx][k] != -1)
-    {
-        return dp[idx][k];
-    }
-    // open using good key
-    ll ans = 0;
-    ans = max(ans, sum(idx + 1, k, dp) - key + (arr[idx] / fastexpo(2, k)));
-    ans = max(ans, sum(idx + 1, k + 1, dp) + (arr[idx] / fastexpo(2, k + 1)));
-    return dp[idx][k] = ans;
-}
-
 void solve()
 {
-    cin >> n >> key;
-    vv64 dp(n + 2, v64(32, -1));
-    arr.resize(n);
+    ll n, m;
+    cin >> n >> m;
+    v64 vals(n + 1);
     forn(i, n)
     {
-        cin >> arr[i];
+        cin >> vals[i + 1];
     }
-    dbg(sum(0, 0, dp));
+    uv64 adj;
+    u64 prices;
+    set<p64> s;
+    forn(i, m)
+    {
+        ll a, b;
+        cin >> a >> b;
+        adj[a].pb(b);
+        adj[b].pb(a);
+        prices[a] += vals[b];
+        prices[b] += vals[a];
+    }
+
+    forsn(i, 1, n + 1)
+    {
+        s.ie({prices[i], i});
+    }
+    v64 vis(n + 1);
+    ll ans = 0;
+    while (s.size())
+    {
+        auto it = s.begin();
+        ll node = it->second;
+        vis[node]++;
+        s.erase(it);
+        // remove that node
+        auto &v = adj[node];
+        ll cost = prices[node];
+        prices[node] = 0;
+        ans=max(ans,cost);
+        // cout << cost << ln;
+        // reduce the price of all other nodes assosciated with it
+        for (auto child : adj[node])
+        {
+            auto it = s.find({prices[child], child});
+            if (it != s.end())
+            {
+                s.erase(it);
+            }
+            prices[child] -= vals[node];
+            if (prices[child] && vis[child] == 0)
+            {
+                s.ie({prices[child], child});
+            }
+        }
+    }
+    dbg(ans);
 }
 
 int main()
@@ -325,7 +351,7 @@ int main()
     // freopen("revegetate.out", "w", stdout);
     //#endif
     ll t = 1;
-    cin >> t;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

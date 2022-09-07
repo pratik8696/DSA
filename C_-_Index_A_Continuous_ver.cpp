@@ -285,36 +285,47 @@ bool isPrime(int x)
     return true;
 }
 
-ll n, key;
-v64 arr;
-
-ll sum(ll idx, ll k, vv64 &dp)
-{
-    if (idx == n || k >= 30)
-    {
-        return 0;
-    }
-    if (dp[idx][k] != -1)
-    {
-        return dp[idx][k];
-    }
-    // open using good key
-    ll ans = 0;
-    ans = max(ans, sum(idx + 1, k, dp) - key + (arr[idx] / fastexpo(2, k)));
-    ans = max(ans, sum(idx + 1, k + 1, dp) + (arr[idx] / fastexpo(2, k + 1)));
-    return dp[idx][k] = ans;
-}
-
 void solve()
 {
-    cin >> n >> key;
-    vv64 dp(n + 2, v64(32, -1));
-    arr.resize(n);
+    ll n, k;
+    cin >> n >> k;
+    v64 arr(n + 1);
+    v64 pre(n + 1);
     forn(i, n)
     {
-        cin >> arr[i];
+        cin >> arr[i + 1];
+        pre[i + 1] += pre[i] + arr[i + 1];
     }
-    dbg(sum(0, 0, dp));
+    // for (auto t : arr)
+    // {
+    //     cout << t << " ";
+    // }
+    // cout << ln;
+    // for (auto t : pre)
+    // {
+    //     cout << t << " ";
+    // }
+    // cout << ln;
+    // calculate size of the window
+    ll val = 0;
+    forsn(i, 1, k + 1)
+    {
+        val += i * arr[i];
+    }
+    ll ans = -INF;
+    // dbg(val);
+    ans = max(ans, val);
+    forsn(i, k + 1, n + 1)
+    {
+        // remove the prefix
+        ll remove = pre[i - 1] - pre[i - k - 1];
+        val -= remove;
+        // dbg2(remove);
+        val += arr[i] * k;
+        // dbg(val);
+        ans = max(ans, val);
+    }
+    dbg(ans);
 }
 
 int main()
@@ -325,7 +336,7 @@ int main()
     // freopen("revegetate.out", "w", stdout);
     //#endif
     ll t = 1;
-    cin >> t;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

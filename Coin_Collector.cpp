@@ -285,36 +285,124 @@ bool isPrime(int x)
     return true;
 }
 
-ll n, key;
-v64 arr;
-
-ll sum(ll idx, ll k, vv64 &dp)
+v64 order;
+void dfs0(int v, v64 &vis, uv64 &adj)
 {
-    if (idx == n || k >= 30)
+    vis[v] = 1;
+    for (auto child : adj[v])
     {
-        return 0;
+        if (vis[child] == 0)
+        {
+            dfs0(child, vis, adj);
+        }
     }
-    if (dp[idx][k] != -1)
+    order.pb(v);
+}
+v64 path;
+void dfs(int v, v64 &vis, uv64 &adj)
+{
+    vis[v] = 1;
+    path.pb(v);
+    for (auto child : adj[v])
     {
-        return dp[idx][k];
+        if (vis[child] == 0)
+        {
+            dfs(child, vis, adj);
+        }
     }
-    // open using good key
-    ll ans = 0;
-    ans = max(ans, sum(idx + 1, k, dp) - key + (arr[idx] / fastexpo(2, k)));
-    ans = max(ans, sum(idx + 1, k + 1, dp) + (arr[idx] / fastexpo(2, k + 1)));
-    return dp[idx][k] = ans;
 }
 
 void solve()
 {
-    cin >> n >> key;
-    vv64 dp(n + 2, v64(32, -1));
-    arr.resize(n);
+    ll n, m;
+    v64 vals(n + 1);
+    vp64 edges;
+    ll cc = 0;
+    u64 comp;
+    u64 prices;
+    uv64 adj, radj;
+    uv64 cadj;
+    u64 in;
+    queue<ll> q;
+    v64 temp(cc + 1, 0);
+    v64 dp(cc + 1, 0);
+    ll ans = 0;
+    cin >> n >> m;
     forn(i, n)
     {
-        cin >> arr[i];
+        cin >> vals[i + 1];
     }
-    dbg(sum(0, 0, dp));
+    forn(i, m)
+    {
+        ll a, b;
+        cin >> a >> b;
+        edges.pb({a, b});
+        adj[a].pb(b);
+        radj[b].pb(a);
+    }
+    // first is condensation of the graphs
+    ////////////////////////////////////////////////////////////////////////////////////////
+    v64 vis(n + 1);
+    forsn(i, 1, n + 1)
+    {
+        if (vis[i] == 0)
+        {
+            dfs0(i, vis, adj);
+        }
+    }
+    reverse(all(order));
+    fill(all(vis), 0);
+    for (auto t : order)
+    {
+        if (vis[t] == 0)
+        {
+            cc++;
+            dfs(t, vis, radj);
+            for (auto t : path)
+            {
+                comp[t] = cc;
+                prices[cc] += vals[t];
+            }
+            path.clear();
+        }
+    }
+    // ///////////////////////////////////////////////////////////////////////////////////////////
+    // creating condensed graph
+    for (auto t : edges)
+    {
+        if (comp[t.first] != comp[t.second])
+        {
+            cadj[comp[t.first]].pb(comp[t.second]);
+            in[comp[t.second]]++;
+        }
+    }
+    // now we will do something like topo sort
+    forsn(i, 1, cc + 1)
+    {
+        dp[i] = prices[i];
+        if (in[i] == 0)
+        {
+            q.push(i);
+        }
+    }
+    // now we will do the topo sorting
+    while (q.size())
+    {
+        ll curr = q.front();
+        ans = max(ans, dp[curr]);
+        q.pop();
+        for (auto child : cadj[curr])
+        {
+            temp[child] = max(temp[child], dp[curr]);
+            in[child]--;
+            if (in[child] == 0)
+            {
+                q.push(child);
+                dp[child] += temp[child];
+            }
+        }
+    }
+    dbg(ans);
 }
 
 int main()
@@ -325,7 +413,7 @@ int main()
     // freopen("revegetate.out", "w", stdout);
     //#endif
     ll t = 1;
-    cin >> t;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

@@ -270,68 +270,40 @@ bool isPrime(int x)
     return true;
 }
 
-#define maxi 1001
-int arr[maxi][maxi];
-int vis[maxi][maxi];
-int dist[maxi][maxi];
-int n, m;
-int dx[] = {-1, 0, 1, 0};
-int dy[] = {0, 1, 0, -1};
-
-bool isvalid(int x, int y)
+ll n;
+ll sum(ll row, ll col, vv64 &arr, vv64 &dp)
 {
-    if (x < 1 || x > n || y < 1 || y > m || vis[x][y] == 1)
+    if (row == n)
     {
-        return false;
+        return arr[row][col];
     }
-    return true;
-}
-
-void dfson2d(int x, int y)
-{
-    vis[x][y] = 1;
-    for (int i = 0; i < 4; i++)
+    if (dp[row][col] != -MOD)
     {
-        if (isvalid(x + dx[i], y + dy[i]))
-        {
-            dfson2d(x + dx[i], y + dy[i]);
-        }
+        return dp[row][col];
     }
+    ll ans = -MOD;
+    // move left
+    ans = max(ans, sum(row + 1, col, arr, dp) + arr[row][col]);
+    // move right
+    ans = max(ans, sum(row + 1, col + 1, arr, dp) + arr[row][col]);
+    // move down
+    return dp[row][col] = ans;
 }
 
 void solve()
 {
-    string s;
-    cin >> s;
-    s.push_back('&');
-    string ans;
-    string res = "";
-    int curr = 0;
-    int maxx = 0;
-    char prev = '*';
-    for (int i = 0; i < s.length(); i++)
+    cin >> n;
+    vv64 arr(n + 10, v64(n + 10));
+    vv64 dp(n + 10, v64(n + 10, -MOD));
+    forsn(i, 1, n + 1)
     {
-        if (s[i] != prev)
+        forsn(j, 1, i + 1)
         {
-            prev = s[i];
-            if (maxx <= curr)
-            {
-                maxx = curr;
-                ans = res;
-            }
-            res.clear();
-            res.push_back(s[i]);
-        }
-        else
-        {
-            curr++;
-            res.push_back(s[i]);
+            cin >> arr[i][j];
         }
     }
-    cout << ans.size() << endl;
-    cout << ans << endl;
+    dbg(sum(1, 1, arr, dp));
 }
-
 int main()
 {
     fast_cin();

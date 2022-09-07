@@ -52,7 +52,7 @@ typedef unordered_map<p64, ll> up64;
 typedef unordered_map<ll, vp64> uvp64;
 typedef priority_queue<ll> pq64;
 typedef priority_queue<ll, v64, greater<ll>> pqs64;
-const int MOD = 1000000007;
+const int MOD = 10000007;
 double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
@@ -285,36 +285,37 @@ bool isPrime(int x)
     return true;
 }
 
-ll n, key;
-v64 arr;
-
-ll sum(ll idx, ll k, vv64 &dp)
+ll dp[10010];
+int a, b, c, d, e, f;
+int fn(int n)
 {
-    if (idx == n || k >= 30)
+    if (n == 0)
+        return a;
+    if (n == 1)
+        return b;
+    if (n == 2)
+        return c;
+    if (n == 3)
+        return d;
+    if (n == 4)
+        return e;
+    if (n == 5)
+        return f;
+
+    if (dp[n] != -1)
     {
-        return 0;
+        return dp[n];
     }
-    if (dp[idx][k] != -1)
-    {
-        return dp[idx][k];
-    }
-    // open using good key
-    ll ans = 0;
-    ans = max(ans, sum(idx + 1, k, dp) - key + (arr[idx] / fastexpo(2, k)));
-    ans = max(ans, sum(idx + 1, k + 1, dp) + (arr[idx] / fastexpo(2, k + 1)));
-    return dp[idx][k] = ans;
+    ll ans = (fn(n - 1) + fn(n - 2) + fn(n - 3) + fn(n - 4) + fn(n - 5) + fn(n - 6)) % MOD;
+    return dp[n] = (ans % MOD);
 }
 
 void solve()
 {
-    cin >> n >> key;
-    vv64 dp(n + 2, v64(32, -1));
-    arr.resize(n);
-    forn(i, n)
-    {
-        cin >> arr[i];
-    }
-    dbg(sum(0, 0, dp));
+    ll n;
+    cin >> a >> b >> c >> d >> e >> f >> n;
+    memset(dp, -1, sizeof(dp));
+    dbg(fn(n) % MOD);
 }
 
 int main()
@@ -328,6 +329,7 @@ int main()
     cin >> t;
     for (int it = 1; it <= t; it++)
     {
+        cout << "Case " << it << ": ";
         solve();
     }
     return 0;

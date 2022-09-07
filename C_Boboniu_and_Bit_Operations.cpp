@@ -285,36 +285,44 @@ bool isPrime(int x)
     return true;
 }
 
-ll n, key;
-v64 arr;
-
-ll sum(ll idx, ll k, vv64 &dp)
+ll n, m;
+v64 a, b;
+ll dp[201][600];
+ll sum(ll idx, ll c)
 {
-    if (idx == n || k >= 30)
+    if (idx == a.size())
     {
-        return 0;
+        return c;
     }
-    if (dp[idx][k] != -1)
+    if (dp[idx][c] != -1)
     {
-        return dp[idx][k];
+        return dp[idx][c];
     }
-    // open using good key
-    ll ans = 0;
-    ans = max(ans, sum(idx + 1, k, dp) - key + (arr[idx] / fastexpo(2, k)));
-    ans = max(ans, sum(idx + 1, k + 1, dp) + (arr[idx] / fastexpo(2, k + 1)));
-    return dp[idx][k] = ans;
+    ll ans = INF;
+    forn(i, b.size())
+    {
+        ll val = a[idx] & b[i];
+        ll res = c | val;
+        ans = min(ans, sum(idx + 1, res));
+    }
+    return dp[idx][c] = ans;
 }
 
 void solve()
 {
-    cin >> n >> key;
-    vv64 dp(n + 2, v64(32, -1));
-    arr.resize(n);
+    cin >> n >> m;
+    a.resize(n);
+    b.resize(m);
+    memset(dp, -1, sizeof(dp));
     forn(i, n)
     {
-        cin >> arr[i];
+        cin >> a[i];
     }
-    dbg(sum(0, 0, dp));
+    forn(i, m)
+    {
+        cin >> b[i];
+    }
+    dbg(sum(0, 0));
 }
 
 int main()
@@ -325,7 +333,7 @@ int main()
     // freopen("revegetate.out", "w", stdout);
     //#endif
     ll t = 1;
-    cin >> t;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

@@ -115,21 +115,6 @@ tcTUU > void re(T &t, U &...u)
     re(u...);
 }
 
-int find_set(int v, v64 &parent)
-{
-    if (-1 == parent[v])
-        return v;
-    return parent[v] = find_set(parent[v], parent);
-}
-
-void union_sets(int a, int b, v64 &parent)
-{
-    a = find_set(a, parent);
-    b = find_set(b, parent);
-    if (a != b)
-        parent[b] = a;
-}
-
 // function for prime factorization
 vector<pair<ll, ll>> pf(ll n)
 {
@@ -285,36 +270,33 @@ bool isPrime(int x)
     return true;
 }
 
-ll n, key;
-v64 arr;
-
-ll sum(ll idx, ll k, vv64 &dp)
-{
-    if (idx == n || k >= 30)
-    {
-        return 0;
-    }
-    if (dp[idx][k] != -1)
-    {
-        return dp[idx][k];
-    }
-    // open using good key
-    ll ans = 0;
-    ans = max(ans, sum(idx + 1, k, dp) - key + (arr[idx] / fastexpo(2, k)));
-    ans = max(ans, sum(idx + 1, k + 1, dp) + (arr[idx] / fastexpo(2, k + 1)));
-    return dp[idx][k] = ans;
-}
-
 void solve()
 {
-    cin >> n >> key;
-    vv64 dp(n + 2, v64(32, -1));
-    arr.resize(n);
+    ll n, k;
+    cin >> n >> k;
+    v64 dp(1e6);
+    dp[0] = 1;
+    forsn(i, 1, 1e6)
+    {
+        dp[i] += dp[i - 1];
+        dp[i] %= MOD;
+        if (i - k >= 0)
+        {
+            dp[i] += dp[i - k];
+        }
+        dp[i] %= MOD;
+    }
+    v64 prefix(1e6);
+    forsn(i, 1, 1e6)
+    {
+        prefix[i] += (prefix[i - 1] + dp[i]) % MOD;
+    }
     forn(i, n)
     {
-        cin >> arr[i];
+        ll a, b;
+        re(a, b);
+        cout << (prefix[b] + MOD - prefix[a - 1]) % MOD << ln;
     }
-    dbg(sum(0, 0, dp));
 }
 
 int main()
@@ -325,7 +307,7 @@ int main()
     // freopen("revegetate.out", "w", stdout);
     //#endif
     ll t = 1;
-    cin >> t;
+    //  cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

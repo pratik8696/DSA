@@ -285,36 +285,50 @@ bool isPrime(int x)
     return true;
 }
 
-ll n, key;
+ll n;
 v64 arr;
-
-ll sum(ll idx, ll k, vv64 &dp)
+ll sum(ll idx, bool turn, vv64 &dp)
 {
-    if (idx == n || k >= 30)
+    if (idx == n)
     {
         return 0;
     }
-    if (dp[idx][k] != -1)
+    if (dp[idx][turn] != -1)
     {
-        return dp[idx][k];
+        return dp[idx][turn];
     }
-    // open using good key
-    ll ans = 0;
-    ans = max(ans, sum(idx + 1, k, dp) - key + (arr[idx] / fastexpo(2, k)));
-    ans = max(ans, sum(idx + 1, k + 1, dp) + (arr[idx] / fastexpo(2, k + 1)));
-    return dp[idx][k] = ans;
+    ll ans = INF;
+    if (turn)
+    {
+        // friends turn
+        ans = min(ans, sum(idx + 1, !turn, dp) + arr[idx]);
+        if (idx < n - 1)
+        {
+            ans = min(ans, sum(idx + 2, !turn, dp) + arr[idx] + arr[idx + 1]);
+        }
+    }
+    else
+    {
+        // my turn
+        ans = min(sum(idx + 1, !turn, dp), ans);
+        if (idx < n - 1)
+        {
+            ans = min(ans, sum(idx + 2, !turn, dp));
+        }
+    }
+    return dp[idx][turn] = ans;
 }
 
 void solve()
 {
-    cin >> n >> key;
-    vv64 dp(n + 2, v64(32, -1));
+    cin >> n;
     arr.resize(n);
+    vv64 dp(n + 1, v64(2, -1));
     forn(i, n)
     {
         cin >> arr[i];
     }
-    dbg(sum(0, 0, dp));
+    dbg(sum(0, 1, dp));
 }
 
 int main()

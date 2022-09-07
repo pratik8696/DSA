@@ -285,47 +285,51 @@ bool isPrime(int x)
     return true;
 }
 
-ll n, key;
+ll n, k;
 v64 arr;
-
-ll sum(ll idx, ll k, vv64 &dp)
+ll dp[101][10010];
+ll sum(ll idx, ll w)
 {
-    if (idx == n || k >= 30)
+    if (idx == n)
     {
         return 0;
     }
-    if (dp[idx][k] != -1)
+    if (dp[idx][w] != -1)
     {
-        return dp[idx][k];
+        return dp[idx][w];
     }
-    // open using good key
+    // take it
     ll ans = 0;
-    ans = max(ans, sum(idx + 1, k, dp) - key + (arr[idx] / fastexpo(2, k)));
-    ans = max(ans, sum(idx + 1, k + 1, dp) + (arr[idx] / fastexpo(2, k + 1)));
-    return dp[idx][k] = ans;
+    ll consumed = (n - idx) * arr[idx];
+    if (w - consumed >= 0)
+    {
+        ans = max(ans, sum(idx + 1, w - consumed) + 1);
+    }
+    ans = max(ans, sum(idx + 1, w));
+    return dp[idx][w] = ans;
 }
 
 void solve()
 {
-    cin >> n >> key;
-    vv64 dp(n + 2, v64(32, -1));
+    cin >> n >> k;
     arr.resize(n);
+    memset(dp, -1, sizeof(dp));
     forn(i, n)
     {
         cin >> arr[i];
     }
-    dbg(sum(0, 0, dp));
+    dbg(sum(0, k));
 }
 
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
+// #ifndef ONLINE_JUDGE
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
+// #endif
     ll t = 1;
-    cin >> t;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

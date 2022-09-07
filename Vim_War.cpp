@@ -285,36 +285,55 @@ bool isPrime(int x)
     return true;
 }
 
-ll n, key;
-v64 arr;
+// 00 --> 1
+// 01 --> 2
+// 10 --> 2
+// 11 --> 5
 
-ll sum(ll idx, ll k, vv64 &dp)
-{
-    if (idx == n || k >= 30)
-    {
-        return 0;
-    }
-    if (dp[idx][k] != -1)
-    {
-        return dp[idx][k];
-    }
-    // open using good key
-    ll ans = 0;
-    ans = max(ans, sum(idx + 1, k, dp) - key + (arr[idx] / fastexpo(2, k)));
-    ans = max(ans, sum(idx + 1, k + 1, dp) + (arr[idx] / fastexpo(2, k + 1)));
-    return dp[idx][k] = ans;
-}
-
+// 11 -> 11,(11,10),(11,01)
+//    -> 1   1   2   4   2
+//    -> 1     3       5
 void solve()
 {
-    cin >> n >> key;
-    vv64 dp(n + 2, v64(32, -1));
-    arr.resize(n);
+    ll n, m;
+    cin >> n >> m;
+    u64 hsh, dp;
     forn(i, n)
     {
-        cin >> arr[i];
+        string s;
+        cin >> s;
+        reverse(all(s));
+        ll val = 0;
+        forn(j, s.length())
+        {
+            if (s[j] == '1')
+            {
+                val += 1 << j;
+            }
+        }
+        dp[val]++;
     }
-    dbg(sum(0, 0, dp));
+    ll res = 0;
+    string s;
+    cin >> s;
+    reverse(all(s));
+    forn(i, s.length())
+    {
+        if (s[i] == '1')
+        {
+            res += 1 << i;
+        }
+    }
+    forn(mask, 1 << m)
+    {
+        dp[mask] += dp[0];
+        for (ll i = mask; i != 0; i = (i - 1) & mask)
+        {
+            dp[mask] += dp[mask ^ (1 << i)];
+        }
+        cout << mask << " " << dp[mask] << endl;
+    }
+    cout << dp[res] << endl;
 }
 
 int main()
@@ -325,7 +344,7 @@ int main()
     // freopen("revegetate.out", "w", stdout);
     //#endif
     ll t = 1;
-    cin >> t;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

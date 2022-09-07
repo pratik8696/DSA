@@ -285,36 +285,133 @@ bool isPrime(int x)
     return true;
 }
 
-ll n, key;
-v64 arr;
-
-ll sum(ll idx, ll k, vv64 &dp)
+ll n, m, s;
+ll end = 0;
+vector<u64> collection;
+v64 path;
+u64 curr_path;
+void dfs(int v, v64 &vis, uv64 &adj, int parent)
 {
-    if (idx == n || k >= 30)
+    vis[v] = 1;
+    path.pb(v);
+    curr_path[v] = parent;
+    for (auto child : adj[v])
     {
-        return 0;
+        if (vis[child] == 0)
+        {
+            dfs(child, vis, adj, v);
+        }
+        else if (vis[child] == 3 && child != 1)
+        {
+            // cout << v << " -> " << child << endl;
+            ll prev = child;
+            curr_path[child] = v;
+            v64 b;
+            while (prev != s)
+            {
+                b.pb(prev);
+                prev = curr_path[prev];
+            }
+            b.pb(prev);
+            reverse(all(b));
+            cout << b.size() << endl;
+            for (auto x : b)
+            {
+                cout << x << " ";
+            }
+            cout << endl;
+            // now check for the collection which contains the parent of our child
+            for (auto &t : collection)
+            {
+                auto &prev_path = t;
+                if (prev_path[child] != 0)
+                {
+                    ll prevv = child;
+                    v64 a;
+                    while (prevv != s)
+                    {
+                        a.pb(prevv);
+                        prevv = prev_path[prevv];
+                    }
+                    a.pb(prevv);
+                    reverse(all(a));
+                    cout << a.size() << endl;
+                    for (auto x : a)
+                    {
+                        cout << x << " ";
+                    }
+                    cout << endl;
+                    break;
+                }
+            }
+            exit(0);
+        }
     }
-    if (dp[idx][k] != -1)
-    {
-        return dp[idx][k];
-    }
-    // open using good key
-    ll ans = 0;
-    ans = max(ans, sum(idx + 1, k, dp) - key + (arr[idx] / fastexpo(2, k)));
-    ans = max(ans, sum(idx + 1, k + 1, dp) + (arr[idx] / fastexpo(2, k + 1)));
-    return dp[idx][k] = ans;
 }
 
 void solve()
 {
-    cin >> n >> key;
-    vv64 dp(n + 2, v64(32, -1));
-    arr.resize(n);
-    forn(i, n)
+    cin >> n >> m >> s;
+    uv64 adj;
+    forn(i, m)
     {
-        cin >> arr[i];
+        ll a, b;
+        re(a, b);
+        adj[a].pb(b);
     }
-    dbg(sum(0, 0, dp));
+    v64 nodes;
+    for (auto child : adj[s])
+    {
+        nodes.pb(child);
+    }
+    if (nodes.size() <= 1)
+    {
+        dbg("Impossible");
+        return;
+    }
+    v64 vis(n + 1, 0);
+    dbg("Possible");
+    for (auto child : nodes)
+    {
+        if (vis[child] == 3)
+        {
+            ll prev = child;
+            cout << child << endl;
+            // now check for the collection which contains the parent of our child
+            for (auto &t : collection)
+            {
+                auto &prev_path = t;
+                if (prev_path[child] != 0)
+                {
+                    ll prevv = child;
+                    v64 a;
+                    while (prevv != s)
+                    {
+                        a.pb(prevv);
+                        prevv = prev_path[prevv];
+                    }
+                    a.pb(prevv);
+                    reverse(all(a));
+                    cout << a.size() << endl;
+                    for (auto x : a)
+                    {
+                        cout << x << " ";
+                    }
+                    cout << endl;
+                    break;
+                }
+            }
+            exit(0);
+        }
+        dfs(child, vis, adj, s);
+        for (auto t : path)
+        {
+            vis[t] = 3;
+        }
+        collection.pb(curr_path);
+        path.clear();
+        curr_path.clear();
+    }
 }
 
 int main()
@@ -325,7 +422,7 @@ int main()
     // freopen("revegetate.out", "w", stdout);
     //#endif
     ll t = 1;
-    cin >> t;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

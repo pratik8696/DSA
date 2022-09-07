@@ -284,37 +284,68 @@ bool isPrime(int x)
     }
     return true;
 }
+ll n, x, y;
+ll cc = 0;
+v64 path, final_path;
+u64 marked;
 
-ll n, key;
-v64 arr;
-
-ll sum(ll idx, ll k, vv64 &dp)
+void dfs(int v, v64 &vis, uv64 &adj, int z)
 {
-    if (idx == n || k >= 30)
+    cc++;
+    vis[v] = 1;
+    for (auto child : adj[v])
     {
-        return 0;
+        if (vis[child] == 0 && marked[child] == 0)
+        {
+            dfs(child, vis, adj, z);
+        }
     }
-    if (dp[idx][k] != -1)
+}
+
+void dfs0(int v, v64 &vis, uv64 &adj, int target)
+{
+    vis[v] = 1;
+    path.pb(v);
+    if (v == target)
     {
-        return dp[idx][k];
+        final_path = path;
+        for (auto t : final_path)
+        {
+            marked[t]++;
+        }
+        return;
     }
-    // open using good key
-    ll ans = 0;
-    ans = max(ans, sum(idx + 1, k, dp) - key + (arr[idx] / fastexpo(2, k)));
-    ans = max(ans, sum(idx + 1, k + 1, dp) + (arr[idx] / fastexpo(2, k + 1)));
-    return dp[idx][k] = ans;
+    for (auto child : adj[v])
+    {
+        if (vis[child] == 0)
+        {
+            dfs0(child, vis, adj, target);
+        }
+    }
+    path.pop_back();
 }
 
 void solve()
 {
-    cin >> n >> key;
-    vv64 dp(n + 2, v64(32, -1));
-    arr.resize(n);
-    forn(i, n)
+    cin >> n >> x >> y;
+    uv64 adj;
+    forn(i, n - 1)
     {
-        cin >> arr[i];
+        ll a, b;
+        cin >> a >> b;
+        adj[a].pb(b);
+        adj[b].pb(a);
     }
-    dbg(sum(0, 0, dp));
+    v64 visited(n + 1);
+    dfs0(x, visited, adj, y);
+    v64 vis(n + 1);
+    dfs(x, vis, adj, y);
+    ll first = cc;
+    cc = 0;
+    fill(all(vis), 0);
+    dfs(y, vis, adj, x);
+    ll second = cc;
+    cout << n * (n - 1) - first * second << endl;
 }
 
 int main()
@@ -325,7 +356,7 @@ int main()
     // freopen("revegetate.out", "w", stdout);
     //#endif
     ll t = 1;
-    cin >> t;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

@@ -285,36 +285,73 @@ bool isPrime(int x)
     return true;
 }
 
-ll n, key;
-v64 arr;
-
-ll sum(ll idx, ll k, vv64 &dp)
+ll n, m;
+ll c[2];
+bool flag = true;
+void dfs(int v, v64 &vis, uv64 &adj, int col, u64 &colour)
 {
-    if (idx == n || k >= 30)
+    vis[v] = 1;
+    colour[v] = col;
+    c[colour[v]] += (v <= n);
+    for (auto child : adj[v])
     {
-        return 0;
+        if (vis[child] == 0)
+        {
+            dfs(child, vis, adj, col ^ 1, colour);
+        }
+        else if (colour[v] == colour[child])
+        {
+            flag = false;
+        }
     }
-    if (dp[idx][k] != -1)
-    {
-        return dp[idx][k];
-    }
-    // open using good key
-    ll ans = 0;
-    ans = max(ans, sum(idx + 1, k, dp) - key + (arr[idx] / fastexpo(2, k)));
-    ans = max(ans, sum(idx + 1, k + 1, dp) + (arr[idx] / fastexpo(2, k + 1)));
-    return dp[idx][k] = ans;
 }
 
 void solve()
 {
-    cin >> n >> key;
-    vv64 dp(n + 2, v64(32, -1));
-    arr.resize(n);
-    forn(i, n)
+    flag = true;
+    cin >> n >> m;
+    uv64 adj;
+    ll val = n + 1;
+    forn(i, m)
     {
-        cin >> arr[i];
+        ll a, b;
+        re(a, b);
+        string c;
+        cin >> c;
+        if (c == "imposter")
+        {
+            adj[a].pb(b);
+            adj[b].pb(a);
+        }
+        else
+        {
+            adj[a].pb(val);
+            adj[val].pb(a);
+            adj[b].pb(val);
+            adj[val].pb(b);
+            val++;
+        }
     }
-    dbg(sum(0, 0, dp));
+
+    v64 vis(val);
+    ll ans = 0;
+    forsn(i, 1, n + 1)
+    {
+        if (vis[i] == 0)
+        {
+            u64 v;
+            dfs(i, vis, adj, 1, v);
+            ans += max(c[0], c[1]);
+            c[0] = 0;
+            c[1] = 0;
+        }
+    }
+    if (flag == false)
+    {
+        dbg(-1);
+        return;
+    }
+    cout << ans << endl;
 }
 
 int main()

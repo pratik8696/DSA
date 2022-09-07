@@ -285,36 +285,68 @@ bool isPrime(int x)
     return true;
 }
 
-ll n, key;
-v64 arr;
+/*
+11 12 20 21
+44 22 11 30
+*/
 
-ll sum(ll idx, ll k, vv64 &dp)
+void dfs(int v, v64 &vis, uv64 &adj)
 {
-    if (idx == n || k >= 30)
+    vis[v] = 1;
+    for (auto child : adj[v])
     {
-        return 0;
+        if (vis[child] == 0)
+        {
+            dfs(child, vis, adj);
+        }
     }
-    if (dp[idx][k] != -1)
-    {
-        return dp[idx][k];
-    }
-    // open using good key
-    ll ans = 0;
-    ans = max(ans, sum(idx + 1, k, dp) - key + (arr[idx] / fastexpo(2, k)));
-    ans = max(ans, sum(idx + 1, k + 1, dp) + (arr[idx] / fastexpo(2, k + 1)));
-    return dp[idx][k] = ans;
 }
 
 void solve()
 {
-    cin >> n >> key;
-    vv64 dp(n + 2, v64(32, -1));
-    arr.resize(n);
+    ll n, node, val = 0;
+    cin >> n;
+    vp64 a, b;
     forn(i, n)
     {
-        cin >> arr[i];
+        ll x;
+        cin >> x;
+        if (x > val)
+        {
+            val = x;
+            node = i + 1;
+        }
+        a.pb({x, i + 1});
     }
-    dbg(sum(0, 0, dp));
+    forn(i, n)
+    {
+        ll x;
+        cin >> x;
+        b.pb({x, i + 1});
+    }
+    sort(all(a));
+    sort(all(b));
+    uv64 adj;
+    forn(i, n - 1)
+    {
+        ll from = a[i].second;
+        ll to = a[i + 1].second;
+        adj[from].pb(to);
+    }
+    forn(i, n - 1)
+    {
+        ll from = b[i].second;
+        ll to = b[i + 1].second;
+        adj[from].pb(to);
+    }
+    // now i will start dfs from highest ai node
+    v64 vis(n + 1, 0);
+    dfs(node, vis, adj);
+    forsn(i, 1, n + 1)
+    {
+        cout << vis[i];
+    }
+    cout << ln;
 }
 
 int main()

@@ -285,36 +285,122 @@ bool isPrime(int x)
     return true;
 }
 
-ll n, key;
-v64 arr;
+ll flag_node;
 
-ll sum(ll idx, ll k, vv64 &dp)
+ll dfs0(int v, v64 &vis, uv64 &adj, v64 &subtree, v64 &vals)
 {
-    if (idx == n || k >= 30)
+    vis[v] = 1;
+    ll sub = vals[v];
+    for (auto child : adj[v])
     {
-        return 0;
+        if (vis[child] == 0 && flag_node != child)
+        {
+            sub ^= dfs0(child, vis, adj, subtree, vals);
+        }
     }
-    if (dp[idx][k] != -1)
+    subtree[v] = sub;
+    return sub;
+}
+
+void dfs(int v, v64 &vis, uv64 &adj, ll res, v64 &subtree)
+{
+    vis[v] = 1;
+    if (subtree[v] == res && v != 1 && v != flag_node)
     {
-        return dp[idx][k];
+        flag_node = v;
     }
-    // open using good key
-    ll ans = 0;
-    ans = max(ans, sum(idx + 1, k, dp) - key + (arr[idx] / fastexpo(2, k)));
-    ans = max(ans, sum(idx + 1, k + 1, dp) + (arr[idx] / fastexpo(2, k + 1)));
-    return dp[idx][k] = ans;
+    for (auto child : adj[v])
+    {
+        if (vis[child] == 0)
+        {
+            dfs(child, vis, adj, res, subtree);
+        }
+    }
 }
 
 void solve()
 {
-    cin >> n >> key;
-    vv64 dp(n + 2, v64(32, -1));
-    arr.resize(n);
-    forn(i, n)
+    flag_node = 0;
+    ll n, k;
+    cin >> n >> k;
+    uv64 adj;
+    v64 vals(n + 1);
+    ll res = 0;
+    forsn(i, 1, n + 1)
     {
-        cin >> arr[i];
+        cin >> vals[i];
+        res ^= vals[i];
     }
-    dbg(sum(0, 0, dp));
+    vp64 edges;
+    forn(i, n - 1)
+    {
+        ll a, b;
+        re(a, b);
+        edges.pb({a, b});
+        adj[a].pb(b);
+        adj[b].pb(a);
+    }
+    // now we will find the xor of all the nodes
+    // cout << res << endl;
+    if (res == 0)
+    {
+        // remove any one node and we can partition it into two pieces
+        dbg("YES");
+    }
+    else
+    {
+        if (k - 1 >= 2)
+        {
+            // remove two nodes and partition in 3 pieces
+            // first do first dfs and find that node jiske subtree ka xor x hai
+            // cout << "DILEMA" << endl;
+            v64 subtree(n + 1);
+            v64 vis(n + 1);
+            ll val = dfs0(1, vis, adj, subtree, vals);
+            fill(all(vis), 0);
+            dfs(1, vis, adj, res, subtree);
+            // cout << "First flag" << endl;
+            // cout << flag_node << endl;
+            // forsn(i, 1, n + 1)
+            // {
+            //     cout << subtree[i] << " ";
+            // }
+            // cout << endl;
+            ll node1 = flag_node;
+            if (flag_node == 0)
+            {
+                dbg("NO");
+                return;
+            }
+            fill(all(subtree), 0);
+            fill(all(vis), 0);
+
+            val = dfs0(1, vis, adj, subtree, vals);
+            fill(all(vis), 0);
+            dfs(1, vis, adj, res, subtree);
+            // cout << "Second flag" << endl;
+            // cout << flag_node << endl;
+            if (flag_node != node1)
+            {
+                dbg("YES");
+                return;
+            }
+            else
+            {
+                dbg("NO");
+                return;
+            }
+            // forsn(i, 1, n + 1)
+            // {
+            //     cout << subtree[i] << " ";
+            // }
+            // cout << endl;
+        }
+        else
+        {
+            dbg("NO");
+        }
+    }
 }
 
 int main()

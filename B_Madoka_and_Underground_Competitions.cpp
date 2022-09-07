@@ -285,36 +285,124 @@ bool isPrime(int x)
     return true;
 }
 
-ll n, key;
-v64 arr;
-
-ll sum(ll idx, ll k, vv64 &dp)
+ll n, k;
+ll vis[600][600];
+bool isvalid(ll x, ll y)
 {
-    if (idx == n || k >= 30)
+    if (x > n || x < 1 || y > n || y < 1)
     {
-        return 0;
+        return false;
     }
-    if (dp[idx][k] != -1)
+    return true;
+}
+
+void apply(ll x, ll y, vector<vector<char>> &arr);
+void apply1(ll x, ll y, vector<vector<char>> &arr);
+
+void apply1(ll x, ll y, vector<vector<char>> &arr)
+{
+    ll prev = y;
+    if (vis[x][y] == 0)
     {
-        return dp[idx][k];
+        // cout << x << " " << y << endl;
+        vis[x][y] = 1;
+        apply(x, y, arr);
     }
-    // open using good key
-    ll ans = 0;
-    ans = max(ans, sum(idx + 1, k, dp) - key + (arr[idx] / fastexpo(2, k)));
-    ans = max(ans, sum(idx + 1, k + 1, dp) + (arr[idx] / fastexpo(2, k + 1)));
-    return dp[idx][k] = ans;
+    for (int i = y; i <= n; i++)
+    {
+        // cout << x << " " << y << endl;
+        if (abs(prev - i) == k && vis[x][i] == 0)
+        {
+            arr[x][i] = 'X';
+            vis[x][i] = 1;
+            apply(x, y, arr);
+            prev = i;
+        }
+    }
+    prev = y;
+    for (ll i = y; i >= 1; i--)
+    {
+        if (abs(prev - i) == k && vis[x][i] == 0)
+        {
+            // cout << x << " " << y << endl;
+            arr[x][i] = 'X';
+            vis[x][i] = 1;
+            apply(x, y, arr);
+            prev = i;
+        }
+    }
+}
+
+void apply(ll x, ll y, vector<vector<char>> &arr)
+{
+    // up
+    ll xx = x, yy = y;
+    while (isvalid(x, y))
+    {
+        if (vis[x][y] == 0)
+        {
+            // cout << x << " " << y << endl;
+            arr[x][y] = 'X';
+            vis[x][y] = 1;
+            apply1(x, y, arr);
+        }
+        x--, y++;
+    }
+    // down
+    x = xx, y = yy;
+    while (isvalid(x, y))
+    {
+        if (vis[x][y] == 0)
+        {
+            // cout << x << " " << y << endl;
+            arr[x][y] = 'X';
+            vis[x][y] = 1;
+            apply1(x, y, arr);
+        }
+        x++, y--;
+    }
 }
 
 void solve()
 {
-    cin >> n >> key;
-    vv64 dp(n + 2, v64(32, -1));
-    arr.resize(n);
-    forn(i, n)
+    ll x, y;
+    memset(vis, 0, sizeof(vis));
+    cin >> n >> k >> x >> y;
+    vector<vector<char>> arr(n + 2, vector<char>(n + 2, '.'));
+    arr[x][y] = 'X';
+    // so we need to find how much is needed on one floor
+    if (k == n)
     {
-        cin >> arr[i];
+        u64 col;
+        u64 row;
+        row[x]++;
+        col[y]++;
+        forsn(i, 1, n + 1)
+        {
+            forsn(j, 1, n + 1)
+            {
+                if (row[i] == 0 && col[j] == 0)
+                {
+                    row[i]++;
+                    col[j]++;
+                    arr[i][j] = 'X';
+                }
+            }
+        }
     }
-    dbg(sum(0, 0, dp));
+    apply1(x, y, arr);
+    forsn(i, 1, n + 1)
+    {
+        forsn(j, 1, n + 1)
+        {
+            if (arr[i][j] == 'X')
+            {
+                apply(i, j, arr);
+            }
+            cout << arr[i][j];
+        }
+        cout << ln;
+    }
 }
 
 int main()

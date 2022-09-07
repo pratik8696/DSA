@@ -285,36 +285,41 @@ bool isPrime(int x)
     return true;
 }
 
-ll n, key;
-v64 arr;
-
-ll sum(ll idx, ll k, vv64 &dp)
-{
-    if (idx == n || k >= 30)
-    {
-        return 0;
-    }
-    if (dp[idx][k] != -1)
-    {
-        return dp[idx][k];
-    }
-    // open using good key
-    ll ans = 0;
-    ans = max(ans, sum(idx + 1, k, dp) - key + (arr[idx] / fastexpo(2, k)));
-    ans = max(ans, sum(idx + 1, k + 1, dp) + (arr[idx] / fastexpo(2, k + 1)));
-    return dp[idx][k] = ans;
-}
-
 void solve()
 {
-    cin >> n >> key;
-    vv64 dp(n + 2, v64(32, -1));
-    arr.resize(n);
+    ll n;
+    cin >> n;
+    ll arr[n][n];
     forn(i, n)
     {
-        cin >> arr[i];
+        forn(j, n)
+        {
+            cin >> arr[i][j];
+        }
     }
-    dbg(sum(0, 0, dp));
+    vv64 dp(n + 2, v64(1 << n));
+    // state is dp[i][mask]
+    dp[0][0] = 1;
+    forn(i, n)
+    {
+        // ith man
+        forn(mask, 1 << n)
+        {
+            // mask is the no of women (1)->picked
+            if (popcount(mask) == i)
+            {
+                forn(j, n)
+                {
+                    if ((mask & (1 << j)) == 0 && arr[i][j])
+                    {
+                        dp[i + 1][mask | (1 << j)] += (dp[i][mask]) % MOD;
+                        dp[i][mask | (1 << j)] %= MOD;
+                    }
+                }
+            }
+        }
+    }
+    dbg(dp[n].back() % MOD);
 }
 
 int main()
@@ -325,7 +330,7 @@ int main()
     // freopen("revegetate.out", "w", stdout);
     //#endif
     ll t = 1;
-    cin >> t;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();
