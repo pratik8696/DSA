@@ -294,8 +294,31 @@ void solve()
     {
         cin >> arr[i];
     }
-    // if values in the array is less than k
-    1 2 3 1 1
+    ll i = 0, j = -1;
+    s64 s;
+
+    ll cc = 0;
+
+    while (j < n)
+    {
+        if (s.size() > k)
+        {
+            ll val = j - i;
+            cc += val;
+            cout << cc << " " << s.size() << " -> " << i << "," << j << endl;
+            s.erase(s.lower_bound(arr[i]));
+            i++;
+        }
+        else
+        {
+            j++;
+            s.ie(arr[j]);
+        }
+    }
+    ll size = j - i;
+    cc += (size * (size + 1)) / 2;
+    cout << cc << " " << s.size() << " -> " << i << "," << j << endl;
+    dbg(cc);
 }
 
 int main()
@@ -306,7 +329,7 @@ int main()
     // freopen("revegetate.out", "w", stdout);
     //#endif
     ll t = 1;
-    cin >> t;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

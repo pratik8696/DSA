@@ -115,21 +115,6 @@ tcTUU > void re(T &t, U &...u)
     re(u...);
 }
 
-int find_set(int v, v64 &parent)
-{
-    if (-1 == parent[v])
-        return v;
-    return parent[v] = find_set(parent[v], parent);
-}
-
-void union_sets(int a, int b, v64 &parent)
-{
-    a = find_set(a, parent);
-    b = find_set(b, parent);
-    if (a != b)
-        parent[b] = a;
-}
-
 // function for prime factorization
 vector<pair<ll, ll>> pf(ll n)
 {
@@ -285,76 +270,88 @@ bool isPrime(int x)
     return true;
 }
 
-void solve()
+vector<int> f1(vector<int> &heights)
 {
-    ll n, q;
-    cin >> n >> q;
-    v64 v(n);
-    deque<ll> arr;
-    forn(i, n)
+    stack<int> s;
+    vector<int> v;
+    reverse(all(heights));
+    for (int i = heights.size() - 1; i >= 0; i--)
     {
-        cin >> v[i];
-        arr.pb(v[i]);
-    }
-    u64 first_win, wins;
-    ll cc = 0;
-    if (arr.front() != n)
-    {
-        while (arr.front() != n)
+        if (s.empty())
         {
-            cc++;
-            ll first = arr.front();
-            arr.pop_front();
-            ll second = arr.front();
-            arr.pop_front();
-            if (first > second)
-            {
-                arr.push_front(first);
-                wins[first]++;
-                if (first_win[first] == 0)
-                {
-                    first_win[first] = cc;
-                }
-                arr.push_back(second);
-            }
-            else
-            {
-                arr.push_front(second);
-                wins[second]++;
-                if (first_win[second] == 0)
-                {
-                    first_win[second] = cc;
-                }
-                arr.push_back(first);
-            }
-        }
-    }
-    else
-    {
-        first_win[n] = 1;
-    }
-
-    forn(i, q)
-    {
-        ll pos, rounds;
-        cin >> pos >> rounds;
-        ll rem = rounds - first_win[v[pos - 1]] + 1;
-        if (rounds >= first_win[v[pos - 1]] && first_win[v[pos - 1]] != 0)
-        {
-            if (v[pos - 1] == n)
-            {
-                cout << rem << endl;
-            }
-            else
-            {
-                ll res = min(wins[v[pos - 1]], rem);
-                dbg(res);
-            }
+            s.push(i);
+            v.push_back(0);
         }
         else
         {
-            cout << 0 << ln;
+            int maxi = 0, cnt = 1;
+            while (!s.empty() && heights[i] >= heights[s.top()])
+            {
+                if (heights[s.top()] >= maxi)
+                    cnt++;
+                maxi = max(maxi, heights[s.top()]);
+                s.pop();
+            }
+            // cnt=1;
+            if (s.empty())
+                v.push_back(cnt - 1);
+            else
+                v.push_back(cnt);
+            s.push(i);
         }
+    }
+    // reverse(v.begin(), v.end());
+    return v;
+}
+
+vector<int> f2(vector<int> &heights)
+{
+    // reverse(all(heights));
+    stack<int> s;
+    vector<int> v;
+    for (int i = heights.size() - 1; i >= 0; i--)
+    {
+        if (s.empty())
+        {
+            s.push(i);
+            v.push_back(0);
+        }
+        else
+        {
+            int maxi = 0, cnt = 1;
+            while (!s.empty() && heights[i] >= heights[s.top()])
+            {
+                if (heights[s.top()] >= maxi)
+                    cnt++;
+                maxi = max(maxi, heights[s.top()]);
+                s.pop();
+            }
+            // cnt=1;
+            if (s.empty())
+                v.push_back(cnt - 1);
+            else
+                v.push_back(cnt);
+            s.push(i);
+        }
+    }
+    reverse(v.begin(), v.end());
+    return v;
+}
+
+void solve()
+{
+    ll n;
+    cin >> n;
+    v32 heights(n);
+    forn(i, n)
+    {
+        cin >> heights[i];
+    }
+    v32 v1 = f1(heights);
+    v32 v2 = f2(heights);
+    forn(i,n)
+    {
+        cout<<v1[i]+v2[i]<<" ";
     }
 }
 
@@ -366,7 +363,7 @@ int main()
     // freopen("revegetate.out", "w", stdout);
     //#endif
     ll t = 1;
-    cin >> t;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

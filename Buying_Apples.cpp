@@ -83,7 +83,6 @@ typedef gp_hash_table<ll, ll, custom_hash> fm64;
 typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 
 #define ln "\n"
-#define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
 #define ie insert
 #define pb push_back
@@ -97,11 +96,24 @@ typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-
-// dsu functions
-// void make_set(int v) {
-//   parent[v] = v;
-//}
+#define dbg(a) cout << a << endl;
+#define dbg2(a) cout << a << ' ';
+using ld = long double;
+using db = double;
+using str = string; // yay python!
+// INPUT
+#define tcT template <class T
+#define tcTU tcT, class U
+#define tcTUU tcT, class... U
+tcT > void re(T &x)
+{
+    cin >> x;
+}
+tcTUU > void re(T &t, U &...u)
+{
+    re(t);
+    re(u...);
+}
 
 int find_set(int v, v64 &parent)
 {
@@ -275,39 +287,31 @@ bool isPrime(int x)
 
 void solve()
 {
-    ll n, k;
-    cin >> n >> k;
-    ll arr[k];
-    vv64 dp(k + 10, v64(k + 10, 1e10));
-    forn(i, k)
+    ll n, m;
+    cin >> m >> n;
+    m = n;
+    ll arr[n + 1];
+    forsn(i, 1, n + 1)
     {
         cin >> arr[i];
     }
-    dp[0][0] = 0;
-    forsn(i, 1, k + 1)
+    v64 dp(m + 10, INF);
+    dp[0] = 0;
+    forsn(i, 1, m + 1)
     {
-        forsn(j, 0, k + 1)
+        forsn(j, 1, n + 1)
         {
-            if (arr[i - 1] == -1)
+            if (arr[j] == -1)
             {
-                dp[i][j] = min(dp[i - 1][j], dp[i][j]);
+                continue;
             }
-            else if (i <= j)
+            if (i >= j)
             {
-                dp[i][j] = min(dp[i - 1][j], dp[i][j - i] + arr[i - 1]);
-            }
-            else
-            {
-                dp[i][j] = min(dp[i - 1][j], dp[i][j]);
+                dp[i] = min(dp[i], dp[i - j] + arr[j]);
             }
         }
     }
-    if (dp[k][k] >= 1e10)
-    {
-        cout << -1 << ln;
-    }
-    else
-        cout << dp[k][k] << ln;
+    dbg((dp[n] == INF ? -1 : dp[n]));
 }
 
 int main()

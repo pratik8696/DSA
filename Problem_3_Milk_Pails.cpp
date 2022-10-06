@@ -115,124 +115,274 @@ tcTUU > void re(T &t, U &...u)
     re(u...);
 }
 
-ll a, b;
-bool isvalid(int x, int y)
+int find_set(int v, v64 &parent)
 {
-    if (x > a || y > b || x < 0 || y < 0)
+    if (-1 == parent[v])
+        return v;
+    return parent[v] = find_set(parent[v], parent);
+}
+
+void union_sets(int a, int b, v64 &parent)
+{
+    a = find_set(a, parent);
+    b = find_set(b, parent);
+    if (a != b)
+        parent[b] = a;
+}
+
+// function for prime factorization
+vector<pair<ll, ll>> pf(ll n)
+{
+    vector<pair<ll, ll>> prime;
+    for (int i = 2; i <= sqrt(n); i++)
+    {
+        if (n % i == 0)
+        {
+            int count = 0;
+            while (n % i == 0)
+            {
+                count++;
+                n = n / i;
+            }
+            prime.pb(mp(i, count));
+        }
+    }
+    if (n > 1)
+    {
+        prime.pb(mp(n, 1));
+    }
+    return prime;
+}
+
+// sum of digits of a number
+ll sumofno(ll n)
+{
+    ll sum = 0;
+    while (n != 0)
+    {
+        sum += n % 10;
+        n = n / 10;
+    }
+    return sum;
+}
+
+// modular exponentiation
+long long modpow(long long x, long long n, long long p)
+{
+
+    if (n == 0)
+        return 1 % p;
+
+    ll ans = 1, base = x;
+    while (n > 0)
+    {
+        if (n % 2 == 1)
+        {
+            ans = (ans * base) % p;
+            n--;
+        }
+        else
+        {
+            base = (base * base) % p;
+            n /= 2;
+        }
+    }
+    if (ans < 0)
+        ans = (ans + p) % p;
+    return ans;
+}
+
+// const int N = 1e6 + 100;
+// long long fact[N];
+//  initialise the factorial
+// void initfact(){
+// fact[0] = 1;
+// for (int i = 1; i < N; i++)
+//{
+// fact[i] = (fact[i - 1] * i);
+// fact[i] %= MOD;
+// }}
+
+// formula for c
+// ll C(ll n, ll i)
+//{
+// ll res = fact[n];
+// ll div = fact[n - i] * fact[i];
+// div %= MOD;
+// div = modpow(div, MOD - 2, MOD);
+// return (res * div) % MOD;
+// }
+
+long long CW(ll n, ll m)
+{
+    if (m > n - m)
+        m = n - m;
+    long long ans = 1;
+    for (int i = 0; i < m; i++)
+    {
+        ans = ans * (n - i) / (i + 1);
+    }
+    return ans;
+}
+
+// function for fast expo
+ll fastexpo(ll a, ll b)
+{
+    if (b == 0)
+    {
+        return 1;
+    }
+    if (a == 0)
     {
         return 0;
     }
-    return 1;
+    ll y = fastexpo(a, b / 2);
+    if (b % 2 == 0)
+    {
+        return y * y;
+    }
+    else
+    {
+        return a * y * y;
+    }
+}
+
+ll popcount(ll n)
+{
+    ll c = 0;
+    for (; n; ++c)
+        n &= n - 1;
+    return c;
+}
+
+ll ce(ll x, ll y)
+{
+    ll res = x / y;
+    if (x % y != 0)
+    {
+        res++;
+    }
+    return res;
+}
+
+bool pow2(ll x)
+{
+    ll res = x & (x - 1);
+    if (res == 0)
+    {
+        return true;
+    }
+    return false;
+}
+
+bool isPrime(int x)
+{
+    for (int d = 2; d * d <= x; d++)
+    {
+        if (x % d == 0)
+            return false;
+    }
+    return true;
 }
 
 void solve()
 {
     ll x, y, k, m;
-    re(x, y, k, m);
-    a = x, b = y;
-    fmp64 hsh;
-    queue<pair<pair<ll, ll>, ll>> q;
-    hsh[{0, 0}]++;
+    cin >> x >> y >> k >> m;
+    // now we will do a bfs
+    vv64 vis(200, v64(200, 0));
+    queue<pair<p64, ll>> q;
     q.push({{0, 0}, 0});
+    ll ans = INF;
     while (q.size())
     {
-        ll currx = q.front().first.first;
-        ll curry = q.front().first.second;
-        ll steps = q.front().second;
+        auto curr = q.front();
         q.pop();
-        q.pop();
-        // first fill x
-        if (steps >= k)
+        ll currx = curr.first.first;
+        ll curry = curr.first.second;
+        ll operation = curr.second;
+        // cout << currx << " " << curry << " -> " << operation << endl;
+        ans = min({abs(m - (currx + curry)), ans});
+        // fill x to top
+        if (operation != k)
         {
-            continue;
-        }
-
-        if (hsh[{x, curry}] == 0)
-        {
-            q.push({{x, curry}, steps + 1});
-            hsh[{x, curry}]++;
-        }
-
-        // first fill y
-        if (hsh[{currx, y}] == 0)
-        {
-            q.push({{currx, y}, steps + 1});
-            hsh[{currx, y}]++;
-        }
-        // empty x
-        if (hsh[{0, curry}] == 0)
-        {
-            q.push({{0, curry}, steps + 1});
-            hsh[{0, curry}]++;
-        }
-        // empty y
-        if (hsh[{currx, 0}] == 0)
-        {
-            q.push({{currx, 0}, steps + 1});
-            hsh[{currx, 0}]++;
-        }
-        // x->y
-        ll cap = y - (curry);
-        if (cap <= currx)
-        {
-            if (hsh[{currx - cap, y}] == 0)
+            if (vis[x][curry] == 0)
             {
-                q.push({{currx - cap, y}, steps + 1});
-                hsh[{currx - cap, y}]++;
+                vis[x][curry]++;
+                q.push({{x, curry}, operation + 1});
             }
-        }
-        else
-        {
-            if (hsh[{0, currx + curry}] == 0)
+            // fill y to top
+            if (vis[currx][y] == 0)
             {
-                hsh[{0, currx + curry}]++;
-                q.push({{0, currx + curry}, steps + 1});
+                vis[currx][y]++;
+                q.push({{currx, y}, operation + 1});
             }
-        }
-        // y->x
-        ll cap2 = x - (currx);
-        if (cap <= curry)
-        {
-            if (hsh[{x, curry - cap}] == 0)
+            // empty x
+            if (vis[0][curry] == 0)
             {
-                q.push({{x, curry - cap}, steps + 1});
-                hsh[{x, curry - cap}]++;
+                vis[0][curry]++;
+                q.push({{0, curry}, operation + 1});
             }
-        }
-        else
-        {
-            if (hsh[{currx + curry, 0}] == 0)
+            // empty y
+            if (vis[currx][0] == 0)
             {
-                hsh[{currx + curry, 0}]++;
-                q.push({{currx + curry, 0}, steps + 1});
+                vis[currx][0]++;
+                q.push({{currx, 0}, operation + 1});
+            }
+            // pour x to y
+            if (1)
+            {
+                ll remy = y - curry;
+                if (currx >= remy)
+                {
+                    if (vis[currx - remy][y] == 0)
+                    {
+                        vis[currx - remy][y]++;
+                        q.push({{currx - remy, y}, operation + 1});
+                    }
+                }
+                else
+                {
+                    if (vis[0][currx + curry] == 0)
+                    {
+                        vis[0][currx + curry]++;
+                        q.push({{0, currx + curry}, operation + 1});
+                    }
+                }
+            }
+            // pour y to x
+            if (1)
+            {
+                ll remx = x - currx;
+                if (curry >= remx)
+                {
+                    if (vis[x][curry - remx] == 0)
+                    {
+                        vis[x][curry - remx]++;
+                        q.push({{x, curry - remx}, operation + 1});
+                    }
+                }
+                else
+                {
+                    if (vis[currx + curry][0] == 0)
+                    {
+                        vis[currx + curry][0]++;
+                        q.push({{currx + curry, 0}, operation + 1});
+                    }
+                }
             }
         }
     }
-    s64 s;
-    for (auto t : hsh)
-    {
-        s.ie(t.fi.fi);
-        s.ie(t.fi.se);
-    }
-    ll node = 0, diff = INF;
-    for (auto t : s)
-    {
-        dbg2(t);
-        if (abs(m - t) < diff)
-        {
-            node = t;
-            diff = abs(m - t);
-        }
-    }
-    cout << ln;
-    cout << diff << ln;
+    dbg(ans);
 }
 
 int main()
 {
     fast_cin();
-    // freopen("pails.in", "r", stdin);
-    // freopen("pails.out", "w", stdout);
+#ifndef ONLINE_JUDGE
+    freopen("pails.in", "r", stdin);
+    freopen("pails.out", "w", stdout);
+#endif
     ll t = 1;
     // cin >> t;
     for (int it = 1; it <= t; it++)

@@ -14,10 +14,10 @@ long long ans;
 
 void calclf(int x, int y, long long val, int cnt)
 {
-    val += a[x][y];
+    val ^= a[x][y];
     if (cnt == half)
     {
-        ++v[x][y][(val) % k];
+        ++v[x][y][val];
         return;
     }
     if (x + 1 < n)
@@ -30,23 +30,25 @@ void calcrg(int x, int y, long long val, int cnt)
 {
     if (cnt == n + m - 2 - half)
     {
-        if (v[x][y].count((k - (val) % k)))
-            ans += v[x][y][(k - (val) % k)];
+        if (v[x][y].count(k ^ val))
+            ans += v[x][y][k ^ val];
         return;
     }
     if (x > 0)
-        calcrg(x - 1, y, val + a[x][y], cnt + 1);
+        calcrg(x - 1, y, val ^ a[x][y], cnt + 1);
     if (y > 0)
-        calcrg(x, y - 1, val + a[x][y], cnt + 1);
+        calcrg(x, y - 1, val ^ a[x][y], cnt + 1);
 }
 
 int main()
 {
-    cin >> n >> m >> k;
+    cin >> n;
+    m = n;
+    k = 0;
     half = (n + m - 2) / 2;
-    for (int i = 0; i < n; i++)
+    for (int i = 0; i < n; ++i)
     {
-        for (int j = 0; j < m; j++)
+        for (int j = 0; j < m; ++j)
         {
             cin >> a[i][j];
         }
@@ -56,5 +58,6 @@ int main()
     calcrg(n - 1, m - 1, 0, 0);
 
     cout << ans << endl;
+
     return 0;
 }

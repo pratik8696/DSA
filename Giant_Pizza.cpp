@@ -52,14 +52,40 @@ typedef unordered_map<p64, ll> up64;
 typedef unordered_map<ll, vp64> uvp64;
 typedef priority_queue<ll> pq64;
 typedef priority_queue<ll, v64, greater<ll>> pqs64;
-ll MOD = 1000000007;
+const int MOD = 1000000007;
 double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
 #define rforn(i, s) for (ll i = s; i >= 0; i--)
 #define rforsn(i, s, e) for (ll i = s; i >= e; i--)
+struct custom_hash
+{
+    static uint64_t splitmix64(uint64_t x)
+    {
+        x += 0x9e3779b97f4a7c15;
+        x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
+        x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
+        return x ^ (x >> 31);
+    }
+
+    size_t operator()(p64 x) const
+    {
+        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+        return splitmix64(x.first + FIXED_RANDOM) ^ splitmix64(x.second + FIXED_RANDOM);
+    }
+    size_t operator()(ll x) const
+    {
+        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+        return splitmix64(x + FIXED_RANDOM);
+    }
+};
+typedef gp_hash_table<ll, ll, custom_hash> f64;
+typedef gp_hash_table<ll, char, custom_hash> fc64;
+typedef gp_hash_table<p64, ll, custom_hash> fp64;
+typedef gp_hash_table<ll, v64, custom_hash> fv64;
+typedef gp_hash_table<ll, vp64, custom_hash> fvp64;
+
 #define ln "\n"
-#define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
 #define ie insert
 #define pb push_back
@@ -73,24 +99,39 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
+#define dbg(a) cout << a << endl;
+#define dbg2(a) cout << a << ' ';
+using ld = long double;
+using db = double;
+using str = string; // yay python!
+// INPUT
+#define tcT template <class T
+#define tcTU tcT, class U
+#define tcTUU tcT, class... U
+tcT > void re(T &x)
+{
+    cin >> x;
+}
+tcTUU > void re(T &t, U &...u)
+{
+    re(t);
+    re(u...);
+}
 
-// dsu functions
-// void make_set(int v) {
-//   parent[v] = v;
-//}
+int find_set(int v, v64 &parent)
+{
+    if (-1 == parent[v])
+        return v;
+    return parent[v] = find_set(parent[v], parent);
+}
 
-// int find_set(int v,v64 &parent) {
-//   if (-1 == parent[v])
-// return v;
-// return parent[v]=find_set(parent[v],parent);
-// }
-
-// void union_sets(int a, int b,v64 &parent) {
-//   a = find_set(a,parent);
-// b = find_set(b,parent);
-// if (a != b)
-// parent[b] = a;
-// }
+void union_sets(int a, int b, v64 &parent)
+{
+    a = find_set(a, parent);
+    b = find_set(b, parent);
+    if (a != b)
+        parent[b] = a;
+}
 
 // function for prime factorization
 vector<pair<ll, ll>> pf(ll n)
@@ -248,7 +289,26 @@ bool isPrime(int x)
 }
 
 v64 order;
-void dfs(int v, u64 &vis, uv64 &adj)
+f64 comp;
+fv64 cadj;
+ll cc = 0;
+
+int flip(int x)
+{
+    return (x & 1 ? x + 1 : x - 1);
+}
+
+void add_edge(char a, int x, char b, int y, fv64 &adj, fv64 &radj)
+{
+    x = (2 * x) - (a == '-');
+    y = (2 * y) - (b == '-');
+    adj[flip(x)].pb(y);
+    adj[flip(y)].pb(x);
+    radj[x].pb(flip(y));
+    radj[y].pb(flip(x));
+}
+
+void dfs(int v, v64 &vis, fv64 &adj)
 {
     vis[v] = 1;
     for (auto child : adj[v])
@@ -260,106 +320,127 @@ void dfs(int v, u64 &vis, uv64 &adj)
     }
     order.pb(v);
 }
-v64 path;
-void dfs2(int v, u64 &vis, uv64 &adj)
+
+void dfs0(int v, v64 &vis, fv64 &adj)
 {
+    comp[v] = cc;
+    cadj[cc].pb(v);
     vis[v] = 1;
-    path.pb(v);
     for (auto child : adj[v])
     {
         if (vis[child] == 0)
         {
-            dfs2(child, vis, adj);
+            dfs0(child, vis, adj);
         }
     }
-    // order.pb(v);
 }
 
 void solve()
 {
     ll n, m;
     cin >> n >> m;
-    uv64 adj, radj;
+    fv64 adj, radj;
+
     forn(i, n)
     {
         char a, b;
         ll x, y;
-        cin >> a >> x >> b >> y;
-        if (a == '-')
-        {
-            x = -x;
-        }
-        if (b == '-')
-        {
-            y = -y;
-        }
-        adj[-x].pb(y);
-        adj[-y].pb(x);
-        radj[y].pb(-x);
-        radj[x].pb(-y);
+        re(a, b, x, y);
+        add_edge(a, x, b, y, adj, radj);
     }
-    u64 vis;
-    ll cc = 0;
-    forsn(i, -m, m + 1)
+
+    v64 vis((2 * m) + 1);
+    forsn(i, 1, (2 * m) + 1)
     {
-        if (!vis[i] && i != 0)
+        if (vis[i] == 0)
         {
-            cc++;
             dfs(i, vis, adj);
         }
     }
-    // cout << cc << ln;
+
     reverse(all(order));
+    fill(all(vis), 0);
+
     for (auto t : order)
     {
-        // cout << t << " ";
-    }
-    // cout << ln;
-    u64 ans, viss;
-    u64 marker;
-    forn(i, order.size())
-    {
-        if (viss[order[i]] == 0)
+        if (vis[t] == 0)
         {
-            ll val = 1;
-            dfs2(order[i], viss, radj);
-            unordered_set<ll> check;
-            for (auto t : path)
-            {
-                if (check.count(abs(t)))
-                {
-                    cout << "IMPOSSIBLE" << ln;
-                    exit(0);
-                }
-                if (marker[abs(t)])
-                {
-                    val = 0;
-                }
-            }
-            for (auto t : path)
-            {
-                marker[abs(t)]++;
-                ans[t] = val;
-                // cout << t << " ";
-            }
-            // cout << ln;
-            path.clear();
+            cc++;
+            dfs0(t, vis, radj);
         }
     }
+
     forsn(i, 1, m + 1)
     {
-        if (ans[i] == 1)
+        if (comp[2 * i] == comp[(2 * i) - 1])
         {
-            cout << "+ ";
-        }
-        else
-        {
-            cout << "- ";
+            dbg("IMPOSSIBLE");
+            return;
         }
     }
-    cout << ln;
-    order.clear();
-    path.clear();
+
+    // dbg(cc);
+
+    fv64 sadj;
+    f64 in;
+    forsn(par, 1, (2 * m) + 1)
+    {
+        for (auto child : adj[par])
+        {
+            if (comp[par] != comp[child])
+            {
+                sadj[comp[par]].pb(comp[child]);
+                in[comp[child]]++;
+            }
+        }
+    }
+
+    queue<ll> q;
+    forsn(i, 1, cc + 1)
+    {
+        if (in[i] == 0)
+        {
+            q.push(i);
+        }
+    }
+    v64 seq;
+    while (q.empty())
+    {
+        ll curr = q.front();
+        seq.pb(curr);
+        q.pop();
+        for (auto child : sadj[curr])
+        {
+            in[child]--;
+            if (in[child] == 0)
+            {
+                q.push(child);
+            }
+        }
+    }
+    reverse(all(seq));
+    fill(all(vis), 0);
+    fc64 ans;
+
+    for (auto t : order)
+    {
+        for (auto x : cadj[t])
+        {
+            auto child = (x + 1) / 2;
+            if (vis[child] == 0)
+            {
+                ans[child] = (x & 1 ? '-' : '+');
+                // cout << child << " " << (x & 1 ? '-' : '+') << endl;
+                vis[child] = true;
+            }
+        }
+    }
+
+    forsn(i, 1, m + 1)
+    {
+        cout << ans[i] << " ";
+    }
+    cout << endl;
 }
 
 int main()

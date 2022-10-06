@@ -321,8 +321,8 @@ void update(ll arr[], ll tree[], ll s, ll e, ll tn, ll idx, ll val)
 {
     if (s == e)
     {
-        arr[idx] -= val;
-        tree[tn] -= val;
+        arr[idx] = val;
+        tree[tn] = val;
         return;
     }
     ll mid = (s + e) / 2;
@@ -337,46 +337,59 @@ void update(ll arr[], ll tree[], ll s, ll e, ll tn, ll idx, ll val)
     tree[tn] = max(tree[2 * tn], tree[(2 * tn) + 1]);
 }
 
+void query_update(ll arr[], ll tree[], ll val, ll l, ll r, ll treenode)
+{
+    if (l == r)
+    {
+        tree[treenode] -= val;
+        arr[l] -= val;
+        cout << l + 1 << " ";
+    }
+    else
+    {
+        ll mid = (l + r) / 2;
+        if (tree[treenode * 2] >= val)
+        {
+            query_update(arr, tree, val, l, mid, treenode * 2);
+        }
+        else
+        {
+            query_update(arr, tree, val, mid + 1, r, (treenode * 2) + 1);
+        }
+        tree[treenode] = max(tree[treenode * 2], tree[(treenode * 2) + 1]);
+    }
+}
+
 void solve()
 {
-    ll n, k;
-    cin >> n >> k;
+    ll n, q;
+    cin >> n >> q;
     ll arr[n], tree[4 * n];
-    memset(tree, 0, sizeof(tree));
     forn(i, n)
     {
         cin >> arr[i];
     }
     build(arr, tree, 0, n - 1, 1);
-    // first 1 se
-    // then agr true hua to
-    // 2*1 and 2*1 + 1 pr
-    // agr left true then left else right
-    forn(z, k)
+    while (q--)
     {
-        ll i = 0, j = n - 1, val = 4, ans = -1;
-        re(val);
-        while (i <= j)
+        ll x;
+        cin >> x;
+        if (query(arr, tree, 0, n - 1, 1, 0, n - 1) >= x)
         {
-            ll mid = (i + j) / 2;
-            if (query(arr, tree, 0, n - 1, 1, i, mid) >= val)
-            {
-                j = mid - 1;
-                ans = mid;
-            }
-            else
-            {
-                i = mid + 1;
-            }
+            query_update(arr, tree, x, 0, n - 1, 1);
         }
-        if (ans != -1)
+        else
         {
-            update(arr, tree, 0, n - 1, 1, ans, val);
+            cout << 0 << " ";
         }
-        cout << ans + 1 << " ";
     }
-    cout << ln;
 }
+/*
+3 2 4 1 5 5 2 6
+3 2 0 1 5 5 2 6
+3 2 0 1 0 5 2 6
+3 2 0 1 0 5 2 6
+*/
 
 int main()
 {

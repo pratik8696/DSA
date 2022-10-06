@@ -2,8 +2,6 @@
 #pragma GCC target("sse,sse2,sse3,ssse3,sse4,popcnt,abm,mmx,avx,avx2,fma")
 #pragma GCC optimize("unroll-loops")
 #include <bits/stdc++.h>
-#include <ext/pb_ds/assoc_container.hpp>
-#include <ext/pb_ds/tree_policy.hpp>
 #include <complex>
 #include <queue>
 #include <set>
@@ -23,11 +21,8 @@
 #include <fstream>
 
 using namespace std;
-using namespace __gnu_pbds;
-typedef long long ll;
-// use less_equal to make it multiset
-typedef tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update> pbds;
 typedef unsigned long long ull;
+typedef long long ll;
 typedef long double ld;
 typedef pair<int, int> p32;
 typedef pair<ll, ll> p64;
@@ -39,55 +34,22 @@ typedef vector<vector<ll>> vv64;
 typedef vector<vector<p64>> vvp64;
 typedef vector<p64> vp64;
 typedef vector<p32> vp32;
-typedef vector<pair<p64, ll>> vpp64;
-typedef set<ll> s64;
-typedef set<p64> sp64;
-typedef multiset<ll> ms64;
-typedef multiset<p64> msp64;
-typedef map<ll, ll> m64;
-typedef map<ll, v64> mv64;
-typedef unordered_map<ll, v64> uv64;
-typedef unordered_map<ll, ll> u64;
-typedef unordered_map<p64, ll> up64;
-typedef unordered_map<ll, vp64> uvp64;
-typedef priority_queue<ll> pq64;
-typedef priority_queue<ll, v64, greater<ll>> pqs64;
-const int MOD = 1000000007;
+ll MOD = 1000000007;
 double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
 #define rforn(i, s) for (ll i = s; i >= 0; i--)
 #define rforsn(i, s, e) for (ll i = s; i >= e; i--)
-struct custom_hash
-{
-    static uint64_t splitmix64(uint64_t x)
-    {
-        x += 0x9e3779b97f4a7c15;
-        x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
-        x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
-        return x ^ (x >> 31);
-    }
-
-    size_t operator()(p64 x) const
-    {
-        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
-        return splitmix64(x.first + FIXED_RANDOM) ^ splitmix64(x.second + FIXED_RANDOM);
-    }
-    size_t operator()(ll x) const
-    {
-        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
-        return splitmix64(x + FIXED_RANDOM);
-    }
-};
-typedef gp_hash_table<ll, ll, custom_hash> fm64;
-typedef gp_hash_table<p64, ll, custom_hash> fmp64;
-
 #define ln "\n"
+#define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
-#define ie insert
 #define pb push_back
 #define fi first
 #define se second
+#define m64 map<ll, ll>
+#define mv64 map<ll, v64>
+#define u64 unordered_map<ll, ll>
+#define uv64 unordered_map<ll, v64>
 #define INF 2e18
 #define fast_cin()                    \
     ios_base::sync_with_stdio(false); \
@@ -96,39 +58,7 @@ typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-#define dbg(a) cout << a << endl;
-#define dbg2(a) cout << a << ' ';
-using ld = long double;
-using db = double;
-using str = string; // yay python!
-// INPUT
-#define tcT template <class T
-#define tcTU tcT, class U
-#define tcTUU tcT, class... U
-tcT > void re(T &x)
-{
-    cin >> x;
-}
-tcTUU > void re(T &t, U &...u)
-{
-    re(t);
-    re(u...);
-}
-
-int find_set(int v, v64 &parent)
-{
-    if (-1 == parent[v])
-        return v;
-    return parent[v] = find_set(parent[v], parent);
-}
-
-void union_sets(int a, int b, v64 &parent)
-{
-    a = find_set(a, parent);
-    b = find_set(b, parent);
-    if (a != b)
-        parent[b] = a;
-}
+#define see(x) cout << x << ln
 
 // function for prime factorization
 vector<pair<ll, ll>> pf(ll n)
@@ -167,62 +97,37 @@ ll sumofno(ll n)
 }
 
 // modular exponentiation
-long long modpow(long long x, long long n, long long p)
+long long modpow(long long val, long long deg, long long mod)
 {
-
-    if (n == 0)
-        return 1 % p;
-
-    ll ans = 1, base = x;
-    while (n > 0)
-    {
-        if (n % 2 == 1)
-        {
-            ans = (ans * base) % p;
-            n--;
-        }
-        else
-        {
-            base = (base * base) % p;
-            n /= 2;
-        }
-    }
-    if (ans < 0)
-        ans = (ans + p) % p;
-    return ans;
+    if (!deg)
+        return 1 % mod;
+    if (deg & 1)
+        return modpow(val, deg - 1, mod) * val % mod;
+    long long res = modpow(val, deg >> 1, mod);
+    return (res * res) % mod;
 }
 
-// const int N = 1e6 + 100;
-// long long fact[N];
-//  initialise the factorial
-// void initfact(){
-// fact[0] = 1;
-// for (int i = 1; i < N; i++)
-//{
-// fact[i] = (fact[i - 1] * i);
-// fact[i] %= MOD;
-// }}
+const int N = 1e6 + 100;
+long long fact[N];
+// initialise the factorial
+void initfact()
+{
+    fact[0] = 1;
+    for (int i = 1; i < N; i++)
+    {
+        fact[i] = (fact[i - 1] * i);
+        fact[i] %= MOD;
+    }
+}
 
 // formula for c
-// ll C(ll n, ll i)
-//{
-// ll res = fact[n];
-// ll div = fact[n - i] * fact[i];
-// div %= MOD;
-// div = modpow(div, MOD - 2, MOD);
-// return (res * div) % MOD;
-// }
-
-long long CW(ll n, ll m)
+ll C(ll n, ll i)
 {
-    if (m > n - m)
-        m = n - m;
-    long long ans = 1;
-    for (int i = 0; i < m; i++)
-    {
-        ans = ans * (n - i) / (i + 1);
-    }
-    return ans;
+    ll res = fact[n];
+    ll div = fact[n - i] * fact[i];
+    div %= MOD;
+    div = modpow(div, MOD - 2, MOD);
+    return (res * div) % MOD;
 }
 
 // function for fast expo
@@ -275,88 +180,83 @@ bool pow2(ll x)
     return false;
 }
 
-bool isPrime(int x)
+int in()
 {
-    for (int d = 2; d * d <= x; d++)
-    {
-        if (x % d == 0)
-            return false;
-    }
-    return true;
+    int x;
+    cin >> x;
+    return x;
 }
 
-void dfs(int v, v64 &vis, uv64 &adj, v64 &path, ll par)
+ll n, m;
+uv64 adj;
+v64 vis(200100, 0), parent(200100, 0);
+bool cycle = false;
+
+void dfs(ll node, ll par, v64 ans)
 {
-    vis[v] = 1;
-    path.pb(v);
-    for (auto child : adj[v])
+    vis[node] = 1;
+    parent[node] = par;
+    for (auto child : adj[node])
     {
         if (vis[child] == 0)
         {
-            dfs(child, vis, adj, path, v);
+            dfs(child, node, ans);
         }
-        else if (par != child && vis[child] == 1)
+        else if (child != par && vis[child] == 1)
         {
-            path.pb(child);
-            u64 cc;
-            reverse(all(path));
-            v64 ans;
-            for (auto t : path)
+            cycle = true;
+            ll u = node, v = child;
+            while (u != v)
             {
-                if (cc[t] == 0)
-                {
-                    cc[t]++;
-                    ans.pb(t);
-                }
-                else
-                {
-                    ans.pb(t);
-                    break;
-                }
+                ans.pb(u);
+                u = parent[u];
             }
-            cout << ans.size() << ln;
+            ans.pb(u);
+            reverse(all(ans));
+            see(ans.size() + 1);
             for (auto t : ans)
             {
                 cout << t << " ";
             }
+            cout << child << " ";
             cout << ln;
             exit(0);
         }
     }
-    path.pop_back();
-    vis[v] = 2;
+    vis[node] = 2;
 }
 
 void solve()
 {
-    ll n, m;
     cin >> n >> m;
-    uv64 adj;
     forn(i, m)
     {
-        ll a, b;
-        re(a, b);
-        adj[a].pb(b);
-        adj[b].pb(a);
+        ll a = in(), b = in();
+        adj[a].pb(b), adj[b].pb(a);
     }
-    v64 vis(n + 1), path;
+
+    v64 ans;
+    // dfs(0, 1, ans);
+
     forsn(i, 1, n + 1)
     {
-        if (vis[i] == 0)
+        if (!vis[i])
         {
-            dfs(i, vis, adj, path, -1);
+            dfs(i, -1, ans);
+            cout << endl;
         }
     }
-    dbg("IMPOSSIBLE");
+
+    if (cycle == false)
+    {
+        see("IMPOSSIBLE");
+        return;
+    }
 }
 
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
     ll t = 1;
     // cin >> t;
     for (int it = 1; it <= t; it++)
@@ -365,13 +265,3 @@ int main()
     }
     return 0;
 }
-
-/*
-1. Check borderline constraints. Can a variable you are dividing by be 0?
-2. Use ll while using bitshifts
-3. Do not erase from set while iterating it
-4. Initialise everything
-5. Read the task carefully, is something unique, sorted, adjacent, guaranteed??
-6. DO NOT use if(!mp[x]) if you want to iterate the map later
-7. Are you using i in all loops? Are the i's conflicting?
-*/

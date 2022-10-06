@@ -285,69 +285,61 @@ bool isPrime(int x)
     return true;
 }
 
-string s;
-ll dp[19][2][];
-ll sum(ll idx, bool flag, ll summ, ll prod)
+int product(int x)
 {
-    if (idx == s.length())
+    int prod = 1;
+    while (x)
     {
-        return 1;
+        prod *= (x % 10);
+        x /= 10;
     }
-    if (dp[idx][flag][summ] != -1)
-    {
-        return dp[idx][flag][summ];
-    }
-    // till
-    ll till = flag ? s[idx] - '0' : 9;
-    ll ans = 0;
-    if (haikoi)
-    {
-        // adjacent diff rhega so zero bhi count hoga
-        forsn(i, 0, till + 1)
-        {
-            if (prev != i)
-            {
-                ans = max(ans, sum(idx + 1, flag && (i == till), summ * i, i, 1));
-            }
-        }
-    }
-    else
-    {
-        // adjacent diff hoga but zero wla condition dekhna pdega
-        forsn(i, 0, till + 1)
-        {
-            ans = max(ans, sum(idx + 1, flag && (i == till), summ + i, i, i));
-        }
-    }
-    return dp[idx][flag][summ] = ans;
+    return prod;
 }
 
-ll f(string x)
+
+int findNumber(int l, int r)
 {
-    s = x;
-    memset(dp, -1, sizeof(dp));
-    return sum(0, 1, 0);
+    // Converting both integers to strings
+    string a = to_string(l);
+    string b = to_string(r);
+
+    // Let the current answer be r
+    int ans = r;
+    for (int i = 0; i < b.size(); i++)
+    {
+        if (b[i] == '0')
+            continue;
+
+        // Stores the current number having
+        // current digit one less than current
+        // digit in b
+        string curr = b;
+        curr[i] = ((curr[i] - '0') - 1) + '0';
+
+        // Replace all following digits with 9
+        // to maximise the product
+        for (int j = i + 1; j < curr.size(); j++)
+            curr[j] = '9';
+
+        // Convert string to number
+        int num = 0;
+        for (auto c : curr)
+            num = num * 10 + (c - '0');
+
+        // Check if it lies in range and its product
+        // is greater than max product
+        if (num >= l && product(ans) < product(num))
+            ans = num;
+    }
+
+    return ans;
 }
 
 void solve()
 {
-    string a, b;
-    cin >> a >> b;
-    ll i = a.length() - 1;
-    if (a != "0")
-    {
-        while (i >= 0 && a[i] == '0')
-        {
-            a[i] = '9';
-            i--;
-        }
-        a[i]--;
-        cout << f(b) - f(a) << ln;
-    }
-    else
-    {
-        cout << f(b) << ln;
-    }
+    ll n, m;
+    cin >> n >> m;
+    dbg(findNumber(n, m));
 }
 
 int main()
