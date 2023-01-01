@@ -292,7 +292,7 @@ string f(string s)
         return s;
     }
     string a = f(s.substr(0, s.length() / 2));
-    string b = f(s.substr(s.length() / 2, s.length()));
+    string b = f(s.substr(s.length() / 2));
     if (a < b)
     {
         return a + b;
