@@ -115,30 +115,201 @@ tcTUU > void re(T &t, U &...u)
     re(u...);
 }
 
-void dfs0(int v, v64 &vis, uv64 &adj, v64 &path)
+int find_set(int v, v64 &parent)
+{
+    if (-1 == parent[v])
+        return v;
+    return parent[v] = find_set(parent[v], parent);
+}
+
+void union_sets(int a, int b, v64 &parent)
+{
+    a = find_set(a, parent);
+    b = find_set(b, parent);
+    if (a != b)
+        parent[b] = a;
+}
+
+// function for prime factorization
+vector<pair<ll, ll>> pf(ll n)
+{
+    vector<pair<ll, ll>> prime;
+    for (int i = 2; i <= sqrt(n); i++)
+    {
+        if (n % i == 0)
+        {
+            int count = 0;
+            while (n % i == 0)
+            {
+                count++;
+                n = n / i;
+            }
+            prime.pb(mp(i, count));
+        }
+    }
+    if (n > 1)
+    {
+        prime.pb(mp(n, 1));
+    }
+    return prime;
+}
+
+// sum of digits of a number
+ll sumofno(ll n)
+{
+    ll sum = 0;
+    while (n != 0)
+    {
+        sum += n % 10;
+        n = n / 10;
+    }
+    return sum;
+}
+
+// modular exponentiation
+long long modpow(long long x, long long n, long long p)
+{
+
+    if (n == 0)
+        return 1 % p;
+
+    ll ans = 1, base = x;
+    while (n > 0)
+    {
+        if (n % 2 == 1)
+        {
+            ans = (ans * base) % p;
+            n--;
+        }
+        else
+        {
+            base = (base * base) % p;
+            n /= 2;
+        }
+    }
+    if (ans < 0)
+        ans = (ans + p) % p;
+    return ans;
+}
+
+// const int N = 1e6 + 100;
+// long long fact[N];
+//  initialise the factorial
+// void initfact(){
+// fact[0] = 1;
+// for (int i = 1; i < N; i++)
+//{
+// fact[i] = (fact[i - 1] * i);
+// fact[i] %= MOD;
+// }}
+
+// formula for c
+// ll C(ll n, ll i)
+//{
+// ll res = fact[n];
+// ll div = fact[n - i] * fact[i];
+// div %= MOD;
+// div = modpow(div, MOD - 2, MOD);
+// return (res * div) % MOD;
+// }
+
+long long CW(ll n, ll m)
+{
+    if (m > n - m)
+        m = n - m;
+    long long ans = 1;
+    for (int i = 0; i < m; i++)
+    {
+        ans = ans * (n - i) / (i + 1);
+    }
+    return ans;
+}
+
+// function for fast expo
+ll fastexpo(ll a, ll b)
+{
+    if (b == 0)
+    {
+        return 1;
+    }
+    if (a == 0)
+    {
+        return 0;
+    }
+    ll y = fastexpo(a, b / 2);
+    if (b % 2 == 0)
+    {
+        return y * y;
+    }
+    else
+    {
+        return a * y * y;
+    }
+}
+
+ll popcount(ll n)
+{
+    ll c = 0;
+    for (; n; ++c)
+        n &= n - 1;
+    return c;
+}
+
+ll ce(ll x, ll y)
+{
+    ll res = x / y;
+    if (x % y != 0)
+    {
+        res++;
+    }
+    return res;
+}
+
+bool pow2(ll x)
+{
+    ll res = x & (x - 1);
+    if (res == 0)
+    {
+        return true;
+    }
+    return false;
+}
+
+bool isPrime(int x)
+{
+    for (int d = 2; d * d <= x; d++)
+    {
+        if (x % d == 0)
+            return false;
+    }
+    return true;
+}
+
+v64 order;
+void dfs0(int v, v64 &vis, uv64 &adj)
 {
     vis[v] = 1;
     for (auto child : adj[v])
     {
         if (vis[child] == 0)
         {
-            dfs0(child, vis, adj, path);
+            dfs0(child, vis, adj);
         }
     }
-    path.pb(v);
+    order.pb(v);
 }
 
-u64 val_cc;
-void dfs1(int v, v64 &vis, uv64 &adj, u64 &comp, ll cc, u64 &val)
+ll cc = 1;
+u64 comp;
+void dfs(int v, v64 &vis, uv64 &adj)
 {
     vis[v] = 1;
-    val_cc[cc] = __gcd(val_cc[cc], val[v]);
     comp[v] = cc;
     for (auto child : adj[v])
     {
         if (vis[child] == 0)
         {
-            dfs1(child, vis, adj, comp, cc, val);
+            dfs(child, vis, adj);
         }
     }
 }
@@ -146,89 +317,99 @@ void dfs1(int v, v64 &vis, uv64 &adj, u64 &comp, ll cc, u64 &val)
 void solve()
 {
     ll n, m;
-    cin >> n >> m;
     u64 val;
-    forn(i, n)
+    uv64 adj, radj;
+    cin >> n >> m;
+    forsn(i, 1, n + 1)
     {
         ll x;
         re(x);
-        val[i + 1] = x;
+        val[i] = x;
     }
-    uv64 adj, radj, sadj;
     vp64 edges;
     forn(i, m)
     {
         ll a, b;
-        re(a, b);
-        edges.pb({a, b});
+        cin >> a >> b;
         adj[a].pb(b);
         radj[b].pb(a);
+        edges.pb({a, b});
     }
-    v64 vis(n + 1, 0), path;
+    v64 vis(n + 1);
     forsn(i, 1, n + 1)
     {
         if (vis[i] == 0)
         {
-            dfs0(i, vis, adj, path);
+            dfs0(i, vis, adj);
         }
     }
-    reverse(all(path));
-    ll cc = 0;
+    reverse(all(order));
     fill(all(vis), 0);
-    u64 comp;
-    for (auto t : path)
+    forsn(i, 1, n + 1)
     {
-        if (vis[t] == 0)
+        if (vis[i] == 0)
         {
+            dfs(i, vis, radj);
             cc++;
-            dfs1(t, vis, radj, comp, cc, val);
         }
     }
+    u64 cval;
+    forsn(i, 1, n + 1)
+    {
+        cval[comp[i]] = __gcd(cval[comp[i]], val[i]);
+    }
+    uv64 cadj;
+    u64 in;
     for (auto t : edges)
     {
-        if (comp[t.fi] != comp[t.se])
+        if (comp[t.first] != comp[t.second])
         {
-            sadj[comp[t.fi]].pb(comp[t.se]);
+            cadj[comp[t.first]].pb(comp[t.second]);
+            in[comp[t.second]]++;
         }
     }
-    path.clear();
-    fill(all(vis), 0);
-    // toposort on all scc
-    forn(i, cc)
+    // now do toposort
+    queue<ll> q;
+    unordered_map<ll, s64> gcd_values;
+    forsn(i, 1, cc)
     {
-        if (vis[i + 1] == 0)
+        if (in[i] == 0)
         {
-            dfs0(i + 1, vis, sadj, path);
+            q.push(i);
         }
     }
-    reverse(all(path));
-    unordered_map<ll, s64> ss;
     ll ans = INF;
-    for (auto t : path)
+    while (q.size())
     {
-        ll curr = t;
-        ss[curr].ie(val_cc[curr]);
-        ans = min(ans, val_cc[curr]);
-        for (auto x : ss[curr])
+        ll curr = q.front();
+        gcd_values[curr].ie(cval[curr]);
+        ans = min(ans, cval[curr]);
+        q.pop();
+        for (auto t : gcd_values[curr])
         {
-            for (auto node : sadj[curr])
+            // parent se child mai sara transfer hoga
+            for (auto child : cadj[curr])
             {
-                ll gcdd = __gcd(x, val_cc[node]);
-                ss[node].ie(gcdd);
-                ans = min(ans, gcdd);
+                gcd_values[child].ie(__gcd(t, cval[child]));
+                ans = min(ans, __gcd(t, cval[child]));
+            }
+            in[child]--;
+            if (in[child] == 0)
+            {
+                q.push(child);
             }
         }
     }
-    cout<<ans<<ln;
+    dbg(ans);
 }
 
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
+    // #ifndef ONLINE_JUDGE
+    //   freopen("revegetate.in", "r", stdin);
+    //  freopen("revegetate.out", "w", stdout);
+    // #endif
     ll t = 1;
     // cin >> t;
     for (int it = 1; it <= t; it++)

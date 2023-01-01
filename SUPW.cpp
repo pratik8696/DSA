@@ -289,24 +289,17 @@ void solve()
 {
     ll n;
     cin >> n;
-    ll arr[n + 1];
-    arr[0] = 0;
-    forsn(i, 1, n + 1)
+    ll arr[n];
+    forn(i, n)
     {
         cin >> arr[i];
     }
-    v64 dp(n + 3, INF);
-    dp[0] = 0;
-    dp[1] = arr[1];
-    dp[2] = arr[2];
+    v64 dp(n + 10);
+    dp[1] = arr[0];
+    dp[2] = arr[1];
     forsn(i, 3, n + 1)
     {
-        ll ans = INF;
-        for (ll j = i; j >= i - 3; j--)
-        {
-            ans = min(ans, arr[i] + dp[j]);
-        }
-        dp[i] = ans;
+        dp[i] += min({dp[i - 1], dp[i - 2], dp[i - 3]}) + arr[i - 1];
     }
     dbg(min({dp[n], dp[n - 1], dp[n - 2]}));
 }
@@ -314,10 +307,10 @@ void solve()
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
+    // #ifndef ONLINE_JUDGE
+    //   freopen("revegetate.in", "r", stdin);
+    //  freopen("revegetate.out", "w", stdout);
+    // #endif
     ll t = 1;
     // cin >> t;
     for (int it = 1; it <= t; it++)

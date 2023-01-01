@@ -289,58 +289,60 @@ void solve()
 {
     ll n;
     cin >> n;
-    vv64 c(n + 5, v64(n + 5));
-    v64 vals(1 << n);
+    ll arr[n][n];
     forsn(i, 0, n)
     {
         forsn(j, 0, n)
         {
-            cin >> c[i][j];
+            cin >> arr[i][j];
         }
     }
     p64 dp[1 << n];
     dp[0] = {0, 0};
     forsn(mask, 1, 1 << n)
     {
-        dp[mask] = {-1e16, 0};
-        forn(y, n)
+        dp[mask] = {0, 0};
+        forn(j, n)
         {
-            if (mask & (1 << y))
+            if (mask & (1 << j))
             {
-                // y ke lie new group bnao
-                ll new_mask = mask ^ (1 << y);
-                if (dp[mask].first < dp[new_mask].first)
-                {
-                    dp[mask] = {dp[new_mask].first, 1 << y};
-                }
-                // y ko previous set mai include kro
-                // curr mask ka compatibility kitna change kiya after including it
+                ll new_mask = mask ^ (1 << j);
+                p64 new_mask_vala_group = dp[new_mask];
+                // check out the change
+                // if including it in that group brings positive change
                 ll change = 0;
                 forn(i, n)
                 {
-                    if (dp[new_mask].second & (1 << i))
+                    if (new_mask_vala_group.second & (1 << i))
                     {
-                        change += c[y][i];
+                        change += arr[i][j];
                     }
                 }
-
-                if (dp[mask].first <= dp[new_mask].first + change)
+                if (change >= 0)
                 {
-                    dp[mask] = {dp[new_mask].first + change, dp[new_mask].second | (1 << y)};
+                    new_mask_vala_group.first += change;
+                    new_mask_vala_group.second |= 1 << j;
                 }
+                else
+                {
+                    // it remains the same
+                    new_mask_vala_group.first;
+                    new_mask_vala_group.second = 1 << j;
+                }
+                dp[mask] = max(dp[mask], new_mask_vala_group);
             }
         }
     }
-    dbg(dp[(1 << n) - 1].first);
+    cout << dp[(1 << n) - 1].first << endl;
 }
 
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
+    // #ifndef ONLINE_JUDGE
+    //   freopen("revegetate.in", "r", stdin);
+    //  freopen("revegetate.out", "w", stdout);
+    // #endif
     ll t = 1;
     // cin >> t;
     for (int it = 1; it <= t; it++)

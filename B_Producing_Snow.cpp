@@ -289,24 +289,44 @@ void solve()
 {
     ll n;
     cin >> n;
-    ll arr[n], temp[n + 1];
-    u64 pre;
+    v64 arr(n), snow(n + 2);
     forn(i, n)
     {
         cin >> arr[i];
     }
+    snow.back() = INF;
+    v64 vals(n + 1);
+    forsn(i, 1, n + 1)
+    {
+        cin >> snow[i];
+        vals[i] = snow[i];
+        snow[i] += snow[i - 1];
+    }
+    v64 pre(n + 2);
+    v64 rem(n + 2);
     forn(i, n)
     {
-        cin >> temp[i];
+        ll start = i + 1;
+        ll val = arr[i] + snow[i];
+        ll end = lower_bound(all(snow), val) - snow.begin();
+        if (start == end)
+        {
+            rem[start] += arr[i];
+        }
+        else
+        {
+            pre[start]++;
+            pre[end]--;
+            rem[end] += val - snow[end - 1];
+        }
+    }
+    forsn(i, 1, n + 2)
+    {
+        pre[i] += pre[i - 1];
     }
     forsn(i, 1, n + 1)
     {
-        temp[i] += temp[i - 1];
-    }
-    temp[n] = INF;
-    forn(i, n)
-    {
-        cout << pre[i + 1] << " ";
+        cout << (vals[i] * pre[i]) + rem[i] << " ";
     }
     cout << endl;
 }

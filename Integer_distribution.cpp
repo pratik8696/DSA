@@ -287,89 +287,100 @@ bool isPrime(int x)
 
 ll n;
 v64 arr;
-ll dp1[1 << 20];
-ll dp2[1 << 20];
-
-ll sum(ll mask)
+ll dp1[21][1048577];
+ll dp2[21][1048577];
+ll sum_min(ll idx, ll mask)
 {
-    if (mask == (1 << n) - 1)
+    if (idx == n)
     {
         return 0;
-    }
-    if (dp1[mask] != -1)
-    {
-        return dp1[mask];
-    }
-    ll ans = -INF;
-    forn(i, n)
-    {
-        if (!(mask & (1 << i)))
-        {
-            ll new_mask = mask | (1 << i);
-            forsn(j, i + 1, n)
-            {
-                if (!(new_mask & (1 << j)))
-                {
-                    ll new_new_mask = new_mask | (1 << j);
-                    ans = max(ans, (arr[i] ^ arr[j]) + sum(new_new_mask));
-                }
-            }
-        }
-    }
-    return dp1[mask] = ans;
-}
-
-ll sum2(ll mask)
-{
-    if (mask == (1 << n) - 1)
-    {
-        return 0;
-    }
-    if (dp2[mask] != -1)
-    {
-        return dp2[mask];
     }
     ll ans = INF;
-    forn(i, n)
+    auto &x = dp1[idx][mask];
+    if (x != -1)
     {
-        if (!(mask & (1 << i)))
+        return x;
+    }
+    ll check = mask & (1 << idx);
+    if (check == 0)
+    {
+        forn(i, n)
         {
-            ll new_mask = mask | (1 << i);
-            forsn(j, i + 1, n)
+            ll checker = mask & (1 << i);
+            if (idx != i)
             {
-                if (!(new_mask & (1 << j)))
+                if (checker == 0)
                 {
-                    ll new_new_mask = new_mask | (1 << j);
-                    ans = min(ans, (arr[i] ^ arr[j]) + sum2(new_new_mask));
+                    ll new_mask = mask | (1 << idx) | (1 << i);
+                    ans = min(ans, sum_min(idx + 1, new_mask) + (arr[idx] ^ arr[i]));
                 }
             }
         }
     }
-    return dp2[mask] = ans;
+    else
+    {
+        ans = min(sum_min(idx + 1, mask), ans);
+    }
+    return x = ans;
+}
+
+ll sum_max(ll idx, ll mask)
+{
+    if (idx == n)
+    {
+        return 0;
+    }
+    ll ans = 0;
+    auto &x = dp2[idx][mask];
+    if (x != -1)
+    {
+        return x;
+    }
+    ll check = mask & (1 << idx);
+    if (check == 0)
+    {
+        forn(i, n)
+        {
+            ll checker = mask & (1 << i);
+            if (idx != i)
+            {
+                if (checker == 0)
+                {
+                    ll new_mask = mask | (1 << idx) | (1 << i);
+                    ans = max(ans, sum_max(idx + 1, new_mask) + (arr[idx] ^ arr[i]));
+                }
+            }
+        }
+    }
+    else
+    {
+        ans = max(sum_max(idx + 1, mask), ans);
+    }
+    return x = ans;
 }
 
 void solve()
 {
     cin >> n;
-    memset(dp1, -1, sizeof(dp1));
-    memset(dp2, -1, sizeof(dp2));
     forn(i, n)
     {
         ll x;
         cin >> x;
         arr.pb(x);
     }
-    dbg2(sum2(0));
-    dbg(sum(0));
+    memset(dp1, -1, sizeof(dp1));
+    memset(dp2, -1, sizeof(dp2));
+    dbg2(sum_min(0, 0));
+    dbg(sum_max(0, 0));
 }
 
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
+    // #ifndef ONLINE_JUDGE
+    //   freopen("revegetate.in", "r", stdin);
+    //  freopen("revegetate.out", "w", stdout);
+    // #endif
     ll t = 1;
     // cin >> t;
     for (int it = 1; it <= t; it++)

@@ -285,19 +285,42 @@ bool isPrime(int x)
     return true;
 }
 
+ll factors(ll x)
+{
+    v64 ans;
+    forsn(i, 1, sqrt(x))
+    {
+        if (x % i == 0)
+        {
+            if (x / i == i)
+            {
+                ans.pb(i);
+            }
+            else
+            {
+                ans.pb(i);
+                ans.pb(x / i);
+            }
+        }
+    }
+    sort(all(ans));
+    ans.pop_back();
+    return ans.back();
+}
+
 void solve()
 {
     ll n;
     cin >> n;
-    ll val = __lg(n);
-    ll res = fastexpo(2, val + 1) - 1;
-    if (n == res)
+    ll res = (n + 1) & (n);
+    if (res == 0)
     {
-        dbg(1);
+        dbg(factors(n));
+        return;
     }
     else
     {
-        dbg(res);
+        dbg(fastexpo(2, __lg(n) + 1) - 1);
     }
 }
 

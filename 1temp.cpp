@@ -270,44 +270,72 @@ bool isPrime(int x)
     return true;
 }
 
-struct Node
+string s;
+ll dp[101][2][2][2][4000];
+ll sum(ll idx, bool flag1, bool flag3, bool flag2, ll diff)
 {
-    int data;
-    Node *left;
-    Node *right;
-    Node(int data)
+    if (idx == s.length())
     {
-        this->data = data;
-        this->left = NULL;
-        this->right = NULL;
+        if (diff > 0 && flag2)
+        {
+            return 1;
+        }
+        return 0;
     }
-    ~Node()
+    auto &x = dp[idx][flag1][flag3][flag2][diff + 2000];
+    if (x != -1)
     {
-        if (left)
+        return x;
+    }
+    ll till1 = flag1 ? s[idx] - '0' : 9;
+    ll till2 = flag3 ? s[idx] - '0' : 9;
+    ll ans = 0;
+    forn(i, till1 + 1)
+    {
+        forn(j, till2 + 1)
         {
-            delete left;
-        }
-        if (right)
-        {
-            delete right;
+            if (i < j)
+            {
+                if (flag2)
+                {
+                    ans += sum(idx + 1, flag1 & (i == till1), flag3 & (j == till2), 1, diff + i - j);
+                    ans %= MOD;
+                }
+            }
+            else if (i > j)
+            {
+                ans += sum(idx + 1, flag1 & (i == till1), flag3 & (j == till2), 1, diff + i - j);
+                ans %= MOD;
+            }
+            else if (i == j)
+            {
+                ans += sum(idx + 1, flag1 & (i == till1), flag3 & (j == till2), flag2, diff + i - j);
+                ans %= MOD;
+            }
         }
     }
-};
+    ans %= MOD;
+    return x = ans;
+}
+
+ll f(string &x)
+{
+    s = x;
+    memset(dp, -1, sizeof(dp));
+    return sum(0, 1, 1, 0, 0);
+}
 
 void solve()
 {
-    
+    string x;
+    cin >> x;
+    dbg(f(x));
 }
 
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
     ll t = 1;
-    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

@@ -46,16 +46,43 @@ typedef multiset<ll> ms64;
 typedef multiset<p64> msp64;
 typedef map<ll, ll> m64;
 typedef map<ll, v64> mv64;
-typedef map<ll, vp64> mvp64;
+typedef unordered_map<ll, v64> uv64;
+typedef unordered_map<ll, ll> u64;
+typedef unordered_map<p64, ll> up64;
+typedef unordered_map<ll, vp64> uvp64;
 typedef priority_queue<ll> pq64;
-ll MOD = 1000000007;
+typedef priority_queue<ll, v64, greater<ll>> pqs64;
+const int MOD = 1000000007;
 double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
 #define rforn(i, s) for (ll i = s; i >= 0; i--)
 #define rforsn(i, s, e) for (ll i = s; i >= e; i--)
+struct custom_hash
+{
+    static uint64_t splitmix64(uint64_t x)
+    {
+        x += 0x9e3779b97f4a7c15;
+        x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
+        x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
+        return x ^ (x >> 31);
+    }
+
+    size_t operator()(p64 x) const
+    {
+        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+        return splitmix64(x.first + FIXED_RANDOM) ^ splitmix64(x.second + FIXED_RANDOM);
+    }
+    size_t operator()(ll x) const
+    {
+        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+        return splitmix64(x + FIXED_RANDOM);
+    }
+};
+typedef gp_hash_table<ll, ll, custom_hash> fm64;
+typedef gp_hash_table<p64, ll, custom_hash> fmp64;
+
 #define ln "\n"
-#define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
 #define ie insert
 #define pb push_back
@@ -69,24 +96,39 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
+#define dbg(a) cout << a << endl;
+#define dbg2(a) cout << a << ' ';
+using ld = long double;
+using db = double;
+using str = string; // yay python!
+// INPUT
+#define tcT template <class T
+#define tcTU tcT, class U
+#define tcTUU tcT, class... U
+tcT > void re(T &x)
+{
+    cin >> x;
+}
+tcTUU > void re(T &t, U &...u)
+{
+    re(t);
+    re(u...);
+}
 
-// dsu functions
-// void make_set(int v) {
-//   parent[v] = v;
-//}
+int find_set(int v, v64 &parent)
+{
+    if (-1 == parent[v])
+        return v;
+    return parent[v] = find_set(parent[v], parent);
+}
 
-// int find_set(int v,v64 &parent) {
-//   if (-1 == parent[v])
-// return v;
-// return find_set(parent[v]);
-// }
-
-// void union_sets(int a, int b,v64 &parent) {
-//   a = find_set(a,parent);
-// b = find_set(b,parent);
-// if (a != b)
-// parent[b] = a;
-// }
+void union_sets(int a, int b, v64 &parent)
+{
+    a = find_set(a, parent);
+    b = find_set(b, parent);
+    if (a != b)
+        parent[b] = a;
+}
 
 // function for prime factorization
 vector<pair<ll, ll>> pf(ll n)
@@ -243,35 +285,25 @@ bool isPrime(int x)
     return true;
 }
 
-void solve()
+ll n, m;
+ll bfs(uvp64 &adj, v64 &dist, ll src)
 {
-    ll n, m;
-    cin >> n >> m;
-    mvp64 adj;
-    forn(i, m)
-    {
-        ll a, b;
-        cin >> a >> b;
-        adj[a].pb({b, 0});
-        adj[b].pb({a, 1});
-    }
-    // now we will do a 0/1 bfs
     deque<ll> q;
-    v64 dist(n + 1, INF);
-    q.push_front(1);
-    dist[1] = 0;
+    v64 vis(dist.size(), 0);
+    q.pb(src);
+    dist[src] = 0;
     while (!q.empty())
     {
         ll curr = q.front();
         q.pop_front();
-        for (auto child_i : adj[curr])
+        for (auto t : adj[curr])
         {
-            ll edge_wt = child_i.second;
-            ll child = child_i.first;
-            if (dist[curr] + edge_wt < dist[child])
+            auto child = t.first;
+            auto wt = t.second;
+            if (dist[child] > dist[curr] + wt)
             {
-                dist[child] = dist[curr] + edge_wt;
-                if (edge_wt == 1)
+                dist[child] = dist[curr] + wt;
+                if (wt)
                 {
                     q.push_back(child);
                 }
@@ -282,23 +314,31 @@ void solve()
             }
         }
     }
-    if (dist[n] != INF)
+    return (dist[n] == 1e15 ? -1 : dist[n]);
+}
+
+void solve()
+{
+    cin >> n >> m;
+    uvp64 adj;
+    forn(i, m)
     {
-        cout << dist[n] << ln;
+        ll a, b;
+        cin >> a >> b;
+        adj[a].pb({b, 0});
+        adj[b].pb({a, 1});
     }
-    else
-    {
-        cout << -1 << ln;
-    }
+    v64 dist(n + 1, 1e15);
+    dbg(bfs(adj, dist, 1));
 }
 
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
+    // #ifndef ONLINE_JUDGE
+    //   freopen("revegetate.in", "r", stdin);
+    //  freopen("revegetate.out", "w", stdout);
+    // #endif
     ll t = 1;
     // cin >> t;
     for (int it = 1; it <= t; it++)

@@ -46,15 +46,43 @@ typedef multiset<ll> ms64;
 typedef multiset<p64> msp64;
 typedef map<ll, ll> m64;
 typedef map<ll, v64> mv64;
+typedef unordered_map<ll, v64> uv64;
+typedef unordered_map<ll, ll> u64;
+typedef unordered_map<p64, ll> up64;
+typedef unordered_map<ll, vp64> uvp64;
 typedef priority_queue<ll> pq64;
-ll MOD = 1000000007;
+typedef priority_queue<ll, v64, greater<ll>> pqs64;
+const int MOD = 1000000007;
 double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
 #define rforn(i, s) for (ll i = s; i >= 0; i--)
 #define rforsn(i, s, e) for (ll i = s; i >= e; i--)
+struct custom_hash
+{
+    static uint64_t splitmix64(uint64_t x)
+    {
+        x += 0x9e3779b97f4a7c15;
+        x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
+        x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
+        return x ^ (x >> 31);
+    }
+
+    size_t operator()(p64 x) const
+    {
+        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+        return splitmix64(x.first + FIXED_RANDOM) ^ splitmix64(x.second + FIXED_RANDOM);
+    }
+    size_t operator()(ll x) const
+    {
+        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+        return splitmix64(x + FIXED_RANDOM);
+    }
+};
+typedef gp_hash_table<ll, ll, custom_hash> fm64;
+typedef gp_hash_table<p64, ll, custom_hash> fmp64;
+
 #define ln "\n"
-#define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
 #define ie insert
 #define pb push_back
@@ -68,24 +96,39 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
+#define dbg(a) cout << a << endl;
+#define dbg2(a) cout << a << ' ';
+using ld = long double;
+using db = double;
+using str = string; // yay python!
+// INPUT
+#define tcT template <class T
+#define tcTU tcT, class U
+#define tcTUU tcT, class... U
+tcT > void re(T &x)
+{
+    cin >> x;
+}
+tcTUU > void re(T &t, U &...u)
+{
+    re(t);
+    re(u...);
+}
 
-// dsu functions
-// void make_set(int v) {
-//   parent[v] = v;
-//}
+int find_set(int v, v64 &parent)
+{
+    if (-1 == parent[v])
+        return v;
+    return parent[v] = find_set(parent[v], parent);
+}
 
-// int find_set(int v,v64 &parent) {
-//   if (-1 == parent[v])
-// return v;
-// return find_set(parent[v]);
-// }
-
-// void union_sets(int a, int b,v64 &parent) {
-//   a = find_set(a,parent);
-// b = find_set(b,parent);
-// if (a != b)
-// parent[b] = a;
-// }
+void union_sets(int a, int b, v64 &parent)
+{
+    a = find_set(a, parent);
+    b = find_set(b, parent);
+    if (a != b)
+        parent[b] = a;
+}
 
 // function for prime factorization
 vector<pair<ll, ll>> pf(ll n)
@@ -241,79 +284,73 @@ bool isPrime(int x)
     }
     return true;
 }
-int find_set(int v, v64 &parent)
-{
-    if (-1 == parent[v])
-        return v;
-    return parent[v] = find_set(parent[v], parent);
-}
 
-void union_sets(int a, int b, v64 &parent)
+struct DSU
 {
-    a = find_set(a, parent);
-    b = find_set(b, parent);
-    if (a != b)
+    v64 e, sz;
+    DSU(ll n)
     {
-        parent[b] = a;
+        e.assign(n + 1, -1);
+        sz.assign(n + 1, 1);
     }
-}
-
-// check(adj, mid, wt)
-bool check(vp64 &edges, ll allowed, v64 &wt, ll start, ll end)
-{
-    ll n = wt.size();
-    v64 parent(n, -1);
-    for (auto t : edges)
+    bool same(ll a, ll b) { return find(a) == find(b); }
+    ll size(ll x) { return sz[find(x)]; }
+    ll find(ll x) { return e[x] < 0 ? x : e[x] = find(e[x]); }
+    void join(ll a, ll b)
     {
-        ll a = t.fi, b = t.se;
-        ll p1 = find_set(a, parent);
-        ll p2 = find_set(b, parent);
-        if (p1 != p2)
+        a = find(a);
+        b = find(b);
+        if (a != b)
         {
-            if (abs(wt[a] - wt[b]) <= allowed)
+            if (sz[a] < sz[b])
             {
-                union_sets(p1, p2, parent);
+                swap(a, b);
             }
+            e[b] = a;
+            sz[a] += sz[b];
         }
     }
-    if (find_set(start, parent) == find_set(end, parent))
+};
+
+v64 cost;
+void dfs(int v, v64 &vis, uv64 &adj, ll diff)
+{
+    vis[v] = 1;
+    for (auto child : adj[v])
     {
-        return true;
+        if (vis[child] == 0 && abs(cost[v] - cost[child]) <= diff)
+        {
+            dfs(child, vis, adj, diff);
+        }
     }
-    return false;
 }
 
 void solve()
 {
     ll n, m;
     cin >> n >> m;
-    vp64 edges;
+    uv64 adj;
     forn(i, m)
     {
         ll a, b;
         cin >> a >> b;
-        edges.pb({a, b});
+        adj[a].pb(b);
+        adj[b].pb(a);
     }
-    // now input the weights of the nodes
-    v64 wt;
-    wt.pb(0);
-    ll maxx = 0, mini = INF;
+    cost.resize(n + 1);
     forn(i, n)
     {
-        ll x;
-        cin >> x;
-        wt.pb(x);
-        maxx = max(x, maxx);
-        mini = min(x, mini);
-        // cout << x << ln;
+        cin >> cost[i + 1];
     }
     ll start, end;
     cin >> start >> end;
-    ll i = 0, j = maxx - mini, ans = maxx - mini;
+    ll i = 0, j = 1e6, ans = 0;
+    v64 vis(n + 1);
     while (i <= j)
     {
-        ll mid = i + (j - i) / 2;
-        if (check(edges, mid, wt, start, end))
+        ll mid = (i + j) / 2;
+        dfs(start, vis, adj, mid);
+        if (vis[end])
         {
             j = mid - 1;
             ans = mid;
@@ -322,17 +359,18 @@ void solve()
         {
             i = mid + 1;
         }
+        fill(all(vis), 0);
     }
-    cout << ans << ln;
+    dbg(ans);
 }
 
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
+    // #ifndef ONLINE_JUDGE
+    //   freopen("revegetate.in", "r", stdin);
+    //  freopen("revegetate.out", "w", stdout);
+    // #endif
     ll t = 1;
     // cin >> t;
     for (int it = 1; it <= t; it++)

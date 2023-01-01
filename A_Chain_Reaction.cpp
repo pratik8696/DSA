@@ -285,39 +285,73 @@ bool isPrime(int x)
     return true;
 }
 
-v64 dp(2000100);
+ll n;
+vp64 arr;
+ll check(ll val)
+{
+    if (val >= n)
+    {
+        return -(val);
+    }
+    if (val < 0)
+    {
+        return val;
+    }
+    ll saved = 0, dist = INF;
+    for (ll i = n - 1 - val; i >= 0; i--)
+    {
+        if (dist > arr[i].first)
+        {
+            saved++;
+        }
+        else
+        {
+            // destroyed
+            continue;
+        }
+        dist = min(dist, arr[i].first - arr[i].second);
+    }
+    return saved;
+}
 
 void solve()
 {
-    ll n;
     cin >> n;
-    vp64 arr;
-    m64 m;
     forn(i, n)
     {
         ll a, b;
         cin >> a >> b;
         arr.pb({a, b});
-        m[a] = b;
     }
-    for (ll i = 0; i < dp.size(); i++)
+    sort(all(arr));
+    ll i = -1, j = n;
+    while (i < j)
     {
-        dp[i] = dp[max(i - 1, 0ll)];
-        if (m[i])
+        ll mid = (j + i) / 2;
+        if (check(mid) > check(mid + 1))
         {
-            dp[i] = max(dp[i], (i - m[i] - 1 >= 0 ? dp[i - m[i] - 1] : 0) + 1);
+            j = mid;
         }
+        else
+        {
+            i = mid + 1;
+        }
+        cout << i << " " << j << endl;
     }
-    dbg(n - dp.back());
+    cout << "VALUES" << endl;
+    forn(i, n)
+    {
+        cout << check(i) << endl;
+    }
 }
 
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
+    // #ifndef ONLINE_JUDGE
+    //   freopen("revegetate.in", "r", stdin);
+    //  freopen("revegetate.out", "w", stdout);
+    // #endif
     ll t = 1;
     // cin >> t;
     for (int it = 1; it <= t; it++)

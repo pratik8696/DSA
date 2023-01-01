@@ -286,53 +286,52 @@ bool isPrime(int x)
 }
 
 string s;
-ll sum(string &s, ll i, v64 &dp)
+ll sum(ll idx, v64 &dp)
 {
-    if (i == s.length())
+    ll n = s.length();
+    if (idx == s.length())
     {
         return 1;
     }
-    if (dp[i] != -1)
+    auto &x = dp[idx];
+    if (x != -1)
     {
-        return dp[i];
+        return x;
     }
     ll ans = 0;
-    if (s[i] >= '1' && s[i] <= '9')
+    ans += sum(idx + 1, dp);
+    if (idx < n - 1)
     {
-        ans += sum(s, i + 1, dp);
-    }
-    if (i < s.length() - 1)
-    {
-        if (s[i] == '2' && s[i + 1] <= '6')
+        if (s[idx] == '1')
         {
-            ans += sum(s, i + 2, dp);
+            ans += sum(idx + 2, dp);
         }
-        if (s[i] == '1')
+        else if (s[idx] == '2' && s[idx] <= '6')
         {
-            ans += sum(s, i + 2, dp);
+            ans += sum(idx + 2, dp);
         }
     }
-    return dp[i] = ans;
+    return x = ans;
 }
 
 void solve()
 {
     cin >> s;
+    v64 dp(s.length(), -1);
     if (s == "0")
     {
         exit(0);
     }
-    v64 dp(s.length() + 1, -1);
-    cout << sum(s, 0, dp) << ln;
+    dbg(sum(0, dp));
 }
 
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
+    // #ifndef ONLINE_JUDGE
+    //   freopen("revegetate.in", "r", stdin);
+    //  freopen("revegetate.out", "w", stdout);
+    // #endif
     ll t = INF;
     // cin >> t;
     for (int it = 1; it <= t; it++)

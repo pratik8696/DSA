@@ -270,58 +270,20 @@ bool isPrime(int x)
     return true;
 }
 
-const int MOD = 1000000007;
 void solve()
 {
-    int n;
-    cin >> n;
-    vector<int> arr(n), one(n + 1), zero(n + 1);s
-    for (int i = 0; i < n; i++)
-    {
-        cin >> arr[i];
-    }
-    int x, y;
-    cin >> x >> y;
-    ll res = __gcd(x, y);
-    x = x / res;
-    y = y / res;
-    zero[0] = x;
-    one[0] = y;
-    ll o = 0, z = 0;
-    map<pair<int, int>, int> m;
-    m[{x, y}]++;
-    ll ans = 0;
-    for (int i = 1; i < n + 1; i++)
-    {
-        if (arr[i - 1] == 1)
-        {
-            o++;
-        }
-        else if (arr[i - 1] == 0)
-        {
-            z++;
-        }
-        ll f = __gcd(o, z);
-        z = z / f;
-        o = o / f;
-        zero[i] = z;
-        one[i] = o;
-        ll backx = abs(x - z);
-        ll backy = abs(y - o);
-        ans += m[{z, o}];
-        ans %= MOD;
-        m[{z, o}]++;
-    }
-    cout << ans % MOD << endl;
+    string s;
+    cin >> s;
+    cout << s.substr(0, 1) << endl;
 }
 
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
+    // #ifndef ONLINE_JUDGE
+    //   freopen("revegetate.in", "r", stdin);
+    //  freopen("revegetate.out", "w", stdout);
+    // #endif
     ll t = 1;
     // cin >> t;
     for (int it = 1; it <= t; it++)

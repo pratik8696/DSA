@@ -285,43 +285,59 @@ bool isPrime(int x)
     return true;
 }
 
+void dfs(int v, v64 &vis, uv64 &adj)
+{
+    vis[v] = 1;
+    for (auto child : adj[v])
+    {
+        if (vis[child] == 0)
+        {
+            dfs(child, vis, adj);
+        }
+    }
+}
+
 void solve()
 {
     ll n, k;
     cin >> n >> k;
-    vp64 arr(n);
+    vp64 arr;
+    uv64 adj;
     forn(i, n)
     {
-        cin >> arr[i].first;
-        arr[i].second = i + 1;
+        ll x;
+        cin >> x;
+        arr.pb({x, i + 1});
     }
     sort(all(arr));
-    for (ll i = 0; i < n - 1; i++)
+    forn(i, n)
     {
         ll rem = k - arr[i].first;
-        for (ll j = i + 1, k = n - 1; j < k; j++)
+        ll l = n - 1;
+        forsn(j, i + 1, n)
         {
-            while (arr[j].first + arr[k].first > rem)
+            while (l >= 0 && arr[j].first + arr[l].first > rem)
             {
-                k--;
+                l--;
             }
-            if (j < k && arr[j].first + arr[k].first == rem)
+            if (arr[i].first + arr[j].first + arr[l].first == k && i != j && j != l && i != l && l >= 0)
             {
-                cout << arr[i].second << " " << arr[j].second << " " << arr[k].second << endl;
+                cout << arr[i].second << " " << arr[j].second << " " << arr[l].second << endl;
                 return;
             }
         }
+        l = n - 1;
     }
-    cout << "IMPOSSIBLE" << endl;
+    dbg("IMPOSSIBLE");
 }
 
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
+    // #ifndef ONLINE_JUDGE
+    //   freopen("revegetate.in", "r", stdin);
+    //  freopen("revegetate.out", "w", stdout);
+    // #endif
     ll t = 1;
     // cin >> t;
     for (int it = 1; it <= t; it++)

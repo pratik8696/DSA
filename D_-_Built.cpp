@@ -46,15 +46,43 @@ typedef multiset<ll> ms64;
 typedef multiset<p64> msp64;
 typedef map<ll, ll> m64;
 typedef map<ll, v64> mv64;
+typedef unordered_map<ll, v64> uv64;
+typedef unordered_map<ll, ll> u64;
+typedef unordered_map<p64, ll> up64;
+typedef unordered_map<ll, vp64> uvp64;
 typedef priority_queue<ll> pq64;
-ll MOD = 1000000007;
+typedef priority_queue<ll, v64, greater<ll>> pqs64;
+const int MOD = 1000000007;
 double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
 #define rforn(i, s) for (ll i = s; i >= 0; i--)
 #define rforsn(i, s, e) for (ll i = s; i >= e; i--)
+struct custom_hash
+{
+    static uint64_t splitmix64(uint64_t x)
+    {
+        x += 0x9e3779b97f4a7c15;
+        x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
+        x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
+        return x ^ (x >> 31);
+    }
+
+    size_t operator()(p64 x) const
+    {
+        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+        return splitmix64(x.first + FIXED_RANDOM) ^ splitmix64(x.second + FIXED_RANDOM);
+    }
+    size_t operator()(ll x) const
+    {
+        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+        return splitmix64(x + FIXED_RANDOM);
+    }
+};
+typedef gp_hash_table<ll, ll, custom_hash> fm64;
+typedef gp_hash_table<p64, ll, custom_hash> fmp64;
+
 #define ln "\n"
-#define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
 #define ie insert
 #define pb push_back
@@ -68,24 +96,39 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
+#define dbg(a) cout << a << endl;
+#define dbg2(a) cout << a << ' ';
+using ld = long double;
+using db = double;
+using str = string; // yay python!
+// INPUT
+#define tcT template <class T
+#define tcTU tcT, class U
+#define tcTUU tcT, class... U
+tcT > void re(T &x)
+{
+    cin >> x;
+}
+tcTUU > void re(T &t, U &...u)
+{
+    re(t);
+    re(u...);
+}
 
-// dsu functions
-// void make_set(int v) {
-//   parent[v] = v;
-//}
+int find_set(int v, v64 &parent)
+{
+    if (-1 == parent[v])
+        return v;
+    return parent[v] = find_set(parent[v], parent);
+}
 
-// int find_set(int v,v64 &parent) {
-//   if (-1 == parent[v])
-// return v;
-// return find_set(parent[v]);
-// }
-
-// void union_sets(int a, int b,v64 &parent) {
-//   a = find_set(a,parent);
-// b = find_set(b,parent);
-// if (a != b)
-// parent[b] = a;
-// }
+void union_sets(int a, int b, v64 &parent)
+{
+    a = find_set(a, parent);
+    b = find_set(b, parent);
+    if (a != b)
+        parent[b] = a;
+}
 
 // function for prime factorization
 vector<pair<ll, ll>> pf(ll n)
@@ -242,107 +285,87 @@ bool isPrime(int x)
     return true;
 }
 
-int find_set(int v, v64 &parent)
-{
-    if (-1 == parent[v])
-        return v;
-    return parent[v] = find_set(parent[v], parent);
-}
+#define maxi 1001
+int arr[maxi][maxi];
+int vis[maxi][maxi];
+int dist[maxi][maxi];
+int n, m;
+int dx[] = {-1, 0, 1, 0};
+int dy[] = {0, 1, 0, -1};
 
-void union_sets(int a, int b, v64 &parent)
+bool isvalid(int x, int y)
 {
-    a = find_set(a, parent);
-    b = find_set(b, parent);
-    if (a != b)
-        parent[b] = a;
-}
-
-bool compare(pair<pair<ll, ll>, ll> &a, pair<pair<ll, ll>, ll> &b)
-{
-    return a.second < b.second;
-}
-
-bool comp(v64 &a, v64 &b)
-{
-    return a[1] < b[1];
-}
-
-int minCostConnectPoints(vector<vector<ll>> &points)
-{
-    ll n = points.size();
-    vector<pair<pair<ll, ll>, ll>> edges;
-    map<p64, ll> m;
-    ll idx = 1;
-    for (auto &t : points)
+    if (x < 1 || x > n || y < 1 || y > m || vis[x][y] == 1)
     {
-        auto x = t;
-        m[{x[0], x[1]}] = idx++;
+        return false;
     }
-    sort(all(points));
-    for (ll i = 0; i < n - 1; i++)
+    return true;
+}
+
+void dfson2d(int x, int y)
+{
+    vis[x][y] = 1;
+    for (int i = 0; i < 4; i++)
     {
-        ll len = points[i + 1][0] - points[i][0];
-        edges.pb({{m[{points[i + 1][0], points[i + 1][1]}], m[{points[i][0], points[i][1]}]}, len});
-    }
-    sort(all(points), comp);
-    for (ll i = 0; i < n - 1; i++)
-    {
-        ll len = points[i + 1][1] - points[i][1];
-        edges.pb({{m[{points[i + 1][0], points[i + 1][1]}], m[{points[i][0], points[i][1]}]}, len});
-    }
-    sort(edges.begin(), edges.end(), compare);
-    vector<ll> parent(n + 1, -1);
-    ll ans = 0;
-    for (auto t : edges)
-    {
-        ll a = t.first.first;
-        ll b = t.first.second;
-        ll d = t.second;
-        a = find_set(a, parent);
-        b = find_set(b, parent);
-        ll p1 = min(a, b);
-        ll p2 = max(a, b);
-        if (p1 != p2)
+        if (isvalid(x + dx[i], y + dy[i]))
         {
-            union_sets(p1, p2, parent);
-            ans += d;
+            dfson2d(x + dx[i], y + dy[i]);
         }
     }
-    return ans;
 }
 
 void solve()
 {
     ll n;
     cin >> n;
-    set<p64> res;
+    vector<pair<ll, p64>> arr, brr;
     forn(i, n)
     {
-        ll a, b;
-        cin >> a >> b;
-        res.ie({a, b});
+        ll x, y;
+        cin >> x >> y;
+        arr.pb({x, {y, i}});
+        brr.pb({y, {x, i}});
     }
-    vv64 arr;
-    v64 t;
-    auto it = res.begin();
-    forn(i, res.size())
+    sort(all(arr));
+    sort(all(brr));
+    vector<pair<ll, p64>> edges;
+    forn(i, n - 1)
     {
-        ll a = it->first, b = it->second;
-        t.pb(a);
-        t.pb(b);
-        arr.pb(t);
-        t.clear();
-        it++;
+        ll id1 = arr[i].second.second;
+        ll id2 = arr[i + 1].second.second;
+        ll diff = arr[i + 1].first - arr[i].first;
+        edges.pb({diff, {id1, id2}});
     }
-    cout << minCostConnectPoints(arr) << ln;
+    forn(i, n - 1)
+    {
+        ll id1 = brr[i].second.second;
+        ll id2 = brr[i + 1].second.second;
+        ll diff = brr[i + 1].first - brr[i].first;
+        edges.pb({diff, {id1, id2}});
+    }
+    sort(all(edges));
+    DSU d(n + 1);
+    ll sum = 0;
+    for (auto t : edges)
+    {
+        ll u = t.second.second;
+        ll v = t.second.first;
+        if (!d.same(u, v))
+        {
+            sum += t.first;
+            d.join(u, v);
+        }
+    }
+    dbg(sum);
 }
+
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
+    // #ifndef ONLINE_JUDGE
+    //   freopen("revegetate.in", "r", stdin);
+    //  freopen("revegetate.out", "w", stdout);
+    // #endif
     ll t = 1;
     // cin >> t;
     for (int it = 1; it <= t; it++)

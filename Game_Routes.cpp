@@ -290,32 +290,31 @@ void solve()
     ll n, m;
     cin >> n >> m;
     uv64 adj;
-    fm64 indegree;
+    u64 in;
     forn(i, m)
     {
         ll a, b;
-        re(a, b);
+        cin >> a >> b;
         adj[a].pb(b);
-        indegree[b]++;
+        in[b]++;
     }
     queue<ll> q;
-    fm64 routes;
-    // indegree pruning
-    forsn(i, 2, n + 1)
+    u64 routes;
+    forsn(i, 1, n + 1)
     {
-        if (indegree[i] == 0)
+        if (in[i] == 0 && i != 1)
         {
             q.push(i);
         }
     }
-    while (!q.empty())
+    while (q.size())
     {
         ll curr = q.front();
         q.pop();
         for (auto child : adj[curr])
         {
-            indegree[child]--;
-            if (indegree[child] == 0 && child != 1)
+            in[child]--;
+            if (in[child] == 0 && child != 1)
             {
                 q.push(child);
             }
@@ -323,17 +322,16 @@ void solve()
     }
     q.push(1);
     routes[1] = 1;
-    while (!q.empty())
+    while (q.size())
     {
         ll curr = q.front();
         q.pop();
-        // dbg2(curr);
         for (auto child : adj[curr])
         {
-            indegree[child]--;
+            in[child]--;
             routes[child] += routes[curr];
             routes[child] %= MOD;
-            if (indegree[child] == 0)
+            if (in[child] == 0)
             {
                 q.push(child);
             }
@@ -345,10 +343,10 @@ void solve()
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
+    // #ifndef ONLINE_JUDGE
+    //   freopen("revegetate.in", "r", stdin);
+    //  freopen("revegetate.out", "w", stdout);
+    // #endif
     ll t = 1;
     // cin >> t;
     for (int it = 1; it <= t; it++)

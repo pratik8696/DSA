@@ -24,10 +24,10 @@
 
 using namespace std;
 using namespace __gnu_pbds;
-// use less_equal to make it multiset
-typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> pbds;
-typedef unsigned long long ull;
 typedef long long ll;
+// use less_equal to make it multiset
+typedef tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update> pbds;
+typedef unsigned long long ull;
 typedef long double ld;
 typedef pair<int, int> p32;
 typedef pair<ll, ll> p64;
@@ -46,15 +46,43 @@ typedef multiset<ll> ms64;
 typedef multiset<p64> msp64;
 typedef map<ll, ll> m64;
 typedef map<ll, v64> mv64;
+typedef unordered_map<ll, v64> uv64;
+typedef unordered_map<ll, ll> u64;
+typedef unordered_map<p64, ll> up64;
+typedef unordered_map<ll, vp64> uvp64;
 typedef priority_queue<ll> pq64;
-ll MOD = 1000000007;
+typedef priority_queue<ll, v64, greater<ll>> pqs64;
+const int MOD = 1000000007;
 double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
 #define rforn(i, s) for (ll i = s; i >= 0; i--)
 #define rforsn(i, s, e) for (ll i = s; i >= e; i--)
+struct custom_hash
+{
+    static uint64_t splitmix64(uint64_t x)
+    {
+        x += 0x9e3779b97f4a7c15;
+        x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
+        x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
+        return x ^ (x >> 31);
+    }
+
+    size_t operator()(p64 x) const
+    {
+        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+        return splitmix64(x.first + FIXED_RANDOM) ^ splitmix64(x.second + FIXED_RANDOM);
+    }
+    size_t operator()(ll x) const
+    {
+        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+        return splitmix64(x + FIXED_RANDOM);
+    }
+};
+typedef gp_hash_table<ll, ll, custom_hash> fm64;
+typedef gp_hash_table<p64, ll, custom_hash> fmp64;
+
 #define ln "\n"
-#define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
 #define ie insert
 #define pb push_back
@@ -68,24 +96,24 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-
-// dsu functions
-// void make_set(int v) {
-//   parent[v] = v;
-//}
-
-// int find_set(int v) {
-//   if (v == parent[v])
-// return v;
-// return find_set(parent[v]);
-// }
-
-// void union_sets(int a, int b) {
-//   a = find_set(a);
-// b = find_set(b);
-// if (a != b)
-// parent[b] = a;
-// }
+#define dbg(a) cout << a << endl;
+#define dbg2(a) cout << a << ' ';
+using ld = long double;
+using db = double;
+using str = string; // yay python!
+// INPUT
+#define tcT template <class T
+#define tcTU tcT, class U
+#define tcTUU tcT, class... U
+tcT > void re(T &x)
+{
+    cin >> x;
+}
+tcTUU > void re(T &t, U &...u)
+{
+    re(t);
+    re(u...);
+}
 
 // function for prime factorization
 vector<pair<ll, ll>> pf(ll n)
@@ -242,50 +270,137 @@ bool isPrime(int x)
     return true;
 }
 
-ll dfs(int v, m64 &vis, mv64 &adj, v64 &subs)
+void bfs(unordered_map<int, vector<pair<int, int>>> &adj, vector<int> &dist, int src, vector<int> &parent)
 {
-    vis[v] = 1;
-    ll val = 1;
-    for (auto child : adj[v])
+    queue<int> q;
+    vector<int> vis(dist.size(), 0);
+    q.push(src);
+    parent[src] = src;
+    dist[src] = 0;
+    vis[src] = 1;
+    while (!q.empty())
     {
-        if (vis[child] == 0)
+        int curr = q.front();
+        q.pop();
+        for (auto t : adj[curr])
         {
-            val += dfs(child, vis, adj, subs);
+            auto child = t.first;
+            auto wt = t.second;
+            if (vis[child] == 0)
+            {
+                dist[child] = dist[curr] + wt;
+                q.push(child);
+                vis[child] = 1;
+                parent[child] = curr;
+            }
         }
     }
-    subs[v] = val;
-    // cout << subs[v] << " " << v << ln;
-    return val;
+}
+
+vector<int> pathOnTree(int n, int k, vector<vector<int>> edges, vector<vector<int>> queries)
+{
+    unordered_map<int, vector<pair<int, int>>> adj;
+    for (auto t : edges)
+    {
+        adj[t[0]].push_back({t[1], t[2]});
+        adj[t[1]].push_back({t[0], t[2]});
+    }
+    vector<int> parent(n + 1, 0);
+    int sparse[n + 1][30];
+    vector<int> lvl(n + 1, 1e9);
+
+    bfs(adj, lvl, k, parent);
+
+    for (int i = 1; i <= n; i++)
+    {
+        sparse[i][0] = parent[i];
+    }
+
+    for (int j = 1; j < 30; j++)
+    {
+        for (int i = 1; i <= n; i++)
+        {
+            sparse[i][j] = sparse[sparse[i][j - 1]][j - 1];
+        }
+    }
+
+    vector<int> ans;
+
+    for (auto t : queries)
+    {
+        int a = t[0], b = t[1];
+        int rem = lvl[a] - lvl[b];
+        if (rem < 0)
+        {
+            swap(a, b);
+        }
+        int steps = abs(rem);
+        int lca = a;
+        while (steps)
+        {
+            // a needs to come up
+            a = sparse[a][__lg(steps)];
+            steps -= pow(2, __lg(steps));
+        }
+        // cout << a << " " << b << ln;
+        if (a == b)
+        {
+            lca = a;
+        }
+        else
+        {
+            for (int i = 30 - 1; i >= 0; i--)
+            {
+                if (sparse[a][i] != sparse[b][i])
+                {
+                    a = sparse[a][i];
+                    b = sparse[b][i];
+                }
+            }
+            lca = sparse[a][0];
+        }
+        ans.push_back(lvl[a] + lvl[b] - 2 * lvl[lca]);
+    }
+
+    return ans;
 }
 
 void solve()
 {
-    mv64 adj;
-    m64 vis;
-    ll n;
-    cin >> n;
-    ll arr[n];
+    ll n, k;
+    cin >> n >> k;
+    vv32 edges;
     forn(i, n)
     {
-        cin >> arr[i];
-        adj[arr[i]].pb(i + 2);
+        int a, b, c;
+        cin >> a >> b >> c;
+        edges.pb({a, b, c});
     }
-    v64 subs(n + 1, 0);
-    ll q = dfs(1, vis, adj, subs);
-    forsn(i, 1, n + 1)
+    ll q;
+    cin >> q;
+    vv32 queries;
+    forn(i, q)
     {
-        cout << subs[i]-1 << " ";
+        int a, b;
+        cin >> a >> b;
+        queries.pb({a, b});
     }
-    cout << ln;
+    v32 res = pathOnTree(n, k, edges, queries);
+    for (auto t : res)
+    {
+        cout << t << " ";
+    }
+    cout << endl;
 }
+
 
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
+    // #ifndef ONLINE_JUDGE
+    //   freopen("revegetate.in", "r", stdin);
+    //  freopen("revegetate.out", "w", stdout);
+    // #endif
     ll t = 1;
     // cin >> t;
     for (int it = 1; it <= t; it++)

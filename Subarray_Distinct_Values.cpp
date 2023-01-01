@@ -303,9 +303,9 @@ void solve()
     {
         if (s.size() > k)
         {
-            ll val = j - i;
+            ll val = j - i + 1;
             cc += val;
-            cout << cc << " " << s.size() << " -> " << i << "," << j << endl;
+            // cout << s.size() << " -> " << i << "," << j << endl;
             s.erase(s.lower_bound(arr[i]));
             i++;
         }
@@ -317,7 +317,7 @@ void solve()
     }
     ll size = j - i;
     cc += (size * (size + 1)) / 2;
-    cout << cc << " " << s.size() << " -> " << i << "," << j << endl;
+    // cout << s.size() << " -> " << i << "," << j << endl;
     dbg(cc);
 }
 

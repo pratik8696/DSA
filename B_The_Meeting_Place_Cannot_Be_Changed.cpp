@@ -52,14 +52,37 @@ typedef unordered_map<p64, ll> up64;
 typedef unordered_map<ll, vp64> uvp64;
 typedef priority_queue<ll> pq64;
 typedef priority_queue<ll, v64, greater<ll>> pqs64;
-ll MOD = 1000000007;
+const int MOD = 1000000007;
 double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
 #define rforn(i, s) for (ll i = s; i >= 0; i--)
 #define rforsn(i, s, e) for (ll i = s; i >= e; i--)
+struct custom_hash
+{
+    static uint64_t splitmix64(uint64_t x)
+    {
+        x += 0x9e3779b97f4a7c15;
+        x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
+        x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
+        return x ^ (x >> 31);
+    }
+
+    size_t operator()(p64 x) const
+    {
+        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+        return splitmix64(x.first + FIXED_RANDOM) ^ splitmix64(x.second + FIXED_RANDOM);
+    }
+    size_t operator()(ll x) const
+    {
+        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+        return splitmix64(x + FIXED_RANDOM);
+    }
+};
+typedef gp_hash_table<ll, ll, custom_hash> fm64;
+typedef gp_hash_table<p64, ll, custom_hash> fmp64;
+
 #define ln "\n"
-#define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
 #define ie insert
 #define pb push_back
@@ -73,24 +96,39 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
+#define dbg(a) cout << a << endl;
+#define dbg2(a) cout << a << ' ';
+using ld = long double;
+using db = double;
+using str = string; // yay python!
+// INPUT
+#define tcT template <class T
+#define tcTU tcT, class U
+#define tcTUU tcT, class... U
+tcT > void re(T &x)
+{
+    cin >> x;
+}
+tcTUU > void re(T &t, U &...u)
+{
+    re(t);
+    re(u...);
+}
 
-// dsu functions
-// void make_set(int v) {
-//   parent[v] = v;
-//}
+int find_set(int v, v64 &parent)
+{
+    if (-1 == parent[v])
+        return v;
+    return parent[v] = find_set(parent[v], parent);
+}
 
-// int find_set(int v,v64 &parent) {
-//   if (-1 == parent[v])
-// return v;
-// return parent[v]=find_set(parent[v],parent);
-// }
-
-// void union_sets(int a, int b,v64 &parent) {
-//   a = find_set(a,parent);
-// b = find_set(b,parent);
-// if (a != b)
-// parent[b] = a;
-// }
+void union_sets(int a, int b, v64 &parent)
+{
+    a = find_set(a, parent);
+    b = find_set(b, parent);
+    if (a != b)
+        parent[b] = a;
+}
 
 // function for prime factorization
 vector<pair<ll, ll>> pf(ll n)
@@ -247,87 +285,64 @@ bool isPrime(int x)
     return true;
 }
 
-bool check(double time, vector<pair<double, double>> &arr)
-{
-    ll n = arr.size();
-    vector<pair<double, double>> dist;
-    forn(i, n)
-    {
-        double left_limit = arr[i].fi - time * arr[i].se;
-        double right_limit = arr[i].fi + time * arr[i].se;
-        dist.pb({left_limit, right_limit});
-    }
-    sort(all(dist));
-    double prev = dist[0].se;
-    forn(i, n)
-    {
-        double val = dist[i].fi - prev;
-    }
-    ll res1 = 1;
-    forn(i, n)
-    {
-        double val = -prev + dist[i].fi;
-        double comp = 0.0000001;
-        if (val > comp)
-        {
-            return false;
-        }
-        prev = min(dist[i].se, prev);
-    }
+ll n;
+vector<double> pos, speed;
 
-    return true;
+bool check(ld time)
+{
+    ld left_limit = -1e6;
+    ld right_limit = INF;
+    forn(i, n)
+    {
+        ld curr_left = pos[i] - speed[i] * time;
+        ld curr_right = pos[i] + speed[i] * time;
+        left_limit = max(left_limit, curr_left);
+        right_limit = min(right_limit, curr_right);
+    }
+    if (right_limit - left_limit > 0)
+    {
+        return true;
+    }
+    return false;
 }
 
 void solve()
 {
-    ll n;
     cin >> n;
-    vector<pair<double, double>> arr;
-    vector<double> aa, bb;
-    double maxx = 0, maxxd = 0;
+    pos.resize(n), speed.resize(n);
     forn(i, n)
     {
-        double a;
-        cin >> a;
-        aa.pb(a);
+        cin >> pos[i];
     }
     forn(i, n)
     {
-        double a;
-        cin >> a;
-        bb.pb(a);
+        cin >> speed[i];
     }
-    forn(i, n)
-    {
-        double a = aa[i], b = bb[i];
-        arr.pb({a, b});
-    }
-    // cout << check(1.4, arr) << ln;
-    double i = 0.00, j = 1e9, ans = 0;
+    ld i = 0, j = 1e14, ans = 0;
     forn(z, 100)
     {
-        double mid = i + (j - i) / 2;
-        if (check(mid, arr))
+        ld mid = (i + j) / 2;
+        if (check(mid))
         {
-            // cout << mid << ln;
-            ans = mid;
             j = mid - 1;
+            ans = mid;
         }
         else
         {
             i = mid + 1;
         }
     }
-    cout << fixed << setprecision(7) << ans << ln;
+    cout << fixed << setprecision(10);
+    dbg(ans);
 }
 
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
+    // #ifndef ONLINE_JUDGE
+    //   freopen("revegetate.in", "r", stdin);
+    //  freopen("revegetate.out", "w", stdout);
+    // #endif
     ll t = 1;
     // cin >> t;
     for (int it = 1; it <= t; it++)

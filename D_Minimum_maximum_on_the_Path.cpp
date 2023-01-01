@@ -285,114 +285,54 @@ bool isPrime(int x)
     return true;
 }
 
-ll n, m, d;
+ll n, m, k;
 uvp64 adj;
-
-bool check(ll allowed_weight)
+bool check(ll x)
 {
+    queue<ll> q;
+    ll src = 1;
     v64 vis(n + 1, 0);
     v64 dist(n + 1, INF);
-    queue<ll> q;
-    q.push(1);
-    dist[1] = 0;
-    while (q.size())
+    q.push(src);
+    dist[src] = 0;
+    vis[src] = 1;
+    
+    while (!q.empty())
     {
         ll curr = q.front();
         q.pop();
         for (auto t : adj[curr])
         {
-            auto child = t.first;
-            auto wt = t.second;
-            if (wt <= allowed_weight && vis[child] == 0)
+            ll child = t.first;
+            ll wt = t.second;
+            if (vis[child] == 0 && wt <= x)
             {
                 dist[child] = dist[curr] + 1;
-                vis[child] = 1;
                 q.push(child);
+                vis[child] = 1;
             }
         }
     }
-    if (dist[n] <= d)
+
+    // check
+    if (vis[n] == 1 && dist[n] <= k)
     {
         return true;
     }
     return false;
 }
 
-void bfs(ll allowed_weight)
-{
-    v64 vis(n + 1, 0);
-    v64 dist(n + 1, INF);
-    u64 path;
-    queue<ll> q;
-    q.push(1);
-    dist[1] = 0;
-    path[1] = 1;
-    while (q.size())
-    {
-        ll curr = q.front();
-        q.pop();
-        for (auto t : adj[curr])
-        {
-            auto child = t.first;
-            auto wt = t.second;
-            if (wt <= allowed_weight && vis[child] == 0)
-            {
-                dist[child] = dist[curr] + 1;
-                vis[child] = 1;
-                q.push(child);
-                path[child] = curr;
-            }
-        }
-    }
-    // v64 path;
-    ll prev = n;
-    v64 ans;
-    while (prev != 1)
-    {
-        // cout << prev << " ";
-        ans.pb(prev);
-        prev = path[prev];
-    }
-    // cout << 1 << endl;
-    ans.pb(1);
-    reverse(all(ans));
-    dbg(ans.size() - 1);
-    for (auto t : ans)
-    {
-        cout << t << " ";
-    }
-    cout << endl;
-}
-
 void solve()
 {
-    cin >> n >> m >> d;
+    cin >> n >> m >> k;
     forn(i, m)
     {
         ll a, b, c;
         cin >> a >> b >> c;
         adj[a].pb({b, c});
     }
-    ll i = 0, j = 1e10, ans = INF;
-    while (i <= j)
-    {
-        ll mid = (i + j) / 2;
-        if (check(mid))
-        {
-            ans = min(ans, mid);
-            j = mid - 1;
-        }
-        else
-        {
-            i = mid + 1;
-        }
-    }
-    if (ans == INF)
-    {
-        dbg(-1);
-        return;
-    }
-    bfs(ans);
+
+    dbg(check(4));
 }
 
 int main()

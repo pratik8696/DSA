@@ -115,7 +115,6 @@ tcTUU > void re(T &t, U &...u)
     re(u...);
 }
 
-
 int find_set(int v, v64 &parent)
 {
     if (-1 == parent[v])
@@ -290,11 +289,19 @@ void solve()
 {
     ll n;
     cin >> n;
-    
-    forn(i, n)
+    v64 arr(n + 1);
+    forsn(i, 1, n + 1)
     {
         cin >> arr[i];
     }
+    v64 dp(n + 2);
+    dp[1] = 0;
+    forsn(i, 2, n + 2)
+    {
+        dp[i] = 2 * dp[i - 1] - dp[arr[i - 1]] + 2 + MOD;
+        dp[i] %= MOD;
+    }
+    dbg(dp.back());
 }
 
 int main()

@@ -285,51 +285,62 @@ bool isPrime(int x)
     return true;
 }
 
-void solve()
+ll n, w;
+v64 wts;
+map<p64,ll> dp;
+ll sum(ll mask, ll weight)
 {
-    ll n, k;
-    cin >> n >> k;
-    ll arr[n];
+    if (mask == (1 << n) - 1)
+    {
+        return 0;
+    }
+    // go from 0 to n and select some people and weight should not exceed w
+    // at last count that as a ride and repeat
+    ll curr_mask = mask, weight_left = weight;
+    ll ans = INF;
+    if (dp.count({mask, weight}))
+    {
+        return dp[{mask, weight}];
+    }
+    bool any = 0;
     forn(i, n)
     {
-        cin >> arr[i];
-    }
-
-    p64 dp[1 << n];
-    dp[0] = {1, 0};
-    for (int mask = 1; mask < 1 << n; mask++)
-    {
-        dp[mask] = {n, 0};
-        for (int y = 0; y < n; y++)
+        if ((mask & 1 << i) == 0)
         {
-            if (mask & (1 << y))
+            // take it
+            if (weight >= wts[i])
             {
-                int new_mask = mask ^ (1 << y);
-                // include the yth person
-                p64 opt = dp[new_mask];
-                if (opt.second + arr[y] <= k)
-                {
-                    opt.second += arr[y];
-                }
-                else
-                {
-                    opt.first++;
-                    opt.second = arr[y];
-                }
-                dp[mask] = min(dp[mask], opt);
+                ans = min(ans, sum(mask | 1 << i, weight - wts[i]));
+                any = 1;
             }
         }
     }
-    cout << dp[(1 << n) - 1].first << endl;
+    if (any == 0)
+    {
+        ans = min(sum(mask, w) + 1, ans);
+    }
+    return dp[{mask, weight}] = ans;
+}
+
+void solve()
+{
+    cin >> n >> w;
+    forn(i, n)
+    {
+        ll x;
+        cin >> x;
+        wts.push_back(x);
+    }
+    dbg(sum(0, w) + 1);
 }
 
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
+    // #ifndef ONLINE_JUDGE
+    //   freopen("revegetate.in", "r", stdin);
+    //  freopen("revegetate.out", "w", stdout);
+    // #endif
     ll t = 1;
     // cin >> t;
     for (int it = 1; it <= t; it++)
