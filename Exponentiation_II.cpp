@@ -169,10 +169,7 @@ ll sumofno(ll n)
 // modular exponentiation
 long long modpow(long long x, long long n, long long p)
 {
-    // if (x == 0)
-    // {
-    //     return 1;
-    // // }
+
     if (n == 0)
         return 1 % p;
 
@@ -290,9 +287,9 @@ bool isPrime(int x)
 
 void solve()
 {
-    ll n, m, x;
-    cin >> n >> m >> x;
-    dbg(modpow(n, modpow(m, x, MOD - 1), MOD));
+    ll a, b, c;
+    cin >> a >> b >> c;
+    dbg(modpow(a, modpow(b, c, MOD - 1), MOD));
 }
 
 int main()

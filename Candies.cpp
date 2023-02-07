@@ -285,27 +285,35 @@ bool isPrime(int x)
     return true;
 }
 
+ll n, m;
+v64 arr;
+v64 profit;
+
 void solve()
 {
-    ll n;
-    cin >> n;
-    n *= 2;
-    ll arr[n];
-    m64 m;
+    cin >> n >> m;
+    arr.resize(n);
+    profit.resize(m);
     forn(i, n)
     {
         cin >> arr[i];
-        m[arr[i]]++;
     }
-    for (auto t : m)
+    forn(i, m)
     {
-        if (t.se > 2)
+        cin >> profit[i];
+    }
+    ll i = 0, j = m - 1;
+    while (i <= j)
+    {
+        ll mid1 = i + (j - i) / 3;
+        ll mid2 = j - (j - i) / 3;
+        double f1 = check(mid1);
+        double f2 = check(mid2);
+        if (f1 < f2)
         {
-            dbg("No");
-            return;
+            
         }
     }
-    dbg("Yes");
 }
 
 int main()

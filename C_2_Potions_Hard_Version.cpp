@@ -285,34 +285,36 @@ bool isPrime(int x)
     return true;
 }
 
+
+
 void solve()
 {
     ll n;
     cin >> n;
     ll arr[n];
-    priority_queue<ll, v64, greater<ll>> pq;
+    pqs64 s;
     ll sum = 0;
     forn(i, n)
     {
         cin >> arr[i];
         sum += arr[i];
-        pq.push(arr[i]);
+        s.push(arr[i]);
         while (sum < 0)
         {
-            sum -= pq.top();
-            pq.pop();
+            sum -= s.top();
+            s.pop();
         }
     }
-    cout << pq.size() << ln;
+    dbg(sz(s));
 }
 
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
+    // #ifndef ONLINE_JUDGE
+    //   freopen("revegetate.in", "r", stdin);
+    //  freopen("revegetate.out", "w", stdout);
+    // #endif
     ll t = 1;
     // cin >> t;
     for (int it = 1; it <= t; it++)

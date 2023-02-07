@@ -115,6 +115,7 @@ tcTUU > void re(T &t, U &...u)
     re(u...);
 }
 
+
 int find_set(int v, v64 &parent)
 {
     if (-1 == parent[v])
@@ -285,47 +286,26 @@ bool isPrime(int x)
     return true;
 }
 
-ll n;
-
-bool check(ll mid)
-{
-    ll cc = 0;
-    forsn(i, 1, n + 1)
-    {
-        cc += min(mid / i, n);
-    }
-    return cc >= ce((n * n), 2);
-}
-
 void solve()
 {
+    ll n;
     cin >> n;
-    ll i = 1, j = n * n, ans = 0;
-    while (i <= j)
+    ll arr[n];
+    forn(i, n)
     {
-        ll mid = i + (j - i) / 2;
-        if (check(mid))
-        {
-            ans = mid;
-            j = mid - 1;
-        }
-        else
-        {
-            i = mid + 1;
-        }
+        cin >> arr[i];
     }
-    dbg(ans);
 }
 
 int main()
 {
     fast_cin();
-    // #ifndef ONLINE_JUDGE
-    //   freopen("revegetate.in", "r", stdin);
-    //  freopen("revegetate.out", "w", stdout);
-    // #endif
+    //#ifndef ONLINE_JUDGE
+    //  freopen("revegetate.in", "r", stdin);
+    // freopen("revegetate.out", "w", stdout);
+    //#endif
     ll t = 1;
-    // cin >> t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

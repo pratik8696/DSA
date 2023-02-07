@@ -290,21 +290,20 @@ void solve()
     ll n;
     cin >> n;
     ll arr[n];
-    u64 hsh;
+    u64 dp;
     ll maxx = 0;
     forn(i, n)
     {
         cin >> arr[i];
-        hsh[arr[i]]++;
+        dp[arr[i]]++;
         maxx = max(maxx, arr[i]);
     }
-    ll ans = 1;
     for (ll i = maxx; i >= 1; i--)
     {
         ll cc = 0;
         for (ll val = i; val <= maxx; val += i)
         {
-            cc += hsh[val];
+            cc += dp[val];
             if (cc > 1)
             {
                 dbg(i);

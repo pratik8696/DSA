@@ -290,41 +290,34 @@ void solve()
     ll n, m;
     cin >> n >> m;
     ll arr[n];
-    m64 hsh;
-    bool flag = 0;
     forn(i, n)
     {
         cin >> arr[i];
-        hsh[arr[i] % m]++;
-        if (hsh[arr[i] % m] > 1)
-        {
-            flag = 1;
-        }
     }
-    if (flag)
+    if (n > m)
     {
         dbg(0);
         return;
     }
     ll ans = 1;
-    forn(i, n)
+    forsn(i, 0, n)
     {
         forsn(j, i + 1, n)
         {
-            ans *= abs(arr[i] - arr[j]);
+            ans *= (abs(arr[i] - arr[j]));
             ans %= m;
         }
     }
-    dbg(ans % m);
+    dbg(ans);
 }
 
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
+    // #ifndef ONLINE_JUDGE
+    //   freopen("revegetate.in", "r", stdin);
+    //  freopen("revegetate.out", "w", stdout);
+    // #endif
     ll t = 1;
     // cin >> t;
     for (int it = 1; it <= t; it++)

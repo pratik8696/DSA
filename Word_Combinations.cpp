@@ -285,9 +285,55 @@ bool isPrime(int x)
     return true;
 }
 
+struct node
+{
+    node *nxt[26];
+    bool is_end;
+    node()
+    {
+        for (int i = 0; i < 26; i++)
+        {
+            this->nxt[i] = NULL;
+        }
+        this->is_end = false;
+    }
+};
+
+node *root;
+
+void insert_node(string &s)
+{
+    node *curr = root;
+    for (int i = 0; i < s.length(); i++)
+    {
+        ll temp = s[i] - 'a';
+        if (curr->nxt[temp] == NULL)
+        {
+            curr->nxt[temp] = new node();
+        }
+        curr = curr->nxt[temp];
+    }
+    curr->is_end = true;
+}
+
+bool search_node(string s)
+{
+    node *curr = root;
+    for (int i = 0; i < s.length(); i++)
+    {
+        ll temp = s[i] - 'a';
+        if (curr->nxt[temp] == NULL)
+        {
+            return false;
+        }
+        curr = curr->nxt[temp];
+    }
+    return curr->is_end;
+}
+
 string s;
-map<string, ll> m;
-ll sum(ll idx, v64 &dp)
+ll dp[5010];
+ll sum(ll idx)
 {
     if (idx == s.length())
     {
@@ -298,41 +344,47 @@ ll sum(ll idx, v64 &dp)
         return dp[idx];
     }
     ll ans = 0;
-    string temp = "";
+    node *curr = root;
     for (ll i = idx; i < s.length(); i++)
     {
-        temp.pb(s[i]);
-        if (m[temp])
+        ll temp = s[i] - 'a';
+        if (curr->nxt[temp] == NULL)
         {
-            ans += sum(i + 1, dp);
+            break;
+        }
+        curr = curr->nxt[temp];
+        if (curr->is_end)
+        {
+            ans += sum(i + 1);
             ans %= MOD;
         }
     }
-    return dp[idx] = ans % MOD;
+    return dp[idx] = ans;
 }
 
 void solve()
 {
     cin >> s;
-    v64 dp(s.length() + 1, -1);
     ll n;
     cin >> n;
+    root = new node();
     forn(i, n)
     {
         string x;
         cin >> x;
-        m[x]++;
+        insert_node(x);
     }
-    dbg(sum(0, dp));
+    memset(dp, -1, sizeof(dp));
+    dbg(sum(0) % MOD);
 }
 
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
+    // #ifndef ONLINE_JUDGE
+    //   freopen("revegetate.in", "r", stdin);
+    //  freopen("revegetate.out", "w", stdout);
+    // #endif
     ll t = 1;
     // cin >> t;
     for (int it = 1; it <= t; it++)

@@ -147,8 +147,13 @@ void update(ll arr[], ll tree[], ll s, ll e, ll tn, ll idx, ll val)
     tree[tn] = tree[2 * tn] + tree[(2 * tn) + 1];
 }
 
+s64 sunil;
+
 void solve()
 {
+    timer = 0;
+    intime.clear();
+    outtime.clear();
     ll n, m;
     cin >> n >> m;
     uv64 adj;
@@ -177,7 +182,22 @@ void solve()
             ll x;
             cin >> x;
             // cout << intime[x] << " " << outtime[x] << ln;
-            cout << query(arr, tree, 0, (2 * n) - 1, 1, intime[x], outtime[x])/2 << ln;
+            ll val = query(arr, tree, 0, (2 * n) - 1, 1, intime[x], outtime[x]) / 2;
+            ll res = sqrt(val);
+            // cout << res << endl;
+            if (res * res == val)
+            {
+                cout << 0 << endl;
+            }
+            else
+            {
+                res++;
+                while ((res * res - val) % 2)
+                {
+                    res++;
+                }
+                cout << (res * res - val) / 2 << endl;
+            }
         }
         else
         {
@@ -192,12 +212,12 @@ void solve()
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
+    // #ifndef ONLINE_JUDGE
+    //   freopen("revegetate.in", "r", stdin);
+    //  freopen("revegetate.out", "w", stdout);
+    // #endif
     ll t = 1;
-    // cin >> t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

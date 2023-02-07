@@ -115,6 +115,7 @@ tcTUU > void re(T &t, U &...u)
     re(u...);
 }
 
+
 int find_set(int v, v64 &parent)
 {
     if (-1 == parent[v])
@@ -289,34 +290,22 @@ void solve()
 {
     ll n;
     cin >> n;
-    ll sum = 0;
-    for (ll i = 1; i <= sqrt(n) + 1; i++)
+    ll arr[n];
+    forn(i, n)
     {
-        if (n % i == 0)
-        {
-            if (n / i == i)
-            {
-                sum += i;
-            }
-            else
-            {
-                sum += i;
-                sum += n / i;
-            }
-        }
+        cin >> arr[i];
     }
-    dbg(sum);
 }
 
 int main()
 {
     fast_cin();
-    // #ifndef ONLINE_JUDGE
-    //   freopen("revegetate.in", "r", stdin);
-    //  freopen("revegetate.out", "w", stdout);
-    // #endif
+    //#ifndef ONLINE_JUDGE
+    //  freopen("revegetate.in", "r", stdin);
+    // freopen("revegetate.out", "w", stdout);
+    //#endif
     ll t = 1;
-    // cin >> t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

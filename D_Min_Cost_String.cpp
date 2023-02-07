@@ -52,7 +52,7 @@ typedef unordered_map<p64, ll> up64;
 typedef unordered_map<ll, vp64> uvp64;
 typedef priority_queue<ll> pq64;
 typedef priority_queue<ll, v64, greater<ll>> pqs64;
-ll MOD = 1000000007;
+const int MOD = 1000000007;
 double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
@@ -83,7 +83,6 @@ typedef gp_hash_table<ll, ll, custom_hash> fm64;
 typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 
 #define ln "\n"
-#define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
 #define ie insert
 #define pb push_back
@@ -97,24 +96,39 @@ typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
+#define dbg(a) cout << a << endl;
+#define dbg2(a) cout << a << ' ';
+using ld = long double;
+using db = double;
+using str = string; // yay python!
+// INPUT
+#define tcT template <class T
+#define tcTU tcT, class U
+#define tcTUU tcT, class... U
+tcT > void re(T &x)
+{
+    cin >> x;
+}
+tcTUU > void re(T &t, U &...u)
+{
+    re(t);
+    re(u...);
+}
 
-// dsu functions
-// void make_set(int v) {
-//   parent[v] = v;
-//}
+int find_set(int v, v64 &parent)
+{
+    if (-1 == parent[v])
+        return v;
+    return parent[v] = find_set(parent[v], parent);
+}
 
-// int find_set(int v,v64 &parent) {
-//   if (-1 == parent[v])
-// return v;
-// return parent[v]=find_set(parent[v],parent);
-// }
-
-// void union_sets(int a, int b,v64 &parent) {
-//   a = find_set(a,parent);
-// b = find_set(b,parent);
-// if (a != b)
-// parent[b] = a;
-// }
+void union_sets(int a, int b, v64 &parent)
+{
+    a = find_set(a, parent);
+    b = find_set(b, parent);
+    if (a != b)
+        parent[b] = a;
+}
 
 // function for prime factorization
 vector<pair<ll, ll>> pf(ll n)
@@ -273,40 +287,53 @@ bool isPrime(int x)
 
 void solve()
 {
-    ll n, k;
-    cin >> n >> k;
-    char last = 'a' + k - 1;
-    map<char, set<pair<ll, string>>> s;
-    for (char x = 'a'; x <= last; x++)
+    ll n, m;
+    cin >> n >> m;
+    ll arr[26][26];
+    memset(arr, 0, sizeof(arr));
+    string ans = "aa";
+    arr[0][0]++;
+    for (ll i = 0; i < n - 2; i++)
     {
-        for (char y = 'a'; y <= last; y++)
+        ll prev = ans.back() - 'a';
+        ll index = 0;
+        forn(j, m)
         {
-            string temp = "";
-            temp += x;
-            temp += y;
-            s[x].ie({0, temp});
+            if (arr[prev][index] > arr[prev][j])
+            {
+                index = j;
+            }
+            else if (arr[prev][index] == arr[prev][j])
+            {
+                ll min1 = INF, min2 = INF;
+                forn(k, m)
+                {
+                    min1 = min(min1, arr[index][k]);
+                    min2 = min(min2, arr[j][k]);
+                }
+                if (min2 < min1)
+                {
+                    index = j;
+                }
+            }
         }
+        arr[prev][index]++;
+        ans.pb((char)('a' + index));
     }
-    string ans = "";
-    ll z = ce(n, 2);
-    while (z--)
-    {
-        
-    }
-    if (ans.length() != n)
+    while (ans.size() > n)
     {
         ans.pop_back();
     }
-    cout << ans << ln;
+    dbg(ans);
 }
 
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
+    // #ifndef ONLINE_JUDGE
+    //   freopen("revegetate.in", "r", stdin);
+    //  freopen("revegetate.out", "w", stdout);
+    // #endif
     ll t = 1;
     // cin >> t;
     for (int it = 1; it <= t; it++)

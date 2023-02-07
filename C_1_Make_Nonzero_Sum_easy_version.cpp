@@ -294,85 +294,75 @@ void solve()
     forn(i, n)
     {
         cin >> arr[i];
-        if (arr[i] > 0)
-        {
-            pos++;
-        }
-        else
-        {
-            neg++;
-        }
+        pos += (arr[i] > 0 ? 1 : 0);
+        neg += (arr[i] < 0 ? 1 : 0);
     }
     if (n % 2)
     {
         dbg(-1);
         return;
     }
-    if (pos == neg)
+    if (neg > pos)
     {
-        dbg(0);
-        return;
+        forn(i, n)
+        {
+            arr[i] *= -1;
+        }
+        swap(neg, pos);
     }
     vp64 ans;
     if (pos > neg)
     {
-        ll cc = 0;
-        // when se two consecutive one switch one of them
+        ll rem = pos - neg;
+        rem /= 2;
+        // dbg(rem);
         forn(i, n - 1)
         {
-            if (arr[i] == 1 && arr[i + 1] == 1)
+            if (arr[i] == arr[i + 1] && arr[i] == 1)
             {
-                neg++;
-                cc++;
-                arr[i + 1] = -1;
                 ans.pb({i + 1, i + 2});
                 i++;
+                rem--;
+                if (rem == 0)
+                {
+                    break;
+                }
             }
-            if (pos == neg)
+            else
             {
-                break;
+                ans.pb({i + 1, i + 1});
             }
         }
-    }
-    else
-    {
-        ll cc = 0;
-        // when se two consecutive one switch one of them
-        forn(i, n - 1)
+        for (ll i = ans.back().second + 1; i <= n; i++)
         {
-            if (arr[i] == -1 && arr[i + 1] == -1)
-            {
-                pos++;
-                cc++;
-                arr[i + 1] = 1;
-                ans.pb({i + 1, i + 2});
-                i++;
-            }
-            if (pos == neg)
-            {
-                break;
-            }
+            ans.pb({i, i});
+        }
+        cout << ans.size() << endl;
+        for (auto t : ans)
+        {
+            cout << t.first << " " << t.second << endl;
         }
     }
-    if (pos == neg)
+    else if (pos == neg)
     {
-        dbg(-1);
-        return;
+        dbg(n);
+        forsn(i, 1, n + 1)
+        {
+            cout << i << " " << i << endl;
+        }
     }
-    cout << ans.size() << endl;
-    for (auto t : ans)
-    {
-        cout << t.first << " " << t.second << endl;
-    }
+
+    // cout << endl;
+    // cout << endl;
 }
 
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
+    // #ifndef ONLINE_JUDGE
+    //   freopen("revegetate.in", "r", stdin);
+    //  freopen("revegetate.out", "w", stdout);
+    // #endif
     ll t = 1;
     cin >> t;
     for (int it = 1; it <= t; it++)

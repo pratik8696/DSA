@@ -287,57 +287,33 @@ bool isPrime(int x)
 
 ll n;
 v64 arr;
-ll sum(ll idx, ll k)
+
+ll sum(ll idx, ll rem)
 {
-    if (idx == n + 1)
+    if (idx == n)
     {
-        if (k == 0)
-        {
-            return 0;
-        }
-        return INT_MAX;
+        return 0;
     }
-    ll ans = 0;
-    // isko bdhao
-    ll res1 = 0;
-    ll curr_height = arr[idx];
-    if (curr_height <= arr[idx + 1])
-    {
-        res1 += arr[idx + 1] - curr_height;
-        curr_height += res1;
-    }
-    if (curr_height <= arr[idx - 1])
-    {
-        res1 += arr[idx - 1] - curr_height;
-        curr_height += arr[idx - 1] - curr_height;
-    }
-    ans = min(ans, sum(idx + 2, k - 1) + res1);
-    // age badho
-    ans = min(ans, sum(idx + 1, k));
-    return ans;
+    // select this point and decrease the height of the front is larger
 }
 
 void solve()
 {
     cin >> n;
-    arr.pb(0);
+    arr.resize(n);
     forn(i, n)
     {
-        ll x;
-        cin >> x;
-        arr.pb(x);
+        cin >> arr[i];
     }
-    arr.pb(0);
-    dbg(sum(1, ce(n, 2)));
 }
 
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
+    // #ifndef ONLINE_JUDGE
+    //   freopen("revegetate.in", "r", stdin);
+    //  freopen("revegetate.out", "w", stdout);
+    // #endif
     ll t = 1;
     // cin >> t;
     for (int it = 1; it <= t; it++)

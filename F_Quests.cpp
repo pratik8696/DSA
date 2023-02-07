@@ -257,10 +257,6 @@ ll popcount(ll n)
 
 ll ce(ll x, ll y)
 {
-    if (x == 0)
-    {
-        return 0;
-    }
     ll res = x / y;
     if (x % y != 0)
     {
@@ -290,62 +286,70 @@ bool isPrime(int x)
 }
 
 ll n, c, d;
-v64 arr;
-
-bool check(ll k)
+bool check(v64 &arr, ll k)
 {
-    ll curr = d;
-    ll ans = 0;
-    forn(i, n)
+    v64 res(d);
+    k++;
+    ll l = 0, sum = 0;
+    for (ll i = 0; i < d; i++)
     {
-        ll val = ce(curr, k + 1);
-        ans += val * arr[i];
-        curr -= val;
-        if (ans >= c)
+        if (res[i] == 0)
         {
-            return 1;
+            for (ll j = i; j < d; j += k)
+            {
+                res[j] = (l >= n ? 0 : arr[l]);
+            }
+            l++;
         }
+        sum += res[i];
     }
-    // dbg(ans);
-    if (ans >= c)
+
+    // for (auto t : res)
+    // {
+    //     cout << t << " ";
+    // }
+    // cout << endl;
+
+    if (sum >= c)
     {
-        return 1;
+        return true;
     }
-    return 0;
+    return false;
 }
 
 void solve()
 {
     cin >> n >> c >> d;
-    arr.resize(n);
+    v64 arr(n);
     forn(i, n)
     {
         cin >> arr[i];
     }
     sort(all(arr), greater<ll>());
-    if (arr[0] >= c)
-    {
-        dbg("Infinity");
-        return;
-    }
-    if (arr[0] * d < c)
-    {
-        dbg("Impossible");
-        return;
-    }
-    ll i = 0, j = 1e15, ans = 0;
+    ll i = 0, j = d + 1, ans = -1;
     while (i <= j)
     {
-        ll mid = i + (j - i) / 2;
-        if (check(mid))
+        ll mid = (i + j) / 2;
+        if (check(arr, mid))
         {
+            // cout << mid << endl;
             i = mid + 1;
-            ans = max(mid, ans);
+            ans = mid;
         }
         else
         {
             j = mid - 1;
         }
+    }
+    if (ans > d)
+    {
+        dbg("Infinity");
+        return;
+    }
+    else if (ans == -1)
+    {
+        dbg("Impossible");
+        return;
     }
     dbg(ans);
 }

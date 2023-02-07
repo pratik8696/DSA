@@ -285,67 +285,75 @@ bool isPrime(int x)
     return true;
 }
 
-vector<string> res = {"1110111", "0010010", "1011101", "1011011", "0111010", "1101011", "1101111", "1010010", "1111111", "1111011"};
-vector<string> arr;
+ll n, k;
+v64 arr;
+v64 mask;
 
-int fun(string &a, string &b)
+ll masker(string &s)
 {
-    int ans = 0;
-    for (int i = 0; i < a.size(); i++)
-        if (a[i] == '0' && b[i] == '1')
-        {
-            return -1;
-        }
-        else if (a[i] != b[i])
-        {
-            ans++;
-        }
-    return ans;
+    ll sum = 0;
+    forn(i, s.length())
+    {
+        sum += (s[i] == '1' ? (1 << i) : 0);
+    }
+    return sum;
 }
 
-ll dp[2002][2002][11];
-ll req[2002][11];
-
-ll sum(ll idx, ll tt, ll prev)
+bool isvalid(ll curr_mask, ll mask)
 {
-    if (idx == arr.size())
-    {
-        if (tt == 0)
-        {
-            return dp[idx][tt][prev] = true;
-        }
-        return dp[idx][tt][prev] = false;
-    }
-    ll ans = false;
-    if (dp[idx][tt][prev] != -1)
-    {
-        return dp[idx][tt][prev];
-    }
-    for (int i = 9; i >= 0; i--)
-    {
-        if (req[idx][i] <= tt && req[idx][i] != -1)
-        {
-            ans |= sum(idx + 1, tt - req[idx][i], i);
-        }
-    }
-    return dp[idx][tt][prev] = ans;
+    ll curr = curr_mask | mask;
+    curr ^= mask;
+    return curr == 0;
 }
 
-void get_path(ll idx, ll tt, ll prev)
+ll dp[2001][2001];
+
+ll sum(ll idx, ll rem)
 {
-    if (idx == arr.size())
+    auto &x = dp[idx][rem];
+    if (idx == n)
+    {
+        return x = (rem == 0);
+    }
+    if (x != -1)
+    {
+        return x;
+    }
+    ll ans = 0;
+    for (ll i = 9; i >= 0; i--)
+    {
+        if (isvalid(arr[idx], mask[i]))
+        {
+            ll xored = popcount(arr[idx] ^ mask[i]);
+            if (rem >= xored)
+            {
+                // cout << idx << " " << i << " " << xored << endl;
+                ans = max(sum(idx + 1, rem - xored), ans);
+            }
+        }
+    }
+    return x = ans;
+}
+
+void trace(ll idx, ll rem)
+{
+    if (idx == n)
     {
         return;
     }
-    for (int i = 9; i >= 0; i--)
+    for (ll i = 9; i >= 0; i--)
     {
-        if (req[idx][i] <= tt && req[idx][i] != -1)
+        if (isvalid(arr[idx], mask[i]))
         {
-            if (dp[idx + 1][tt - req[idx][i]][i] == 1)
+            ll xored = popcount(arr[idx] ^ mask[i]);
+            if (rem >= xored)
             {
-                cout << i;
-                get_path(idx + 1, tt - req[idx][i], i);
-                return;
+                if (dp[idx + 1][rem - xored] == 1)
+                {
+                    cout << i;
+                    trace(idx + 1, rem - (xored));
+                    return;
+                }
             }
         }
     }
@@ -353,43 +361,40 @@ void get_path(ll idx, ll tt, ll prev)
 
 void solve()
 {
-    ll n, k;
     cin >> n >> k;
-    memset(dp, -1, sizeof(dp));
+    arr.resize(n);
+
+    vector<vector<int>> vis(n, vector<int>(m, 0));
+
+    vector<string> number{"1110111", "0010010", "1011101", "1011011", "0111010", "1101011", "1101111", "1010010", "1111111", "1111011"};
+    forn(i, number.size())
+    {
+        mask.pb(masker(number[i]));
+    }
     forn(i, n)
     {
         string s;
         cin >> s;
-        arr.pb(s);
+        arr[i] = masker(s);
     }
-
-    forn(i, n)
+    memset(dp, -1, sizeof(dp));
+    if (sum(0, k))
     {
-        forn(j, 11)
-        {
-            req[i][j] = fun(res[j], arr[i]);
-        }
+        trace(0, k);
     }
-
-    dbg(sum(0, k, 0));
-    // if (sum(0, k, 0))
-    // {
-    //     string s = "";
-    //     get_path(0, k, 0, s);
-    // }
-    // else
-    // {
-    //     dbg(-1);
-    // }
+    else
+    {
+        dbg(-1);
+    }
 }
 
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
+    // #ifndef ONLINE_JUDGE
+    //   freopen("revegetate.in", "r", stdin);
+    //  freopen("revegetate.out", "w", stdout);
+    // #endif
     ll t = 1;
     // cin >> t;
     for (int it = 1; it <= t; it++)

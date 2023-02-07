@@ -289,23 +289,45 @@ void solve()
 {
     string s;
     cin >> s;
-    ll n = s.length();
     v64 even, odd;
-    forn(i, n)
+    forn(i, s.length())
     {
-        ll val = s[i] - '0';
-        if (val % 2)
-        {
-            odd.pb(val);
-        }
-        else
+        ll val = (s[i] - '0');
+        if (val % 2 == 0)
         {
             even.pb(val);
         }
+        else
+        {
+            odd.pb(val);
+        }
     }
-    v64 res(n);
-    merge(all(even), all(odd), begin(res));
-    for (auto t : res)
+    ll i = 0, j = 0;
+    v64 ans;
+    while (i < even.size() && j < odd.size())
+    {
+        if (even[i] < odd[j])
+        {
+            ans.pb(even[i]);
+            i++;
+        }
+        else
+        {
+            ans.pb(odd[j]);
+            j++;
+        }
+    }
+    while (i < even.size())
+    {
+        ans.pb(even[i]);
+        i++;
+    }
+    while (j < odd.size())
+    {
+        ans.pb(odd[j]);
+        j++;
+    }
+    for (auto t : ans)
     {
         cout << t;
     }

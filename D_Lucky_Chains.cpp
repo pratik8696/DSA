@@ -262,7 +262,7 @@ bool isPrime(int x)
 }
 
 // function for sieve
-const int maxx = 1e4 + 5;
+const int maxx = 1e7 + 10;
 ll arr[maxx];
 void sieve()
 {
@@ -270,39 +270,39 @@ void sieve()
     {
         arr[i] = i;
     }
-    for (ll i = 2; i < maxx; i++)
+    for (ll i = 2; i * i <= maxx; i++)
     {
         if (arr[i] != i)
         {
             continue;
         }
-        for (ll j = 2 * i; j < maxx; j += i)
+        for (ll j = 2 * i; j <= maxx; j += i)
         {
             arr[j] = min(arr[j], i);
         }
     }
 }
 
-// function for prime factorization
-v64 pf(ll n)
-{
-    v64 ans;
-    while (n != 1)
-    {
-        ans.pb(arr[n]);
-        n /= arr[n];
-    }
-    return ans;
-}
-
 void solve()
 {
     ll n, m;
     cin >> n >> m;
-    v64 res = pf(abs(n - m));
-    ll mini = INF;
-    for (auto t : res)
+    if (abs(n - m) == 1)
     {
+        dbg(-1);
+        return;
+    }
+    if (__gcd(n, m) > 1)
+    {
+        dbg(0);
+        return;
+    }
+    ll value = abs(n - m);
+    ll mini = INF;
+    while (value != 1)
+    {
+        ll t = arr[value];
+        value /= arr[value];
         ll val = (n / t) * t;
         if (val < n)
         {

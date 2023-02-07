@@ -294,17 +294,13 @@ void solve()
         dbg(-1);
         return;
     }
-    if (n % 2 == 0)
+    if (n % 2)
     {
-        ll res1 = (((n * n) / 4) + 1);
-        ll res2 = (((n * n) / 4) - 1);
-        cout << res1 << " " << res2 << endl;
+        cout << (n * n - 1) / 2 << " " << (n * n + 1) / 2 << endl;
     }
     else
     {
-        ll res1 = (((n * n) + 1) / 2);
-        ll res2 = (((n * n) - 1) / 2);
-        cout << res1 << " " << res2 << endl;
+        cout << (n * n) / 4 - 1 << " " << (n * n) / 4 + 1 << endl;
     }
 }
 
