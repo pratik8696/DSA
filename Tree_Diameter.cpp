@@ -285,61 +285,41 @@ bool isPrime(int x)
     return true;
 }
 
-#include <bits/stdc++.h>
-using namespace std;
+u64 dist;
 
-int ans = 0;
-int dfs(int v, unordered_map<int, int> &vis, unordered_map<int, vector<int>> &adj)
+ll ans = 0;
+
+ll dfs(int v, v64 &vis, uv64 &adj)
 {
     vis[v] = 1;
-    vector<int> vex;
-    int max1 = 0, max2 = 0;
+    v64 curr{0, 0};
     for (auto child : adj[v])
     {
         if (vis[child] == 0)
         {
-            int temp = dfs(child, vis, adj);
-            if (max1 < temp)
-            {
-                max2 = max1;
-                max1 = temp;
-            }
-            else if (max2 < temp)
-            {
-                max2 = temp;
-            }
+            curr.pb(dfs(child, vis, adj));
         }
     }
-    ans = max({ans, max1 + max2, max(max1, max2)});
-    return max(max1, max2) + 1;
-}
-
-int treeDiameter(vector<vector<int>> edges)
-{
-    unordered_map<int, vector<int>> adj;
-    for (auto t : edges)
-    {
-        adj[t[0]].push_back(t[1]);
-        adj[t[1]].push_back(t[0]);
-    }
-    unordered_map<int, int> vis;
-    ans = 0;
-    dfs(1, vis, adj);
-    return ans;
+    sort(all(curr), greater<ll>());
+    ans = max({ans, curr[0] + curr[1], max(curr[0] ,curr[1])});
+    return max(curr[0], curr[1]) + 1;
 }
 
 void solve()
 {
     ll n;
     cin >> n;
-    vv32 edges;
+    uv64 adj;
     forn(i, n - 1)
     {
-        int a, b;
+        ll a, b;
         cin >> a >> b;
-        edges.pb({a, b});
+        adj[a].pb(b);
+        adj[b].pb(a);
     }
-    dbg(treeDiameter(edges));
+    v64 vis(n + 1);
+    dfs(1, vis, adj);
+    dbg(ans);
 }
 
 int main()

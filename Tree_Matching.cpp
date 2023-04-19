@@ -285,49 +285,53 @@ bool isPrime(int x)
     return true;
 }
 
-u64 select_the_edge, dont_select_the_edge;
-void dfs(int v, v64 &vis, uv64 &adj, int par)
+u64 matchmai, naimatchmai;
+bool compare(p64 &a, p64 &b)
+{
+    if (a.first == b.first)
+    {
+        return a.second > b.second;
+    }
+    return a.first < b.first;
+}
+
+void dfs(int v, v64 &vis, uv64 &adj)
 {
     vis[v] = 1;
-    ll cc = 0;
-
+    v64 children;
     for (auto child : adj[v])
     {
         if (vis[child] == 0)
         {
-            cc++;
-            dfs(child, vis, adj, v);
-            dont_select_the_edge[v] += max(select_the_edge[child], dont_select_the_edge[child]);
+            children.pb(child);
         }
     }
-    if (cc)
+    vp64 curr;
+    if (sz(children))
     {
-        ll maxx = -1;
-        ll ans = 1;
-        forn(i, adj[v].size())
+        for (auto child : children)
         {
-            auto child = adj[v][i];
-            if (child == par)
-            {
-                continue;
-            }
-            ans += max(select_the_edge[child], dont_select_the_edge[child]);
+            dfs(child, vis, adj);
+            curr.pb({naimatchmai[child], matchmai[child]});
         }
-        forn(i, adj[v].size())
+        ll a = 0, b = 0;
+        // nai match krna hai
+        for (auto t : curr)
         {
-            auto child = adj[v][i];
-            if (child == par)
-            {
-                continue;
-            }
-            ans -= max(select_the_edge[child], dont_select_the_edge[child]);
-            ans += dont_select_the_edge[child];
-            maxx = max(ans, maxx);
-            ans -= dont_select_the_edge[child];
-            ans += max(select_the_edge[child], dont_select_the_edge[child]);
+            b += max(t.first, t.second);
         }
-
-        select_the_edge[v] = maxx;
+        naimatchmai[v] = b;
+        // match krna hai bhai
+        for (auto t : curr)
+        {
+            b -= max(t.first, t.second);
+            b += t.first;
+            a = max(a, b);
+            b -= t.first;
+            b += max(t.first, t.second);
+        }
+        a += 1;
+        matchmai[v] = a;
     }
 }
 
@@ -344,8 +348,8 @@ void solve()
         adj[b].pb(a);
     }
     v64 vis(n + 1);
-    dfs(1, vis, adj, -1);
-    dbg(max(select_the_edge[1], dont_select_the_edge[1]));
+    dfs(1, vis, adj);
+    dbg(max(matchmai[1], naimatchmai[1]));
 }
 
 int main()

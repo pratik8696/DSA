@@ -289,63 +289,32 @@ void solve()
 {
     ll n, k;
     cin >> n >> k;
+    vector<string> arr(k);
+    map<char, int> m;
     string s;
     cin >> s;
-    sort(all(s));
-    if (s[k - 1] != s[0])
-    {
-        dbg(s[k - 1]);
-        return;
-    }
-    char x = s[0];
-    reverse(all(s));
-    forn(i, k)
-    {
-        s.pop_back();
-    }
-    reverse(all(s));
-    map<char, ll> m;
     for (auto t : s)
     {
         m[t]++;
     }
-    bool flag = 0;
-    if (m.size() == 1)
+    sort(all(s));
+    ll cc = 0, idx = 0;
+    forn(i, ce(n, k))
     {
-        ll siz = m.begin()->second / k + (m.begin()->second % k != 0 ? 1 : 0);
-        cout << x;
-        forn(i, siz)
+        // fill all k;
+        char prev = s[idx];
+        forn(j, k)
         {
-            cout << m.begin()->first;
-        }
-        cout << endl;
-    }
-    else
-    {
-        // split it evenly;
-        string ans = "";
-        ll flag = 0;
-        for (auto t : m)
-        {
-            if (t.second % k)
+            arr[j].pb(s[idx]);
+            if (prev != s[idx])
             {
-                flag = 1;
+                dbg(arr[j]);
+                return;
             }
-            ll val = t.second / k;
-            forn(i, val)
-            {
-                ans.pb(t.first);
-            }
-        }
-        if (flag == 1)
-        {
-            cout << x << s << endl;
-        }
-        else
-        {
-            cout << x << ans << endl;
+            idx++;
         }
     }
+    dbg(arr[0]);
 }
 
 int main()

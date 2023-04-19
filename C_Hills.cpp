@@ -287,14 +287,54 @@ bool isPrime(int x)
 
 ll n;
 v64 arr;
-
-ll sum(ll idx, ll rem)
+ll dp[5001][5001][2];
+ll sum(ll idx, ll rem, ll prev)
 {
-    if (idx == n)
+    // cout << idx << " " << rem << " " << prev << endl;
+    if (rem == 0)
     {
         return 0;
     }
-    // select this point and decrease the height of the front is larger
+    if (idx >= n)
+    {
+        return INF;
+    }
+    auto &x = dp[idx][rem][prev];
+    if (x != -1)
+    {
+        return x;
+    }
+    ll ans = INF;
+    // reduce this one
+    if (prev)
+    {
+        ll back = 0, front = 0;
+        if (min(arr[idx - 2] - 1, arr[idx - 1]) >= arr[idx])
+        {
+            back = min(arr[idx - 2] - 1, arr[idx - 1]) - arr[idx] + 1;
+        }
+        if (idx + 1 < n && arr[idx + 1] >= arr[idx])
+        {
+            front = arr[idx + 1] - arr[idx] + 1;
+        }
+        ans = min(ans, sum(idx + 2, rem - 1, 1) + front + back);
+    }
+    else
+    {
+        ll back = 0, front = 0;
+        if (idx - 1 >= 0 && arr[idx - 1] >= arr[idx])
+        {
+            back = arr[idx - 1] - arr[idx] + 1;
+        }
+        if (idx + 1 < n && arr[idx + 1] >= arr[idx])
+        {
+            front = arr[idx + 1] - arr[idx] + 1;
+        }
+        ans = min(ans, sum(idx + 2, rem - 1, 1) + front + back);
+    }
+    // age bdho
+    ans = min(ans, sum(idx + 1, rem, 0));
+    return x = ans;
 }
 
 void solve()
@@ -305,6 +345,12 @@ void solve()
     {
         cin >> arr[i];
     }
+    memset(dp, -1, sizeof(dp));
+    forsn(i, 1, ce(n, 2) + 1)
+    {
+        cout << sum(0, i, 0) << " ";
+    }
+    cout << endl;
 }
 
 int main()

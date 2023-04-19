@@ -285,18 +285,41 @@ bool isPrime(int x)
     return true;
 }
 
-ll n, power;
-v64 arr;
+ll check(v64 &arr, v64 &hsh, ll h)
+{
+    ll j = 0, cc = 0;
+    forn(i, sz(arr))
+    {
+        while (j < 3 && arr[i] >= h)
+        {
+            h *= hsh[j++];
+        }
+        if (h > arr[i])
+        {
+            h += arr[i] / 2;
+            cc++;
+        }
+    }
+    return cc;
+}
 
 void solve()
 {
-    cin >> n >> power;
-    arr.resize(n);
+    ll n, h;
+    cin >> n >> h;
+    v64 arr(n);
     forn(i, n)
     {
         cin >> arr[i];
     }
-    
+    sort(all(arr));
+    v64 hsh{2, 2, 3};
+    ll ans = 0;
+    do{
+        ans = max(ans, check(arr, hsh, h));
+    }
+    while (next_permutation(all(hsh)));
+    dbg(ans);
 }
 
 int main()

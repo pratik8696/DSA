@@ -255,19 +255,15 @@ public:
 
 void solve()
 {
-    // v a;
-    // a.pp();
-    // cout << a.fname << " " << a.lname << " " << a.roll << " " << a.desg << " " << a.phno << " " << a.parent << ln;
-    ofstream Myfile("filename.txt");
-    Myfile << "Files can be tricky, but its fun enough!";
-    Myfile.close();
-    string mytext;
-    ifstream myread("filename.txt");
-    while(getline(myread,mytext))
-    {
-         cout<<mytext<<endl;
-    }
-    myread.close();
+    student *s, t;
+    des d, r;
+    s = &d;
+    r.fname = "HSHSH";
+    r.lname = "RHRHR";
+    r.roll = 12345678;
+    t = r;
+    cout << t.fname << " " << t.lname << " " << t.roll << " " << endl;
+    // r = &t;
 }
 
 int main()

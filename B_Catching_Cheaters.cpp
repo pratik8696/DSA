@@ -98,223 +98,56 @@ typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 #define sz(x) ((ll)(x).size())
 #define dbg(a) cout << a << endl;
 #define dbg2(a) cout << a << ' ';
-using ld = long double;
-using db = double;
-using str = string; // yay python!
-// INPUT
-#define tcT template <class T
-#define tcTU tcT, class U
-#define tcTUU tcT, class... U
-tcT > void re(T &x)
+
+int n, m;
+string a, b;
+int dp[5001][5001][2];
+int sum(ll idx1, ll idx2, ll on)
 {
-    cin >> x;
-}
-tcTUU > void re(T &t, U &...u)
-{
-    re(t);
-    re(u...);
-}
-
-int find_set(int v, v64 &parent)
-{
-    if (-1 == parent[v])
-        return v;
-    return parent[v] = find_set(parent[v], parent);
-}
-
-void union_sets(int a, int b, v64 &parent)
-{
-    a = find_set(a, parent);
-    b = find_set(b, parent);
-    if (a != b)
-        parent[b] = a;
-}
-
-// function for prime factorization
-vector<pair<ll, ll>> pf(ll n)
-{
-    vector<pair<ll, ll>> prime;
-    for (int i = 2; i <= sqrt(n); i++)
-    {
-        if (n % i == 0)
-        {
-            int count = 0;
-            while (n % i == 0)
-            {
-                count++;
-                n = n / i;
-            }
-            prime.pb(mp(i, count));
-        }
-    }
-    if (n > 1)
-    {
-        prime.pb(mp(n, 1));
-    }
-    return prime;
-}
-
-// sum of digits of a number
-ll sumofno(ll n)
-{
-    ll sum = 0;
-    while (n != 0)
-    {
-        sum += n % 10;
-        n = n / 10;
-    }
-    return sum;
-}
-
-// modular exponentiation
-long long modpow(long long x, long long n, long long p)
-{
-
-    if (n == 0)
-        return 1 % p;
-
-    ll ans = 1, base = x;
-    while (n > 0)
-    {
-        if (n % 2 == 1)
-        {
-            ans = (ans * base) % p;
-            n--;
-        }
-        else
-        {
-            base = (base * base) % p;
-            n /= 2;
-        }
-    }
-    if (ans < 0)
-        ans = (ans + p) % p;
-    return ans;
-}
-
-// const int N = 1e6 + 100;
-// long long fact[N];
-//  initialise the factorial
-// void initfact(){
-// fact[0] = 1;
-// for (int i = 1; i < N; i++)
-//{
-// fact[i] = (fact[i - 1] * i);
-// fact[i] %= MOD;
-// }}
-
-// formula for c
-// ll C(ll n, ll i)
-//{
-// ll res = fact[n];
-// ll div = fact[n - i] * fact[i];
-// div %= MOD;
-// div = modpow(div, MOD - 2, MOD);
-// return (res * div) % MOD;
-// }
-
-long long CW(ll n, ll m)
-{
-    if (m > n - m)
-        m = n - m;
-    long long ans = 1;
-    for (int i = 0; i < m; i++)
-    {
-        ans = ans * (n - i) / (i + 1);
-    }
-    return ans;
-}
-
-// function for fast expo
-ll fastexpo(ll a, ll b)
-{
-    if (b == 0)
-    {
-        return 1;
-    }
-    if (a == 0)
+    if (idx1 == n || idx2 == m)
     {
         return 0;
     }
-    ll y = fastexpo(a, b / 2);
-    if (b % 2 == 0)
+    auto &x = dp[idx1][idx2][on];
+    if (x != -1)
     {
-        return y * y;
+        return x;
     }
-    else
+    int ans = 0;
+    if (on == 1 || on == 0)
     {
-        return a * y * y;
+        // jab tk on hai compare krte jao
+        if (a[idx1] == b[idx2])
+        {
+            ans = max({ans, sum(idx1 + 1, idx2 + 1, 1) + 2, 2});
+        }
+        else
+        {
+            ans = max({ans, sum(idx1 + 1, idx2, 1) - 1, sum(idx1, idx2 + 1, 1) - 1});
+            // ans = max({ans, -1});
+        }
     }
-}
-
-ll popcount(ll n)
-{
-    ll c = 0;
-    for (; n; ++c)
-        n &= n - 1;
-    return c;
-}
-
-ll ce(ll x, ll y)
-{
-    ll res = x / y;
-    if (x % y != 0)
+    // jab off ho jayega then kuch mat kro
+    if (on == 0)
     {
-        res++;
+        // on krdo yha pr se
+        ans = max(ans, sum(idx1 + 1, idx2, 0));
+        ans = max(ans, sum(idx1, idx2 + 1, 0));
     }
-    return res;
-}
-
-bool pow2(ll x)
-{
-    ll res = x & (x - 1);
-    if (res == 0)
-    {
-        return true;
-    }
-    return false;
-}
-
-bool isPrime(int x)
-{
-    for (int d = 2; d * d <= x; d++)
-    {
-        if (x % d == 0)
-            return false;
-    }
-    return true;
+    return x = ans;
 }
 
 void solve()
 {
-    ll n, m;
     cin >> n >> m;
-    string a, b;
-    re(a, b);
-    vv64 dp(a.length() + 1, v64(b.length() + 1));
-    ll ans = 0;
-    forsn(i, 1, a.length() + 1)
-    {
-        forsn(j, 1, b.length() + 1)
-        {
-            dp[i][j] = max(dp[i - 1][j] - 1, dp[i][j - 1] - 1);
-            if (a[i - 1] == b[j - 1])
-            {
-                dp[i][j] = max({dp[i - 1][j - 1] + 2, dp[i][j], 2ll});
-            }
-            ans = max(ans, dp[i][j]);
-        }
-    }
-    dbg(ans);
+    cin >> a >> b;
+    memset(dp, -1, sizeof(dp));
+    dbg(sum(0, 0, 0));
 }
 
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
     ll t = 1;
     // cin >> t;
     for (int it = 1; it <= t; it++)

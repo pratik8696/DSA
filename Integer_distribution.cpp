@@ -287,74 +287,66 @@ bool isPrime(int x)
 
 ll n;
 v64 arr;
-ll dp1[21][1048577];
-ll dp2[21][1048577];
-ll sum_min(ll idx, ll mask)
+ll dp1[1 << 20];
+ll dp2[1 << 20];
+ll sum1(ll mask)
 {
-    if (idx == n)
+    if (mask == (1 << n) - 1)
     {
         return 0;
     }
-    ll ans = INF;
-    auto &x = dp1[idx][mask];
+    auto &x = dp1[mask];
     if (x != -1)
     {
         return x;
     }
-    ll check = mask & (1 << idx);
-    if (check == 0)
+    ll ans = INF;
+    forn(i, n)
     {
-        forn(i, n)
+        ll res1 = mask & (1 << i);
+        if (res1 == 0)
         {
-            ll checker = mask & (1 << i);
-            if (idx != i)
+            ll curr_mask = mask | 1 << i;
+            forsn(j, i + 1, n)
             {
-                if (checker == 0)
+                ll res2 = curr_mask & (1 << j);
+                if (res2 == 0)
                 {
-                    ll new_mask = mask | (1 << idx) | (1 << i);
-                    ans = min(ans, sum_min(idx + 1, new_mask) + (arr[idx] ^ arr[i]));
+                    ans = min(ans, sum1(curr_mask | 1 << j) + (arr[i] ^ arr[j]));
                 }
             }
         }
-    }
-    else
-    {
-        ans = min(sum_min(idx + 1, mask), ans);
     }
     return x = ans;
 }
 
-ll sum_max(ll idx, ll mask)
+ll sum2(ll mask)
 {
-    if (idx == n)
+    if (mask == (1 << n) - 1)
     {
         return 0;
     }
-    ll ans = 0;
-    auto &x = dp2[idx][mask];
+    auto &x = dp2[mask];
     if (x != -1)
     {
         return x;
     }
-    ll check = mask & (1 << idx);
-    if (check == 0)
+    ll ans = -INF;
+    forn(i, n)
     {
-        forn(i, n)
+        ll res1 = mask & (1 << i);
+        if (res1 == 0)
         {
-            ll checker = mask & (1 << i);
-            if (idx != i)
+            ll curr_mask = mask | 1 << i;
+            forsn(j, i + 1, n)
             {
-                if (checker == 0)
+                ll res2 = curr_mask & (1 << j);
+                if (res2 == 0)
                 {
-                    ll new_mask = mask | (1 << idx) | (1 << i);
-                    ans = max(ans, sum_max(idx + 1, new_mask) + (arr[idx] ^ arr[i]));
+                    ans = max(ans, sum2(curr_mask | 1 << j) + (arr[i] ^ arr[j]));
                 }
             }
         }
-    }
-    else
-    {
-        ans = max(sum_max(idx + 1, mask), ans);
     }
     return x = ans;
 }
@@ -362,16 +354,14 @@ ll sum_max(ll idx, ll mask)
 void solve()
 {
     cin >> n;
+    arr.resize(n);
     forn(i, n)
     {
-        ll x;
-        cin >> x;
-        arr.pb(x);
+        cin >> arr[i];
     }
     memset(dp1, -1, sizeof(dp1));
     memset(dp2, -1, sizeof(dp2));
-    dbg2(sum_min(0, 0));
-    dbg(sum_max(0, 0));
+    cout << sum1(0) << " " << sum2(0) << endl;
 }
 
 int main()

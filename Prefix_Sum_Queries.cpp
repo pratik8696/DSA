@@ -287,14 +287,19 @@ bool isPrime(int x)
 
 struct node
 {
-    ll pref;
+    ll left_max;
     ll sum;
-    node operator+(node &a)
+    node()
     {
-        node temp;
-        temp.pref = max({a.pref + this->sum, a.sum + this->sum, this->pref});
-        temp.sum = a.sum + this->sum;
-        return temp;
+        this->left_max = 0;
+        this->sum = 0;
+    }
+    node operator+(node b)
+    {
+        node a;
+        a.left_max = max({this->left_max, this->sum + b.sum, this->sum + b.left_max, 0ll});
+        a.sum = this->sum + b.sum;
+        return a;
     }
 };
 
@@ -302,7 +307,7 @@ void build(ll arr[], node tree[], ll s, ll e, ll tn)
 {
     if (s == e)
     {
-        tree[tn].pref = arr[s];
+        tree[tn].left_max = arr[s];
         tree[tn].sum = arr[s];
         return;
     }
@@ -312,36 +317,23 @@ void build(ll arr[], node tree[], ll s, ll e, ll tn)
     tree[tn] = tree[2 * tn] + tree[(2 * tn) + 1];
 }
 
-void build(ll arr[], ll tree[], ll s, ll e, ll tn)
-{
-    if (s == e)
-    {
-        tree[tn] = arr[s];
-        return;
-    }
-    ll mid = (s + e) / 2;
-    build(arr, tree, s, mid, 2 * tn);
-    build(arr, tree, mid + 1, e, (2 * tn) + 1);
-    tree[tn] = tree[2 * tn] + tree[(2 * tn) + 1];
-}
-
-ll query(ll arr[], node tree[], ll s, ll e, ll tn, ll l, ll r)
+node query(ll arr[], node tree[], ll s, ll e, ll tn, ll l, ll r)
 {
     ll mid = (s + e) / 2;
     // out
     if (s > r || l > e)
     {
-        return 0;
+        node a;
+        return a;
     }
     // in
     if (s >= l && r >= e)
     {
-        return tree[tn].pref;
+        return tree[tn];
     }
-
-    ll ans1 = query(arr, tree, s, mid, 2 * tn, l, r);
-    ll ans2 = query(arr, tree, mid + 1, e, (2 * tn) + 1, l, r);
-    return max(ans1, ans2);
+    node ans1 = query(arr, tree, s, mid, 2 * tn, l, r);
+    node ans2 = query(arr, tree, mid + 1, e, (2 * tn) + 1, l, r);
+    return ans1 + ans2;
 }
 
 void update(ll arr[], node tree[], ll s, ll e, ll tn, ll idx, ll val)
@@ -349,7 +341,7 @@ void update(ll arr[], node tree[], ll s, ll e, ll tn, ll idx, ll val)
     if (s == e)
     {
         arr[idx] = val;
-        tree[tn].pref = val;
+        tree[tn].left_max = val;
         tree[tn].sum = val;
         return;
     }
@@ -376,19 +368,23 @@ void solve()
         cin >> arr[i];
     }
     build(arr, tree, 0, n - 1, 1);
-    // cout << tree[1].pref << " " << tree[1].sum << endl;
     while (q--)
     {
         ll opt;
-        ll a, b;
-        cin >> opt >> a >> b;
+        cin >> opt;
         if (opt == 1)
         {
-            update(arr, tree, 0, n - 1, 1, a - 1, b);
+            ll idx, val;
+            cin >> idx >> val;
+            idx--;
+            update(arr, tree, 0, n - 1, 1, idx, val);
         }
         else
         {
-            cout << query(arr, tree, 0, n-1, 1, a - 1, b - 1) << endl;
+            ll a, b;
+            cin >> a >> b;
+            a--, b--;
+            dbg(max(query(arr, tree, 0, n - 1, 1, a, b).left_max, 0ll));
         }
     }
 }

@@ -285,71 +285,40 @@ bool isPrime(int x)
     return true;
 }
 
-v64 arr;
-
-bool sum(ll idx, v64 &dp)
-{
-    ll n = arr.size();
-    if (idx == n)
-    {
-        return 1;
-    }
-    bool ans = 0;
-    if (dp[idx] != -1)
-    {
-        return dp[idx];
-    }
-    if (idx + arr[idx] + 1 <= n)
-    {
-        if(sum(idx + arr[idx] + 1, dp))
-        {
-            ans=1;
-        }
-    }
-    ll cc = 1;
-    if(ans == 0)
-    {
-        forsn(i, idx + 1, n)
-        {
-            if (arr[i] == cc)
-            {
-                if(sum(i + 1, dp))
-                {
-                    ans=1;
-                    break;
-                }
-            }
-            cc++;
-        }
-    }
-    return dp[idx] = ans;
-}
-
 void solve()
 {
     ll n;
     cin >> n;
-    arr.resize(n);
+    ll arr[n + 1];
     forn(i, n)
     {
-        cin>>arr[i];
+        cin >> arr[i + 1];
     }
-    if (n == 1)
+    v64 dp(n + 1);
+    dp[0] = 1;
+    forsn(i, 1, n + 1)
     {
-        dbg("NO");
-        return;
+        // agr age ka dekh rha
+        if (i + arr[i] <= n && dp[i - 1])
+        {
+            dp[i + arr[i]] = 1;
+        }
+        // piche ka dekh rha to
+        if (i - arr[i] - 1 >= 0 && dp[i - arr[i] - 1])
+        {
+            dp[i] = 1;
+        }
     }
-    v64 dp(n + 1, -1);
-    dbg((sum(0, dp) == 1 ? "YES" : "NO"));
+    dbg((dp[n] == 1 ? "YES" : "NO"));
 }
 
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
+    // #ifndef ONLINE_JUDGE
+    //   freopen("revegetate.in", "r", stdin);
+    //  freopen("revegetate.out", "w", stdout);
+    // #endif
     ll t = 1;
     cin >> t;
     for (int it = 1; it <= t; it++)

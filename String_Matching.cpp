@@ -1,3 +1,55 @@
+void build(ll arr[], ll tree[], ll s, ll e, ll tn)
+{
+    if (s == e)
+    {
+        tree[tn] = arr[s];
+        return;
+    }
+    ll mid = (s + e) / 2;
+    build(arr, tree, s, mid, 2 * tn);
+    build(arr, tree, mid + 1, e, (2 * tn) + 1);
+    tree[tn] = tree[2 * tn] + tree[(2 * tn) + 1];
+}
+
+ll query(ll arr[], ll tree[], ll s, ll e, ll tn, ll l, ll r)
+{
+    ll mid = (s + e) / 2;
+    // out
+    if (s > r || l > e)
+    {
+        return 0;
+    }
+    // in
+    if (s >= l && r >= e)
+    {
+        return tree[tn];
+    }
+
+    ll ans1 = query(arr, tree, s, mid, 2 * tn, l, r);
+    ll ans2 = query(arr, tree, mid + 1, e, (2 * tn) + 1, l, r);
+    return ans1 + ans2;
+}
+
+void update(ll arr[], ll tree[], ll s, ll e, ll tn, ll idx, ll val)
+{
+    if (s == e)
+    {
+        arr[idx] = val;
+        tree[tn] = val;
+        return;
+    }
+    ll mid = (s + e) / 2;
+    if (idx > mid)
+    {
+        update(arr, tree, mid + 1, e, (2 * tn) + 1, idx, val);
+    }
+    else
+    {
+        update(arr, tree, s, mid, 2 * tn, idx, val);
+    }
+    tree[tn] = tree[2 * tn] + tree[(2 * tn) + 1];
+}
+
 #pragma GCC optimize("Ofast")
 #pragma GCC target("sse,sse2,sse3,ssse3,sse4,popcnt,abm,mmx,avx,avx2,fma")
 #pragma GCC optimize("unroll-loops")
@@ -113,21 +165,6 @@ tcTUU > void re(T &t, U &...u)
 {
     re(t);
     re(u...);
-}
-
-int find_set(int v, v64 &parent)
-{
-    if (-1 == parent[v])
-        return v;
-    return parent[v] = find_set(parent[v], parent);
-}
-
-void union_sets(int a, int b, v64 &parent)
-{
-    a = find_set(a, parent);
-    b = find_set(b, parent);
-    if (a != b)
-        parent[b] = a;
 }
 
 // function for prime factorization
@@ -285,52 +322,25 @@ bool isPrime(int x)
     return true;
 }
 
-v64 prefix_function(string &s)
-{
-    ll n = s.length();
-    v64 pi(n);
-    forsn(i, 1, n)
-    {
-        ll prev = pi[i - 1];
-        while (prev > 0 && s[prev] != s[i])
-        {
-            prev = pi[prev - 1];
-        }
-        if (s[i] == s[prev])
-        {
-            prev++;
-        }
-        pi[i] = prev;
-    }
-    return pi;
-}
-
 void solve()
 {
-    string a, b;
-    cin >> a >> b;
-    string c = b + "&" + a;
-    v64 v = prefix_function(c);
-    ll ans = 0;
-    for (auto t : v)
+    ll n;
+    cin >> n;
+    ll arr[n];
+    forn(i, n)
     {
-        if (t == b.length())
-        {
-            ans++;
-        }
+        cin >> arr[i];
     }
-    dbg(ans);
 }
-
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
-    ll t = 1;
-    // cin >> t;
+    // #ifndef ONLINE_JUDGE
+    //   freopen("revegetate.in", "r", stdin);
+    //  freopen("revegetate.out", "w", stdout);
+    // #endif
+    ll t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

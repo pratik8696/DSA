@@ -52,14 +52,37 @@ typedef unordered_map<p64, ll> up64;
 typedef unordered_map<ll, vp64> uvp64;
 typedef priority_queue<ll> pq64;
 typedef priority_queue<ll, v64, greater<ll>> pqs64;
-ll MOD = 1000000007;
+const int MOD = 1000000007;
 double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
 #define rforn(i, s) for (ll i = s; i >= 0; i--)
 #define rforsn(i, s, e) for (ll i = s; i >= e; i--)
+struct custom_hash
+{
+    static uint64_t splitmix64(uint64_t x)
+    {
+        x += 0x9e3779b97f4a7c15;
+        x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
+        x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
+        return x ^ (x >> 31);
+    }
+
+    size_t operator()(p64 x) const
+    {
+        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+        return splitmix64(x.first + FIXED_RANDOM) ^ splitmix64(x.second + FIXED_RANDOM);
+    }
+    size_t operator()(ll x) const
+    {
+        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+        return splitmix64(x + FIXED_RANDOM);
+    }
+};
+typedef gp_hash_table<ll, ll, custom_hash> fm64;
+typedef gp_hash_table<p64, ll, custom_hash> fmp64;
+
 #define ln "\n"
-#define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
 #define ie insert
 #define pb push_back
@@ -73,24 +96,39 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
+#define dbg(a) cout << a << endl;
+#define dbg2(a) cout << a << ' ';
+using ld = long double;
+using db = double;
+using str = string; // yay python!
+// INPUT
+#define tcT template <class T
+#define tcTU tcT, class U
+#define tcTUU tcT, class... U
+tcT > void re(T &x)
+{
+    cin >> x;
+}
+tcTUU > void re(T &t, U &...u)
+{
+    re(t);
+    re(u...);
+}
 
-// dsu functions
-// void make_set(int v) {
-//   parent[v] = v;
-//}
+int find_set(int v, v64 &parent)
+{
+    if (-1 == parent[v])
+        return v;
+    return parent[v] = find_set(parent[v], parent);
+}
 
-// int find_set(int v,v64 &parent) {
-//   if (-1 == parent[v])
-// return v;
-// return parent[v]=find_set(parent[v],parent);
-// }
-
-// void union_sets(int a, int b,v64 &parent) {
-//   a = find_set(a,parent);
-// b = find_set(b,parent);
-// if (a != b)
-// parent[b] = a;
-// }
+void union_sets(int a, int b, v64 &parent)
+{
+    a = find_set(a, parent);
+    b = find_set(b, parent);
+    if (a != b)
+        parent[b] = a;
+}
 
 // function for prime factorization
 vector<pair<ll, ll>> pf(ll n)
@@ -252,9 +290,9 @@ void bfs(uv64 &adj, v64 &dist, ll src, v64 &parent)
     queue<ll> q;
     v64 vis(dist.size(), 0);
     q.push(src);
-    dist[src] = 1;
+    dist[src] = 0;
+    parent[src] = src;
     vis[src] = 1;
-    parent[src] = 1;
     while (!q.empty())
     {
         ll curr = q.front();
@@ -274,18 +312,18 @@ void bfs(uv64 &adj, v64 &dist, ll src, v64 &parent)
 
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
+    ll n, q;
+    cin >> n >> q;
     uv64 adj;
     forn(i, n - 1)
     {
-        ll x, y;
-        cin >> x >> y;
-        adj[x].pb(y);
-        adj[y].pb(x);
+        ll a, b;
+        cin >> a >> b;
+        adj[a].pb(b);
+        adj[b].pb(a);
     }
     v64 parent(n + 1, 0);
-    vv64 sparse(n + 1, v64(31, -1));
+    ll sparse[n + 1][30];
     v64 lvl(n + 1, 0);
     bfs(adj, lvl, 1, parent);
     forsn(i, 1, n + 1)
@@ -299,12 +337,12 @@ void solve()
             sparse[i][j] = sparse[sparse[i][j - 1]][j - 1];
         }
     }
-    while (m--)
+    while (q--)
     {
-        ll a, b, oa, ob;
+        ll a, b, lca = 0;
         cin >> a >> b;
+        ll aa = a, bb = b;
         ll rem = lvl[a] - lvl[b];
-        oa = a, ob = b;
         if (rem < 0)
         {
             swap(a, b);
@@ -317,7 +355,6 @@ void solve()
             steps -= fastexpo(2, __lg(steps));
         }
         // cout << a << " " << b << ln;
-        ll lca;
         if (a == b)
         {
             lca = a;
@@ -334,17 +371,18 @@ void solve()
             }
             lca = sparse[a][0];
         }
-        cout << lvl[oa] + lvl[ob] - 2 * lvl[lca] << ln;
+        // dbg(lca);
+        dbg(lvl[aa] + lvl[bb] - 2 * lvl[lca]);
     }
 }
 
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
+    // #ifndef ONLINE_JUDGE
+    //   freopen("revegetate.in", "r", stdin);
+    //  freopen("revegetate.out", "w", stdout);
+    // #endif
     ll t = 1;
     // cin >> t;
     for (int it = 1; it <= t; it++)

@@ -52,14 +52,37 @@ typedef unordered_map<p64, ll> up64;
 typedef unordered_map<ll, vp64> uvp64;
 typedef priority_queue<ll> pq64;
 typedef priority_queue<ll, v64, greater<ll>> pqs64;
-ll MOD = 1000000007;
+const int MOD = 1000000007;
 double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
 #define rforn(i, s) for (ll i = s; i >= 0; i--)
 #define rforsn(i, s, e) for (ll i = s; i >= e; i--)
+struct custom_hash
+{
+    static uint64_t splitmix64(uint64_t x)
+    {
+        x += 0x9e3779b97f4a7c15;
+        x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
+        x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
+        return x ^ (x >> 31);
+    }
+
+    size_t operator()(p64 x) const
+    {
+        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+        return splitmix64(x.first + FIXED_RANDOM) ^ splitmix64(x.second + FIXED_RANDOM);
+    }
+    size_t operator()(ll x) const
+    {
+        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+        return splitmix64(x + FIXED_RANDOM);
+    }
+};
+typedef gp_hash_table<ll, ll, custom_hash> fm64;
+typedef gp_hash_table<p64, ll, custom_hash> fmp64;
+
 #define ln "\n"
-#define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
 #define ie insert
 #define pb push_back
@@ -73,26 +96,193 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
-
-ll timer = 0;
-u64 intime, outtime;
-
-void dfs(int v, v64 &vis, uv64 &adj, ll arr[], v64 &val)
+#define dbg(a) cout << a << endl;
+#define dbg2(a) cout << a << ' ';
+using ld = long double;
+using db = double;
+using str = string; // yay python!
+// INPUT
+#define tcT template <class T
+#define tcTU tcT, class U
+#define tcTUU tcT, class... U
+tcT > void re(T &x)
 {
-    vis[v] = 1;
-    arr[timer] = val[v];
-    intime[v] = timer;
-    ++timer;
-    for (auto child : adj[v])
+    cin >> x;
+}
+tcTUU > void re(T &t, U &...u)
+{
+    re(t);
+    re(u...);
+}
+
+int find_set(int v, v64 &parent)
+{
+    if (-1 == parent[v])
+        return v;
+    return parent[v] = find_set(parent[v], parent);
+}
+
+void union_sets(int a, int b, v64 &parent)
+{
+    a = find_set(a, parent);
+    b = find_set(b, parent);
+    if (a != b)
+        parent[b] = a;
+}
+
+// function for prime factorization
+vector<pair<ll, ll>> pf(ll n)
+{
+    vector<pair<ll, ll>> prime;
+    for (int i = 2; i <= sqrt(n); i++)
     {
-        if (vis[child] == 0)
+        if (n % i == 0)
         {
-            dfs(child, vis, adj, arr, val);
+            int count = 0;
+            while (n % i == 0)
+            {
+                count++;
+                n = n / i;
+            }
+            prime.pb(mp(i, count));
         }
     }
-    arr[timer] = val[v];
-    outtime[v] = timer;
-    ++timer;
+    if (n > 1)
+    {
+        prime.pb(mp(n, 1));
+    }
+    return prime;
+}
+
+// sum of digits of a number
+ll sumofno(ll n)
+{
+    ll sum = 0;
+    while (n != 0)
+    {
+        sum += n % 10;
+        n = n / 10;
+    }
+    return sum;
+}
+
+// modular exponentiation
+long long modpow(long long x, long long n, long long p)
+{
+
+    if (n == 0)
+        return 1 % p;
+
+    ll ans = 1, base = x;
+    while (n > 0)
+    {
+        if (n % 2 == 1)
+        {
+            ans = (ans * base) % p;
+            n--;
+        }
+        else
+        {
+            base = (base * base) % p;
+            n /= 2;
+        }
+    }
+    if (ans < 0)
+        ans = (ans + p) % p;
+    return ans;
+}
+
+// const int N = 1e6 + 100;
+// long long fact[N];
+//  initialise the factorial
+// void initfact(){
+// fact[0] = 1;
+// for (int i = 1; i < N; i++)
+//{
+// fact[i] = (fact[i - 1] * i);
+// fact[i] %= MOD;
+// }}
+
+// formula for c
+// ll C(ll n, ll i)
+//{
+// ll res = fact[n];
+// ll div = fact[n - i] * fact[i];
+// div %= MOD;
+// div = modpow(div, MOD - 2, MOD);
+// return (res * div) % MOD;
+// }
+
+long long CW(ll n, ll m)
+{
+    if (m > n - m)
+        m = n - m;
+    long long ans = 1;
+    for (int i = 0; i < m; i++)
+    {
+        ans = ans * (n - i) / (i + 1);
+    }
+    return ans;
+}
+
+// function for fast expo
+ll fastexpo(ll a, ll b)
+{
+    if (b == 0)
+    {
+        return 1;
+    }
+    if (a == 0)
+    {
+        return 0;
+    }
+    ll y = fastexpo(a, b / 2);
+    if (b % 2 == 0)
+    {
+        return y * y;
+    }
+    else
+    {
+        return a * y * y;
+    }
+}
+
+ll popcount(ll n)
+{
+    ll c = 0;
+    for (; n; ++c)
+        n &= n - 1;
+    return c;
+}
+
+ll ce(ll x, ll y)
+{
+    ll res = x / y;
+    if (x % y != 0)
+    {
+        res++;
+    }
+    return res;
+}
+
+bool pow2(ll x)
+{
+    ll res = x & (x - 1);
+    if (res == 0)
+    {
+        return true;
+    }
+    return false;
+}
+
+bool isPrime(int x)
+{
+    for (int d = 2; d * d <= x; d++)
+    {
+        if (x % d == 0)
+            return false;
+    }
+    return true;
 }
 
 void build(ll arr[], ll tree[], ll s, ll e, ll tn)
@@ -147,21 +337,35 @@ void update(ll arr[], ll tree[], ll s, ll e, ll tn, ll idx, ll val)
     tree[tn] = tree[2 * tn] + tree[(2 * tn) + 1];
 }
 
-s64 sunil;
+u64 indegree, outdegree;
+ll timer = 0;
+
+void dfs(int v, v64 &vis, uv64 &adj, ll path[])
+{
+    vis[v] = 1;
+    path[timer] = v;
+    indegree[v] = timer++;
+    for (auto child : adj[v])
+    {
+        if (vis[child] == 0)
+        {
+            dfs(child, vis, adj, path);
+        }
+    }
+    path[timer] = v;
+    outdegree[v] = timer++;
+}
 
 void solve()
 {
-    timer = 0;
-    intime.clear();
-    outtime.clear();
     ll n, m;
     cin >> n >> m;
-    uv64 adj;
-    v64 val(n + 1, 0);
-    forn(i, n)
+    u64 val;
+    forsn(i, 1, n + 1)
     {
-        cin >> val[i + 1];
+        cin >> val[i];
     }
+    uv64 adj;
     forn(i, n - 1)
     {
         ll a, b;
@@ -169,42 +373,32 @@ void solve()
         adj[a].pb(b);
         adj[b].pb(a);
     }
-    ll arr[2 * n], tree[8 * n];
+    ll path[2 * n];
+    ll tree[8 * n];
     v64 vis(n + 1, 0);
-    dfs(1, vis, adj, arr, val);
-    build(arr, tree, 0, (2 * n) - 1, 1);
+    dfs(1, vis, adj, path);
+    forn(i, 2 * n)
+    {
+        path[i] = val[path[i]];
+    }
+    n *= 2;
+    build(path, tree, 0, n - 1, 1);
     while (m--)
     {
-        ll val;
-        cin >> val;
-        if (val == 2)
+        ll opt;
+        cin >> opt;
+        if (opt == 2)
         {
             ll x;
             cin >> x;
-            // cout << intime[x] << " " << outtime[x] << ln;
-            ll val = query(arr, tree, 0, (2 * n) - 1, 1, intime[x], outtime[x]) / 2;
-            ll res = sqrt(val);
-            // cout << res << endl;
-            if (res * res == val)
-            {
-                cout << 0 << endl;
-            }
-            else
-            {
-                res++;
-                while ((res * res - val) % 2)
-                {
-                    res++;
-                }
-                cout << (res * res - val) / 2 << endl;
-            }
+            dbg(query(path, tree, 0, n - 1, 1, indegree[x], outdegree[x]) / 2);
         }
         else
         {
             ll a, b;
             cin >> a >> b;
-            update(arr, tree, 0, (2 * n) - 1, 1, intime[a], b);
-            update(arr, tree, 0, (2 * n) - 1, 1, outtime[a], b);
+            update(path, tree, 0, n - 1, 1, indegree[a], b);
+            update(path, tree, 0, n - 1, 1, outdegree[a], b);
         }
     }
 }
@@ -217,7 +411,7 @@ int main()
     //  freopen("revegetate.out", "w", stdout);
     // #endif
     ll t = 1;
-    cin >> t;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

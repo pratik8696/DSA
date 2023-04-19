@@ -285,55 +285,57 @@ bool isPrime(int x)
     return true;
 }
 
+vector<pair<ll, ll>> adj[2000001];
+ll dis[2000001];
 void solve()
 {
+
     ll n, m;
     cin >> n >> m;
-    uvp64 adj;
-    forn(i, m)
+    for (ll i = 0; i < m; i++)
     {
         ll a, b, c;
-        re(a, b, c);
-        adj[a].pb({b, c});
+        cin >> a >> b >> c;
+        // --a;
+        // --b;
+        adj[a].push_back({b, c});
     }
-    v64 dist(n + 1, 1e15);
-    set<p64> s;
-    s.ie({0, 1});
-    dist[1] = 0;
-    while (s.size())
+    for (ll i = 2; i <= n; i++)
+        dis[i] = 1e15;
+    set<pair<ll, ll>> st;
+    dis[1] = 0;
+    st.insert({0, 1});
+    while (st.size())
     {
-        auto it = *s.begin();
-        ll curr = it.se;
-        s.erase(s.begin());
-        for (auto t : adj[curr])
+        pair<ll, ll> p = *st.begin();
+        st.erase(st.begin());
+        ll wt = p.first;
+        ll u = p.second;
+        for (auto t : adj[u])
         {
-            auto child = t.first;
-            auto wt = t.second;
-            if (dist[child] > dist[curr] + wt)
+            pair<ll, ll> q = t;
+            ll v = q.first;
+            ll x = q.second;
+            if (dis[v] > dis[u] + x)
             {
-                if (s.find({dist[child], child}) != s.end())
-                {
-                    s.erase({dist[child], child});
-                }
-                dist[child] = wt + dist[curr];
-                s.ie({dist[child], child});
+                if (st.find({dis[v], v}) != st.end())
+                    st.erase({dis[v], v});
+                dis[v] = dis[u] + x;
+                st.insert({dis[v], v});
             }
         }
     }
-    forsn(i, 1, n + 1)
-    {
-        cout << dist[i] << " ";
-    }
-    cout << endl;
+    for (ll i = 1; i <= n; i++)
+        cout << dis[i] << " ";
 }
 
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
+    // #ifndef ONLINE_JUDGE
+    //   freopen("revegetate.in", "r", stdin);
+    //  freopen("revegetate.out", "w", stdout);
+    // #endif
     ll t = 1;
     // cin >> t;
     for (int it = 1; it <= t; it++)

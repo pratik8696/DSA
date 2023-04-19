@@ -285,26 +285,27 @@ bool isPrime(int x)
     return true;
 }
 
-ll dp[11][2][90][90];
 string s;
-ll k;
-ll sum(ll idx, bool flag, ll summ, ll num)
+ll n, m, k;
+ll dp[11][2][100][100];
+ll sum(ll idx, bool last, ll y, ll value)
 {
-    if (idx == s.length())
+    if (idx == sz(s))
     {
-        return (summ == 0 && num == 0);
+        return ((y == 0) & (value == 0));
     }
-    if (dp[idx][flag][summ][num] != -1)
+    auto &x = dp[idx][last][y][value];
+    if (x != -1)
     {
-        return dp[idx][flag][summ][num];
+        return x;
     }
-    ll till = flag ? s[idx] - '0' : 9;
+    ll till = (last == 1 ? s[idx] - '0' : 9);
     ll ans = 0;
     forn(i, till + 1)
     {
-        ans += sum(idx + 1, flag & (i == till), (summ + i) % k, (num * 10 + i) % k);
+        ans += sum(idx + 1, last & (i == till), ((y + i) % k), (value * 10 + i) % k);
     }
-    return dp[idx][flag][summ][num] = ans;
+    return x = ans;
 }
 
 ll f(string &x)
@@ -316,14 +317,22 @@ ll f(string &x)
 
 void solve()
 {
-    string a, b;
-    cin >> a >> b >> k;
-    ll i = a.length() - 1;
+    cin >> n >> m >> k;
+    if (k > 81)
+    {
+        dbg(0);
+        return;
+    }
+    string a = to_string(n);
+    string b = to_string(m);
+    ll i = sz(a) - 1;
     while (i >= 0 && a[i] == '0')
     {
-        a[i--] = '9';
+        a[i] = '9';
+        i--;
     }
     a[i]--;
+    // dbg(f(b));
     // dbg(f(a));
     dbg(f(b) - f(a));
 }
@@ -331,10 +340,10 @@ void solve()
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
+    // #ifndef ONLINE_JUDGE
+    //   freopen("revegetate.in", "r", stdin);
+    //  freopen("revegetate.out", "w", stdout);
+    // #endif
     ll t = 1;
     cin >> t;
     for (int it = 1; it <= t; it++)

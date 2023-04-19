@@ -285,8 +285,6 @@ bool isPrime(int x)
     return true;
 }
 
-v64 poww;
-
 void build(ll arr[], ll tree[], ll s, ll e, ll tn)
 {
     if (s == e)
@@ -302,6 +300,18 @@ void build(ll arr[], ll tree[], ll s, ll e, ll tn)
 
 ll query(ll arr[], ll tree[], ll s, ll e, ll tn, ll l, ll r, ll lazy[])
 {
+    if (lazy[tn] != 0)
+    {
+        ll x = lazy[tn];
+        lazy[tn] = 0;
+        tree[tn] = x;
+        if (s != e)
+        {
+            lazy[2 * tn] = x;
+            lazy[(2 * tn) + 1] = x;
+        }
+    }
+
     ll mid = (s + e) / 2;
     // out
     if (s > r || l > e)
@@ -343,7 +353,11 @@ void update(ll arr[], ll tree[], ll s, ll e, ll tn, ll l, ll r, ll val, ll lazy[
     {
         // insert in lazy
         tree[tn] = val;
-        lazy[tn] = val;
+        if (s != e)
+        {
+            lazy[2 * tn] = val;
+            lazy[(2 * tn) + 1] = val;
+        }
         return;
     }
 
@@ -354,67 +368,68 @@ void update(ll arr[], ll tree[], ll s, ll e, ll tn, ll l, ll r, ll val, ll lazy[
 }
 
 ll timer;
-u64 intime, outtime;
-void dfs(int v, v64 &vis, uv64 &adj, ll arr[], ll col[])
+u64 in, out;
+void dfs(int v, v64 &vis, uv64 &adj, ll arr[])
 {
     vis[v] = 1;
-    intime[v] = timer;
-    arr[timer] = col[v];
-    // arr[timer] = v;
-    timer++;
+    arr[timer] = v;
+    in[v] = timer++;
     for (auto child : adj[v])
     {
         if (vis[child] == 0)
         {
-            dfs(child, vis, adj, arr, col);
+            dfs(child, vis, adj, arr);
         }
     }
-    outtime[v] = timer;
-    arr[timer] = col[v];
-    // arr[timer] = v;
-    timer++;
+    arr[timer] = v;
+    out[v] = timer++;
 }
 
 void solve()
 {
-    ll n, m;
-    cin >> n >> m;
-    ll col[n + 1];
+    ll n, q;
+    cin >> n >> q;
+    ll arr[2 * n];
+    ll tree[8 * n];
+    ll lazy[8 * n];
+    memset(tree, 0, sizeof(tree));
+    memset(lazy, 0, sizeof(lazy));
+    u64 type;
     forn(i, n)
     {
-        cin >> col[i + 1];
-        col[i + 1] = poww[col[i + 1]];
+        cin >> type[i + 1];
     }
     uv64 adj;
     forn(i, n - 1)
     {
         ll a, b;
-        re(a, b);
+        cin >> a >> b;
         adj[a].pb(b);
         adj[b].pb(a);
     }
-    // construct the euler tour
-    ll arr[2 * n], tree[8 * n], lazy[8 * n];
-    fill(al(tree, 8 * n), 0);
-    fill(al(lazy, 8 * n), 0);
-    v64 vis(n + 1, 0);
-    dfs(1, vis, adj, arr, col);
-    build(arr, tree, 0, (2 * n) - 1, 1);
-    while (m--)
+    v64 vis(n + 1);
+    dfs(1, vis, adj, arr);
+    forn(i, timer)
+    {
+        arr[i] = fastexpo(2, type[arr[i]]);
+    }
+    n *= 2;
+    build(arr, tree, 0, n - 1, 1);
+    while (q--)
     {
         ll opt;
-        re(opt);
+        cin >> opt;
         if (opt == 1)
         {
-            ll a, x;
-            re(a, x);
-            update(arr, tree, 0, (2 * n) - 1, 1, intime[a], outtime[a], poww[x], lazy);
+            ll v, c;
+            cin >> v >> c;
+            update(arr, tree, 0, n - 1, 1, in[v], out[v], fastexpo(2, c), lazy);
         }
         else
         {
-            ll a;
-            cin >> a;
-            cout << popcount(query(arr, tree, 0, (2 * n) - 1, 1, intime[a], outtime[a], lazy)) << ln;
+            ll x;
+            cin >> x;
+            dbg(popcount(query(arr, tree, 0, n - 1, 1, in[x], out[x], lazy)));
         }
     }
 }
@@ -422,14 +437,10 @@ void solve()
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
-    forn(i, 62)
-    {
-        poww.pb(fastexpo(2, i));
-    }
+    // #ifndef ONLINE_JUDGE
+    //   freopen("revegetate.in", "r", stdin);
+    //  freopen("revegetate.out", "w", stdout);
+    // #endif
     ll t = 1;
     // cin >> t;
     for (int it = 1; it <= t; it++)

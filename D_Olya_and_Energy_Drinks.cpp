@@ -285,128 +285,98 @@ bool isPrime(int x)
     return true;
 }
 
-ll n, m, k;
+ll k, n, m;
+int dx[] = {1, -1, 0, 0};
+int dy[] = {0, 0, -1, 1};
+// left right top down
 ll a, b, c, d;
 
-// int n, m;
-int dx[] = {0, 0, 1, -1};
-int dy[] = {1, -1, 0, 0};
-
-bool isvalid(int x, int y, vector<vector<char>> &arr)
+bool isvalid(int x, int y)
 {
-    if (x < 0 || x >= n || y < 0 || y >= m)
-    {
-        return false;
-    }
-    if (arr[x][y] == '#')
+    if (x < 1 || x > n || y < 1 || y > m)
     {
         return false;
     }
     return true;
 }
 
-ll bfson2d(int x, int y, vector<vector<char>> &arr)
+ll bfson2d(vector<vector<char>> &arr)
 {
-    deque<v64> q;
-    vv64 dist(n + 1, v64(m + 1, INF));
-    vv64 vis(n + 1, v64(m + 1, 0));
-    vis[x][y] = 1;
-    dist[x][y] = 0;
-    q.pb({x, y, 5, 0});
+    queue<v64> q;
+    // distance , direction , x , y
+    vector<vector<vector<ll>>> dist(n + 1, vector<vector<ll>>(m + 1, vector<ll>(4, INF)));
+    forn(i, 4)
+    {
+        dist[a][b][i] = 0;
+        int x1 = a + dx[i];
+        int y1 = b + dy[i];
+        if (isvalid(x1, y1) && arr[x1][y1] == '.')
+        {
+            q.push({1, i, 1, x1, y1});
+            dist[x1][y1][i] = 1;
+        }
+    }
     while (!q.empty())
     {
         auto &v = q.front();
-        int currx = v[0];
-        int curry = v[1];
-        int dirx = v[2];
-        int path_left = v[3];
-        q.pop_front();
-        // continue on the left path
-        ////////////////////////////////////////////////////////////////////
-        if (dirx == 0)
+        int distance = v[0];
+        int direction = v[1];
+        int curr_moved = v[2];
+        int currx = v[3];
+        int curry = v[4];
+        q.pop();
+        // move in the same direction if it allows
+        if (curr_moved < k)
         {
-            if (isvalid(currx, curry + 1, arr))
+            int x1 = currx + dx[direction];
+            int y1 = curry + dy[direction];
+            if (isvalid(x1, y1) && arr[x1][y1] == '.')
             {
-                if (vis[currx][curry + 1] == 0 && path_left)
+                if (dist[x1][y1][direction] > dist[currx][curry][direction])
                 {
-                    q.push_front({currx, curry + 1, dirx, path_left - 1});
-                    vis[currx][curry + 1] = 1;
-                    dist[currx][curry + 1] = dist[currx][curry];
+                    q.push({distance, direction, curr_moved + 1, x1, y1});
+                    dist[x1][y1][direction] = dist[currx][curry][direction];
                 }
             }
         }
-        else if (dirx == 1)
-        {
-            if (isvalid(currx, curry - 1, arr))
-            {
-                if (vis[currx][curry - 1] == 0 && path_left)
-                {
-                    q.push_front({currx, curry - 1, dirx, path_left - 1});
-                    vis[currx][curry - 1] = 1;
-                    dist[currx][curry - 1] = dist[currx][curry];
-                }
-            }
-        }
-        else if (dirx == 2)
-        {
-            if (isvalid(currx + 1, curry, arr))
-            {
-                if (vis[currx + 1][curry] == 0 && path_left)
-                {
-                    q.push_front({currx + 1, curry, dirx, path_left - 1});
-                    vis[currx + 1][curry] = 1;
-                    dist[currx + 1][curry] = dist[currx][curry];
-                }
-            }
-        }
-        else
-        {
-            if (isvalid(currx - 1, curry, arr))
-            {
-                if (vis[currx - 1][curry] == 0 && path_left)
-                {
-                    q.push_front({currx - 1, curry, dirx, path_left - 1});
-                    vis[currx - 1][curry] = 1;
-                    dist[currx - 1][curry] = dist[currx][curry];
-                }
-            }
-        }
-        // //////////////////////////////////////////////////////////////
+        // change the direction
         for (int i = 0; i < 4; i++)
         {
-            if (isvalid(currx + dx[i], curry + dy[i], arr))
+            int x1 = currx + dx[i];
+            int y1 = curry + dy[i];
+            if (isvalid(currx + dx[i], curry + dy[i]) && arr[x1][y1] == '.')
             {
-                // if (i != dirx)
-                // {
-                int x1 = currx + dx[i];
-                int y1 = curry + dy[i];
-                if (vis[x1][y1] == 0)
+                if (dist[x1][y1][i] > dist[currx][curry][direction] + 1)
                 {
-                    dist[x1][y1] = dist[currx][curry] + 1;
-                    vis[x1][y1] = 1;
-                    q.pb({x1, y1, i, k - 1});
+                    dist[x1][y1][i] = dist[currx][curry][direction] + 1;
+                    q.push({dist[x1][y1][i], i, 1, x1, y1});
                 }
-                // }
             }
         }
     }
-    return (dist[c][d] == INF ? -1 : dist[c][d]);
+    ll ans = INF;
+    forn(i, 4)
+    {
+        // cout << dist[c][d][i] << " ";
+        ans = min(ans, dist[c][d][i]);
+    }
+    // cout << endl;
+    return (ans == INF ? -1 : ans);
 }
 
 void solve()
 {
     cin >> n >> m >> k;
-    vector<vector<char>> arr(n, vector<char>(m));
-    forn(i, n)
+    vector<vector<char>> arr(n + 2, vector<char>(m + 2));
+    forsn(i, 1, n + 1)
     {
-        forn(j, m)
+        forsn(j, 1, m + 1)
         {
             cin >> arr[i][j];
         }
     }
     cin >> a >> b >> c >> d;
-    a--, b--, c--, d--;
-    dbg(bfson2d(a, b, arr));
+    dbg(bfson2d(arr));
 }
 
 int main()

@@ -23,7 +23,9 @@
 			"valarray": "cpp",
 			"iomanip": "cpp",
 			"cstdlib": "cpp",
-			"ostream": "cpp"
+			"ostream": "cpp",
+			"new": "cpp",
+			"algorithm": "cpp"
 		}
 	}
 }

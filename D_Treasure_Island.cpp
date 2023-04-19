@@ -34,8 +34,10 @@ typedef pair<ll, ll> p64;
 typedef pair<double, double> pdd;
 typedef vector<ll> v64;
 typedef vector<int> v32;
+typedef vector<char> vc64;
 typedef vector<vector<int>> vv32;
 typedef vector<vector<ll>> vv64;
+typedef vector<vector<char>> vvc64;
 typedef vector<vector<p64>> vvp64;
 typedef vector<p64> vp64;
 typedef vector<p32> vp32;
@@ -114,7 +116,6 @@ tcTUU > void re(T &t, U &...u)
     re(t);
     re(u...);
 }
-
 
 int find_set(int v, v64 &parent)
 {
@@ -286,26 +287,99 @@ bool isPrime(int x)
     return true;
 }
 
+int n, m;
+int dx[] = {-1, 0, 1, 0};
+int dy[] = {0, 1, 0, -1};
+
+bool isvalid(int x, int y)
+{
+    if (x < 1 || x > n || y < 1 || y > m)
+    {
+        return false;
+    }
+    return true;
+}
+
+void dfson2d(int x, int y, vv64 &vis, vvc64 &arr, vector<vp64> &parent, int px, int py)
+{
+    vis[x][y] = 1;
+    parent[x][y] = {px, py};
+    for (int i = 0; i < 4; i++)
+    {
+        int x1 = x + dx[i];
+        int y1 = y + dy[i];
+        if (isvalid(x + dx[i], y + dy[i]))
+        {
+            if (vis[x1][y1] == 0 && arr[x1][y1] == '.')
+            {
+                dfson2d(x + dx[i], y + dy[i], vis, arr, parent, x, y);
+            }
+        }
+    }
+}
+
 void solve()
 {
-    ll n;
-    cin >> n;
-    ll arr[n];
-    forn(i, n)
+    cin >> n >> m;
+    vvc64 arr(n + 1, vc64(m + 1));
+    forsn(i, 1, n + 1)
     {
-        cin >> arr[i];
+        forsn(j, 1, m + 1)
+        {
+            cin >> arr[i][j];
+        }
+    }
+    vv64 vis(n + 1, v64(m + 1));
+    vector<vp64> parent(n + 2, vp64(m + 2,{0,0}));
+    dfson2d(1, 1, vis, arr, parent, 1, 1);
+    if (vis[n][m] == 0)
+    {
+        dbg(0);
+        return;
+    }
+    forsn(i, 1, n + 1)
+    {
+        forsn(j, 1, m + 1)
+        {
+            vis[i][j]=0;
+        }
+    }
+    
+    p64 prev = {n, m}, l = {1, 1};
+    while (prev != l)
+    {
+        vis[prev.first][prev.second]++;
+        prev = parent[prev.first][prev.second];
+    }
+    vis[n][m] = 0;
+    forsn(i, 1, n + 1)
+    {
+        forsn(j, 1, m + 1)
+        {
+            dbg2(vis[i][j]);
+        }
+        cout<<endl;
+    }
+    dfson2d(1, 1, vis, arr, parent, 1, 1);
+    if (vis[n][m])
+    {
+        dbg(2);
+    }
+    else
+    {
+        dbg(1);
     }
 }
 
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
+    // #ifndef ONLINE_JUDGE
+    //   freopen("revegetate.in", "r", stdin);
+    //  freopen("revegetate.out", "w", stdout);
+    // #endif
     ll t = 1;
-    cin >> t;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

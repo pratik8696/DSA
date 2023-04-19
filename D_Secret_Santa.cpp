@@ -306,11 +306,7 @@ void solve()
             missing.ie(i);
         }
     }
-    for (auto t : missing)
-    {
-        cout << t << " ";
-    }
-    cout << endl;
+    dbg(s.size());
     u64 vis;
     for (auto t : m)
     {
@@ -321,8 +317,8 @@ void solve()
             ll val1 = *it;
             if (val1 != *missing.begin())
             {
-                cout << val1 << " " << *missing.begin() << " " << t.first << endl;
-                vis[*missing.begin()] = val1;
+                // cout << val1 << " " << *missing.begin() << " " << t.first << endl;
+                vis[val1] = *missing.begin();
                 missing.erase(missing.begin());
                 v.erase(it);
             }
@@ -332,8 +328,8 @@ void solve()
                 ll val2 = *it;
                 if (val2 != *missing.begin())
                 {
-                    cout << val2 << " " << *missing.begin() << " " << t.first << endl;
-                    vis[*missing.begin()] = val2;
+                    // cout << val2 << " " << *missing.begin() << " " << t.first << endl;
+                    vis[val2] = *missing.begin();
                     missing.erase(missing.begin());
                     v.erase(it);
                 }
