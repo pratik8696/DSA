@@ -26,6 +26,7 @@
 			"ostream": "cpp",
 			"new": "cpp",
 			"algorithm": "cpp"
-		}
+		},
+		"cph.general.onceMaintainerMessage": false
 	}
 }

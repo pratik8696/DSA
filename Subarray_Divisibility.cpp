@@ -290,35 +290,35 @@ void solve()
     ll n;
     cin >> n;
     ll arr[n];
-    ll val = 1e18, sum = 0;
-    sum = (val / n) * n;
+    ll sum = 0, ans = 0;
     ll pre[n + 1];
-    pre[0] = 0;
     forn(i, n)
     {
         cin >> arr[i];
         sum += arr[i];
         pre[i + 1] = sum;
     }
-    u64 m;
+
+    unordered_map<ll, ll> m;
+    pre[0] = 0;
     m[pre[0]]++;
-    ll ans = 0;
     forsn(i, 1, n + 1)
     {
-        ll rem = pre[i] % n;
-        ans += m[rem];
-        m[rem]++;
+        pre[i] %= n;
+        pre[i] += n;
+        pre[i] %= n;
+        ans += m[pre[i]];
+        m[pre[i]]++;
     }
     dbg(ans);
 }
-
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
+    // #ifndef ONLINE_JUDGE
+    //   freopen("revegetate.in", "r", stdin);
+    //  freopen("revegetate.out", "w", stdout);
+    // #endif
     ll t = 1;
     // cin >> t;
     for (int it = 1; it <= t; it++)

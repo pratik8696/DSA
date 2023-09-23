@@ -286,24 +286,43 @@ bool isPrime(int x)
 }
 
 v64 arr;
+ll small = INF;
+ll dp[int(1e5 + 10)][2];
 
-ll sum(ll rem, ll turn)
+ll sum(ll val, ll turn)
 {
-    bool check = false;
-    ll ans = 0;
-    forn(i, arr.size())
+    if (val < small || val <= 0)
     {
-        if (rem - arr[i] >= 0)
+        return turn == 1;
+    }
+    auto &x = dp[val][turn];
+    if (x != -1)
+    {
+        return x;
+    }
+    if (turn == 0)
+    {
+        x = 0;
+        for (auto t : arr)
         {
-            check = true;
-            ans = max(ans, sum(rem - arr[i], 1 - turn));
+            if (val >= t)
+            {
+                x = max(x, sum(val - t, 1 - turn));
+            }
         }
     }
-    if (check == false)
+    else
     {
-        return turn;
+        x = 1;
+        for (auto t : arr)
+        {
+            if (val >= t)
+            {
+                x = min(x, sum(val - t, 1 - turn));
+            }
+        }
     }
-    return ans;
+    return x;
 }
 
 void solve()
@@ -314,8 +333,11 @@ void solve()
     forn(i, n)
     {
         cin >> arr[i];
+        small = min(small, arr[i]);
     }
-    dbg(sum(0, 1));
+    sort(all(arr));
+    memset(dp, -1, sizeof(dp));
+    dbg((sum(k, 0) == 1 ? "First" : "Second"));
 }
 
 int main()

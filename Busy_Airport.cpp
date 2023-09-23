@@ -285,30 +285,50 @@ bool isPrime(int x)
     return true;
 }
 
-void solve()
+ll a, b, c, d;
+ll n;
+v64 f(v64 arr)
 {
-    ll a, b, c, d;
-    cin >> a >> b >> c >> d;
-    ll n;
-    cin >> n;
-    ll arr[n];
-    forn(i, n)
-    {
-        cin >> arr[i];
-    }
-    sort(al(arr, n));
     v64 res;
     ms64 s;
     forn(i, n)
     {
         if (sz(s) == b)
         {
+            // ek nikal aur time dekh
+            ll top = *s.begin();
+            res.pb(top);
+            s.erase(s.begin());
+            s.ie(max(top, arr[i]) + a);
         }
         else
         {
-            s.ie()
+            s.ie(arr[i] + a);
         }
     }
+    for (auto t : s)
+    {
+        res.pb(t);
+    }
+    sort(all(res));
+    return res;
+}
+
+void solve()
+{
+    cin >> a >> b >> c >> d;
+    cin >> n;
+    v64 arr(n);
+    forn(i, n)
+    {
+        cin >> arr[i];
+    }
+    sort(all(arr));
+    v64 ans = f(arr);
+    a = c;
+    b = d;
+    ans = f(ans);
+    dbg(ans.back());
 }
 
 int main()

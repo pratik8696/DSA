@@ -249,20 +249,24 @@ bool isPrime(int x)
 
 void solve()
 {
-    ll n, m, k;
-    cin >> n >> m >> k;
+    ll n, m, k = 2;
+    cin >> n;
+    m = n;
+    ll a, b;
+    cin >> a >> b;
     vp64 adj[n + 1];
     forn(i, m)
     {
-        ll a, b, c;
-        cin >> a >> b >> c;
+        ll a, b, c = 1;
+        cin >> a >> b;
         adj[a].pb({b, c});
+        adj[b].pb({a, c});
     }
     multiset<p64> s;
     vv64 dist(n + 1, v64(k, INF));
-    s.ie({0, 1});
-    dist[1][k - 1] = 0;
-    sort(all(dist[1]));
+    s.ie({0, a});
+    dist[a][k - 1] = 0;
+    sort(all(dist[a]));
     while (s.size())
     {
         auto it = s.begin();
@@ -288,25 +292,23 @@ void solve()
             }
         }
     }
-    forsn(i, n, n + 1)
-    {
-        for (auto x : dist[i])
+    // forsn(i, b, n + 1)
+    // {
+        for (auto x : dist[b])
         {
             cout << x << " ";
         }
         cout << ln;
-    }
+    // }
 }
-
-
 
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
+    // #ifndef ONLINE_JUDGE
+    //   freopen("revegetate.in", "r", stdin);
+    //  freopen("revegetate.out", "w", stdout);
+    // #endif
     ll t = 1;
     // cin >> t;
     for (int it = 1; it <= t; it++)

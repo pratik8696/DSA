@@ -292,8 +292,8 @@ void solve()
     string s;
     cin >> s;
     u64 m;
-    ll ans = 0, sum = 0;
     m[0]++;
+    ll sum = 0, ans = 0;
     forn(i, n)
     {
         ll val = s[i] - '0';

@@ -115,6 +115,7 @@ tcTUU > void re(T &t, U &...u)
     re(u...);
 }
 
+
 int find_set(int v, v64 &parent)
 {
     if (-1 == parent[v])
@@ -287,38 +288,18 @@ bool isPrime(int x)
 
 void solve()
 {
-    ll n, k;
-    cin >> n >> k;
+    ll n;
+    cin >> n;
     ll arr[n];
     forn(i, n)
     {
         cin >> arr[i];
     }
-    ll i = 0, j = -1;
-    s64 s;
-
-    ll cc = 0;
-
-    while (j < n)
+    u64 m;
+    forn(i,n)
     {
-        if (s.size() > k)
-        {
-            ll val = j - i + 1;
-            cc += val;
-            // cout << s.size() << " -> " << i << "," << j << endl;
-            s.erase(s.lower_bound(arr[i]));
-            i++;
-        }
-        else
-        {
-            j++;
-            s.ie(arr[j]);
-        }
+        z
     }
-    ll size = j - i;
-    cc += (size * (size + 1)) / 2;
-    // cout << s.size() << " -> " << i << "," << j << endl;
-    dbg(cc);
 }
 
 int main()
@@ -329,7 +310,7 @@ int main()
     // freopen("revegetate.out", "w", stdout);
     //#endif
     ll t = 1;
-    // cin >> t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

@@ -287,6 +287,7 @@ bool isPrime(int x)
 
 ll n, m, k;
 fmp64 tunnel;
+map<p64, ll> id;
 
 int dx[4] = {-1, 0, 1, 0};
 int dy[4] = {0, 1, 0, -1};
@@ -300,64 +301,77 @@ bool isvalid(int x, int y)
     return true;
 }
 
-double dfson2d(int x, int y, vector<vector<char>> &arr)
+double dp[21][21][2];
+
+double dfson2d(int x, int y, bool curr_id, vector<vector<char>> &arr)
 {
-    vis[x][y] = 1;
-    if (arr[x][y] == '*')
-    {
-        return 0;
-    }
-    else if (arr[x][y] == '%')
+    // cout << arr[x][y] << " " << x << "," << y << endl;
+    if (arr[x][y] == '%')
     {
         return 1;
     }
-    vp64 v;
+    auto &sex = dp[x][y][curr_id];
+    if (sex != -1)
+    {
+        return sex;
+    }
+    sex = 0;
     for (int i = 0; i < 4; i++)
     {
-        ll x1 = x + dx[i];
-        ll y1 = y + dy[i];
-        if (isvalid(x1, y1))
+        int x1 = x + dx[i];
+        int y1 = y + dy[i];
+        if (isvalid(x + dx[i], y + dy[i]) && arr[x1][y1] != '*' && arr[x1][y1] != '#')
         {
-            v.pb({x1, y1});
-        }
-    }
-    double res = 1, ans = 1;
-    double denom = v.size();
-    for (auto t : v)
-    {
-        if (arr[t.first][t.second] != '#' && vis[t.first][t.second] == 0)
-        {
-            // tunnel contain krta hai ki nai
-            if (tunnel.count({t.first, t.second}))
+            if (arr[x1][y1] == 'O')
             {
-                dfson2d(tunnel[{t.first, t.second}].first, tunnel[{t.first, t.second}].second, arr);
+                int gotox = tunnel[{x1, y1}].first;
+                int gotoy = tunnel[{x1, y1}].second;
+                if (gotox == 0 && gotoy == 0)
+                {
+                    sex += dfson2d(x1, y1, true, arr) / (double)4;
+                }
+                else if (curr_id == false)
+                {
+                    sex += dfson2d(gotox, gotoy, true, arr) / (double)4;
+                }
             }
-            // mine contain krta hai
-
-            ans *= (dfson2d(t.first, t.second, arr) * (res / denom));
+            else
+            {
+                sex += dfson2d(x + dx[i], y + dy[i], false, arr) / (double)4;
+            }
         }
     }
-    return ans;
+    return sex;
 }
 
 void solve()
 {
     cin >> n >> m >> k;
     vector<vector<char>> arr(n + 1, vector<char>(m + 1));
+    ll x, y;
     forsn(i, 1, n + 1)
     {
         forsn(j, 1, m + 1)
         {
             cin >> arr[i][j];
+            if (arr[i][j] == 'A')
+            {
+                x = i, y = j;
+            }
         }
     }
+    ll cc = 1;
     forn(i, k)
     {
         ll a, b, c, d;
         cin >> a >> b >> c >> d;
         tunnel[{a, b}] = {c, d};
         tunnel[{c, d}] = {a, b};
+        id[{a, b}] = cc;
+        id[{c, d}] = cc++;
     }
+    memset(dp, -1, sizeof(dp));
+    dbg(dfson2d(x, y, false, arr));
 }
 
 int main()

@@ -98,23 +98,6 @@ typedef gp_hash_table<p64, ll, custom_hash> fmp64;
 #define sz(x) ((ll)(x).size())
 #define dbg(a) cout << a << endl;
 #define dbg2(a) cout << a << ' ';
-using ld = long double;
-using db = double;
-using str = string; // yay python!
-// INPUT
-#define tcT template <class T
-#define tcTU tcT, class U
-#define tcTUU tcT, class... U
-tcT > void re(T &x)
-{
-    cin >> x;
-}
-tcTUU > void re(T &t, U &...u)
-{
-    re(t);
-    re(u...);
-}
-
 
 int find_set(int v, v64 &parent)
 {
@@ -286,26 +269,137 @@ bool isPrime(int x)
     return true;
 }
 
+ll dfss(int v, uv64 &adj, u64 &price, v64 &dp)
+{
+    if (dp[v] != -1)
+    {
+        return dp[v];
+    }
+    dp[v] = price[v];
+    for (auto child : adj[v])
+    {
+        dp[v] = max({dfss(child, adj, price, dp) + price[v], dp[v]});
+    }
+    return dp[v];
+}
+
+v64 order;
+void dfs0(int v, v64 &vis, uv64 &adj)
+{
+    vis[v] = 1;
+    for (auto child : adj[v])
+    {
+        if (vis[child] == 0)
+        {
+            dfs0(child, vis, adj);
+        }
+    }
+    order.pb(v);
+}
+
+v64 path;
+void dfs(int v, v64 &vis, uv64 &adj)
+{
+    vis[v] = 1;
+    path.pb(v);
+    for (auto child : adj[v])
+    {
+        if (vis[child] == 0)
+        {
+            dfs(child, vis, adj);
+        }
+    }
+}
+
 void solve()
 {
-    ll n;
-    cin >> n;
-    ll arr[n];
+    ll n, m;
+    cin >> n >> m;
+    v64 vals(n + 1);
+    vp64 edges;
     forn(i, n)
     {
-        cin >> arr[i];
+        cin >> vals[i + 1];
     }
+    uv64 adj, radj;
+    forn(i, m)
+    {
+        ll a, b;
+        cin >> a >> b;
+        edges.pb({a, b});
+        adj[a].pb(b);
+        radj[b].pb(a);
+    }
+    // first is condensation of the graphs
+    v64 vis(n + 1);
+    forsn(i, 1, n + 1)
+    {
+        if (vis[i] == 0)
+        {
+            dfs0(i, vis, adj);
+        }
+    }
+    reverse(all(order));
+    fill(all(vis), 0);
+    ll cc = 0;
+    u64 comp;
+    u64 prices;
+    for (auto t : order)
+    {
+        // now we will start from the paths value
+        if (vis[t] == 0)
+        {
+            cc++;
+            dfs(t, vis, radj);
+            // now we have the path here
+            for (auto t : path)
+            {
+                comp[t] = cc;
+                prices[cc] += vals[t];
+            }
+            path.clear();
+        }
+    }
+    // forsn(i, 1, n + 1)
+    // {
+    //     cout << comp[i] << " ";
+    // }
+    // cout << endl;
+
+    // forsn(i, 1, cc + 1)
+    // {
+    //     cout << prices[i] << " ";
+    // }
+    // cout << endl;
+    // creating condensed graph
+    uv64 cadj;
+    u64 in;
+    for (auto t : edges)
+    {
+        if (comp[t.first] != comp[t.second])
+        {
+            cadj[comp[t.first]].pb(comp[t.second]);
+            in[comp[t.second]]++;
+        }
+    }
+    ll ans = 0;
+    v64 dp(n + 1, -1);
+    forsn(i, 1, n + 1)
+    {
+        ans = max(dfss(i, cadj, prices, dp), ans);
+    }
+    dbg(ans);
 }
 
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
+    // #ifndef ONLINE_JUDGE
+    //   freopen("revegetate.in", "r", stdin);
+    //  freopen("revegetate.out", "w", stdout);
+    // #endif
     ll t = 1;
-    cin >> t;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

@@ -115,7 +115,6 @@ tcTUU > void re(T &t, U &...u)
     re(u...);
 }
 
-
 int find_set(int v, v64 &parent)
 {
     if (-1 == parent[v])
@@ -286,26 +285,117 @@ bool isPrime(int x)
     return true;
 }
 
+const int mx = 2e5 + 10;
+vector<ll> treee[4 * mx];
+ll arr[mx];
+
+void merge(v32 &a, v32 &b, v32 &c)
+{
+    ll i = 0, j = 0;
+    while (i < sz(a) && j < sz(b))
+    {
+        if (a[i] < b[j])
+        {
+            c.pb(a[i]);
+            i++;
+        }
+        else
+        {
+            c.pb(b[j]);
+            j++;
+        }
+    }
+    while (i < sz(a))
+    {
+        c.pb(a[i]);
+        i++;
+    }
+    while (j < sz(b))
+    {
+        c.pb(b[j]);
+        j++;
+    }
+}
+
+void build(ll s, ll e, ll tn)
+{
+    if (s == e)
+    {
+        treee[tn].pb(arr[s]);
+        return;
+    }
+    ll mid = (s + e) / 2;
+    build(s, mid, 2 * tn);
+    build(mid + 1, e, (2 * tn) + 1);
+    merge(treee[2 * tn], treee[(2 * tn) + 1], treee[tn]);
+}
+
+ll query(ll s, ll e, ll tn, ll l, ll r, ll k)
+{
+    ll mid = (s + e) / 2;
+    // out
+    if (s > r || l > e)
+    {
+        return 0;
+    }
+    // in
+    if (s >= l && r >= e)
+    {
+        ll res = end(treee[tn]) - upper_bound(all(treee[tn]), k);
+        return res;
+    }
+
+    ll ans1 = query(s, mid, 2 * tn, l, r, k);
+    ll ans2 = query(mid + 1, e, (2 * tn) + 1, l, r, k);
+    return ans1 + ans2;
+}
+
 void solve()
 {
-    ll n;
-    cin >> n;
-    ll arr[n];
+    ll n, q;
+    cin >> n >> q;
+    uv64 adj;
+    u64 m;
     forn(i, n)
     {
         cin >> arr[i];
+    }
+    ll res[n];
+    for (ll i = n - 1; i >= 0; i--)
+    {
+        if (m.count(arr[i]) == 0)
+        {
+            res[i] = INF;
+        }
+        else
+        {
+            res[i] = m[arr[i]];
+        }
+        m[arr[i]] = i;
+    }
+    forn(i, n)
+    {
+        arr[i] = res[i];
+    }
+    build(0, n - 1, 1);
+    while (q--)
+    {
+        ll a, b;
+        cin >> a >> b;
+        a--, b--;
+        dbg(query(0, n - 1, 1, a, b, b));
     }
 }
 
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
+    // #ifndef ONLINE_JUDGE
+    //   freopen("revegetate.in", "r", stdin);
+    //  freopen("revegetate.out", "w", stdout);
+    // #endif
     ll t = 1;
-    cin >> t;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

@@ -337,67 +337,63 @@ void update(ll arr[], ll tree[], ll s, ll e, ll tn, ll idx, ll val)
     tree[tn] = max(tree[2 * tn], tree[(2 * tn) + 1]);
 }
 
-void query_update(ll arr[], ll tree[], ll val, ll l, ll r, ll treenode)
+void fidx(ll tree[], ll s, ll e, ll tn, ll value, ll &idx)
 {
-    if (l == r)
+    ll mid = (s + e) / 2;
+    if (s == e)
     {
-        tree[treenode] -= val;
-        arr[l] -= val;
-        cout << l + 1 << " ";
+        tree[tn] -= value;
+        idx = s;
+        return;
+    }
+    if (tree[2 * tn] >= value)
+    {
+        fidx(tree, s, mid, 2 * tn, value, idx);
     }
     else
     {
-        ll mid = (l + r) / 2;
-        if (tree[treenode * 2] >= val)
-        {
-            query_update(arr, tree, val, l, mid, treenode * 2);
-        }
-        else
-        {
-            query_update(arr, tree, val, mid + 1, r, (treenode * 2) + 1);
-        }
-        tree[treenode] = max(tree[treenode * 2], tree[(treenode * 2) + 1]);
+        fidx(tree, mid + 1, e, (2 * tn) + 1, value, idx);
     }
+    tree[tn] = max(tree[2 * tn], tree[(2 * tn) + 1]);
 }
 
 void solve()
 {
     ll n, q;
     cin >> n >> q;
-    ll arr[n], tree[4 * n];
+    ll arr[n], tree[4 * (n + 1)];
+    memset(tree, 0, sizeof(tree));
     forn(i, n)
     {
         cin >> arr[i];
     }
     build(arr, tree, 0, n - 1, 1);
-    while (q--)
+    // dbg(query(arr, tree, 0, n - 1, 1, 0, n - 1));
+    forn(i, q)
     {
         ll x;
         cin >> x;
         if (query(arr, tree, 0, n - 1, 1, 0, n - 1) >= x)
         {
-            query_update(arr, tree, x, 0, n - 1, 1);
+            ll idx = 0;
+            fidx(tree, 0, n - 1, 1, x, idx);
+            cout << idx + 1 << " ";
         }
         else
         {
             cout << 0 << " ";
         }
     }
+    cout << endl;
 }
-/*
-3 2 4 1 5 5 2 6
-3 2 0 1 5 5 2 6
-3 2 0 1 0 5 2 6
-3 2 0 1 0 5 2 6
-*/
 
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
+    // #ifndef ONLINE_JUDGE
+    //   freopen("revegetate.in", "r", stdin);
+    //  freopen("revegetate.out", "w", stdout);
+    // #endif
     ll t = 1;
     // cin >> t;
     for (int it = 1; it <= t; it++)

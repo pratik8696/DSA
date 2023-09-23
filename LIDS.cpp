@@ -285,35 +285,131 @@ bool isPrime(int x)
     return true;
 }
 
-ll create(ll idx,bool flag,ll prev)
+string a, b;
+ll dp1[10][2][2][10][11][2];
+ll dp2[10][2][2][10][11][2];
+ll sum(ll idx, bool f1, bool f2, ll prev, ll count, bool flag)
 {
+    if (idx == a.length())
+    {
+        return count;
+    }
+    auto &x = dp1[idx][f1][f2][prev][count][flag];
+    if (x != -1)
+    {
+        return x;
+    }
+    ll front_till = (f1 == true ? int(a[idx] - '0') : 0);
+    ll back_till = (f2 == true ? int(b[idx] - '0') : 9);
+    ll ans = 0;
+    for (ll i = front_till; i <= back_till; i++)
+    {
+        if (i == 0)
+        {
+            if (flag)
+            {
+                ans = max(ans, sum(idx + 1, f1 & (front_till == i), f2 & (back_till == i), 0, 0, flag));
+            }
+            else
+            {
+                // keep it as last ?
+                ans = max(ans, sum(idx + 1, f1 & (front_till == i), f2 & (back_till == i), i, 1, false));
+                ans = max(ans, sum(idx + 1, f1 & (front_till == i), f2 & (back_till == i), prev, count, false));
+            }
+        }
+        else
+        {
+            if (prev < i && flag == false)
+            {
+                ans = max(ans, sum(idx + 1, f1 & (front_till == i), f2 & (back_till == i), i, count + 1, false));
+            }
+            ans = max(ans, sum(idx + 1, f1 & (front_till == i), f2 & (back_till == i), prev, count, false));
+            ans = max(ans, sum(idx + 1, f1 & (front_till == i), f2 & (back_till == i), i, 1, false));
+        }
+    }
+    return x = ans;
+}
 
+ll sum0(ll idx, bool f1, bool f2, ll prev, ll count, ll maxx, bool flag)
+{
+    if (idx == a.length())
+    {
+        return (count == maxx);
+    }
+    auto &x = dp2[idx][f1][f2][prev][count][flag];
+    if (x != -1)
+    {
+        return x;
+    }
+    ll front_till = (f1 == true ? int(a[idx] - '0') : 0);
+    ll back_till = (f2 == true ? int(b[idx] - '0') : 9);
+    ll ans = 0;
+    for (ll i = front_till; i <= back_till; i++)
+    {
+        if (i == 0)
+        {
+            if (flag)
+            {
+                ans += sum(idx + 1, f1 & (front_till == i), f2 & (back_till == i), 0, 0, flag);
+            }
+            else
+            {
+                // keep it as last ?
+                ans += sum(idx + 1, f1 & (front_till == i), f2 & (back_till == i), i, 1, false);
+                ans += sum(idx + 1, f1 & (front_till == i), f2 & (back_till == i), prev, count, false);
+            }
+        }
+        else
+        {
+            if (prev < i && flag == false)
+            {
+                ans += sum(idx + 1, f1 & (front_till == i), f2 & (back_till == i), i, count + 1, false);
+            }
+            if (flag)
+            {
+                ans += sum(idx + 1, f1 & (front_till == i), f2 & (back_till == i), i, 1, false);
+            }
+            else
+            {
+                ans += sum(idx + 1, f1 & (front_till == i), f2 & (back_till == i), i, 1, false);
+                ans += sum(idx + 1, f1 & (front_till == i), f2 & (back_till == i), prev, count, false);
+            }
+        }
+    }
+    return x = ans;
 }
 
 void solve()
 {
-    string a, b;
-    cin >> a >> b;
+    ll n, m;
+    cin >> n >> m;
+    a = to_string(n);
+    b = to_string(m);
     reverse(all(a));
-    while (a.size() != b.size())
+    while (sz(a) != sz(b))
     {
         a.pb('0');
     }
     reverse(all(a));
-    cout << a << " " << b << ln;
+    memset(dp1, -1, sizeof(dp1));
+    memset(dp2, -1, sizeof(dp2));
+    ll maxx = sum(0, true, true, 0, 0, true);
+    ll ways = sum0(0, true, true, 0, 0, maxx, true);
+    cout << maxx << " " << ways << endl;
 }
 
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
+    // #ifndef ONLINE_JUDGE
+    //   freopen("revegetate.in", "r", stdin);
+    //  freopen("revegetate.out", "w", stdout);
+    // #endif
     ll t = 1;
     cin >> t;
     for (int it = 1; it <= t; it++)
     {
+        cout << "Case " << it << ": ";
         solve();
     }
     return 0;
