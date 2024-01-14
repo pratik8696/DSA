@@ -286,8 +286,8 @@ bool isPrime(int x)
 }
 
 const int mx = 2e5 + 10;
-vector<ll> treee[4 * mx];
-ll arr[mx];
+vector<int> treee[4 * mx];
+int arr[mx];
 
 void merge(v32 &a, v32 &b, v32 &c)
 {
@@ -354,18 +354,17 @@ void solve()
 {
     ll n, q;
     cin >> n >> q;
-    uv64 adj;
-    u64 m;
+    unordered_map<int, int> m;
     forn(i, n)
     {
         cin >> arr[i];
     }
-    ll res[n];
+    int res[n];
     for (ll i = n - 1; i >= 0; i--)
     {
         if (m.count(arr[i]) == 0)
         {
-            res[i] = INF;
+            res[i] = 1e9;
         }
         else
         {

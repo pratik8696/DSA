@@ -289,28 +289,31 @@ void solve()
 {
     ll n;
     cin >> n;
-    v64 arr(n);
-    v64 prefix(n), suffix(n);
+    ll arr[n];
     forn(i, n)
     {
         cin >> arr[i];
     }
-    ll prev = 0;
+    ll pre[n], suff[n];
     forn(i, n)
     {
-        prev = __gcd(prev, arr[i]);
-        prefix[i] = prev;
+        pre[i] = __gcd((i - 1 >= 0 ? pre[i - 1] : 0), arr[i]);
     }
-    prev = 0;
     for (ll i = n - 1; i >= 0; i--)
     {
-        prev = __gcd(prev, arr[i]);
-        suffix[i] = prev;
+        suff[i] = __gcd((i + 1 < n ? suff[i + 1] : 0), arr[i]);
     }
-    ll ans = max(suffix[1], prefix[n - 2]);
-    forsn(i, 1, n - 1)
+    ll ans = 0;
+    forn(i, n)
     {
-        ans = max(ans, __gcd(prefix[i - 1], suffix[i + 1]));
+        ll f = 0;
+        ll b = 0;
+        if (i + 1 < n)
+            b = suff[i + 1];
+        if (i - 1 >= 0)
+            f = pre[i - 1];
+
+        ans = max(ans, __gcd(f, b));
     }
     dbg(ans);
 }

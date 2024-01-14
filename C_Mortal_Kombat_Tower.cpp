@@ -287,57 +287,38 @@ bool isPrime(int x)
 
 ll n;
 v64 arr;
-ll sum(ll idx, bool turn, vv64 &dp)
+
+ll sum(ll idx, ll turn, vv64 &dp)
 {
-    if (idx == n)
-    {
-        return 0;
-    }
-    if (dp[idx][turn] != -1)
-    {
-        return dp[idx][turn];
-    }
+    if (idx == sz(arr)) return 0;
+    auto &x = dp[idx][turn];
+    if (x != -1) return x;
     ll ans = INF;
-    if (turn)
-    {
-        // friends turn
-        ans = min(ans, sum(idx + 1, !turn, dp) + arr[idx]);
-        if (idx < n - 1)
-        {
-            ans = min(ans, sum(idx + 2, !turn, dp) + arr[idx] + arr[idx + 1]);
-        }
-    }
-    else
-    {
-        // my turn
-        ans = min(sum(idx + 1, !turn, dp), ans);
-        if (idx < n - 1)
-        {
-            ans = min(ans, sum(idx + 2, !turn, dp));
-        }
-    }
-    return dp[idx][turn] = ans;
+    if (idx + 2 <= sz(arr))
+        ans = min(ans, sum(idx + 2, 1 - turn,dp) + (turn == 0 ? (arr[idx] + arr[idx + 1]) : 0));
+    ans = min(ans, sum(idx + 1, 1 - turn,dp) + (turn == 0 ? arr[idx] : 0));
+    return x = ans;
 }
 
 void solve()
 {
     cin >> n;
     arr.resize(n);
-    vv64 dp(n + 1, v64(2, -1));
     forn(i, n)
     {
         cin >> arr[i];
     }
-    dbg(sum(0, 1, dp));
+    vv64 dp(n+1,v64(2,-1));
+    dbg(sum(0, 0,dp));
 }
 
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
+    // #ifndef ONLINE_JUDGE
+    //   freopen("revegetate.in", "r", stdin);
+    //  freopen("revegetate.out", "w", stdout);
+    // #endif
     ll t = 1;
     cin >> t;
     for (int it = 1; it <= t; it++)

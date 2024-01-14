@@ -24,10 +24,10 @@
 
 using namespace std;
 using namespace __gnu_pbds;
-// use less_equal to make it multiset
-typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> pbds;
-typedef unsigned long long ull;
 typedef long long ll;
+// use less_equal to make it multiset
+typedef tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update> pbds;
+typedef unsigned long long ull;
 typedef long double ld;
 typedef pair<int, int> p32;
 typedef pair<ll, ll> p64;
@@ -46,15 +46,43 @@ typedef multiset<ll> ms64;
 typedef multiset<p64> msp64;
 typedef map<ll, ll> m64;
 typedef map<ll, v64> mv64;
+typedef unordered_map<ll, v64> uv64;
+typedef unordered_map<ll, ll> u64;
+typedef unordered_map<p64, ll> up64;
+typedef unordered_map<ll, vp64> uvp64;
 typedef priority_queue<ll> pq64;
-ll MOD = 1000000007;
+typedef priority_queue<ll, v64, greater<ll>> pqs64;
+const int MOD = 1000000007;
 double eps = 1e-12;
 #define forn(i, n) for (ll i = 0; i < n; i++)
 #define forsn(i, s, e) for (ll i = s; i < e; i++)
 #define rforn(i, s) for (ll i = s; i >= 0; i--)
 #define rforsn(i, s, e) for (ll i = s; i >= e; i--)
+struct custom_hash
+{
+    static uint64_t splitmix64(uint64_t x)
+    {
+        x += 0x9e3779b97f4a7c15;
+        x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
+        x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
+        return x ^ (x >> 31);
+    }
+
+    size_t operator()(p64 x) const
+    {
+        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+        return splitmix64(x.first + FIXED_RANDOM) ^ splitmix64(x.second + FIXED_RANDOM);
+    }
+    size_t operator()(ll x) const
+    {
+        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+        return splitmix64(x + FIXED_RANDOM);
+    }
+};
+typedef gp_hash_table<ll, ll, custom_hash> fm64;
+typedef gp_hash_table<p64, ll, custom_hash> fmp64;
+
 #define ln "\n"
-#define dbg(x) cout << #x << " = " << x << ln
 #define mp make_pair
 #define ie insert
 #define pb push_back
@@ -68,24 +96,39 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define al(arr, n) arr, arr + n
 #define sz(x) ((ll)(x).size())
+#define dbg(a) cout << a << endl;
+#define dbg2(a) cout << a << ' ';
+using ld = long double;
+using db = double;
+using str = string; // yay python!
+// INPUT
+#define tcT template <class T
+#define tcTU tcT, class U
+#define tcTUU tcT, class... U
+tcT > void re(T &x)
+{
+    cin >> x;
+}
+tcTUU > void re(T &t, U &...u)
+{
+    re(t);
+    re(u...);
+}
 
-// dsu functions
-// void make_set(int v) {
-//   parent[v] = v;
-//}
+int find_set(int v, v64 &parent)
+{
+    if (-1 == parent[v])
+        return v;
+    return parent[v] = find_set(parent[v], parent);
+}
 
-// int find_set(int v) {
-//   if (v == parent[v])
-// return v;
-// return find_set(parent[v]);
-// }
-
-// void union_sets(int a, int b) {
-//   a = find_set(a);
-// b = find_set(b);
-// if (a != b)
-// parent[b] = a;
-// }
+void union_sets(int a, int b, v64 &parent)
+{
+    a = find_set(a, parent);
+    b = find_set(b, parent);
+    if (a != b)
+        parent[b] = a;
+}
 
 // function for prime factorization
 vector<pair<ll, ll>> pf(ll n)
@@ -242,54 +285,57 @@ bool isPrime(int x)
     return true;
 }
 
-bool check(ll val, ll arr[], ll n, ll time)
+ll n, t_max;
+v64 arr;
+
+bool check(ll mid)
 {
-    set<ll> s;
-    forn(i, val)
+    ll n = sz(arr);
+    multiset<int> s;
+    for (int i = 0; i < mid; i++)
     {
-        s.ie(arr[i]);
+        s.insert(arr[i]);
     }
-    ll ans = *s.begin();
-    for (ll i = val; i < n; i++)
+    ll time_pass = 0;
+    for (int j = mid; j < n; j++)
     {
+        ll top = *s.begin();
         s.erase(s.begin());
-        s.ie(arr[i] + ans);
-        ll vv = *s.begin();
-        ll diff = vv - ans;
-        ans += max(0ll, diff);
+        time_pass += top - time_pass;
+        s.insert(time_pass + arr[j]);
     }
-    ans += max(0ll, *s.rbegin() - ans);
-    if (ans > time)
+    while (sz(s))
     {
-        return false;
+        ll top = *s.begin();
+        s.erase(s.begin());
+        time_pass += top - time_pass;
     }
-    return true;
+    return time_pass <= t_max;
 }
 
 void solve()
 {
-    ll n, k;
-    cin >> n >> k;
-    ll arr[n];
+    cin >> n >> t_max;
+    arr.resize(n);
     forn(i, n)
     {
         cin >> arr[i];
     }
-    ll i = 1, j = n, ans = n;
+    ll i = 1, j = n, ans = -1;
     while (i <= j)
     {
         ll mid = (i + j) / 2;
-        if (check(mid, arr, n, k))
+        if (check(mid))
         {
-            ans = min(mid, ans);
             j = mid - 1;
+            ans = mid;
         }
         else
         {
             i = mid + 1;
         }
     }
-    cout << ans << ln;
+    dbg(ans);
 }
 
 int main()

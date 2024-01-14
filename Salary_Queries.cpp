@@ -26,7 +26,7 @@ using namespace std;
 using namespace __gnu_pbds;
 typedef long long ll;
 // use less_equal to make it multiset
-typedef tree<ll, null_type, less_equal<ll>, rb_tree_tag, tree_order_statistics_node_update> pbds;
+typedef tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update> pbds;
 typedef unsigned long long ull;
 typedef long double ld;
 typedef pair<int, int> p32;
@@ -285,37 +285,34 @@ bool isPrime(int x)
     return true;
 }
 
+ll f(ll n, ll k, v64 &arr)
+{
+    ll ans = 1e18;
+    for (int new_k = 1; new_k <= n; new_k++)
+    {
+        ll sum = 0;
+        for (int i = 0; i < n; i++)
+        {
+            sum += min({abs(arr[i] - new_k), (k - arr[i]) + new_k, (arr[i] - 1) + (k - new_k)});
+        }
+        ans = min(ans, sum);
+    }
+    return ans;
+}
+
 void solve()
 {
-    ll n, q;
-    cin >> n >> q;
-    ll arr[n];
-    pbds s;
+    v64 arr;
+    ll k;
+    ll n;
+    cin >> k;
+    cin >> n;
+    arr.resize(n);
     forn(i, n)
     {
         cin >> arr[i];
-        s.ie(arr[i]);
     }
-    while (q--)
-    {
-        char x;
-        cin >> x;
-        ll a, b;
-        cin >> a >> b;
-        if (x == '?')
-        {
-            ll x = s.order_of_key(a);
-            ll y = s.order_of_key(b + 1);
-            dbg(y - x);
-        }
-        else
-        {
-            ll idx = a - 1;
-            s.erase(s.upper_bound(arr[idx]));
-            arr[idx] = b;
-            s.ie(b);
-        }
-    }
+    dbg(f(n, k, arr));
 }
 
 int main()

@@ -294,35 +294,67 @@ void solve()
     {
         cin >> arr[i];
     }
-    ll val = -1;
+    ll f = 1;
     forn(i, n - 1)
     {
-        if (arr[i] > arr[i + 1])
+        if (arr[i] <= arr[i + 1])
         {
-            ll curr = ce(arr[i] + arr[i + 1], 2);
-            val = max(val, curr);
+            // good
+        }
+        else
+        {
+            f = 0;
+            break;
         }
     }
-
-    if (val == -1)
+    if (f)
     {
         dbg(0);
         return;
     }
-
-    // cout << "value -> " << val << endl;
-    ll flag = 0;
+    f = 1;
     forn(i, n - 1)
     {
-        if (abs(arr[i] - val) > abs(arr[i + 1] - val))
+        if (arr[i] >= arr[i + 1])
         {
-            flag++;
+            // good
+        }
+        else
+        {
+            f = 0;
+            break;
         }
     }
-
-    if (flag==0)
+    if (f)
     {
-        dbg(val);
+        dbg(arr[0]);
+        return;
+    }
+    // now we have only one case where there are 2 values only or 3 values at max
+    ll avg = 0;
+    f = 1;
+    forn(i, n - 1)
+    {
+        if (arr[i] > arr[i + 1])
+        {
+            avg = max(avg, ce(arr[i] + arr[i + 1], 2));
+        }
+    }
+    forn(i, n - 1)
+    {
+        if (abs(arr[i] - avg) <= abs(arr[i + 1] - avg))
+        {
+            // good
+        }
+        else
+        {
+            f = 0;
+            break;
+        }
+    }
+    if (f)
+    {
+        dbg(avg);
     }
     else
     {

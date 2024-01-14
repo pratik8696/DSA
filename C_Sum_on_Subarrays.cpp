@@ -285,70 +285,42 @@ bool isPrime(int x)
     return true;
 }
 
-ll comp(ll x)
-{
-    ll val = (-1 + sqrt(1 + 4 * (x * 2))) / 2;
-    return val;
-}
-
 void solve()
 {
     ll n, k;
     cin >> n >> k;
-    ll sum = 0;
-    ll arr[n + 1];
-    memset(arr, 0, sizeof(arr));
-    forsn(i, 1, n + 1)
+    ll cc = 0, idx = 0;
+    v64 res;
+    forn(i, n)
     {
-        forn(z, 1)
+        cc++;
+        idx = i;
+        res.pb(2);
+        if ((cc * (cc + 1)) / 2 > k)
         {
-        }
-        if ((sum + i) <= k)
-        {
-            forn(z, 1)
-            {
-            }
-            sum += i;
-            arr[i] = 1;
-            forn(z, 1)
-            {
-            }
-        }
-        else
-        {
-            forn(z, 1)
-            {
-            }
-            ll rem = k - sum;
-            forn(z, 1)
-            {
-            }
-            ll val = i - 1;
-            forn(z, 1)
-            {
-            }
-            for (ll k = 1; k <= rem; k++)
-            {
-                arr[k] += 2;
-            }
-            forn(z, 1)
-            {
-            }
-            ll kk = rem - val - 1;
-            arr[i] = kk;
-            forn(z, 1)
-            {
-            }
-            for (ll j = i + 1; j <= n; j++)
-            {
-                arr[j] = -1000;
-            }
             break;
         }
     }
-    for (ll i = 1; i <= n; i++)
+    if ((cc * (cc + 1)) / 2 == k)
     {
-        cout << arr[i] << " ";
+        while (res.size() != n)
+        {
+            res.pb(-1000);
+        }
+    }
+    else
+    {
+        res.pop_back();
+        // dbg((k - (cc * (cc + 1)) / 2) * 2 + 1);
+        res.pb((k - (cc * (cc + 1)) / 2) * 2 + 1);
+        while (res.size() != n)
+        {
+            res.pb(-1000);
+        }
+    }
+    for (auto t : res)
+    {
+        cout << t << " ";
     }
     cout << endl;
 }

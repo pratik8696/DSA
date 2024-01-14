@@ -294,7 +294,7 @@ void solve()
     {
         cin >> arr[i];
     }
-    ll i = 0, ans = 0, sum = 0;
+    ll i = 0, sum = 0, ans = 0;
     forn(j, n)
     {
         sum += arr[j];
@@ -304,7 +304,7 @@ void solve()
         }
         if (sum >= k)
         {
-            ans += i;
+            ans += (i + 1);
         }
     }
     dbg(ans);

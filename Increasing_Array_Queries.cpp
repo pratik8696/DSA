@@ -115,7 +115,6 @@ tcTUU > void re(T &t, U &...u)
     re(u...);
 }
 
-
 int find_set(int v, v64 &parent)
 {
     if (-1 == parent[v])
@@ -286,26 +285,86 @@ bool isPrime(int x)
     return true;
 }
 
+const int mx = 2e5 + 10;
+vector<int> treee[4 * mx];
+ll tree_val[4 * mx];
+int arr[mx];
+
+void merge(v32 &a, v32 &b, v32 &c, ll tn)
+{
+    ll maxx = 0, ans = 0;
+    forn(i, sz(a))
+    {
+        maxx = max(maxx, ll(a[i]));
+        c.pb(a[i]);
+        ans += maxx - a[i];
+    }
+    forn(i, sz(b))
+    {
+        maxx = max(maxx, ll(b[i]));
+        c.pb(b[i]);
+        ans += maxx - b[i];
+    }
+    tree_val[tn] = ans;
+}
+
+void build(ll s, ll e, ll tn)
+{
+    if (s == e)
+    {
+        treee[tn] = arr[s];
+        tree_val[tn] = 0;
+        return;
+    }
+    ll mid = (s + e) / 2;
+    build(s, mid, 2 * tn);
+    build(mid + 1, e, (2 * tn) + 1);
+    merge(treee[2 * tn], treee[(2 * tn) + 1], treee[tn], tn);
+}
+
+ll query(ll s, ll e, ll tn, ll l, ll r)
+{
+    ll mid = (s + e) / 2;
+    // out
+    if (s > r || l > e)
+    {
+        return 0;
+    }
+    // in
+    if (s >= l && r >= e)
+    {
+        return tree_val[tn];
+    }
+
+    ll ans1 = query(s, mid, 2 * tn, l, r);
+    ll ans2 = query(mid + 1, e, (2 * tn) + 1, l, r);
+    return ans1 + ans2;
+}
+
 void solve()
 {
-    ll n;
-    cin >> n;
-    ll arr[n];
+    ll n, q;
+    cin >> n >> q;
     forn(i, n)
     {
         cin >> arr[i];
+    }
+    while (q--)
+    {
+        ll a, b;
+        cin >> a >> b;
     }
 }
 
 int main()
 {
     fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
+    // #ifndef ONLINE_JUDGE
+    //   freopen("revegetate.in", "r", stdin);
+    //  freopen("revegetate.out", "w", stdout);
+    // #endif
     ll t = 1;
-    cin >> t;
+    // cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();

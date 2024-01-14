@@ -247,30 +247,54 @@ bool isPrime(int x)
     return true;
 }
 
-void build(ll arr[], ll tree[], ll s, ll e, ll tn)
+struct node
+{
+    ll val_one;
+    ll val_zero;
+    node()
+    {
+        val_one = 0;
+        val_zero = 0;
+    }
+};
+
+void build(ll arr[], node tree[], ll s, ll e, ll tn)
 {
     if (s == e)
     {
-        tree[tn] = arr[s];
+        if (arr[s])
+        {
+            tree[tn].val_one = (s + 1) * (s + 1);
+        }
+        else
+        {
+            tree[tn].val_zero = (s + 1) * (s + 1);
+        }
         return;
     }
     ll mid = (s + e) / 2;
     build(arr, tree, s, mid, 2 * tn);
     build(arr, tree, mid + 1, e, (2 * tn) + 1);
-    tree[tn] = tree[2 * tn] + tree[(2 * tn) + 1];
+    tree[tn].val_one = tree[2 * tn].val_one + tree[(2 * tn) + 1].val_one;
+    tree[tn].val_zero = tree[2 * tn].val_zero + tree[(2 * tn) + 1].val_zero;
 }
 
-ll query(ll arr[], ll tree[], ll s, ll e, ll tn, ll l, ll r, ll lazy[])
+ll query(ll arr[], node tree[], ll s, ll e, ll tn, ll l, ll r, ll lazy[])
 {
     if (lazy[tn] != 0)
     {
         ll x = lazy[tn];
         lazy[tn] = 0;
-        tree[tn] += x * (e - s + 1);
-        if (s != e)
+        if (x % 2)
         {
-            lazy[2 * tn] += x;
-            lazy[(2 * tn) + 1] += x;
+            ll temp = tree[tn].val_one;
+            tree[tn].val_one = tree[tn].val_zero;
+            tree[tn].val_zero = temp;
+            if (s != e)
+            {
+                lazy[2 * tn] += 1;
+                lazy[(2 * tn) + 1] += 1;
+            }
         }
     }
 
@@ -283,25 +307,30 @@ ll query(ll arr[], ll tree[], ll s, ll e, ll tn, ll l, ll r, ll lazy[])
     // in
     if (s >= l && r >= e)
     {
-        return tree[tn];
+        return tree[tn].val_one;
     }
 
-    ll ans1 = query(arr, tree, s, mid, 2 * tn, l, r);
-    ll ans2 = query(arr, tree, mid + 1, e, (2 * tn) + 1, l, r);
+    ll ans1 = query(arr, tree, s, mid, 2 * tn, l, r, lazy);
+    ll ans2 = query(arr, tree, mid + 1, e, (2 * tn) + 1, l, r, lazy);
     return ans1 + ans2;
 }
 
-void update(ll arr[], ll tree[], ll s, ll e, ll tn, ll idx, ll val, ll lazy[])
+void update(ll arr[], node tree[], ll s, ll e, ll tn, ll l, ll r, ll val, ll lazy[])
 {
     if (lazy[tn] != 0)
     {
         ll x = lazy[tn];
         lazy[tn] = 0;
-        tree[tn] += x * (e - s + 1);
-        if (s != e)
+        if (x % 2)
         {
-            lazy[2 * tn] += x;
-            lazy[(2 * tn) + 1] += x;
+            ll temp = tree[tn].val_one;
+            tree[tn].val_one = tree[tn].val_zero;
+            tree[tn].val_zero = temp;
+            if (s != e)
+            {
+                lazy[2 * tn] += 1;
+                lazy[(2 * tn) + 1] += 1;
+            }
         }
     }
 
@@ -314,53 +343,72 @@ void update(ll arr[], ll tree[], ll s, ll e, ll tn, ll idx, ll val, ll lazy[])
     if (s >= l && r >= e)
     {
         // insert in lazy
-        tree[tn] += val * (e - s + 1);
+        // swap kro yha pr
+        ll temp = tree[tn].val_one;
+        tree[tn].val_one = tree[tn].val_zero;
+        tree[tn].val_zero = temp;
         if (s != e)
         {
-            lazy[2 * tn] += val;
-            lazy[(2 * tn) + 1] += val;
+            lazy[2 * tn] += 1;
+            lazy[(2 * tn) + 1] += 1;
         }
         return;
     }
 
     ll mid = (s + e) / 2;
-    update(arr, tree, mid + 1, e, (2 * tn) + 1, idx, val);
-    update(arr, tree, s, mid, 2 * tn, idx, val);
-    tree[tn] = tree[2 * tn] + tree[(2 * tn) + 1];
+    update(arr, tree, mid + 1, e, (2 * tn) + 1, l, r, val, lazy);
+    update(arr, tree, s, mid, 2 * tn, l, r, val, lazy);
+    tree[tn].val_one = tree[2 * tn].val_one + tree[(2 * tn) + 1].val_one;
+    tree[tn].val_zero = tree[2 * tn].val_zero + tree[(2 * tn) + 1].val_zero;
 }
 
-void solve()
+int main()
 {
     ll n;
     cin >> n;
+    string s;
+    cin >> s;
     ll arr[n];
     forn(i, n)
     {
-        cin >> arr[i];
+        if (s[i] == '1')
+        {
+            arr[i] = 1;
+        }
+        else
+        {
+            arr[i] = 0;
+        }
     }
-}
-int main()
-{
-    fast_cin();
-    //#ifndef ONLINE_JUDGE
-    //  freopen("revegetate.in", "r", stdin);
-    // freopen("revegetate.out", "w", stdout);
-    //#endif
-    ll t;
-    cin >> t;
-    for (int it = 1; it <= t; it++)
+    node tree[4 * n];
+    ll lazy[4 * n];
+    memset(lazy, 0, sizeof(lazy));
+    build(arr, tree, 0, n - 1, 1);
+    ll q;
+    cin >> q;
+    while (q--)
     {
-        solve();
+        ll type;
+        cin >> type;
+        ll a, b;
+        cin >> a >> b;
+        a--, b--;
+        if (type == 2)
+        {
+            ll sum = 0;
+            for (ll i = a, j = 1; i <= b; i++, j++)
+            {
+                // ll value = query(arr, tree, 0, n - 1, 1, i, i, lazy);
+                // cout << value << " ";
+                sum += (query(arr, tree, 0, n - 1, 1, i, i, lazy) > 0 ? j * j : 0);
+            }
+            // cout << endl;
+            cout << sum << endl;
+        }
+        else
+        {
+            update(arr, tree, 0, n - 1, 1, a, b, 0, lazy);
+        }
     }
     return 0;
 }
-
-/*
-1. Check borderline constraints. Can a variable you are dividing by be 0?
-2. Use ll while using bitshifts
-3. Do not erase from set while iterating it
-4. Initialise everything
-5. Read the task carefully, is something unique, sorted, adjacent, guaranteed??
-6. DO NOT use if(!mp[x]) if you want to iterate the map later
-7. Are you using i in all loops? Are the i's conflicting?
-*/

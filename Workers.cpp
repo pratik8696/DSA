@@ -26,7 +26,7 @@ using namespace std;
 using namespace __gnu_pbds;
 typedef long long ll;
 // use less_equal to make it multiset
-// typedef treee<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update> pbds;
+typedef tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update> pbds;
 typedef unsigned long long ull;
 typedef long double ld;
 typedef pair<int, int> p32;
@@ -113,6 +113,22 @@ tcTUU > void re(T &t, U &...u)
 {
     re(t);
     re(u...);
+}
+
+
+int find_set(int v, v64 &parent)
+{
+    if (-1 == parent[v])
+        return v;
+    return parent[v] = find_set(parent[v], parent);
+}
+
+void union_sets(int a, int b, v64 &parent)
+{
+    a = find_set(a, parent);
+    b = find_set(b, parent);
+    if (a != b)
+        parent[b] = a;
 }
 
 // function for prime factorization
@@ -270,222 +286,26 @@ bool isPrime(int x)
     return true;
 }
 
-const int mx = 1e5 + 10;
-int sizee[mx], heavy[mx], parent[mx], depth[mx], head[mx], arr[mx], pos[mx], values[mx], vis[mx];
-vector<int> treee[4 * mx], adj[mx], tadj[mx];
-
-void merge(v32 &a, v32 &b, v32 &c)
-{
-    ll i = 0, j = 0;
-    while (i < sz(a) && j < sz(b))
-    {
-        if (a[i] < b[j])
-        {
-            c.pb(a[i]);
-            i++;
-        }
-        else
-        {
-            c.pb(b[j]);
-            j++;
-        }
-    }
-    while (i < sz(a))
-    {
-        c.pb(a[i]);
-        i++;
-    }
-    while (j < sz(b))
-    {
-        c.pb(b[j]);
-        j++;
-    }
-}
-
-class HLD
-{
-public:
-    ll idx;
-    HLD(ll n)
-    {
-        idx = 0;
-    }
-
-    void dfs(ll node)
-    {
-        for (auto child : adj[node])
-        {
-            depth[child] = depth[node] + 1;
-            parent[child] = node;
-            dfs(child);
-            sizee[node] += sizee[child];
-            if (sizee[child] >= sizee[heavy[node]])
-            {
-                heavy[node] = child;
-            }
-        }
-        sizee[node]++;
-    }
-
-    void dfsHLD(ll node, ll chain)
-    {
-        head[node] = chain;
-        arr[idx] = values[node];
-        pos[node] = idx;
-        idx++;
-        if (heavy[node] != 0)
-        {
-            dfsHLD(heavy[node], chain);
-        }
-        for (auto child : adj[node])
-        {
-            if (heavy[node] != child)
-            {
-                dfsHLD(child, child);
-            }
-        }
-    }
-
-    ll lca(ll a, ll b)
-    {
-        while (head[a] != head[b])
-        {
-            if (depth[head[a]] < depth[head[b]])
-            {
-                swap(a, b);
-            }
-            a = parent[head[a]];
-        }
-        if (depth[a] < depth[b])
-        {
-            swap(a, b);
-        }
-        return b;
-    }
-
-    ll lca_sum_query(ll a, ll b, ll k)
-    {
-        ll sum = 0;
-        while (head[a] != head[b])
-        {
-            if (depth[head[a]] < depth[head[b]])
-            {
-                swap(a, b);
-            }
-            sum += query(0, idx - 1, 1, min(pos[head[a]], pos[a]), max(pos[a], pos[head[a]]), k);
-            a = parent[head[a]];
-        }
-        if (depth[a] < depth[b])
-        {
-            swap(a, b);
-        }
-        sum += query(0, idx - 1, 1, min(pos[b], pos[a]), max(pos[a], pos[b]), k);
-        return sum;
-    }
-
-    void build(ll s, ll e, ll tn)
-    {
-        if (s == e)
-        {
-            treee[tn].pb(arr[s]);
-            return;
-        }
-        ll mid = (s + e) / 2;
-        build(s, mid, 2 * tn);
-        build(mid + 1, e, (2 * tn) + 1);
-        merge(treee[2 * tn], treee[(2 * tn) + 1], treee[tn]);
-    }
-
-    ll query(ll s, ll e, ll tn, ll l, ll r, ll k)
-    {
-        ll mid = (s + e) / 2;
-        // out
-        if (s > r || l > e)
-        {
-            return 0;
-        }
-        // in
-        if (s >= l && r >= e)
-        {
-            ll res = upper_bound(all(treee[tn]), k) - lower_bound(all(treee[tn]), k);
-            return res;
-        }
-
-        ll ans1 = query(s, mid, 2 * tn, l, r, k);
-        ll ans2 = query(mid + 1, e, (2 * tn) + 1, l, r, k);
-        return ans1 + ans2;
-    }
-
-    void init()
-    {
-        build(0, idx - 1, 1);
-    }
-};
-
-vp32 pairs;
-void dfs(int v)
-{
-    vis[v] = 1;
-    for (auto child : tadj[v])
-    {
-        if (vis[child] == 0)
-        {
-            pairs.pb({v, child});
-            dfs(child);
-        }
-    }
-}
-
 void solve()
 {
     ll n;
     cin >> n;
-    // uv64 adj;
-    // v64 values(n + 1);
-    forsn(i, 1, n + 1)
+    ll arr[n];
+    forn(i, n)
     {
-        cin >> values[i];
-    }
-    forn(i, n - 1)
-    {
-        ll a, b;
-        cin >> a >> b;
-        a++, b++;
-        tadj[a].pb(b);
-        tadj[b].pb(a);
-    }
-
-    dfs(1);
-    for (auto t : pairs)
-    {
-        adj[t.first].pb(t.second);
-    }
-
-    HLD hld(n + 1);
-    hld.dfs(1);
-    hld.dfsHLD(1, 1);
-    hld.init();
-
-    ll q;
-    cin >> q;
-    while (q--)
-    {
-        ll a, b, k;
-        cin >> a >> b >> k;
-        a++, b++;
-        dbg(hld.lca_sum_query(a, b, k));
+        cin >> arr[i];
     }
 }
 
 int main()
 {
     fast_cin();
-    // #ifndef ONLINE_JUDGE
-    //   freopen("revegetate.in", "r", stdin);
-    //  freopen("revegetate.out", "w", stdout);
-    // #endif
+    //#ifndef ONLINE_JUDGE
+    //  freopen("revegetate.in", "r", stdin);
+    // freopen("revegetate.out", "w", stdout);
+    //#endif
     ll t = 1;
-    // cin >> t;
+    cin >> t;
     for (int it = 1; it <= t; it++)
     {
         solve();
